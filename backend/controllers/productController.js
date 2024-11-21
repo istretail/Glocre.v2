@@ -2,39 +2,42 @@ const Product = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncError = require('../middlewares/catchAsyncError')
 const APIFeatures = require('../utils/apiFeatures')
-
+const User = require('../models/userModel')
+const sendEmail = require('../utils/email')
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
     const resPerPage = 12;
 
-    // Function to build the query
+    // Function to build the query with an additional filter for approved products
     let buildQuery = () => {
-        return new APIFeatures(Product.find(), req.query).search().filter();
-    }
+        return new APIFeatures(Product.find({ status: 'approved' }), req.query)
+            .search()
+            .filter();
+    };
 
-    // Count the total and filtered products
+    // Count the total and filtered approved products
     const filteredProductsCount = await buildQuery().query.countDocuments({});
-    const totalProductsCount = await Product.countDocuments({});
+    const totalProductsCount = await Product.countDocuments({ status: 'approved' });
     let productsCount = totalProductsCount;
 
     if (filteredProductsCount !== totalProductsCount) {
         productsCount = filteredProductsCount;
     }
 
-    // Add pagination, sorting, and get the products
+    // Get the approved products with pagination and sorting
     const products = await buildQuery().paginate(resPerPage).query.sort('-createdAt');
 
-    // Calculate subcategory counts
+    // Calculate subcategory counts for approved products
     const subcategoryCounts = {};
-    const allProducts = await Product.find(); // Get all products to calculate counts
-    allProducts.forEach(product => {
+    const allApprovedProducts = await Product.find({ status: 'approved' });
+    allApprovedProducts.forEach(product => {
         if (subcategoryCounts[product.subcategory]) {
             subcategoryCounts[product.subcategory]++;
         } else {
             subcategoryCounts[product.subcategory] = 1;
         }
     });
-    // await new Promise(resolve => setTimeout(resolve, 3000))
+
     res.status(200).json({
         success: true,
         count: productsCount,
@@ -48,6 +51,7 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
 exports.newProduct = catchAsyncError(async (req, res, next) => {
     let images = [];
     let BASE_URL = process.env.BACKEND_URL;
+    
     // Set base URL based on environment
     if (process.env.NODE_ENV === "production") {
         BASE_URL = `${req.protocol}://${req.get('host')}`;
@@ -64,10 +68,30 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
 
     // Add images to request body and set the user (createdBy) dynamically
     req.body.images = images;
-    req.body.createdBy = req.user.id;  // Use 'createdBy' instead of 'user'
+    req.body.createdBy = req.user.id;
 
     // Create product
     const product = await Product.create(req.body);
+
+    // Prepare email content for the user
+    try {
+        const emailContent = `
+            <h2>Product Created Successfully</h2>
+            <p>Dear ${req.user.name},</p>
+            <p>Your product "${product.name}" has been successfully created and is under review for approval.</p>
+            <p>Thank you for using our platform!</p>
+        `;
+
+        // Send the email to the user who created the product
+        await sendEmail({
+            email: req.user.email,
+            subject: 'Product Created Successfully',
+            html: emailContent
+        });
+
+    } catch (emailError) {
+        console.error("Failed to send email:", emailError);
+    }
 
     // Respond with the created product
     res.status(201).json({
@@ -76,26 +100,26 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     });
 });
 
-
-
 //getting single product -- api/v1/product/id
 exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
-    const product = await Product.findById(req.params.id).populate('reviews.user', 'name email');
+    const product = await Product.findOne({ _id: req.params.id, status: 'approved' })
+        .populate('reviews.user', 'name email');
 
     if (!product) {
-        return next(new ErrorHandler('Product not found', 400));
+        return next(new ErrorHandler('Product not found or not approved', 404));
     }
-    // await new Promise(resolve => setTimeout(resolve, 5000))
-    res.status(201).json({
+
+    res.status(200).json({
         success: true,
-        product
-    })
-})
+        product,
+    });
+});
 
 //Update Product - api/v1/product/:id
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
-    let product = await Product.findById(req.params.id);
-
+    // Fetch the product and populate 'createdBy' field
+    let product = await Product.findById(req.params.id).populate('createdBy');
+    
     if (!product) {
         return res.status(404).json({
             success: false,
@@ -103,10 +127,13 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
         });
     }
 
-    // Uploading images
+    // Store the creator's information before any updates to product
+    const creatorInfo = {
+        email: product.createdBy.email,
+        name: product.createdBy.name
+    };
+    // Proceed with the rest of the update logic
     let images = [];
-
-    // If images not cleared, keep existing images
     if (req.body.imagesCleared === 'false') {
         images = product.images;
     }
@@ -123,18 +150,44 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
             images.push({ url, mediaType });
         });
     }
-
     req.body.images = images;
 
+    // Check if the product status is changing
+    const isStatusChanged = req.body.status && req.body.status !== product.status;
+
+    // Update product details in the database
     product = await Product.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
     });
 
+    // Send response immediately
     res.status(200).json({
         success: true,
         product
     });
+
+    // Send email if status has changed (after response)
+    if (isStatusChanged) {
+        try {
+            const statusMessage = req.body.status === 'approved' ? 'approved' : 'rejected';
+            const emailContent = `
+                <h2>Your Product Update</h2>
+                <p>Dear ${creatorInfo.name},</p>
+                <p>Your product "${product.name}" has been ${statusMessage}.</p>
+                <p>Thank you for using our platform!</p>
+            `;
+
+            await sendEmail({
+                email: creatorInfo.email,
+                subject: `Product ${statusMessage}`,
+                html: emailContent
+            });
+
+        } catch (emailError) {
+            console.error("Failed to send email:", emailError);
+        }
+    }
 });
 
 //Delete product - api/v1/product/:id
@@ -202,7 +255,6 @@ exports.createReview = catchAsyncError(async (req, res, next) => {
     });
 });
 
-
 //Get Reviews - api/v1/reviews?id={productId}
 exports.getReviews = catchAsyncError(async (req, res, next) => {
     const product = await Product.findById(req.query.id).populate('reviews.user', 'name email');
@@ -212,6 +264,7 @@ exports.getReviews = catchAsyncError(async (req, res, next) => {
         reviews: product.reviews
     })
 })
+
 //Delete Review - api/v1/review
 exports.deleteReview = catchAsyncError(async (req, res, next) => {
     const product = await Product.findById(req.query.productId);
@@ -249,4 +302,43 @@ exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
         success: true,
         products
     })
+});
+
+
+// seller Controller
+exports.getSellerProducts = catchAsyncError(async (req, res, next) => {
+    const products = await Product.find({ createdBy: req.user.id });
+    res.status(200).json({
+        success: true,
+        products,
+    });
+});
+
+// Add a new product
+exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
+    req.body.createdBy = req.user.id; // Set the creator as the seller
+    const product = await Product.create(req.body);
+
+    res.status(201).json({
+        success: true,
+        product,
+    });
+});
+
+// Update a product (only if it belongs to the seller)
+exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
+    let product = await Product.findOne({ _id: req.params.id, createdBy: req.user.id });
+    if (!product) {
+        return next(new ErrorHandler("Product not found or you're not authorized to update it", 404));
+    }
+
+    product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(200).json({
+        success: true,
+        product,
+    });
 });

@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProducts, newProduct, getSingleProduct, updateProduct, deleteProduct, createReview, getReviews, deleteReview, getAdminProducts } = require('../controllers/productController');
+const { getProducts, newProduct, getSingleProduct, updateProduct, deleteProduct, createReview, getReviews, deleteReview, getAdminProducts, getSellerProducts, addSellerProduct, updateSellerProduct } = require('../controllers/productController');
 const router = express.Router();
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/authenticate');
 const multer = require('multer');
@@ -29,5 +29,12 @@ router.route('/admin/product/:id').delete(isAuthenticatedUser, authorizeRoles('a
 router.route('/admin/product/:id').put(isAuthenticatedUser, authorizeRoles('admin'), upload.array('images'), updateProduct);
 router.route('/admin/reviews').get(isAuthenticatedUser, authorizeRoles('admin'), getReviews);
 router.route('/admin/review').delete(isAuthenticatedUser, authorizeRoles('admin'), deleteReview);
+
+// Seller Routes 
+router.route('/seller/products').get(isAuthenticatedUser, authorizeRoles('seller'), getSellerProducts);
+router.route('/seller/product/new').post(isAuthenticatedUser, authorizeRoles('seller'), addSellerProduct)
+router.route('/seller/product/:id').put(isAuthenticatedUser, authorizeRoles('seller'), updateSellerProduct)
+
+
 
 module.exports = router;

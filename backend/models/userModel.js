@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const crypto = require ('crypto');
 const { default: isEmail } = require('validator/lib/isEmail');
+const { type } = require('os');
+
 const cartItemSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -31,6 +33,7 @@ const cartItemSchema = new mongoose.Schema({
         ref: 'Product'
     }
 });
+
 const savedAddressSchema = new mongoose.Schema({
     address: { type: String, required: true },
     addressLine: { type: String, required: true },
@@ -83,7 +86,7 @@ const userSchema = new mongoose.Schema({
     },
     role :{
         type: String,
-        enum: ['user', 'admin', 'supplier', 'seller'],
+        enum: ['user', 'admin', 'seller'],
         default: 'user'
     },   
     isVerified:{
@@ -98,11 +101,25 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    savedAddress: [savedAddressSchema], // Define savedAddress as an array of savedAddressSchema
+    gstNumber:{
+        type: String
+    },
+    businessName : {
+        type: String
+    },
+    businessEmail : {
+        type : String
+    },
+    businessContactNumber :{
+        type: Number
+    },
+    businessAddress:{
+        type:String
+    },
+    savedAddress: [savedAddressSchema],
     cart: [cartItemSchema]
     
 })
-
 
 userSchema.pre('save', async function (next){
     if(!this.isModified('password')){
@@ -123,10 +140,9 @@ userSchema.methods.isValidPassword = async function(enteredPassword){
 
 userSchema.methods.getResetToken = function(){
 // Generate Token
-
     const token = crypto.randomBytes(20).toString('hex');
 //Generate Hash and set to resetPasswordToken
-   this.resetPasswordToken= crypto.createHash('sha256').update(token).digest('hex');
+    this.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
 
     //Set token expire time
     this.resetPasswordTokenExpire = Date.now() + 30 * 60 * 1000;

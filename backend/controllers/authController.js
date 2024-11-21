@@ -265,31 +265,102 @@ exports.changePassword = catchAsyncError(async (req, res, next) => {
 exports.updateProfile = catchAsyncError(async (req, res, next) => {
     let newUserData = {
         name: req.body.name,
-        email: req.body.email
-    }
-    let avatar;
+        email: req.body.email,
+    };
 
+    // Handle avatar upload
+    let avatar;
     let BASE_URL = process.env.BACKEND_URL;
+
     if (process.env.NODE_ENV === "production") {
-        BASE_URL = `${req.protocol}://${req.get('host')}`
+        BASE_URL = `${req.protocol}://${req.get('host')}`;
     }
 
     if (req.file) {
-        avatar = `${BASE_URL}/uploads/user/${req.file.originalname}`
-        newUserData = { ...newUserData, avatar }
+        avatar = `${BASE_URL}/uploads/user/${req.file.originalname}`;
+        newUserData.avatar = avatar;
     }
 
+    // Check if seller-related fields are provided
+    const isSellerApplication = req.body.gstNumber || req.body.businessName || req.body.businessEmail || req.body.businessContactNumber || req.body.businessAddress;
+
+    if (isSellerApplication) {
+        newUserData = {
+            ...newUserData,
+            gstNumber: req.body.gstNumber,
+            businessName: req.body.businessName,
+            businessEmail: req.body.businessEmail,
+            businessContactNumber: req.body.businessContactNumber,
+            businessAddress: req.body.businessAddress,
+        };
+
+        const adminEmail = process.env.ADMIN_EMAIL || 'atpldesign04@outlook.com'; // Admin email
+        const userEmail = req.body.email; // User's email address
+
+        // Admin email content
+        const adminSubject = "New Seller Application";
+        const adminBody = `
+            <p>A user has applied to become a seller. Here are the details:</p>
+            <ul>
+                <li><strong>Name:</strong> ${req.body.name}</li>
+                <li><strong>Email:</strong> ${req.body.email}</li>
+                <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
+                <li><strong>Business Name:</strong> ${req.body.businessName}</li>
+                <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
+                <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
+                <li><strong>Business Address:</strong> ${req.body.businessAddress}</li>
+            </ul>
+        `;
+
+        // User email content
+        const userSubject = "Application Received";
+        const userBody = `
+            <p>Dear ${req.body.name},</p>
+            <p>Thank you for applying to become a supplier. We have received your application and will review it shortly. Here are the details you provided:</p>
+            <ul>
+                <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
+                <li><strong>Business Name:</strong> ${req.body.businessName}</li>
+                <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
+                <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
+                <li><strong>Business Address:</strong> ${req.body.businessAddress}</li>
+            </ul>
+            <p>We will notify you once your application has been reviewed.</p>
+            <p>Best regards,<br>Your Team</p>
+        `;
+
+        try {
+            // Send email to admin
+            await sendEmail({
+                email: adminEmail, // Use 'email' field
+                subject: adminSubject,
+                html: adminBody, // HTML content
+            });
+
+            // Send email to user
+            await sendEmail({
+                email: userEmail, // User's email address
+                subject: userSubject,
+                html: userBody, // HTML content
+            });
+
+            console.log("Emails sent successfully to admin and user.");
+        } catch (error) {
+            console.error("Error sending emails:", error.message);
+            return next(new ErrorHandler("Failed to send application emails.", 500));
+        }
+    }
+
+    // Update the user in the database
     const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
         new: true,
         runValidators: true,
-    })
+    });
 
     res.status(200).json({
         success: true,
-        user
-    })
-
-})
+        user,
+    });
+});
 
 //Admin: Get All Users - /api/v1/admin/users
 exports.getAllUsers = catchAsyncError(async (req, res, next) => {

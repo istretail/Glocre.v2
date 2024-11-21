@@ -132,7 +132,7 @@ const productSchema = new mongoose.Schema({
     status:{
         type: String,
         required: true,
-        enum: ['pending', 'approved'],
+        enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
     }, 
     user: {
