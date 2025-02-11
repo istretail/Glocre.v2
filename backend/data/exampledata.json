@@ -1,6 +1,6 @@
 [
     {
-      "name": "Smart Home Hub",
+      "name": "Smart Home Hub 1",
       "offPrice": 65.99,
       "tax": 5.00,
       "price": 79.99,
@@ -14,7 +14,10 @@
       "description": "This Smart Home Hub connects all your devices and allows you to control them using voice commands or an app.",
       "ratings": "4.5",
       "images": [
-        { "image": "/images/products/1.jpg" }
+        { "image": "/images/products/1.jpg" },
+        { "image": "/images/products/2.jpg" },
+        { "image": "/images/products/3.jpg" }
+
       ],
       "maincategory": "SMART HOME",
       "category": "test1",
@@ -25,16 +28,17 @@
       "createdBy": "672a0540ce955ca2ce83a8d6",
       "reviews": [
         {
-          "name": "user123",
+          "user": "672a0540ce955ca2ce83a8d6",
           "rating": "5",
           "comment": "Amazing product! It made my home smarter in no time."
         },
         {
-          "name": "user456",
+          "user": "673dd2f4ecac72e54a1a7483",
           "rating": "4",
           "comment": "Good value for money, but setup was a bit tricky."
         }
       ],
+      "condition":"New",
       "brand": "SmartTech",
       "itemModelNum": "SHH2024",
       "serialNum": "1234567890",
@@ -56,7 +60,7 @@
       
     },
     {
-      "name": "4K Security Camera",
+      "name": "4K Security Camera 2",
       "offPrice": 199.99,
       "tax": 10.00,
       "price": 229.99,
@@ -70,9 +74,11 @@
       "description": "This high-definition 4K security camera provides superior clarity, ensuring you can monitor your property with ease.",
       "ratings": "4.7",
       "images": [
-        { "image": "/images/products/2.jpg" }
+        { "image": "/images/products/2.jpg" },
+        { "image": "/images/products/3.jpg" }
       ],
-      "maincategory": "CAMERAS",
+      "condition":"New",
+      "maincategory": "SMART HOME",
       "category": "test3",
       "subcategory": "test13",
       "seller": "SecureTech",
@@ -81,12 +87,12 @@
       "createdBy": "672a0540ce955ca2ce83a8d6",
       "reviews": [
         {
-          "name": "user789",
+          "user": "672a0540ce955ca2ce83a8d6",
           "rating": "5",
           "comment": "Fantastic camera! Super clear and easy to install."
         },
         {
-          "name": "user101",
+          "user": "673dd2f4ecac72e54a1a7483",
           "rating": "4",
           "comment": "Great camera, but the app could be improved."
         }
@@ -112,7 +118,7 @@
       
     },
     {
-      "name": "Smart Thermostat",
+      "name": "Smart Thermostat 3",
       "offPrice": 149.99,
       "tax": 7.50,
       "price": 179.99,
@@ -126,8 +132,10 @@
       "description": "A smart thermostat that helps you control your home’s temperature remotely for energy efficiency and comfort.",
       "ratings": "4.6",
       "images": [
-        { "image": "/images/products/3.jpg" }
+        { "image": "/images/products/3.jpg" },
+        { "image": "/images/products/4.jpg" }
       ],
+      "condition":"New",
       "maincategory": "SMART HOME",
       "category": "test4",
       "subcategory": "test14",
@@ -137,12 +145,12 @@
       "createdBy": "672a0540ce955ca2ce83a8d6",
       "reviews": [
         {
-          "name": "user234",
+          "user": "672a0540ce955ca2ce83a8d6",
           "rating": "5",
           "comment": "Very easy to set up and saves us money on our energy bills."
         },
         {
-          "name": "user567",
+          "user": "673dd2f4ecac72e54a1a7483",
           "rating": "4",
           "comment": "Works well, but the app sometimes takes too long to connect."
         }
@@ -168,7 +176,7 @@
       
     },
     {
-      "name": "Wireless Smart Bulb",
+      "name": "Wireless Smart Bulb 4",
       "offPrice": 24.99,
       "tax": 1.25,
       "price": 29.99,
@@ -182,23 +190,25 @@
       "description": "A smart LED bulb that lets you control the color and brightness with your voice or app, perfect for creating ambiance.",
       "ratings": "4.4",
       "images": [
-        { "image": "/images/products/4.jpg" }
+        { "image": "/images/products/4.jpg" },
+        { "image": "/images/products/5.jpg" }
       ],
+      "condition":"New",
       "maincategory": "SMART HOME",
       "category": "test5",
       "subcategory": "test15",
       "seller": "LightingCo",
       "stock": 150,
       "numOfReviews": 300,
-      "createdBy": "6731b8f4243549f3d4b070ff",
+      "createdBy": "672a0540ce955ca2ce83a8d6",
       "reviews": [
         {
-          "name": "user678",
+          "user": "672a0540ce955ca2ce83a8d6",
           "rating": "5",
           "comment": "Great smart bulb, easy to set up and works perfectly with Alexa."
         },
         {
-          "name": "user890",
+          "user": "673dd2f4ecac72e54a1a7483",
           "rating": "4",
           "comment": "Nice color options, but a little pricey for a light bulb."
         }
@@ -224,7 +234,7 @@
      
     },
     {
-      "name": "Portable Bluetooth Speaker",
+      "name": "Portable Bluetooth Speaker 5",
       "offPrice": 45.99,
       "tax": 2.30,
       "price": 59.99,
@@ -238,6 +248,591 @@
       "description": "A high-quality portable speaker with waterproof design, perfect for listening on the go, at the beach, or poolside.",
       "ratings": "4.8",
       "images": [
+        { "image": "/images/products/4.jpg" },
+        { "image": "/images/products/5.jpg" }
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test6",
+      "subcategory": "test22",
+      "seller": "AudioMax",
+      "stock": 120,
+      "numOfReviews": 450,
+      "createdBy": "672a0540ce955ca2ce83a8d6",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Awesome sound quality, and the battery lasts all day!"
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "5",
+          "comment": "Perfect for outdoor use, super durable and loud!"
+        }
+      ],
+      "condition":"New",
+      "brand": "AudioMax",
+      "itemModelNum": "AM-BTSP2024",
+      "serialNum": "9988776655",
+      "connectionType": "Bluetooth",
+      "hardwarePlatform": "All Platforms",
+      "os": "Any",
+      "powerConception": "Low Power",
+      "batteries": "Rechargeable Lithium-ion",
+      "packageDimension": "8 x 8 x 3 inches",
+      "portDescription": "Micro-USB charging port",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Smartphones, Tablets, Laptops",
+      "powerSource": "Rechargeable Battery",
+      "specialFeatures": "Waterproof, hands-free calls",
+      "includedInThePackage": "Speaker, Charging Cable",
+      "manufacturer": "AudioMax Ltd.",
+      "itemSize": "Medium",
+      "itemWidth": "5 inches"
+      
+    },
+    {
+      "name": "Smart Home Hub 6",
+      "offPrice": 65.99,
+      "tax": 5.00,
+      "price": 79.99,
+      "keyPoints": [
+        "Voice-activated assistant",
+        "Works with Alexa and Google Assistant",
+        "Easy setup with mobile app",
+        "Customizable automation settings",
+        "Energy-efficient"
+      ],
+      "description": "This Smart Home Hub connects all your devices and allows you to control them using voice commands or an app.",
+      "ratings": "4.5",
+      "images": [
+        { "image": "/images/products/1.jpg" },
+        { "image": "/images/products/2.jpg" },
+        { "image": "/images/products/3.jpg" }
+
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test1",
+      "subcategory": "test2",
+      "seller": "SmartTech Store",
+      "stock": 45,
+      "numOfReviews": 120,
+      "createdBy": "672a0540ce955ca2ce83a8d6",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Amazing product! It made my home smarter in no time."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Good value for money, but setup was a bit tricky."
+        }
+      ],
+      "condition":"New",
+      "brand": "SmartTech",
+      "itemModelNum": "SHH2024",
+      "serialNum": "1234567890",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "Android",
+      "powerConception": "Low Power",
+      "batteries": "No",
+      "packageDimension": "12 x 8 x 4 inches",
+      "portDescription": "USB-C port for charging",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Lights, Thermostats, Security Cameras",
+      "powerSource": "AC Adapter",
+      "specialFeatures": "Custom automation schedules",
+      "includedInThePackage": "Smart Hub, AC Adapter, User Manual",
+      "manufacturer": "SmartTech Inc.",
+      "itemSize": "Medium",
+      "itemWidth": "6 inches"
+      
+    },
+    {
+      "name": "4K Security Camera 7",
+      "offPrice": 199.99,
+      "tax": 10.00,
+      "price": 229.99,
+      "keyPoints": [
+        "Ultra-clear 4K video resolution",
+        "Wide 180-degree field of view",
+        "Night vision up to 30 feet",
+        "Weatherproof design",
+        "Smart motion detection"
+      ],
+      "description": "This high-definition 4K security camera provides superior clarity, ensuring you can monitor your property with ease.",
+      "ratings": "4.7",
+      "images": [
+        { "image": "/images/products/4.jpg" },
+        { "image": "/images/products/2.jpg" }
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test3",
+      "subcategory": "test13",
+      "seller": "SecureTech",
+      "stock": 30,
+      "numOfReviews": 210,
+      "createdBy": "672a0540ce955ca2ce83a8d6",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Fantastic camera! Super clear and easy to install."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Great camera, but the app could be improved."
+        }
+      ],
+      "condition":"New",
+      "brand": "SecureTech",
+      "itemModelNum": "ST-4KSC2024",
+      "serialNum": "9876543210",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "iOS",
+      "powerConception": "Energy Efficient",
+      "batteries": "No",
+      "packageDimension": "10 x 8 x 4 inches",
+      "portDescription": "Power cable and Ethernet port",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Smartphones, Tablets, PC",
+      "powerSource": "DC Power",
+      "specialFeatures": "Night vision, motion tracking",
+      "includedInThePackage": "Camera, Power Adapter, Mounting Kit",
+      "manufacturer": "SecureTech Co.",
+      "itemSize": "Large",
+      "itemWidth": "6.5 inches"
+      
+    },
+    {
+      "name": "Smart Thermostat 8",
+      "offPrice": 149.99,
+      "tax": 7.50,
+      "price": 179.99,
+      "keyPoints": [
+        "Smart home integration",
+        "Remote control via app",
+        "Energy-saving mode",
+        "Easy installation",
+        "Temperature scheduling"
+      ],
+      "description": "A smart thermostat that helps you control your home’s temperature remotely for energy efficiency and comfort.",
+      "ratings": "4.6",
+      "images": [
+        { "image": "/images/products/3.jpg" },
+        { "image": "/images/products/4.jpg" }
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test4",
+      "subcategory": "test14",
+      "seller": "GreenTech",
+      "stock": 80,
+      "numOfReviews": 95,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Very easy to set up and saves us money on our energy bills."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Works well, but the app sometimes takes too long to connect."
+        }
+      ],
+      "condition":"New",
+      "brand": "GreenTech",
+      "itemModelNum": "GT-ST2024",
+      "serialNum": "1122334455",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "Android",
+      "powerConception": "Low Power",
+      "batteries": "No",
+      "packageDimension": "9 x 7 x 3 inches",
+      "portDescription": "Micro-USB charging port",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Smartphones, Tablets",
+      "powerSource": "AC Power",
+      "specialFeatures": "Automatic temperature adjustments",
+      "includedInThePackage": "Thermostat, User Manual, Wall Mounting Kit",
+      "manufacturer": "GreenTech Industries",
+      "itemSize": "Small",
+      "itemWidth": "4.5 inches"
+      
+    },
+    {
+      "name": "Wireless Smart Bulb 9",
+      "offPrice": 24.99,
+      "tax": 1.25,
+      "price": 29.99,
+      "keyPoints": [
+        "Wi-Fi enabled",
+        "RGB color changing",
+        "Voice-controlled",
+        "Low energy consumption",
+        "Adjustable brightness"
+      ],
+      "description": "A smart LED bulb that lets you control the color and brightness with your voice or app, perfect for creating ambiance.",
+      "ratings": "4.4",
+      "images": [
+        { "image": "/images/products/4.jpg" },
+        { "image": "/images/products/5.jpg" }
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test5",
+      "subcategory": "test15",
+      "seller": "LightingCo",
+      "stock": 150,
+      "numOfReviews": 300,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Great smart bulb, easy to set up and works perfectly with Alexa."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Nice color options, but a little pricey for a light bulb."
+        }
+      ],
+      "condition":"New",
+      "brand": "LightingCo",
+      "itemModelNum": "LC-SB2024",
+      "serialNum": "2233445566",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "iOS",
+      "powerConception": "Low Power",
+      "batteries": "No",
+      "packageDimension": "5 x 5 x 3 inches",
+      "portDescription": "No ports",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Alexa, Google Assistant, Smartphones",
+      "powerSource": "AC Power",
+      "specialFeatures": "RGB colors, dimmable",
+      "includedInThePackage": "1 Smart Bulb, Manual",
+      "manufacturer": "LightingCo",
+      "itemSize": "Standard",
+      "itemWidth": "3 inches"
+     
+    },
+    {
+      "name": "Portable Bluetooth Speaker 10",
+      "offPrice": 45.99,
+      "tax": 2.30,
+      "price": 59.99,
+      "keyPoints": [
+        "Waterproof design",
+        "12-hour battery life",
+        "Wireless Bluetooth connection",
+        "Compact and portable",
+        "Built-in microphone"
+      ],
+      "description": "A high-quality portable speaker with waterproof design, perfect for listening on the go, at the beach, or poolside.",
+      "ratings": "4.8",
+      "images": [
+        { "image": "/images/products/3.jpg" },
+        { "image": "/images/products/5.jpg" }
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test6",
+      "subcategory": "test22",
+      "seller": "AudioMax",
+      "stock": 120,
+      "numOfReviews": 450,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Awesome sound quality, and the battery lasts all day!"
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "5",
+          "comment": "Perfect for outdoor use, super durable and loud!"
+        }
+      ],
+      "condition":"New",
+      "brand": "AudioMax",
+      "itemModelNum": "AM-BTSP2024",
+      "serialNum": "9988776655",
+      "connectionType": "Bluetooth",
+      "hardwarePlatform": "All Platforms",
+      "os": "Any",
+      "powerConception": "Low Power",
+      "batteries": "Rechargeable Lithium-ion",
+      "packageDimension": "8 x 8 x 3 inches",
+      "portDescription": "Micro-USB charging port",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Smartphones, Tablets, Laptops",
+      "powerSource": "Rechargeable Battery",
+      "specialFeatures": "Waterproof, hands-free calls",
+      "includedInThePackage": "Speaker, Charging Cable",
+      "manufacturer": "AudioMax Ltd.",
+      "itemSize": "Medium",
+      "itemWidth": "5 inches"
+      
+    },
+    { 
+      "name": "Smart Home Hub 11",
+      "offPrice": 65.99,
+      "tax": 5.00,
+      "price": 79.99,
+      "keyPoints": [
+        "Voice-activated assistant",
+        "Works with Alexa and Google Assistant",
+        "Easy setup with mobile app",
+        "Customizable automation settings",
+        "Energy-efficient"
+      ],
+      "description": "This Smart Home Hub connects all your devices and allows you to control them using voice commands or an app.",
+      "ratings": "4.5",
+      "images": [
+        { "image": "/images/products/1.jpg" },
+        { "image": "/images/products/2.jpg" },
+        { "image": "/images/products/3.jpg" }
+
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test1",
+      "subcategory": "test2",
+      "seller": "SmartTech Store",
+      "stock": 45,
+      "numOfReviews": 120,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Amazing product! It made my home smarter in no time."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Good value for money, but setup was a bit tricky."
+        }
+      ],
+      "condition":"New",
+      "brand": "SmartTech",
+      "itemModelNum": "SHH2024",
+      "serialNum": "1234567890",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "Android",
+      "powerConception": "Low Power",
+      "batteries": "No",
+      "packageDimension": "12 x 8 x 4 inches",
+      "portDescription": "USB-C port for charging",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Lights, Thermostats, Security Cameras",
+      "powerSource": "AC Adapter",
+      "specialFeatures": "Custom automation schedules",
+      "includedInThePackage": "Smart Hub, AC Adapter, User Manual",
+      "manufacturer": "SmartTech Inc.",
+      "itemSize": "Medium",
+      "itemWidth": "6 inches"
+      
+    },
+    {
+      "name": "4K Security Camera 12",
+      "offPrice": 199.99,
+      "tax": 10.00,
+      "price": 229.99,
+      "keyPoints": [
+        "Ultra-clear 4K video resolution",
+        "Wide 180-degree field of view",
+        "Night vision up to 30 feet",
+        "Weatherproof design",
+        "Smart motion detection"
+      ],
+      "description": "This high-definition 4K security camera provides superior clarity, ensuring you can monitor your property with ease.",
+      "ratings": "4.7",
+      "images": [
+        { "image": "/images/products/3.jpg" },
+        { "image": "/images/products/2.jpg" }
+      ],
+      "maincategory": "SMART HOME",
+      "category": "test3",
+      "subcategory": "test13",
+      "seller": "SecureTech",
+      "stock": 30,
+      "numOfReviews": 210,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Fantastic camera! Super clear and easy to install."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Great camera, but the app could be improved."
+        }
+      ],
+      "condition":"New",
+      "brand": "SecureTech",
+      "itemModelNum": "ST-4KSC2024",
+      "serialNum": "9876543210",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "iOS",
+      "powerConception": "Energy Efficient",
+      "batteries": "No",
+      "packageDimension": "10 x 8 x 4 inches",
+      "portDescription": "Power cable and Ethernet port",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Smartphones, Tablets, PC",
+      "powerSource": "DC Power",
+      "specialFeatures": "Night vision, motion tracking",
+      "includedInThePackage": "Camera, Power Adapter, Mounting Kit",
+      "manufacturer": "SecureTech Co.",
+      "itemSize": "Large",
+      "itemWidth": "6.5 inches"
+      
+    },
+    {
+      "name": "Smart Thermostat 13",
+      "offPrice": 149.99,
+      "tax": 7.50,
+      "price": 179.99,
+      "keyPoints": [
+        "Smart home integration",
+        "Remote control via app",
+        "Energy-saving mode",
+        "Easy installation",
+        "Temperature scheduling"
+      ],
+      "description": "A smart thermostat that helps you control your home’s temperature remotely for energy efficiency and comfort.",
+      "ratings": "4.6",
+      "images": [
+        { "image": "/images/products/3.jpg" },
+        { "image": "/images/products/3.jpg" }
+      ],
+      "maincategory": "NVR",
+      "category": "test4",
+      "subcategory": "test14",
+      "seller": "GreenTech",
+      "stock": 80,
+      "numOfReviews": 95,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Very easy to set up and saves us money on our energy bills."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Works well, but the app sometimes takes too long to connect."
+        }
+      ],
+      "condition":"New",
+      "brand": "GreenTech",
+      "itemModelNum": "GT-ST2024",
+      "serialNum": "1122334455",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "Android",
+      "powerConception": "Low Power",
+      "batteries": "No",
+      "packageDimension": "9 x 7 x 3 inches",
+      "portDescription": "Micro-USB charging port",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Smartphones, Tablets",
+      "powerSource": "AC Power",
+      "specialFeatures": "Automatic temperature adjustments",
+      "includedInThePackage": "Thermostat, User Manual, Wall Mounting Kit",
+      "manufacturer": "GreenTech Industries",
+      "itemSize": "Small",
+      "itemWidth": "4.5 inches"
+      
+    },
+    {
+      "name": "Wireless Smart Bulb 14",
+      "offPrice": 24.99,
+      "tax": 1.25,
+      "price": 29.99,
+      "keyPoints": [
+        "Wi-Fi enabled",
+        "RGB color changing",
+        "Voice-controlled",
+        "Low energy consumption",
+        "Adjustable brightness"
+      ],
+      "description": "A smart LED bulb that lets you control the color and brightness with your voice or app, perfect for creating ambiance.",
+      "ratings": "4.4",
+      "images": [
+        { "image": "/images/products/4.jpg" },
+        { "image": "/images/products/4.jpg" }
+      ],
+      "maincategory": "NVR",
+      "category": "test5",
+      "subcategory": "test15",
+      "seller": "LightingCo",
+      "stock": 150,
+      "numOfReviews": 300,
+      "createdBy": "673dd2f4ecac72e54a1a7483",
+      "reviews": [
+        {
+          "user": "672a0540ce955ca2ce83a8d6",
+          "rating": "5",
+          "comment": "Great smart bulb, easy to set up and works perfectly with Alexa."
+        },
+        {
+          "user": "673dd2f4ecac72e54a1a7483",
+          "rating": "4",
+          "comment": "Nice color options, but a little pricey for a light bulb."
+        }
+      ],
+      "condition":"New",
+      "brand": "LightingCo",
+      "itemModelNum": "LC-SB2024",
+      "serialNum": "2233445566",
+      "connectionType": "Wi-Fi",
+      "hardwarePlatform": "Android & iOS",
+      "os": "iOS",
+      "powerConception": "Low Power",
+      "batteries": "No",
+      "packageDimension": "5 x 5 x 3 inches",
+      "portDescription": "No ports",
+      "connectivityType": "Wireless",
+      "compatibleDevices": "Alexa, Google Assistant, Smartphones",
+      "powerSource": "AC Power",
+      "specialFeatures": "RGB colors, dimmable",
+      "includedInThePackage": "1 Smart Bulb, Manual",
+      "manufacturer": "LightingCo",
+      "itemSize": "Standard",
+      "itemWidth": "3 inches"
+     
+    },
+    {
+      "name": "Portable Bluetooth Speaker 15",
+      "offPrice": 45.99,
+      "tax": 2.30,
+      "price": 59.99,
+      "keyPoints": [
+        "Waterproof design",
+        "12-hour battery life",
+        "Wireless Bluetooth connection",
+        "Compact and portable",
+        "Built-in microphone"
+      ],
+      "description": "A high-quality portable speaker with waterproof design, perfect for listening on the go, at the beach, or poolside.",
+      "ratings": "4.8",
+      "images": [
+        { "image": "/images/products/5.jpg" },
         { "image": "/images/products/5.jpg" }
       ],
       "maincategory": "OTHERS",
@@ -246,19 +841,20 @@
       "seller": "AudioMax",
       "stock": 120,
       "numOfReviews": 450,
-      "createdBy": "6731b8f4243549f3d4b070ff",
+      "createdBy": "673dd2f4ecac72e54a1a7483",
       "reviews": [
         {
-          "name": "user321",
+          "user": "672a0540ce955ca2ce83a8d6",
           "rating": "5",
           "comment": "Awesome sound quality, and the battery lasts all day!"
         },
         {
-          "name": "user432",
+          "user": "673dd2f4ecac72e54a1a7483",
           "rating": "5",
           "comment": "Perfect for outdoor use, super durable and loud!"
         }
       ],
+      "condition":"New",
       "brand": "AudioMax",
       "itemModelNum": "AM-BTSP2024",
       "serialNum": "9988776655",

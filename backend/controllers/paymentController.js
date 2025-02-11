@@ -1,23 +1,24 @@
 const catchAsyncError = require('../middlewares/catchAsyncError');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const Razorpay = require('razorpay');
 
-exports.processPayment  = catchAsyncError(async(req, res, next) => {
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: req.body.amount,
-        currency: "usd",
-        description: "TEST PAYMENT",
-        metadata: { integration_check: "accept_payment"},
-        shipping: req.body.shipping
-    })
+exports.processPayment = catchAsyncError(async (req, res, next) => {
+    const { amount, currency = 'INR' } = req.body;
+
+    const options = {
+        amount: amount, // Convert amount to the smallest unit (paise for INR)
+        currency,
+        receipt: `receipt_${Date.now()}`
+    };
+
+    const order = await razorpay.orders.create(options);
 
     res.status(200).json({
         success: true,
-        client_secret: paymentIntent.client_secret
-    })
-})
+        order
+    });
+});
 
-exports.sendStripeApi  = catchAsyncError(async(req, res, next) => {
-    res.status(200).json({
-        stripeApiKey: process.env.STRIPE_SECRET_KEY
-    })
-})
+const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+});

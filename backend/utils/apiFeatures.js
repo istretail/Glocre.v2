@@ -2,43 +2,46 @@ class APIFeatures {
     constructor(query, queryStr) {
       this.query = query;
       this.queryStr = queryStr;
+      this.filterQuery = {};
     }
   
     search() {
       if (this.queryStr.keyword) {
-        const keyword = this.queryStr.keyword ? {
-          name: {
-            $regex: this.queryStr.keyword,
-            $options: 'i'
-          }
-        } : {};
-        this.query = this.query.find({ ...keyword });
-      }
+        const keyword = this.queryStr.keyword.trim();
+        const isObjectId = /^[a-f\d]{24}$/i.test(keyword); // Check for ObjectId format
+        const searchCriteria = isObjectId
+            ? { _id: keyword }
+            : { name: { $regex: keyword, $options: 'i' } };
+    
+        this.query = this.query.find(searchCriteria);
+    }
       return this;
     }
   
     filter() {
-      const queryStrCopy = { ...this.queryStr };
-  
-      // Removing fields from query
-      const removeFields = ['keyword', 'limit', 'page'];
-      removeFields.forEach(field => delete queryStrCopy[field]);
-  
-      // Replacing comparison operators
-      let queryStr = JSON.stringify(queryStrCopy);
-      queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, match => `$${match}`);
+      const queryCopy = { ...this.queryStr };
 
-      // Parsing the query string and executing the query
-      this.query = this.query.find(JSON.parse(queryStr));
-  
+      // Remove fields from queryString
+      const removeFields = ['keyword', 'page', 'limit'];
+      removeFields.forEach(el => delete queryCopy[el]);
+
+      // Advanced filtering
+      let queryStr = JSON.stringify(queryCopy);
+      queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+      const filters = JSON.parse(queryStr);
+      this.filterQuery = filters; // Save filters
+      this.query = this.query.find(filters);
+
       return this;
-    }
+  }
   
     paginate(resPerPage) {
       const currentPage = Number(this.queryStr.page) || 1;
+      const limit = this.queryStr.limit ? parseInt(this.queryStr.limit) : resPerPage;
       const skip = resPerPage * (currentPage - 1);
   
-      this.query = this.query.limit(resPerPage).skip(skip);
+      this.query = this.query.limit(limit).skip(skip);
       return this;
     }
   }

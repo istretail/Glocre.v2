@@ -34,7 +34,10 @@ const {
    removeFromCart,
    updateCartItemQuantity,
    clearCart,
-   verifyAddressOtp
+   verifyAddressOtp,
+   addToWishlist,
+   getWishlist,
+   removeFromWishlist
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
@@ -58,6 +61,10 @@ router.route('/cart').get(isAuthenticatedUser, getCartItems)
 router.route('/cart/remove/:id').delete(isAuthenticatedUser, removeFromCart)
 router.route('/cart/update').put(isAuthenticatedUser, updateCartItemQuantity)
 router.route('/cart/clear').delete(isAuthenticatedUser, clearCart)
+//wishlist Routes
+router.route('/wishlist/add').post(isAuthenticatedUser, addToWishlist)
+router.route('/wishlist').get(isAuthenticatedUser, getWishlist)
+router.route('/wishlist/remove').post(isAuthenticatedUser, removeFromWishlist);
 //Admin routes
 router.route('/admin/users').get(isAuthenticatedUser,authorizeRoles('admin'), getAllUsers);
 router.route('/admin/user/:id').get(isAuthenticatedUser,authorizeRoles('admin'), getUser)

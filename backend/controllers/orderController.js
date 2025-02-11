@@ -2,6 +2,7 @@ const catchAsyncError = require('../middlewares/catchAsyncError');
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
+const APIFeatures = require('../utils/apiFeatures')
 
 //Create New Order - api/v1/order/new
 exports.newOrder =  catchAsyncError( async (req, res, next) => {
@@ -59,22 +60,36 @@ exports.myOrders = catchAsyncError(async (req, res, next) => {
     })
 })
 
-//Admin: Get All Orders - api/v1/orders
+//Admin: Get All Orders - api/v1/admin/orders
 exports.orders = catchAsyncError(async (req, res, next) => {
-    const orders = await Order.find();
+    const resPerPage = 10;
 
-    let totalAmount = 0;
+    // APIFeatures for paginated and filtered orders
+    const apiFeatures = new APIFeatures(Order.find(), req.query)
+        .search() 
+        .filter()
+        .paginate(resPerPage);
 
-    orders.forEach(order => {
-        totalAmount += order.totalPrice
-    })
+    const orders = await apiFeatures.query;
+
+    // Calculate the total amount for all orders (without pagination)
+    const totalAmountResult = await Order.aggregate([
+        { $match: apiFeatures.filterQuery }, // Apply any filters from APIFeatures
+        { $group: { _id: null, totalAmount: { $sum: "$totalPrice" } } },
+    ]);
+
+    const totalAmount = totalAmountResult.length > 0 ? totalAmountResult[0].totalAmount : 0;
+
+    const ordersCount = await Order.countDocuments(apiFeatures.filterQuery); // Apply filters for accurate count
 
     res.status(200).json({
         success: true,
         totalAmount,
+        ordersCount,
+        resPerPage,
         orders
-    })
-})
+    });
+});
 
 //Admin: Update Order / Order Status - api/v1/order/:id
 exports.updateOrder =  catchAsyncError(async (req, res, next) => {
@@ -116,3 +131,128 @@ exports.deleteOrder = catchAsyncError(async (req, res, next) => {
         success: true
     })
 })
+
+//Seller get Orders
+exports.getSellerOrdersAndSales = catchAsyncError(async (req, res, next) => {
+    const sellerId = req.user.id; 
+    const resPerPage = 10;
+
+    // Fetch product IDs created by this seller/admin
+    const products = await Product.find({ createdBy: sellerId }).select('_id');
+    if (!products.length) {
+        return res.status(200).json({ success: true, orders: [], totalSales: 0 });
+    }
+
+    const productIds = products.map(product => product._id.toString()); // Ensure product IDs are strings
+
+    // Apply APIFeatures for filtering, searching, and pagination
+    const apiFeatures = new APIFeatures(
+        Order.find({
+            'orderItems.product': { $in: productIds }, // Only orders with seller's products
+        }),
+        req.query
+    )
+        .search() 
+        .filter() 
+        .paginate(resPerPage); 
+
+    const orders = await apiFeatures.query;
+
+    // Filter order items to include only the seller's products
+    const filteredOrders = orders.map(order => {
+        const sellerOrderItems = order.orderItems.filter(item =>
+            productIds.includes(item.product.toString())
+        );
+        return {
+            ...order.toObject(),
+            orderItems: sellerOrderItems,
+        };
+    });
+
+    // Calculate total sales for all matching orders (ignoring pagination)
+    const totalSalesResult = await Order.aggregate([
+        {
+            $match: {
+                'orderItems.product': { $in: productIds }, // Match orders with seller's products
+            },
+        },
+        {
+            $unwind: '$orderItems', // Deconstruct orderItems array
+        },
+        {
+            $match: {
+                'orderItems.product': { $in: productIds }, // Match only seller's products
+            },
+        },
+        {
+            $group: {
+                _id: null,
+                totalSales: { $sum: { $multiply: ['$orderItems.price', '$orderItems.quantity'] } },
+            },
+        },
+    ]);
+
+    let totalSales = 0;
+        filteredOrders.forEach(order => {
+            order.orderItems.forEach(item => {
+                totalSales += item.price * item.quantity;
+            });
+        });
+
+    // Get total order count (ignoring pagination)
+    const ordersCount = await Order.countDocuments({
+        'orderItems.product': { $in: productIds },
+    });
+
+    res.status(200).json({
+        success: true,
+        totalSales,
+        ordersCount,
+        resPerPage,
+        orders: filteredOrders,
+    });
+});
+
+// get seller single Order
+exports.getSellerSingleOrder = catchAsyncError(async (req, res, next) => {
+    const sellerId = req.user.id; // Logged-in seller/admin ID
+    const orderId = req.params.id; // Order ID from the request parameters
+
+    // Fetch product IDs created by this seller/admin
+    const products = await Product.find({ createdBy: sellerId }).select('_id');
+    if (!products.length) {
+        return res.status(404).json({ success: false, message: "No products found for this seller." });
+    }
+
+    const productIds = products.map(product => product._id.toString()); // Ensure product IDs are strings
+
+    // Fetch the order by ID
+    const order = await Order.findById(orderId);
+    if (!order) {
+        return res.status(404).json({ success: false, message: "Order not found." });
+    }
+
+    // Filter order items to include only the seller's products
+    const sellerOrderItems = order.orderItems.filter(item =>
+        productIds.includes(item.product.toString())
+    );
+
+    if (!sellerOrderItems.length) {
+        return res.status(403).json({ 
+            success: false, 
+            message: "You do not have permission to view this order." 
+        });
+    }
+
+    // Prepare the filtered order response
+    const filteredOrder = {
+        ...order.toObject(),
+        orderItems: sellerOrderItems, // Include only seller's products
+    };
+
+    res.status(200).json({
+        success: true,
+        order: filteredOrder,
+    });
+});
+

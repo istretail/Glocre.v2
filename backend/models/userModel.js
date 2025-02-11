@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken')
 const crypto = require ('crypto');
 const { default: isEmail } = require('validator/lib/isEmail');
 const { type } = require('os');
-
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const cartItemSchema = new mongoose.Schema({
+    
     name: {
-        type: String,
-        
+        type: String,   
     },
     quantity: {
         type: Number,
@@ -49,6 +49,7 @@ const savedAddressSchema = new mongoose.Schema({
     otpCode: String,
     otpExpire: Date,
     isPhoneVerified: { type: Boolean, default: false },
+    phoneVerifiedExpire: Date,
     postalCode: { 
         type: Number, 
         required: [true, 'Please Enter Postal Code'], 
@@ -63,63 +64,79 @@ const savedAddressSchema = new mongoose.Schema({
 
 
 const userSchema = new mongoose.Schema({
-    name : {
-        type: String,
-        required: [true, 'Please enter name']
+  clocreUserId: {
+    type: String,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: [true, "Please First name"],
+  },
+  lastName: {
+    type: String,
+    required: [true, "Please Last name"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please enter email"],
+    unique: true,
+    validator: isEmail,
+  },
+  password: {
+    type: String,
+    required: [true, "Please enter password"],
+    minlength: [4, "atleast 4 character"],
+    maxlength: [6, "Password cannot exceed 6 characters"],
+    select: false,
+  },
+  avatar: {
+    type: String,
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin", "seller"],
+    default: "user",
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verifyEmailToken: String,
+  verifyEmailTokenExpire: Date,
+  resetPasswordToken: String,
+  resetPasswordTokenExpire: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  gstNumber: {
+    type: String,
+  },
+  businessName: {
+    type: String,
+  },
+  businessEmail: {
+    type: String,
+  },
+  businessContactNumber: {
+    type: Number,
+  },
+  businessAddress: {
+    type: String,
+  },
+  isSeller: {
+    type: Boolean,
+    default: false,
+  },
+  savedAddress: [savedAddressSchema],
+  cart: [cartItemSchema],
+  wishlist: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Product",
     },
-    email:{
-        type: String,
-        required: [true, 'Please enter email'],
-        unique: true,
-        validator: isEmail
-      
-    },
-    password: {
-        type: String,
-        required: [true, 'Please enter password'],
-        minlength:[4, 'atleast 4 character'],
-        maxlength: [6, 'Password cannot exceed 6 characters'],
-        select: false
-    },
-    avatar: {
-        type: String
-    },
-    role :{
-        type: String,
-        enum: ['user', 'admin', 'seller'],
-        default: 'user'
-    },   
-    isVerified:{
-        type: Boolean,
-        default: false
-    },
-    verifyEmailToken: String,    
-    verifyEmailTokenExpire: Date,
-    resetPasswordToken: String,
-    resetPasswordTokenExpire: Date,
-    createdAt :{
-        type: Date,
-        default: Date.now
-    },
-    gstNumber:{
-        type: String
-    },
-    businessName : {
-        type: String
-    },
-    businessEmail : {
-        type : String
-    },
-    businessContactNumber :{
-        type: Number
-    },
-    businessAddress:{
-        type:String
-    },
-    savedAddress: [savedAddressSchema],
-    cart: [cartItemSchema]
-    
-})
+  ],
+});
 
 userSchema.pre('save', async function (next){
     if(!this.isModified('password')){
@@ -156,6 +173,14 @@ userSchema.methods.generateVerifyEmailToken = function() {
     this.verifyEmailTokenExpire = Date.now() + 30 * 60 * 1000; // Token expires in 30 minutes
     return emailToken;
 };
+userSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        const lastUser = await mongoose.model('User').findOne().sort({ createdAt: -1 });
+      const lastId = lastUser && lastUser.clocreUserId ? parseInt(lastUser.clocreUser.replace('GLC', ''), 10) : 0;
+      this.clocreUserId = `GLC${String(lastId + 1).padStart(6, '0')}`;
+    }
+    next();
+});
 
 let model = mongoose.model('User', userSchema)
 module.exports = model;

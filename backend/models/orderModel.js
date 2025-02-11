@@ -1,162 +1,153 @@
 const mongoose = require('mongoose');
 
 const orderSchema = mongoose.Schema({
+    clocreOrderId: {
+        type: String,
+        unique: true,
+    }, // Store as String for formatted ID
     shippingInfo: {
         address: {
             type: String,
-            required: true
+            required: true,
         },
         address1: {
             type: String,
         },
         country: {
             type: String,
-            required: true
+            required: true,
         },
         city: {
             type: String,
-            required: true
+            required: true,
         },
         phoneNo: {
             type: String,
-            required: true
+            required: true,
         },
         state: {
             type: String,
-            required: true
+            required: true,
         },
         postalCode: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     billingInfo: {
         address: {
             type: String,
-            required: true
+            required: true,
         },
         address1: {
             type: String,
         },
         country: {
             type: String,
-            required: true
+            required: true,
         },
         city: {
             type: String,
-            required: true
+            required: true,
         },
         phoneNo: {
             type: String,
-            required: true
+            required: true,
         },
         state: {
             type: String,
-            required: true
+            required: true,
         },
         postalCode: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     user: {
         type: mongoose.SchemaTypes.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'User',
     },
-    cartItems: [{
-        name: {
-            type: String,
-            required: true
+    orderItems: [
+        {
+            name: {
+                type: String,
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+            image: {
+                type: String,
+                required: true,
+            },
+            price: {
+                type: Number,
+                required: true,
+            },
+            product: {
+                type: mongoose.SchemaTypes.ObjectId,
+                required: true,
+                ref: 'Product',
+            },
         },
-        quantity: {
-            type: Number,
-            required: true
-        },
-        image: {
-            type: String,
-            required: true
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        product: {
-            type: mongoose.SchemaTypes.ObjectId,
-            required: true,
-            ref: 'Product'
-        }
-
-    }],
-    orderItems: [{
-        name: {
-            type: String,
-            required: true
-        },
-        quantity: {
-            type: Number,
-            required: true
-        },
-        image: {
-            type: String,
-            required: true
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        product: {
-            type: mongoose.SchemaTypes.ObjectId,
-            required: true,
-            ref: 'Product'
-        }
-
-    }],
+    ],
     itemsPrice: {
         type: Number,
         required: true,
-        default: 0.0
+        default: 0.0,
     },
     taxPrice: {
         type: Number,
         required: true,
-        default: 0.0
+        default: 0.0,
     },
     shippingPrice: {
         type: Number,
         required: true,
-        default: 0.0
+        default: 0.0,
     },
     totalPrice: {
         type: Number,
         required: true,
-        default: 0.0
+        default: 0.0,
     },
     paymentInfo: {
         id: {
             type: String,
-            required: true
+            required: true,
         },
         status: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
     paidAt: {
-        type: Date
+        type: Date,
     },
     deliveredAt: {
-        type: Date
+        type: Date,
     },
     orderStatus: {
         type: String,
         required: true,
-        default: 'Processing'
+        default: 'Processing',
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+    },
+});
+
+// Pre-save hook to generate clocreOrderId
+orderSchema.pre('save', async function (next) {
+    if (this.isNew) {
+        const lastOrder = await mongoose.model('Order').findOne().sort({ createdAt: -1 });
+        const lastId = lastOrder && lastOrder.clocreOrderId ? parseInt(lastOrder.clocreOrderId.replace('GLS', ''), 10) : 0;
+        this.clocreOrderId = `GLS${String(lastId + 1).padStart(6, '0')}`;
     }
+    next();
 });
 
 let orderModel = mongoose.model('Order', orderSchema);

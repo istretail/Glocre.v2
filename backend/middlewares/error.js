@@ -1,12 +1,12 @@
 module.exports = (err, req, res, next) =>{
     err.statusCode = err.statusCode || 500;
-
+    err.message = err.message || "Internal Server Error";
     if (process.env.NODE_ENV == 'development'){
-       res.status(err.statusCode).json({
-        success: false,
-        message:err.message,
-        stack: err.stack,
-        error: err
+        res.status(err.statusCode).json({
+            success: false,
+            message: err.message,
+            stack: err.stack,
+            error: err,           
     })
     }  
     if (process.env.NODE_ENV == 'production'){
@@ -26,11 +26,11 @@ module.exports = (err, req, res, next) =>{
         error = new Error(message)
         err.statusCode = 400
         }
-        // if (err.name === 'CastError') {
-        //     const message = `Invalid ${err.path}: ${err.value}`;
-        //     const statusCode = 400;
-        //     return res.status(statusCode).json({ success: false, message });
-        // }
+        if (err.name === 'CastError') {
+            const message = `Invalid ${err.path}: ${err.value}`;
+            const statusCode = 400;
+            return res.status(statusCode).json({ success: false, message });
+        }
 
         if(err.code == '11000'){
             let message = `Dupliate ${Object.keys(err.keyValue)} error`
@@ -51,6 +51,7 @@ module.exports = (err, req, res, next) =>{
         res.status(err.statusCode).json({
          success: false,
          message:error.message  || 'Internal Server Error'
+         
      })
 
      
