@@ -1,62 +1,53 @@
-module.exports = (err, req, res, next) =>{
-    err.statusCode = err.statusCode || 500;
-    err.message = err.message || "Internal Server Error";
-    if (process.env.NODE_ENV == 'development'){
-        res.status(err.statusCode).json({
+module.exports = (err, req, res, next) => {
+    console.error("Error:", err); // ✅ Log the error to debug
+
+    let statusCode = err.statusCode || 500;
+    let message = err.message || "Internal Server Error";
+
+    if (process.env.NODE_ENV === 'development') {
+        return res.status(statusCode).json({
             success: false,
-            message: err.message,
+            message: message,
             stack: err.stack,
-            error: err,           
-    })
-    }  
-    if (process.env.NODE_ENV == 'production'){
+            error: err,
+        });
+    }
 
-        let message = err.message;
-        let error = new Error(message);
-
-        if(err.name == "ValidationError"){
-            message = Object.values(err.errors).map(value =>value.message)
-            error = new Error(message)
-            err.statusCode = 400
-
+    if (process.env.NODE_ENV === 'production') {
+        if (err.name === "ValidationError") {
+            message = Object.values(err.errors).map(value => value.message).join(", ");
+            statusCode = 400;
         }
 
-        if(err.name == 'CastError'){
-        message = `Resource not found: ${err.path}` ;
-        error = new Error(message)
-        err.statusCode = 400
-        }
-        if (err.name === 'CastError') {
-            const message = `Invalid ${err.path}: ${err.value}`;
-            const statusCode = 400;
-            return res.status(statusCode).json({ success: false, message });
+        if (err.name === "CastError") {
+            message = `Invalid ${err.path}: ${err.value}`;
+            statusCode = 400;
         }
 
-        if(err.code == '11000'){
-            let message = `Dupliate ${Object.keys(err.keyValue)} error`
-            error = new Error(message)
-            err.statusCode = 400
-        }
-        if(err.name == 'JSONWebTokenError') {
-            let message = `JSON Web Token is invalid. Try again`;
-            error = new Error(message)
-            err.statusCode = 400
-        }
-        if(err.name == 'TokenExpiredError') {
-            let message = `JSON Web Token is expired. Try again`;
-            error = new Error(message)
-            err.statusCode = 400
+        if (err.code === 11000) {
+            message = `Duplicate ${Object.keys(err.keyValue)} error`;
+            statusCode = 400;
         }
 
-        res.status(err.statusCode).json({
-         success: false,
-         message:error.message  || 'Internal Server Error'
-         
-     })
+        if (err.name === "JsonWebTokenError") {
+            message = "Invalid JSON Web Token. Please try again.";
+            statusCode = 401;
+        }
 
-     
+        if (err.name === "TokenExpiredError") {
+            message = "JSON Web Token has expired. Please log in again.";
+            statusCode = 401;
+        }
 
+        return res.status(statusCode).json({
+            success: false,
+            message: message,
+        });
+    }
 
-}
-    
-}
+    // ✅ Final fallback to prevent undefined status codes
+    return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+    });
+};

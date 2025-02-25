@@ -134,6 +134,29 @@ const orderSchema = mongoose.Schema({
         required: true,
         default: 'Processing',
     },
+    discount: { type: Number, default: 0.0 },
+    trackingInfo: {
+        trackingNumber: {
+            type: String,
+        },
+        courierSlug: {
+            type: String,
+        },
+        trackingStatus: {
+            type: String,
+            enum: ['Pending', 'In Transit', 'Out for Delivery', 'Delivered', 'Failed'],
+            default: 'Pending',
+        },
+        trackingURL: {
+            type: String,
+        },
+        lastUpdated: {
+            type: Date,
+        },
+    },
+    estimatedDelivery: { type: Date }, // New field: Estimated delivery date
+    orderStatus: { type: String, required: true, default: 'Processing' },
+    refundStatus: { type: String, default: 'No Refund' }, // New field: Refund status
     createdAt: {
         type: Date,
         default: Date.now,

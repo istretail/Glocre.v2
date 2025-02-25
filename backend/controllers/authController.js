@@ -68,6 +68,7 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
 
     // Send email verification link to the user
     await sendEmail({
+      fromEmail: "donotreply@glocre.com", 
       email,
       subject: "Email Verification",
       html: htmlMessage,
@@ -197,6 +198,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
 
   try {
     sendEmail({
+      fromEmail: "donotreply@glocre.com",
       email: user.email,
       subject: "Password Recovery",
       html: message,
@@ -273,8 +275,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
   };
-
-  // Handle avatar upload
+  console.log(req.body)
   let avatar;
   let BASE_URL = process.env.BACKEND_URL;
 
@@ -287,7 +288,11 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     newUserData.avatar = avatar;
   }
 
-  // Check if seller-related fields are provided
+  // Twilio Setup
+  const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
+  const client = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
+  // Check if seller-related fields exist
   const isSellerApplication =
     req.body.gstNumber ||
     req.body.businessName ||
@@ -301,76 +306,120 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
       gstNumber: req.body.gstNumber,
       businessName: req.body.businessName,
       businessEmail: req.body.businessEmail,
-      businessContactNumber: req.body.businessContactNumber,
-      businessAddress: req.body.businessAddress,
-      isSeller: req.body.isSeller === true ? true : false, // Set isSeller to false by default, unless it's already true
+      isSeller: req.body.isSeller === true ? true : false,
     };
 
-    const adminEmail = process.env.ADMIN_EMAIL || "atpldesign04@outlook.com"; // Admin email
-    const userEmail = req.body.email; // User's email address
+    // Ensure businessAddress is correctly formatted
+    if (typeof req.body.businessAddress === "string") {
+      try {
+        req.body.businessAddress = JSON.parse(req.body.businessAddress);
+      } catch (error) {
+        return next(new ErrorHandler("Invalid business address format", 400));
+      }
+    }
 
-    // Admin email content
-    const adminSubject = "New Seller Application";
+    if (Array.isArray(req.body.businessAddress)) {
+      req.body.businessAddress = req.body.businessAddress[0]; // Take first object
+    }
+
+    newUserData.businessAddress = req.body.businessAddress;
+
+    // Twilio OTP Verification
+    let otpCode;
+    if (req.body.businessContactNumber) {
+      try {
+        otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpire = Date.now() + 10 * 60 * 1000;
+
+        await client.messages.create({
+          body: `Your OTP for business contact verification is: ${otpCode}`,
+          from: TWILIO_PHONE_NUMBER,
+          to: req.body.businessContactNumber,
+        });
+
+        newUserData.businessContactNumber = req.body.businessContactNumber;
+        newUserData.otpCode = otpCode;
+        newUserData.otpExpire = otpExpire;
+        newUserData.isPhoneVerified = false;
+      } catch (error) {
+        return next(new ErrorHandler("Failed to send OTP for business contact", 500));
+      }
+    }
+
+    // Prepare email content
+    const adminEmail = process.env.ADMIN_EMAIL || "atpldesign04@outlook.com";
+    const userEmail = req.body.email;
+    const businessAddressString = newUserData.businessAddress
+      ? JSON.stringify(newUserData.businessAddress)
+      : "Not Provided";
+
     const adminBody = `
-            <p>A user has applied to become a seller. Here are the details:</p>
-            <ul>
-                <li><strong>Name:</strong> ${req.body.name}</li>
-                <li><strong>Last Name:</strong> ${req.body.lastName}</li>
-                <li><strong>Email:</strong> ${req.body.email}</li>
-                <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
-                <li><strong>Business Name:</strong> ${req.body.businessName}</li>
-                <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
-                <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
-                <li><strong>Business Address:</strong> ${req.body.businessAddress}</li>
-            </ul>
-        `;
+  <p>A user has applied to become a seller. Here are the details:</p>
+  <ul>
+    <li><strong>Name:</strong> ${req.body.name}</li>
+    <li><strong>Last Name:</strong> ${req.body.lastName}</li>
+    <li><strong>Email:</strong> ${req.body.email}</li>
+    <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
+    <li><strong>Business Name:</strong> ${req.body.businessName}</li>
+    <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
+    <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
+    <li><strong>Business Address:</strong> ${businessAddressString}</li>
+  </ul>
+`;
 
-    // User email content
-    const userSubject = "Application Received";
     const userBody = `
-            <p>Dear ${req.body.name} ${req.body.lastName},</p>
-            <p>Thank you for applying to become a supplier. We have received your application and will review it shortly. Here are the details you provided:</p>
-            <ul>
-                <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
-                <li><strong>Business Name:</strong> ${req.body.businessName}</li>
-                <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
-                <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
-                <li><strong>Business Address:</strong> ${req.body.businessAddress}</li>
-            </ul>
-            <p>We will notify you once your application has been reviewed.</p>
-            <p>Best regards,<br>Team Glocre</p>
-        `;
+  <p>Dear ${req.body.name} ${req.body.lastName},</p>
+  <p>Thank you for applying to become a supplier. We have received your application and will review it shortly. Here are the details you provided:</p>
+  <ul>
+    <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
+    <li><strong>Business Name:</strong> ${req.body.businessName}</li>
+    <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
+    <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
+  </ul>
+  <p>We will notify you once your application has been reviewed.</p>
+  <p>Best regards,<br>Team Glocre</p>
+`;
 
     try {
-      // Send email to admin
-      await sendEmail({
-        email: adminEmail, // Use 'email' field
-        subject: adminSubject,
-        html: adminBody, // HTML content
-      });
-
-      // Send email to user
-      await sendEmail({
-        email: userEmail, // User's email address
-        subject: userSubject,
-        html: userBody, // HTML content
-      });
+      await sendEmail({ 
+        fromEmail: "donotreply@glocre.com",
+        email: adminEmail, 
+        subject: "New Seller Application", 
+        html: adminBody });
+      await sendEmail({ fromEmail: "donotreply@glocre.com", email: userEmail, subject: "Application Received", html: userBody });
     } catch (error) {
       return next(new ErrorHandler("Failed to send application emails.", 500));
     }
   }
 
-  // Update the user in the database
+  // Update user in DB
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
     runValidators: true,
   });
-
   res.status(200).json({
     success: true,
     user,
+    message: "otp sent to you number"
   });
 });
+
+exports.verifySellerOtp = catchAsyncError(async (req, res, next) => {
+  const { otpCode } = req.body;
+  const user = await User.findById(req.user.id);
+
+  if (!user || user.otpCode !== otpCode || Date.now() > user.otpExpire) {
+    return next(new ErrorHandler("Invalid or expired OTP", 400));
+  }
+
+  user.isPhoneVerified = true;
+  user.otpCode = null;
+  user.otpExpire = null;
+  await user.save();
+
+  res.status(200).json({ success: true, message: "Phone number verified!" });
+});
+
 
 //Admin: Get All Users - /api/v1/admin/users
 exports.getAllUsers = catchAsyncError(async (req, res, next) => {
@@ -445,11 +494,6 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
 
 //    POST /api/users/savedAddresses
 exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
-  // Fetching Twilio credentials from environment variables
-  const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } =
-    process.env;
-  const client = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
-
   // Getting the logged-in user's ID and fetching user details
   const userId = req.user.id;
   const user = await User.findById(userId);
@@ -463,8 +507,7 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
   const existingAddress = user.savedAddress.find(
     (address) =>
       address.address.toLowerCase() === req.body.address.toLowerCase() &&
-      address.addressLine.toLowerCase() ===
-        req.body.addressLine.toLowerCase() &&
+      address.addressLine.toLowerCase() === req.body.addressLine.toLowerCase() &&
       address.city.toLowerCase() === req.body.city.toLowerCase() &&
       parseInt(address.phoneNo) === parseInt(req.body.phoneNo) &&
       parseInt(address.postalCode) === parseInt(req.body.postalCode) &&
@@ -472,95 +515,36 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
       address.state.toLowerCase() === req.body.state.toLowerCase()
   );
 
-  // If the address already exists
+  // If the address already exists, return success response
   if (existingAddress) {
-    // Check if the phone verification has expired
-    if (
-      existingAddress.isPhoneVerified &&
-      Date.now() > existingAddress.phoneVerifiedExpire
-    ) {
-      existingAddress.isPhoneVerified = false;
-      await user.save();
-    }
-
-    // If the phone verification is required
-    if (
-      !existingAddress.isPhoneVerified ||
-      Date.now() > existingAddress.otpExpire
-    ) {
-      // OTP verification needed - send OTP if phone is not verified or if 24 hours expired
-      const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-      const otpExpire = Date.now() + OTP_VALIDITY_DURATION;
-
-      // Send OTP to the user's phone number
-      await client.messages.create({
-        body: `Your OTP code is ${otpCode}`,
-        to: req.body.phoneNo,
-        from: TWILIO_PHONE_NUMBER,
-      });
-
-      // Update the existing address with a new OTP and expiration time
-      existingAddress.otpCode = otpCode;
-      existingAddress.otpExpire = otpExpire;
-      existingAddress.isPhoneVerified = false; // Reset phone verification to false
-      existingAddress.phoneVerifiedExpire =
-        Date.now() +
-        parseInt(process.env.PHONE_VERIFIED_DURATION) * 24 * 60 * 60 * 1000; // 24 * 60 * 60 * 1000 Set 24 hours expiration for phone verification
-
-      await user.save();
-
-      return res.status(200).json({
-        success: true,
-        message: "OTP sent to your phone. Please verify within 10 minutes.",
-        data: { addressId: existingAddress._id, otpCode },
-      });
-    }
-
-    // If phone is already verified and still within the 24-hour validity
     return res.status(200).json({
       success: true,
-      message: "Address is already verified and saved.",
+      message: "Address is already saved.",
       data: existingAddress,
     });
   }
 
-  // If the address doesn't exist, create a new address
-  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-  const otpExpire = Date.now() + OTP_VALIDITY_DURATION; // OTP validity duration (e.g., 10 minutes)
-
-  // Send OTP to the user's phone number
-  await client.messages.create({
-    body: `Your OTP code is ${otpCode}`,
-    to: req.body.phoneNo,
-    from: TWILIO_PHONE_NUMBER,
-  });
-
   // Generate a unique address ID for the new address
   const addressId = mongoose.Types.ObjectId();
 
-  // Prepare the new address object with OTP and expiration time
+  // Prepare the new address object
   const newAddress = {
     ...req.body,
-    _id: addressId, // Assigning the generated unique address ID
-    otpCode,
-    otpExpire,
-    isPhoneVerified: false, // Initially set phone verification as false
-    phoneVerifiedExpire:
-      Date.now() +
-      parseInt(process.env.PHONE_VERIFIED_DURATION) * 24 * 60 * 60 * 1000,
+    _id: addressId,
   };
 
   // Add the new address to the user's saved addresses array and save the user
   user.savedAddress.push(newAddress);
   await user.save();
 
-  // Respond with a success message and the OTP data
+  // Respond with a success message
   res.status(201).json({
     success: true,
-    message: "OTP sent to your phone. Please verify within 10 minutes.",
-    data: { addressId, otpCode },
+    message: "Address saved successfully.",
+    data: newAddress,
   });
 });
+
 
 exports.verifyAddressOtp = catchAsyncError(async (req, res, next) => {
   const { addressId, otpCode } = req.body; // Destructure addressId and otpCode
@@ -683,14 +667,19 @@ exports.getAllSavedAddresses = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//   GET /api/v1/cart/add
+// POST /api/v1/cart/add
 exports.addToCart = catchAsyncError(async (req, res, next) => {
-  const { name, quantity, image, price, stock, product } = req.body;
+  const { productId, name, price, image, stock, quantity, variant , tax} = req.body;
   const userId = req.user.id;
   const user = await User.findById(userId);
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Validate the product information
+  if (!productId || !name || !price || !image || !stock) {
+    return next(new ErrorHandler("Incomplete product information", 400));
   }
 
   // Convert quantity to a number
@@ -700,16 +689,17 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
   }
 
   // Check if the item already exists in the cart
-  const existingItem = user.cart.find(
-    (item) => String(item.product) === String(product)
-  );
+  const existingItem = user.cart.find(item => {
+    if (variant) {
+      return item.product.toString() === productId && item.variant && item.variant._id.toString() === variant._id;
+    }
+    return item.product.toString() === productId;
+  });
 
   if (existingItem) {
     // If the existing item quantity matches the stock, do not increase quantity
     if (existingItem.quantity >= stock) {
-      return next(
-        new ErrorHandler("Cannot add more items, stock limit reached", 400)
-      );
+      return next(new ErrorHandler("Cannot add more items, stock limit reached", 400));
     }
 
     // Calculate the new quantity ensuring it does not exceed the stock
@@ -718,18 +708,32 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
   } else {
     // If the item does not exist, add it to the cart with the provided quantity
     if (quantityNumber > stock) {
-      return next(
-        new ErrorHandler("Cannot add more items than available in stock", 400)
-      );
+      return next(new ErrorHandler("Cannot add more items than available in stock", 400));
     }
-    user.cart.push({
+
+    const cartItem = {
+      product: productId,
       name,
       quantity: quantityNumber,
       image,
       price,
       stock,
-      product,
-    });
+      tax
+    };
+
+    if (variant) {
+      cartItem.variant = {
+        _id: variant._id,
+        variantType: variant.variantType,
+        variantName: variant.variantName,
+        price: variant.price,
+        offPrice: variant.offPrice,
+        stock: variant.stock,
+        images: variant.images,
+      };
+    }
+
+    user.cart.push(cartItem);
   }
 
   await user.save();
@@ -756,35 +760,10 @@ exports.getCartItems = catchAsyncError(async (req, res, next) => {
   });
 });
 
-// Remove item from cart
-exports.removeFromCart = catchAsyncError(async (req, res, next) => {
-  const { index } = req.params;
-  const userId = req.user.id; // Assuming you have middleware to extract user ID from request
-
-  const user = await User.findById(userId);
-  if (!user) {
-    return next(new ErrorHandler("User not found", 404));
-  }
-
-  // Check if the index is valid
-  if (index < 0 || index >= user.cart.length) {
-    return next(new ErrorHandler("Invalid index", 400));
-  }
-
-  // Remove the item from the cart array
-  user.cart.splice(index, 1);
-  await user.save();
-
-  res.status(200).json({
-    success: true,
-    message: "Item removed from cart successfully",
-    cart: user.cart,
-  });
-});
-
+// Update cart item quantity
 exports.updateCartItemQuantity = catchAsyncError(async (req, res, next) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, quantity, variantId } = req.body;
     const userId = req.user.id;
 
     // Find the user
@@ -794,9 +773,13 @@ exports.updateCartItemQuantity = catchAsyncError(async (req, res, next) => {
     }
 
     // Find the item in the cart
-    const cartItemIndex = user.cart.findIndex(
-      (item) => String(item.product) === productId
-    );
+    const cartItemIndex = user.cart.findIndex(item => {
+      if (variantId) {
+        return item.product.toString() === productId && item.variant && item.variant._id.toString() === variantId;
+      }
+      return item.product.toString() === productId;
+    });
+
     if (cartItemIndex === -1) {
       return next(new ErrorHandler("Item not found in cart", 404));
     }
@@ -816,6 +799,39 @@ exports.updateCartItemQuantity = catchAsyncError(async (req, res, next) => {
   } catch (error) {
     return next(new ErrorHandler(error.message, 500));
   }
+});
+
+// Remove item from cart
+exports.removeFromCart = catchAsyncError(async (req, res, next) => {
+  const { productId, variantId } = req.body;
+  const userId = req.user.id;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Find the item in the cart
+  const cartItemIndex = user.cart.findIndex(item => {
+    if (variantId) {
+      return item.product.toString() === productId && item.variant && item.variant._id.toString() === variantId;
+    }
+    return item.product.toString() === productId;
+  });
+
+  if (cartItemIndex === -1) {
+    return next(new ErrorHandler("Item not found in cart", 404));
+  }
+
+  // Remove the item from the cart array
+  user.cart.splice(cartItemIndex, 1);
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Item removed from cart successfully",
+    cart: user.cart,
+  });
 });
 
 exports.clearCart = catchAsyncError(async (req, res, next) => {

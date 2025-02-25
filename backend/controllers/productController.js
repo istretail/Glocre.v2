@@ -4,6 +4,7 @@ const catchAsyncError = require("../middlewares/catchAsyncError");
 const APIFeatures = require("../utils/apiFeatures");
 const User = require("../models/userModel");
 const sendEmail = require("../utils/email");
+const categoryHierarchy = require("../config/categoryHierarchy");
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 12;
@@ -15,14 +16,22 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
   }
 
   let buildQuery = () => {
-    return new APIFeatures(Product.find({ status: "approved" }), req.query)
+    return new APIFeatures(
+      Product.find({ $and: [{ status: "approved" }, 
+        // { isArchived: false} 
+      ] 
+      }),
+      req.query
+    )
       .search()
       .filter();
   };
 
+
   const filteredProductsCount = await buildQuery().query.countDocuments({});
   const totalProductsCount = await Product.countDocuments({
     status: "approved",
+    // isArchived: false,
   });
   const productsCount =
     filteredProductsCount !== totalProductsCount
@@ -103,7 +112,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     itemSize: req.body.itemSize,
     itemWidth: req.body.itemWidth,
   });
-
+  console.log(req.body)
   res.status(201).json({ success: true, product });
 });
 //getting single product -- api/v1/product/id
@@ -111,6 +120,7 @@ exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
   const product = await Product.findOne({
     _id: req.params.id,
     status: "approved",
+    // isArchived: false,
   }).populate("reviews.user", "name email");
 
   if (!product) {
@@ -123,7 +133,7 @@ exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 
-//Update Product - api/v1/product/:id
+//Update Product - api/v1/product/:id 
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
   let product = await Product.findById(req.params.id).populate("createdBy");
 
@@ -133,7 +143,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       message: "Product not found",
     });
   }
-
+  console.log(req.body)
   const creatorInfo = {
     email: product.createdBy.email,
     name: product.createdBy.name,
@@ -144,44 +154,62 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     BASE_URL = `${req.protocol}://${req.get("host")}`;
   }
 
-  // Handle images
+  // Handle main product images if provided
   if (req.files && req.files.images) {
     req.body.images = req.files.images.map(
       (file) => `${BASE_URL}/uploads/product/${file.filename}`
     );
-  } else {
-    req.body.images = product.images; // Preserve existing images
   }
 
+  // Preserve existing variants if no variants are provided
+  let updatedVariants = product.variants ? [...product.variants] : [];
+
+  if (req.body.variants) {
+    // Ensure variants is an array
+    if (!Array.isArray(req.body.variants)) {
+      req.body.variants = [req.body.variants];
+    }
+
+    req.body.variants.forEach((variant, index) => {
+      if (product.variants[index]) {
+        // Merge existing variant details with updated data
+        updatedVariants[index] = { ...product.variants[index], ...variant };
+      } else {
+        // Add new variant
+        updatedVariants[index] = variant;
+      }
+    });
+  }
+
+  // Handle variant images if uploaded
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
       if (match) {
         const variantIndex = parseInt(match[1], 10);
-        if (!Array.isArray(req.body.variants)) {
-          req.body.variants = product.variants || [];
+        if (!updatedVariants[variantIndex]) {
+          updatedVariants[variantIndex] = {};
         }
-        if (!req.body.variants[variantIndex]) {
-          req.body.variants[variantIndex] = product.variants[variantIndex] || {};
-        }
-        req.body.variants[variantIndex].images = req.files[key].map(
+        updatedVariants[variantIndex].images = req.files[key].map(
           (file) => `${BASE_URL}/uploads/product/${file.filename}`
         );
       }
     });
   }
 
-  // Preserve variants if none are provided
-  if (!req.body.variants || !req.body.variants.length) {
-    req.body.variants = product.variants;
-  }
-  // Merge req.body with existing product data
-  const updatedData = {
-    ...product.toObject(), // Convert Mongoose document to plain object
-    ...req.body, // Overwrite only fields provided in req.body
-  };
+  // Assign updated variants back to the request body
+  req.body.variants = updatedVariants;
 
-  // Update the product in the database
+  // Merge req.body with existing product data
+  const updatedData = { ...product.toObject() };
+
+  Object.keys(req.body).forEach((key) => {
+    if (req.body[key] !== "undefined") {  // Prevent "undefined" strings from being stored
+      updatedData[key] = req.body[key];
+    }
+  });
+
+  // Update product
   product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
     new: true,
     runValidators: true,
@@ -195,8 +223,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
   // Send email notification if the status changed
   if (req.body.status && req.body.status !== product.status) {
     try {
-      const statusMessage =
-        req.body.status === "approved" ? "approved" : "rejected";
+      const statusMessage = req.body.status === "approved" ? "approved" : "rejected";
       let emailContent = `
         <h2>Your Product Update</h2>
         <p>Dear ${creatorInfo.name},</p>
@@ -209,6 +236,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       }
 
       await sendEmail({
+        fromEmail: "glocre@glocre.com", 
         email: creatorInfo.email,
         subject: `Product ${statusMessage}`,
         html: emailContent,
@@ -350,8 +378,34 @@ exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
 // seller Controller
 exports.getSellerProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 10;
+
   const apiFeatures = new APIFeatures(
-    Product.find({ createdBy: req.user.id }),
+    Product.find({
+      createdBy: req.user.id,
+      isArchived: false,
+    }).lean(), // Improves performance by returning plain objects
+    req.query
+  )
+    .search()   // Handles search (e.g., by product name or ID)
+    .filter()   // Handles filtering (e.g., by category, price range)
+    .paginate(resPerPage); // Apply pagination
+
+  const products = await apiFeatures.query;
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    resPerPage,
+    products,
+  });
+});
+
+exports.getArchiveProducts = catchAsyncError(async (req, res, next) => {
+  const resPerPage = 10;
+  const apiFeatures = new APIFeatures(
+    Product.find({ createdBy: req.user.id,
+      isArchived: true
+     }),
     req.query
   )
     .search() // Handles search (e.g., by product name or ID)
@@ -368,6 +422,16 @@ exports.getSellerProducts = catchAsyncError(async (req, res, next) => {
 
 // Add a new product
 exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
+  const { maincategory, category, subcategory } = req.body;
+
+  if (
+    !categoryHierarchy[maincategory] ||
+    !categoryHierarchy[maincategory][category] ||
+    (categoryHierarchy[maincategory][category].length > 0 &&
+      !categoryHierarchy[maincategory][category].includes(subcategory))
+  ) {
+    return res.status(400).json({ message: "Invalid category selection." });
+  }
   // Process variant images
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
@@ -402,8 +466,6 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     price: req.body.price,
     offPrice: req.body.offPrice,
     stock: req.body.stock,
-
-    // ✅ Add missing fields from schema
     itemModelNum: req.body.itemModelNum,
     serialNum: req.body.serialNum,
     connectionType: req.body.connectionType,
@@ -423,7 +485,45 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     itemWidth: req.body.itemWidth,
   });
 
-  res.status(201).json({ success: true, product });
+  res.status(201).json({ 
+    success: true, 
+    product 
+  });
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL; // Ensure you have the admin email in your environment variables
+    const creatorInfo = {
+      email: req.user.email,
+      name: req.user.name,
+    };
+    const emailContent = `
+      <h2>New Product Added</h2>
+      <p>Dear ${creatorInfo.name},</p>
+      <p>Your product "${product.name}" has been added and is now pending approval.</p>
+      <p>Thank you for using our platform!</p>
+    `;
+
+    // Send email to user
+    await sendEmail({
+      fromEmail: "donotreply@glocre.com",
+      email: creatorInfo.email,
+      subject: "New Product Added",
+      html: emailContent,
+    });
+
+    // Send email to admin
+    await sendEmail({
+      fromEmail: "donotreply@glocre.com",
+      email: adminEmail,
+      subject: "New Product Added",
+      html: `
+        <h2>New Product Added</h2>
+        <p>Dear Admin,</p>
+        <p>The product "${product.name}" has been added by ${creatorInfo.name} and is now pending approval.</p>
+      `,
+    });
+  } catch (emailError) {
+    console.error("Failed to send email:", emailError);
+  }
 });
 // Update a product (only if it belongs to the seller)
 exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
@@ -451,10 +551,24 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     req.body.images = req.files.images.map(
       (file) => `${BASE_URL}/uploads/product/${file.filename}`
     );
-  } else {
-    req.body.images = product.images; // Preserve existing images
   }
+  let updatedVariants = product.variants ? [...product.variants] : [];
+  if (req.body.variants) {
+    // Ensure variants is an array
+    if (!Array.isArray(req.body.variants)) {
+      req.body.variants = [req.body.variants];
+    }
 
+    req.body.variants.forEach((variant, index) => {
+      if (product.variants[index]) {
+        // Merge existing variant details with updated data
+        updatedVariants[index] = { ...product.variants[index], ...variant };
+      } else {
+        // Add new variant
+        updatedVariants[index] = variant;
+      }
+    });
+  }
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
@@ -473,21 +587,16 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     });
   }
 
-  // Preserve variants if none are provided
-  if (!req.body.variants || !req.body.variants.length) {
-    req.body.variants = product.variants;
-  }
-
-  // Change product status to "pending"
-  req.body.status = "pending";
+  req.body.variants = updatedVariants;
 
   // Merge req.body with existing product data
   const updatedData = {
-    ...product.toObject(), // Convert Mongoose document to plain object
-    ...req.body, // Overwrite only fields provided in req.body
+    ...product.toObject(),
+    ...req.body,
+    status: "pending",
   };
 
-  // Update the product in the database
+  // Update product
   product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
     new: true,
     runValidators: true,
@@ -497,7 +606,6 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     success: true,
     product,
   });
-
   // Send email notification to admin and user about the product update
   try {
     const adminEmail = process.env.ADMIN_EMAIL; // Ensure you have the admin email in your environment variables
@@ -510,6 +618,7 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
 
     // Send email to user
     await sendEmail({
+      fromEmail: "donotreply@glocre.com",
       email: creatorInfo.email,
       subject: "Product Update Notification",
       html: emailContent,
@@ -517,6 +626,7 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
 
     // Send email to admin
     await sendEmail({
+      fromEmail: "donotreply@glocre.com",
       email: adminEmail,
       subject: "Product Update Notification",
       html: `
@@ -535,6 +645,7 @@ exports.getSellerSingleProduct = catchAsyncError(async (req, res, next) => {
   const product = await Product.findOne({
     _id: req.params.id,
     createdBy: req.user.id,
+    // isArchived: false,
   })
     .populate("reviews.user", "name email")
     .populate("createdBy", "name");
@@ -544,5 +655,103 @@ exports.getSellerSingleProduct = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     product,
+  });
+});
+
+// Clone a product - api/v1/product/clone/:id
+exports.cloneProduct = catchAsyncError(async (req, res, next) => {
+  // Find the product to be cloned
+  const productToClone = await Product.findById(req.params.id);
+
+  if (!productToClone) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  // Create a new product with the same details
+  const clonedProduct = new Product({
+    name: `${productToClone.name} (Copy)`,
+    description: productToClone.description,
+    maincategory: productToClone.maincategory,
+    category: productToClone.category,
+    subcategory: productToClone.subcategory,
+    brand: productToClone.brand,
+    condition: productToClone.condition,
+    tax: productToClone.tax,
+    keyPoints: productToClone.keyPoints,
+    images: productToClone.images,
+    variants: productToClone.variants,
+    createdBy: req.user.id,
+    isRefundable: productToClone.isRefundable,
+    price: productToClone.price,
+    offPrice: productToClone.offPrice,
+    stock: productToClone.stock,
+    itemModelNum: productToClone.itemModelNum,
+    serialNum: productToClone.serialNum,
+    connectionType: productToClone.connectionType,
+    hardwarePlatform: productToClone.hardwarePlatform,
+    os: productToClone.os,
+    powerConception: productToClone.powerConception,
+    batteries: productToClone.batteries,
+    packageDimension: productToClone.packageDimension,
+    portDescription: productToClone.portDescription,
+    connectivityType: productToClone.connectivityType,
+    compatibleDevices: productToClone.compatibleDevices,
+    powerSource: productToClone.powerSource,
+    specialFeatures: productToClone.specialFeatures,
+    includedInThePackage: productToClone.includedInThePackage,
+    manufacturer: productToClone.manufacturer,
+    itemSize: productToClone.itemSize,
+    itemWidth: productToClone.itemWidth,
+    status: "pending", // Set status to pending for the cloned product
+  });
+
+  // Save the cloned product to the database
+  await clonedProduct.save();
+
+  res.status(201).json({
+    success: true,
+    product: clonedProduct,
+  });
+});
+// Archive a product
+exports.archiveProduct = catchAsyncError(async (req, res, next) => {
+  let product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  product.isArchived = true;
+  await product.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Product archived successfully",
+  });
+});
+
+// Unarchive a product
+exports.unarchiveProduct = catchAsyncError(async (req, res, next) => {
+  let product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  product.isArchived = false;
+  await product.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Product unarchived successfully",
   });
 });

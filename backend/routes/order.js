@@ -6,7 +6,9 @@ const { newOrder,
     updateOrder, 
     deleteOrder,
     getSellerOrdersAndSales,
-    getSellerSingleOrder
+    getSellerSingleOrder,
+    updateOrderStatus,
+    trackOrder
  } = require('../controllers/orderController');
 const router = express.Router();
 const {isAuthenticatedUser, authorizeRoles,} = require('../middlewares/authenticate');
@@ -14,7 +16,7 @@ const {isAuthenticatedUser, authorizeRoles,} = require('../middlewares/authentic
 router.route('/order/new').post(isAuthenticatedUser,newOrder);
 router.route('/order/:id').get(isAuthenticatedUser,getSingleOrder);
 router.route('/myorders').get(isAuthenticatedUser,myOrders);
-
+router.route('/order/track/:id').get(isAuthenticatedUser,trackOrder);
     
 //Admin Routes
 router.route('/admin/orders').get(isAuthenticatedUser, authorizeRoles('admin'), orders)

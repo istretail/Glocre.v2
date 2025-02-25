@@ -18,23 +18,40 @@ class APIFeatures {
       return this;
     }
   
-    filter() {
-      const queryCopy = { ...this.queryStr };
+  filter() {
+    const queryCopy = { ...this.queryStr };
 
-      // Remove fields from queryString
-      const removeFields = ['keyword', 'page', 'limit'];
-      removeFields.forEach(el => delete queryCopy[el]);
+    // Remove fields from queryString
+    const removeFields = ["keyword", "page", "limit"];
+    removeFields.forEach((el) => delete queryCopy[el]);
 
-      // Advanced filtering
-      let queryStr = JSON.stringify(queryCopy);
-      queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+    // Advanced filtering
+    let queryStr = JSON.stringify(queryCopy);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
 
-      const filters = JSON.parse(queryStr);
-      this.filterQuery = filters; // Save filters
-      this.query = this.query.find(filters);
+    const filters = JSON.parse(queryStr);
 
-      return this;
+    // Handle price filtering including variants
+    if (filters.price) {
+      const priceFilter = {};
+      if (filters.price.$gte) priceFilter.$gte = filters.price.$gte;
+      if (filters.price.$lte) priceFilter.$lte = filters.price.$lte;
+
+      this.query = this.query.find({
+        $or: [
+          { price: priceFilter }, // Check product's main price
+          { "variants.price": priceFilter }, // Check variant prices
+        ],
+      });
+
+      delete filters.price; // Remove price filter from default processing
+    }
+
+    this.query = this.query.find(filters);
+
+    return this;
   }
+
   
     paginate(resPerPage) {
       const currentPage = Number(this.queryStr.page) || 1;

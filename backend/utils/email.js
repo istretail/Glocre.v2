@@ -6,7 +6,7 @@ const sendEmail = async options => {
         host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT,
         auth: {
-            user: process.env.SMTP_USER,
+            user: options.fromEmail, 
             pass: process.env.SMTP_PASS
         }
     };
@@ -14,7 +14,7 @@ const sendEmail = async options => {
     const transporter = nodemailer.createTransport(transport);
 
     const message = {
-        from: `${process.env.SMTP_FROM_NAME} <${process.env.SMTP_FROM_EMAIL}>`,
+        from: `${process.env.SMTP_FROM_NAME} <${options.fromEmail}>`,
         to: options.email,
         subject: options.subject,
         html: options.html

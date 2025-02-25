@@ -69,6 +69,10 @@ const productSchema = new mongoose.Schema({
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending',
   },
+  isArchived: {
+    type: Boolean,
+    default: false,
+  },
   isRefundable: { type: Boolean, default: false },
   itemModelNum: { type: String },
   serialNum: { type: String },
@@ -88,9 +92,9 @@ const productSchema = new mongoose.Schema({
   itemSize: { type: String },
   itemWidth: { type: String },
   images: [{ type: String, required: false }],
-  price: { type: String, required: false },
-  offPrice: { type: String, required: false },
-  stock: { type: String, required: false },
+  price: { type: Number, required: false, default: 0 },
+  offPrice: { type: Number, required: false, default: 0 },
+  stock: { type: Number, required: false, default: 0 },
 }, { timestamps: true });
 
 productSchema.pre('save', async function (next) {

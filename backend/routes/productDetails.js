@@ -13,6 +13,10 @@ const {
   addSellerProduct,
   updateSellerProduct,
   getSellerSingleProduct,
+  cloneProduct,
+  archiveProduct,
+  unarchiveProduct,
+  getArchiveProducts,
 } = require("../controllers/productController");
 const router = express.Router();
 const {
@@ -47,9 +51,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 5 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    checkFileType(file, cb);
-  },
+  fileFilter: fileFilter
 }).fields([
   { name: 'images', maxCount: 3 },
   { name: 'variants[0][images]', maxCount: 3 },
@@ -138,7 +140,10 @@ router
     handleVariantUploads, // Custom middleware to process variants
     addSellerProduct // Controller to handle the request
   );
-router.route("/seller/product/:id").put(isAuthenticatedUser, authorizeRoles("seller"), upload, updateSellerProduct)
+router.route("/seller/product/:id").put(isAuthenticatedUser, authorizeRoles("seller"), upload, handleVariantUploads,updateSellerProduct)
 router.route("/seller/product/:id").get(isAuthenticatedUser, authorizeRoles("seller"), getSellerSingleProduct);
-
+router.route("/seller/archive/products").get(isAuthenticatedUser, authorizeRoles("seller"), getArchiveProducts);
+router.route("/seller/product/clone/:id").post(isAuthenticatedUser, authorizeRoles("seller"), cloneProduct);
+router.route('/seller/product/archive/:id').put(isAuthenticatedUser, authorizeRoles("seller") , archiveProduct);
+router.route('/seller/product/unarchive/:id').put(isAuthenticatedUser, authorizeRoles("seller") , unarchiveProduct);
 module.exports = router;

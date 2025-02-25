@@ -37,7 +37,8 @@ const {
    verifyAddressOtp,
    addToWishlist,
    getWishlist,
-   removeFromWishlist
+   removeFromWishlist,
+   verifySellerOtp
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
@@ -46,10 +47,11 @@ router.route('/verify-email/:token').get(verifyEmail)
 router.route('/login').post(loginUser);
 router.route('/logout').get(logoutUser);
 router.route('/password/forgot').post(forgotPassword);
+router.route('/verify/seller/otp').post(isAuthenticatedUser, verifySellerOtp);
 router.route('/password/reset/:token').post(resetPassword);
 router.route('/myprofile').get(isAuthenticatedUser, getUserProfile);
 router.route('/password/change').put(isAuthenticatedUser, changePassword);
-router.route('/update').put(isAuthenticatedUser,upload.single('avatar'), updateProfile);
+router.route('/update').put(isAuthenticatedUser, updateProfile);
 router.route('/users/address').post(isAuthenticatedUser,createSavedAddress)
 router.route('/users/address/verify-otp').post(isAuthenticatedUser,verifyAddressOtp )
 router.route('/users/savedAddresses/:id').put(isAuthenticatedUser, updateSavedAddress)
@@ -58,7 +60,7 @@ router.route('/users/allsavedAddresses').get(isAuthenticatedUser, getAllSavedAdd
 //cart Routes 
 router.route('/cart/add').post(isAuthenticatedUser, addToCart)
 router.route('/cart').get(isAuthenticatedUser, getCartItems)
-router.route('/cart/remove/:id').delete(isAuthenticatedUser, removeFromCart)
+router.route('/cart/remove').delete(isAuthenticatedUser, removeFromCart)
 router.route('/cart/update').put(isAuthenticatedUser, updateCartItemQuantity)
 router.route('/cart/clear').delete(isAuthenticatedUser, clearCart)
 //wishlist Routes
