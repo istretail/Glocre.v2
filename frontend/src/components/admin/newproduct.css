@@ -1,0 +1,39 @@
+.form-control {
+    height: 40px !important;
+}
+
+.form-group {
+    margin: 7px 0;
+}
+
+.newprod-right-glc {}
+
+.newprod-right-glc h2 {
+    color: #ffad63;
+    text-transform: uppercase;
+}
+
+.newprod-right-glc label {
+    font-size: 16px !important;
+    color: #000000b3;
+}
+
+
+/* Update Product */
+.updateproduct-right-glc {
+    font-size: 16px !important;
+    color: #000000b3;
+}
+
+/* Update User */
+.update-user-glc{
+    font-size: 16px !important;
+    color: #000000b3;
+}
+
+/* Newproduct css */
+.newprod-section{
+    .container-fluid{
+        padding: 0 0 0 15px !important;
+    }
+}

@@ -1,0 +1,302 @@
+a {
+  text-decoration: none !important;
+}
+
+.newsLetterSection {
+  height: auto;
+  width: 100%;
+}
+
+.newsLetterSection .box {
+  background-image: linear-gradient(to bottom right, #ffad63, #edfff7);
+  border-radius: 30px;
+  height: auto;
+  overflow: hidden;
+  padding: 60px;
+  position: relative;
+  width: 100%;
+}
+
+.newsLetterSection .box .info {
+  width: 55%;
+}
+
+.newsLetterSection .box .info h2 {
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 50px;
+  opacity: 0.8;
+}
+
+.newsLetterSection .box .info p {
+  font-size: 22px;
+  opacity: 0.8;
+}
+
+.newsLetterSection .box .img {
+  bottom: 10px;
+  position: absolute;
+  right: 10px;
+  width: 35%;
+}
+
+.newsLetterSection .box .img img {
+  width: 100%;
+}
+
+.newsLetterSection .box .newsLetterBanner {
+  bottom: inherit !important;
+  left: 0 !important;
+  position: relative !important;
+}
+
+/* ////// */
+
+.footerWrapper {
+  padding: 45px 0px;
+  width: 100%;
+  padding: 20px;
+}
+
+.footer-list li {
+  margin: 0%;
+}
+
+.footerWrapper .footerBoxes .col {
+  padding: 0px 7px;
+}
+
+.footerWrapper .footerBoxes .col:first-child,
+.footerWrapper .footerBoxes .col:last-child {
+  padding: 0px;
+}
+
+.footerWrapper .footerBoxes .box {
+  background: #f4f6fa;
+  padding: 25px 20px;
+  border-radius: 15px;
+}
+
+.footerWrapper .footerBoxes .box .info {
+  padding-left: 15px;
+}
+
+.footerWrapper .footerBoxes .box img {
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  width: 40px;
+}
+
+.footerWrapper .footerBoxes .box .info h4 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.footerWrapper .footerBoxes .box .info p {
+  margin-bottom: 0px;
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+.footerWrapper .footerBoxes .box:hover img {
+  transform: translateY(-5px);
+}
+
+footer p,
+footer a {
+  font-size: 14px;
+}
+
+footer {
+  padding: 40px 0px;
+  padding-bottom: 0px;
+}
+
+footer .part1 img {
+  width: 150px !important;
+  height: auto !important;
+}
+
+footer .part1 svg {
+  color: #ffad63 !important;
+}
+
+footer h3 {
+  color: #000;
+  font-weight: 600;
+  margin-bottom: 18px;
+  font-size: 16px;
+}
+
+footer .part2 ul li {
+  list-style: none;
+  margin-bottom: 3px;
+}
+
+footer .part2 ul li a {
+  color: #000;
+  opacity: 0.8;
+  font-size: 500;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+footer .part2 ul li a:hover {
+  text-decoration: none;
+  color: #ffad63 !important;
+  opacity: 1;
+  padding-left: 5px;
+}
+
+footer .lastStrip {
+  padding: 5px 0px;
+}
+
+.phNo svg {
+  font-size: 35px !important;
+  opacity: 0.8;
+}
+
+.phNo h3 {
+  font-size: 25px !important;
+  line-height: 35px !important;
+}
+
+.phNo p {
+  font-size: 15px !important;
+  opacity: 0.8;
+}
+
+footer .lastStrip .part3 h5 {
+  margin-bottom: 0px;
+  font-size: 18px;
+}
+
+footer .lastStrip .part3 ul {
+  margin-bottom: 0px;
+  padding-left: 25px;
+}
+
+footer .lastStrip .part3 ul li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  background: #ffad63;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out !important;
+}
+
+footer .lastStrip .part3 ul li a svg {
+  color: #fff !important;
+  font-size: 20px;
+}
+
+footer .lastStrip .part3 ul li a:hover {
+  background: rgb(51, 51, 51);
+}
+
+.footer-list {
+  padding-left: 0% !important;
+}
+
+/* .newsLetterBanner */
+.newsLetterBanner {
+  width: 450px;
+  height: 50px;
+  position: absolute;
+  bottom: 100px;
+  left: 9%;
+  z-index: 10;
+}
+
+.newsLetterBanner input {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 60px;
+  border: 0px;
+  outline: none !important;
+  padding-left: 80px;
+  font-size: 18px;
+  padding-right: 200px;
+}
+
+.newsLetterBanner button {
+  background-color: #ffad63 !important;
+  padding: 10px 30px !important;
+  border-radius: 50px !important;
+  color: #fff !important;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 50px !important;
+  font-size: 16px !important;
+  text-transform: capitalize !important;
+  font-weight: 400 !important;
+}
+
+.newsLetterBanner svg {
+  position: absolute;
+  top: 12px;
+  left: 27px;
+  z-index: 10;
+  font-size: 22px !important;
+  transform: rotate(-21deg);
+  opacity: 0.5;
+}
+
+/* support page */
+/* Contact */
+.body-contact-glc {
+  /* Contact Banner */
+  .contact-banner-glc {
+    padding: 1% 3%;
+  }
+
+  .contact-banner-glc img {
+    border-radius: 15px !important;
+  }
+
+  /* Form Heading */
+  .contact-heading-glc {
+    text-align: center;
+    padding: 2% 0;
+
+    p {
+      color: #2f4d2ab4;
+    }
+
+    h2 {
+      color: #ffad63;
+      text-decoration: underline;
+      font-size: 37px;
+      /* margin-top: 17px; */
+    }
+  }
+
+  /* Input Feilds */
+
+  .input-contact-glc {
+    div {
+      margin: 15px 0;
+    }
+    p {
+      color: #2f4d2ab4;
+    }
+    span {
+      color: #ffad63;
+      font-size: 20px;
+    }
+    input {
+      border: 1px solid #2f4d2a59 !important;
+      width: 100%;
+    }
+  }
+
+  /* Contact Details */
+  .contact-details-glc {
+    padding: 3% 0;
+  }
+}

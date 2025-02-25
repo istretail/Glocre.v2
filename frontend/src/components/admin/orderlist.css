@@ -1,0 +1,15 @@
+td {
+    padding: 10px 0 !important;
+}
+
+.search-container input {
+    height: 35px !important;
+    background-color: #fff !important;
+}
+
+/* OrderList */
+.orderlist-glc {
+    .container-fluid {
+        padding: 0 0 0 15px !important;
+    }
+}

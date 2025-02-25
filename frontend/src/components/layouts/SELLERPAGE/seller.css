@@ -1,0 +1,196 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* START YOUR B2B */
+.start-your-b2b-section-procureg {
+  background-color: #f5f5f5;
+  padding: 6% 0;
+
+  .start-your-b2b-left-contents-procureg {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    flex-direction: column;
+  }
+
+  .start-your-b2b-left-contents-procureg h3 {
+    font-size: 35px;
+    font-weight: bold;
+  }
+
+  .start-your-b2b-left-contents-procureg span {
+    color: transparent;
+    -webkit-text-stroke: 2px #ffad6380;
+  }
+
+  .start-your-b2b-left-contents-procureg p {
+    color: #8c8c8c;
+    width: 80%;
+  }
+
+  .start-your-b2b-left-contents-procureg button {
+    background-color: #ffad63;
+    /* Change to any color you like */
+    color: white;
+    /* Text color */
+    padding: 15px 35px;
+    /* Adjust padding for size */
+    border: none;
+    /* Removes default border */
+    border-radius: 5px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Changes cursor on hover */
+    text-align: center;
+    /* Centers text */
+    font-size: 15px;
+    /* Adjust font size */
+    display: inline-block;
+    /* Ensures proper alignment */
+    transition: 1s;
+  }
+
+  .start-your-b2b-left-contents-procureg button:hover {
+    border: 1px solid #ffad63;
+    color: #ffad63;
+    background-color: white;
+    transition: 1s;
+  }
+
+  .start-your-b2b-right-contents-procureg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+/* WHY CHOOSE */
+.why-choose-section-procureg {
+  padding: 2.5% 0;
+
+  .why-choose-heading-procureg {
+    text-align: center;
+  }
+
+  .why-choose-heading-procureg button {
+    border: 1px solid #ffad63;
+    color: #ffad63;
+    background-color: white;
+    padding: 15px 100px;
+    border-radius: 10px;
+    margin-bottom: 2%;
+    font-size: 15px;
+    opacity: 0.5;
+  }
+
+  .why-choose-heading-procureg h3 {
+    font-size: 35px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .why-choose-heading-procureg span {
+    color: transparent;
+    -webkit-text-stroke: 1px #ffad6380;
+  }
+
+  .why-choose-heading-procureg div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .why-choose-heading-procureg p {
+    color: #8c8c8c;
+    margin-top: 15px;
+    width: 85%;
+    text-align: center;
+  }
+
+  .why-choose-3-contents-procureg {
+    padding: 2.5% 0 0 0;
+  }
+
+  .why-choose-3-contents-procureg .card {
+    outline: none;
+    border: none;
+    background-color: #f5f5f5;
+    height: 20rem;
+    border-radius: 50%;
+    width: 20rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .why-choose-3-contents-procureg img {
+    height: 85px;
+    width: 85px;
+  }
+
+  .why-choose-3-contents-procureg .card-title {
+    color: #ffad63;
+    text-align: center;
+    margin-top: 17px;
+  }
+}
+
+/* WAY TO BECOME SELLER */
+.way-to-seller-section-procureg {
+  padding: 5% 0;
+
+  .way-to-seller-heading-procureg {
+    text-align: center;
+  }
+
+  .way-to-seller-heading-procureg button {
+    border: 1px solid #ffad63;
+    color: #ffad63;
+    background-color: white;
+    padding: 15px 100px;
+    border-radius: 10px;
+    margin-bottom: 2%;
+    font-size: 15px;
+    opacity: 0.5;
+  }
+
+  .way-to-seller-heading-procureg h3 {
+    font-size: 35px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .way-to-seller-heading-procureg span {
+    color: transparent;
+    -webkit-text-stroke: 1px #ffad6380;
+  }
+
+  .way-to-seller-4-contents-procureg {
+    margin-top: 2.5%;
+    background-color: #ffad63;
+    padding: 5% 0;
+  }
+
+  .way-to-seller-4-contents-procureg img {
+    height: 85px;
+    width: 85px;
+  }
+
+  .way-to-seller-4-contents-procureg .card {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .way-to-seller-4-contents-procureg .card-title {
+    color: white;
+    text-align: center;
+  }
+}
+
+/* // */

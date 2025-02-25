@@ -1,0 +1,21 @@
+/* .icon-list-filter-procureg {
+    border-radius: 5px;
+    background: #2f4d2a;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+} */
+
+.avatar {
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+
+.userlist-glc {
+    .container-fluid {
+        padding: 0 0 0 15px !important;
+    }
+}

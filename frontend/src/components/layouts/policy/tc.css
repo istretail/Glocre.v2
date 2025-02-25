@@ -1,0 +1,439 @@
+/* Terms & Conditions */
+.body-tc-glc {
+  background-color: #f5f5f5;
+  padding: 2% 0;
+
+  /* Heading */
+  .heading-tc-glc {
+    padding-bottom: 2%;
+  }
+
+  .heading-tc-glc h1 {
+    color: #ffad63;
+    text-align: start;
+    text-transform: uppercase;
+    margin: 1% 0;
+  }
+
+  .heading-tc-glc h4 {
+    margin: 1% 0;
+    color: #2f4d2a;
+  }
+
+  /* Contents */
+  .contents-tc-glc {
+    margin: 30px 0;
+  }
+
+  .contents-tc-glc h6 {
+    color: #2f4d2a;
+  }
+
+  .contents-tc-glc p {
+  }
+
+  ul {
+    list-style-type: disc !important;
+    margin-left: 20px;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 15px 0;
+    line-height: 1.6;
+    color: grey;
+  }
+
+  li b {
+    font-weight: bold;
+    color: #2f4d2a;
+  }
+
+  /* Media Querry */
+  @media (max-width: 600px) {
+    .heading-tc-glc h1 {
+      font-size: 28px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 15px;
+      margin: 10px 0;
+    }
+
+    .heading-tc-glc p {
+      font-size: 14px;
+    }
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+    li {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 601px) and (max-width: 1200px) {
+    .heading-tc-glc h1 {
+      font-size: 30px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    .heading-tc-glc p {
+      font-size: 13px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+  }
+
+  @media (min-width: 1201px) and (max-width: 1440px) {
+    .heading-tc-glc h1 {
+      font-size: 33px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .heading-tc-glc p {
+      font-size: 15px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+  }
+
+  @media (min-width: 1441px) {
+    .heading-tc-glc h1 {
+      font-size: 40px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 16px;
+    }
+
+    .heading-tc-glc p {
+      font-size: 16px;
+    }
+
+    .contents-tc-glc h6 {
+      font-size: 20px;
+    }
+
+    .contents-tc-glc p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    li {
+      font-size: 16px;
+    }
+
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+  }
+}
+
+/* policy */
+/* Privacy Policy */
+.body-pp-glc {
+  background-color: #f5f5f5;
+  padding: 2% 0;
+
+  /* Heading */
+  .heading-pp-glc {
+    padding-bottom: 2%;
+  }
+
+  .heading-pp-glc h1 {
+    color: #ffad63;
+    text-align: start;
+    text-transform: uppercase;
+    margin: 1% 0;
+  }
+
+  .heading-pp-glc h4 {
+    margin: 1% 0;
+    color: #2f4d2a;
+  }
+
+  /* Contents */
+  .contents-pp-glc {
+    margin: 30px 0;
+  }
+
+  .contents-pp-glc h6 {
+    color: #2f4d2a;
+  }
+
+  .contents-pp-glc p {
+  }
+
+  ul {
+    list-style-type: disc !important;
+    margin-left: 20px;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 15px 0;
+    line-height: 1.6;
+    color: grey;
+  }
+
+  li b {
+    font-weight: bold;
+    color: #2f4d2a;
+  }
+
+  /* Media Querry */
+  @media (max-width: 600px) {
+    .heading-pp-glc h1 {
+      font-size: 28px;
+    }
+
+    .heading-pp-glc h4 {
+      font-size: 15px;
+      margin: 10px 0;
+    }
+
+    .heading-pp-glc p {
+      font-size: 14px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 601px) and (max-width: 1200px) {
+    .heading-pp-glc h1 {
+      font-size: 30px;
+    }
+
+    .heading-pp-glc h4 {
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    .heading-pp-glc p {
+      font-size: 13px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 1201px) and (max-width: 1440px) {
+    .heading-pp-glc h1 {
+      font-size: 33px;
+    }
+
+    .heading-pp-glc h4 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .heading-pp-glc p {
+      font-size: 15px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 1441px) {
+    .heading-pp-glc h1 {
+      font-size: 40px;
+    }
+
+    .heading-pp-glc h4 {
+      font-size: 16px;
+    }
+
+    .heading-pp-glc p {
+      font-size: 16px;
+    }
+
+    .contents-pp-glc h6 {
+      font-size: 20px;
+    }
+
+    .contents-pp-glc p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    li {
+      font-size: 16px;
+    }
+  }
+}
+
+/* refund */
+
+/* Terms & Conditions */
+.body-tc-glc {
+  background-color: #f5f5f5;
+  padding: 2% 0;
+
+  /* Heading */
+  .heading-tc-glc {
+    padding-bottom: 2%;
+  }
+
+  .heading-tc-glc h1 {
+    color: #ffad63;
+    text-align: start;
+    text-transform: uppercase;
+    margin: 1% 0;
+  }
+
+  .heading-tc-glc h4 {
+    margin: 1% 0;
+    color: #2f4d2a;
+  }
+
+  /* Contents */
+  .contents-tc-glc {
+    margin: 30px 0;
+  }
+
+  .contents-tc-glc h6 {
+    color: #2f4d2a;
+  }
+
+  .contents-tc-glc p {
+  }
+
+  ul {
+    list-style-type: disc !important;
+    margin-left: 20px;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 15px 0;
+    line-height: 1.6;
+    color: grey;
+  }
+
+  li b {
+    font-weight: bold;
+    color: #2f4d2a;
+  }
+
+  /* Media Querry */
+  @media (max-width: 600px) {
+    .heading-tc-glc h1 {
+      font-size: 28px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 15px;
+      margin: 10px 0;
+    }
+
+    .heading-tc-glc p {
+      font-size: 14px;
+    }
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+    li {
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 601px) and (max-width: 1200px) {
+    .heading-tc-glc h1 {
+      font-size: 30px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    .heading-tc-glc p {
+      font-size: 13px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+  }
+
+  @media (min-width: 1201px) and (max-width: 1440px) {
+    .heading-tc-glc h1 {
+      font-size: 33px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .heading-tc-glc p {
+      font-size: 15px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+  }
+
+  @media (min-width: 1441px) {
+    .heading-tc-glc h1 {
+      font-size: 40px;
+    }
+
+    .heading-tc-glc h4 {
+      font-size: 16px;
+    }
+
+    .heading-tc-glc p {
+      font-size: 16px;
+    }
+
+    .contents-tc-glc h6 {
+      font-size: 20px;
+    }
+
+    .contents-tc-glc p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    li {
+      font-size: 16px;
+    }
+
+    .contents-tc-glc h6 {
+      font-size: 22px;
+    }
+  }
+}

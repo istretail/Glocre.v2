@@ -1,0 +1,79 @@
+.order-detail-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-left: 25%;
+}
+@media (max-width: 768px) {
+  .order-detail-container {
+    margin-left: 1%;
+  }
+}
+@media (max-width: 768px) {
+  .order-details h1 {
+    font-size: 15px;
+  }
+}
+.order-details {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.generate-pdf-btn {
+  margin-left: auto;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.order-info {
+  margin-bottom: 20px;
+}
+
+.order-info h4 {
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-item {
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.order-item-img {
+  width: 100%;
+  max-width: 65px;
+  height: auto;
+  object-fit: cover;
+}
+
+.text-success {
+  color: #ffad63;
+}
+
+.text-danger {
+  color: red;
+}
+
+@media (max-width: 768px) {
+  .order-details {
+    padding: 10px;
+  }
+
+  .order-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .generate-pdf-btn {
+    margin: 20px auto;
+  }
+}

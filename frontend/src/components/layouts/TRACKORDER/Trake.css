@@ -1,0 +1,122 @@
+.track-order-breadcrumb-procureg {
+  padding: 1.5% 0;
+}
+
+.track-order-breadcrumb-procureg a {
+  color: #ffad63;
+}
+
+.track-order-breadcrumb-procureg span {
+  color: #8c8c8c;
+}
+
+/*  */
+
+.order-tracking-section-procureg .card {
+  outline: none;
+  border: none;
+}
+
+.order-tracking-section-procureg .card-body {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+.order-tracking-section-procureg .card-title {
+  padding: 1% 0;
+}
+
+.order-tracking-section-procureg .card-title2 {
+  padding: 1% 0;
+  color: #8c8c8c;
+}
+
+.order-tracking-box-contents-procureg {
+  border: 1px solid #ffad631f;
+  border-radius: 10px;
+}
+
+.order-tracking-box-contents-procureg .row {
+  padding: 1%;
+}
+
+.order-tracking-box-contents-procureg .row h5 {
+  font-size: 18px;
+  color: #ffad63;
+}
+
+.order-tracking-box-contents-procureg .row p {
+  color: #8c8c8c;
+  font-size: 15px;
+}
+
+.order-tracking-pdf-contents-procureg {
+  padding: 1% 0;
+}
+
+.order-tracking-pdf-contents-procureg .card-body {
+  background-color: white;
+}
+
+.order-tracking-pdf-contents-procureg img {
+  height: 11vh;
+  width: fit-content;
+}
+
+.order-tracking-pdf-contents-procureg h5 {
+  color: #ffad63;
+}
+
+.order-tracking-pdf-contents-procureg h6 {
+  color: #ffad63a4;
+}
+
+.order-tracking-pdf-contents-procureg p {
+  color: #8c8c8c;
+}
+
+.order-tracking-buttons-procureg {
+  display: flex;
+  justify-content: space-between;
+  padding: 1% 0;
+}
+
+.order-tracking-buttons-procureg button {
+  background-color: #ffad63;
+  color: white;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 15px;
+  display: inline-block;
+  transition: 1s;
+}
+
+.progress-bar {
+  height: 80%;
+  background-color: #ffad63;
+  width: 0;
+  transition: width 0.3s ease-in-out;
+  border-radius: 8px;
+}
+
+.order-tracking-progress-contents-procureg {
+  text-align: center;
+  padding: 1% 0;
+  margin-top: -6%;
+}
+
+.order-tracking-progress-contents-procureg h6 {
+  color: #ffad6396;
+  margin-top: 12px;
+}
+
+.order-tracking-progress-contents-procureg .iconnn {
+  font-size: 17px;
+  padding: 3%;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0px 5px 50px 0px #8c8c8ca4;
+}

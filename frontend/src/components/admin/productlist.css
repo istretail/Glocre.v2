@@ -1,0 +1,53 @@
+.approved {
+    color: green;
+}
+
+.pending-or-rejected {
+    color: red;
+}
+
+.reviewlist-list-filter-procureg1 {
+    .topnav input[type=text] {
+        width: 100%;
+        padding: 15px;
+        margin-top: 8px;
+        font-size: 15px;
+        border-radius: 5px;
+        background-color: #f5f5f5;
+    }
+
+    .topnav .search-container button {
+        border-radius: 5px;
+        padding: 6px 20px;
+        margin-top: 8px;
+        margin-right: 16px;
+        background: #2f4d2a;
+        font-size: 17px;
+        border: none;
+        cursor: pointer;
+        color: #ccc;
+    }
+
+
+}
+
+.icon-list-filter-procureg1 {
+    border-radius: 5px;
+    background: #2f4d2a;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+}
+
+.table th {
+    /* background-color: #f5f5f5; */
+    padding: 15px 0;
+}
+
+/* Productlist css */
+.prodlist-section {
+    .container-fluid {
+        padding: 0 0 0 15px !important;
+    }
+}
