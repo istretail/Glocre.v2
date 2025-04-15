@@ -525,7 +525,7 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
   }
 
   // Generate a unique address ID for the new address
-  const addressId = mongoose.Types.ObjectId();
+  const addressId = new mongoose.Types.ObjectId();
 
   // Prepare the new address object
   const newAddress = {
