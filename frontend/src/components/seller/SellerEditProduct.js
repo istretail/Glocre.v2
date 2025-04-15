@@ -18,7 +18,7 @@ export default function SellerUpdateProduct() {
         offPrice: "",
         tax: "",
         price: "",
-        keyPoints: ["", "", ""],
+      keyPoints: ["", "", "", "", ""],
         description: "",
         images: [],
         maincategory: "",
@@ -202,6 +202,20 @@ export default function SellerUpdateProduct() {
             setImagesPreview(newImages?.map((file) => URL.createObjectURL(file)));
         }
     };
+  const handleAddKeyPoint = () => {
+    setFormData((prev) => ({
+      ...prev,
+      keyPoints: [...prev.keyPoints, ""],
+    }));
+  };
+
+  const handleRemoveKeyPoint = (index) => {
+    setFormData((prev) => {
+      const updated = [...prev.keyPoints];
+      updated.splice(index, 1);
+      return { ...prev, keyPoints: updated };
+    });
+  };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -525,23 +539,43 @@ export default function SellerUpdateProduct() {
                       </div>
                     </div>
 
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label htmlFor="keyPoints_field">Key Points</label>
-                        {formData?.keyPoints?.map((point, index) => (
-                          <input
-                            key={index}
-                            type="text"
-                            className="form-control mb-2"
-                            value={point}
-                            onChange={e =>
-                              handleKeyPointsChange(index, e.target.value)
-                            }
-                            placeholder={`Key Point ${index + 1}`}
-                          />
-                        ))}
+                      <div className="col-12">
+                        <div className="form-group">
+                          <label>Key Points:</label>
+                          {formData.keyPoints.map((point, index) => (
+
+                            <div key={index} className="d-flex mb-2">
+
+                              <input
+                                type="text"
+                                className="form-control me-2"
+                                value={point}
+                                onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                                required
+                              />
+                              {formData.keyPoints.length > 3 && (
+                                <button
+                                  type="button"
+                                  className="btn btn-danger"
+                                  onClick={() => handleRemoveKeyPoint(index)}
+                                >
+                                  &times;
+                                </button>
+                              )}
+                            </div>
+                          ))}
+
+                          {formData.keyPoints.length < 5 && (
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={handleAddKeyPoint}
+                            >
+                              Add Key Point
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
 
                     <div className="col-lg-6">
                       <div className="form-group">
