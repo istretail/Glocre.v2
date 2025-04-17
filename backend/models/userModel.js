@@ -68,6 +68,7 @@ const cartItemSchema = new mongoose.Schema({
 });
 
 const savedAddressSchema = new mongoose.Schema({
+  name: { type: String },
   address: { type: String, required: true },
   addressLine: { type: String, required: true },
   city: { type: String, required: true },
@@ -127,7 +128,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter email"],
     unique: true,
-    validator: isEmail,
+    validate: {
+      validator: isEmail,
+      message: 'Please enter a valid email address',
+    },
   },
   password: {
     type: String,
@@ -203,7 +207,8 @@ const userSchema = new mongoose.Schema({
     [businessAddressSchema],
   isSeller: {
     type: Boolean,
-    default: false,
+    default: undefined,
+    required: false,
   },
   savedAddress: [savedAddressSchema],
   cart: [cartItemSchema],

@@ -4,7 +4,11 @@ const Product = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
 const APIFeatures = require('../utils/apiFeatures');
 const { createTracking, getTracking } = require('../utils/trackPackage');
+const User = require("../models/userModel");
+const sendEmail = require('../utils/email');
 //Create New Order - api/v1/order/new
+
+
 exports.newOrder = catchAsyncError(async (req, res, next) => {
     const {
         orderItems,
@@ -15,11 +19,11 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
         shippingPrice,
         totalPrice,
         discount,
-        paymentInfo
+        paymentInfo,
     } = req.body;
 
     const estimatedDelivery = new Date();
-    estimatedDelivery.setDate(estimatedDelivery.getDate() + 7); // Example: Default 5 days delivery time
+    estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 
     const order = await Order.create({
         orderItems,
@@ -33,11 +37,70 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
         paymentInfo,
         estimatedDelivery,
         paidAt: Date.now(),
-        user: req.user.id
+        user: req.user.id,
     });
+
+    const userEmail = req.user.email;
+    const userName = req.user.name;
+    const adminEmail = process.env.ADMIN_EMAIL;
+
+    const emailContent = `
+    <h2>Order Summary</h2>
+    <p><strong>Customer:</strong> ${userName}</p>
+    <p><strong>Email:</strong> ${userEmail}</p>
+    <p><strong>Total:</strong> ₹${totalPrice}</p>
+    <p><strong>Estimated Delivery:</strong> ${estimatedDelivery.toDateString()}</p>
+    <h3>Items:</h3>
+    <ul>
+      ${orderItems.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+    </ul>
+  `;
+
+    try {
+        // 1. Send to user
+        await sendEmail({
+            fromEmail: "donotreply@glocre.com",
+            email: userEmail,
+            subject: "Your Order Confirmation - Glocre",
+            html: `<p>Thank you for your order, ${userName}!</p>` + emailContent,
+        });
+
+        // 2. Send to admin
+        await sendEmail({
+            fromEmail: "donotreply@glocre.com",
+            email: adminEmail,
+            subject: "New Order Received - Glocre",
+            html: `<p>A new order has been placed:</p>` + emailContent,
+        });
+
+        // 3. Find all unique seller emails
+        const sellerIds = new Set();
+
+        for (const item of orderItems) {
+            const product = await Product.findById(item.product); // assuming item.product is product ID
+            if (product && product.createdBy) {
+                sellerIds.add(product.createdBy.toString());
+            }
+        }
+
+        const sellerUsers = await User.find({ _id: { $in: [...sellerIds] } });
+
+        for (const seller of sellerUsers) {
+            await sendEmail({
+                fromEmail: "donotreply@glocre.com",
+                email: seller.email,
+                subject: "New Order for Your Product - Glocre",
+                html: `<p>You have a new order for your product(s):</p>` + emailContent,
+            });
+        }
+
+    } catch (error) {
+        return next(new ErrorHandler("Order placed but failed to send all emails.", 500));
+    }
 
     res.status(200).json({ success: true, order });
 });
+
 
 //Admin: Update Order / Order Status - api/v1/order/:id
 
@@ -328,26 +391,74 @@ exports.getSellerSingleOrder = catchAsyncError(async (req, res, next) => {
 
 //     res.status(200).json({ success: true, order });
 // });
-exports.updateOrder = catchAsyncError(async (req, res, next) => {
-    const order = await Order.findById(req.params.id);
 
-    if (order.orderStatus == 'Delivered') {
-        return next(new ErrorHandler('Order has been already delivered!', 400))
+
+exports.updateOrder = catchAsyncError(async (req, res, next) => {
+    const order = await Order.findById(req.params.id).populate('user'); // get user's email
+
+    if (!order) {
+        return next(new ErrorHandler('Order not found', 404));
     }
-    //Updating the product stock of each order item
-    order.orderItems.forEach(async orderItem => {
-        await updateStock(orderItem.product, orderItem.quantity)
-    })
+
+    if (order.orderStatus === 'Delivered') {
+        return next(new ErrorHandler('Order has already been delivered!', 400));
+    }
+
+    let emailSubject = '';
+    let emailBody = '';
+
+    // If status is "Delivered", update stock and set delivery time
+    if (req.body.orderStatus === 'Delivered') {
+        order.orderItems.forEach(async (orderItem) => {
+            await updateStock(orderItem.product, orderItem.quantity);
+        });
+        order.deliveredAt = Date.now();
+
+        emailSubject = `Your order #${order._id} has been delivered`;
+        emailBody = `
+      <p>Hi ${order.user.name},</p>
+      <p>Your order has been <strong>delivered</strong> successfully!</p>
+      <p>Thank you for shopping with us.</p>
+    `;
+    }
+
+    // If status is "Shipped", update tracking info
+    if (req.body.orderStatus === 'Shipped') {
+        order.trackingInfo = {
+            trackingNumber: req.body.trackingNumber || '',
+            courierSlug: req.body.courierSlug || ''
+        };
+
+        emailSubject = `Your order #${order.clocreOrderId} has been shipped`;
+        emailBody = `
+      <p>Hi ${order.user.name},</p>
+      <p>Your order has been <strong>shipped</strong>.</p>
+      <p><strong>Tracking Number:</strong> ${req.body.trackingNumber}</p>
+      <p><strong>Courier:</strong> ${req.body.courierSlug}</p>
+      <p>Track your order on the courier's website using the tracking number.</p>
+    `;
+    }
 
     order.orderStatus = req.body.orderStatus;
-    order.deliveredAt = Date.now();
     await order.save();
 
-    res.status(200).json({
-        success: true
-    })
+    // Send email if body is set
+    if (emailSubject && emailBody) {
+        await sendEmail({
+            fromEmail: "donotreply@glocre.com",
+            email: order.user.email,
+            subject: emailSubject,
+            html: emailBody
+        });
+    }
 
+    res.status(200).json({
+        success: true,
+        message: "Order updated successfully"
+    });
 });
+
+
 exports.trackOrder = catchAsyncError(async (req, res, next) => {
     try {
         const order = await Order.findById(req.params.id);

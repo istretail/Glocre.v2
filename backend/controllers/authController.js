@@ -10,6 +10,7 @@ const Product = require("../models/productModel");
 const OTP_VALIDITY_DURATION = 10 * 60 * 1000; // 10 minutes
 const APIFeatures = require("../utils/apiFeatures"); // Adjust the path as necessary
 const mongoose = require("mongoose");
+const axios = require('axios');
 //register user --/api/v1/Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
   const { name, lastName, email, password } = req.body;
@@ -31,26 +32,33 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
   const emailToken = crypto.randomBytes(20).toString("hex");
   const verificationLink = `${BASE_URL1}/verify-email/${emailToken}`;
   const htmlMessage = `
-    <div style="max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; font-family: Arial, sans-serif;">
-        <img src='https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg' alt="logo" style="width: 100%; height: auto;">
-        <div style="padding: 20px; background-color: #f9f9f9;">
-            <h2 style="font-size: 24px; margin: 0;">Email Verification</h2>
-            <p style="font-size: 16px; color: #555;">
-                Please click the button below to verify your email:
-            </p>
-            <a href="${verificationLink}" style="
-                display: inline-block; 
-                padding: 10px 20px; 
-                margin-top: 10px; 
-                background-color: #1b6763; 
-                color: white; 
-                text-decoration: none; 
-                border-radius: 5px; 
-                font-weight: bold;">
-                Verify Your Email
-            </a>
+        <div style="max-width: 600px; margin: 40px auto; border: 1px solid #ddd; border-radius: 10px; font-family: Arial, sans-serif; overflow: hidden;">
+        <div style="background-color: #ffffff;">
+        <img 
+        src="https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg" 
+        alt="Logo" 
+        style="width: 100%; height: auto; display: block;" 
+        />
         </div>
-    </div>
+<div style="padding: 30px 20px; background-color: #f9f9f9; text-align: center;">
+<h2 style="font-size: 24px; color: #333; margin: 0 0 10px;">Verify Your Email Address</h2>
+<p style="font-size: 16px; color: #555; margin: 0 0 20px;">
+        Thanks for signing up! Please confirm your email by clicking the button below:
+</p>
+<a href="${verificationLink}" style="
+        display: inline-block;
+        padding: 12px 24px;
+        background-color:rgb(223, 113, 10);
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 16px;
+      ">
+        Verify Email
+</a>
+</div>
+</div>
 `;
 
   try {
@@ -68,7 +76,7 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
 
     // Send email verification link to the user
     await sendEmail({
-      fromEmail: "donotreply@glocre.com", 
+      fromEmail: "donotreply@glocre.com",
       email,
       subject: "Email Verification",
       html: htmlMessage,
@@ -126,7 +134,7 @@ exports.verifyEmail = catchAsyncError(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Email verified successfully.",
+    message: "Thankyou. Email verified successfully.",
   });
 });
 
@@ -275,7 +283,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
   };
-  console.log(req.body)
+  // console.log(req.body)
   let avatar;
   let BASE_URL = process.env.BACKEND_URL;
 
@@ -381,11 +389,12 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
 `;
 
     try {
-      await sendEmail({ 
+      await sendEmail({
         fromEmail: "donotreply@glocre.com",
-        email: adminEmail, 
-        subject: "New Seller Application", 
-        html: adminBody });
+        email: adminEmail,
+        subject: "New Seller Application",
+        html: adminBody
+      });
       await sendEmail({ fromEmail: "donotreply@glocre.com", email: userEmail, subject: "Application Received", html: userBody });
     } catch (error) {
       return next(new ErrorHandler("Failed to send application emails.", 500));
@@ -486,7 +495,7 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
       new ErrorHandler(`User not found with this id ${req.params.id}`)
     );
   }
-  await user.remove();
+  await user.deleteOne();
   res.status(200).json({
     success: true,
   });
@@ -502,18 +511,19 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
-
+  console.log("Request Body:", req.body);
   // Check if the address already exists in the user's saved addresses
-  const existingAddress = user.savedAddress.find(
-    (address) =>
-      address.address.toLowerCase() === req.body.address.toLowerCase() &&
-      address.addressLine.toLowerCase() === req.body.addressLine.toLowerCase() &&
-      address.city.toLowerCase() === req.body.city.toLowerCase() &&
-      parseInt(address.phoneNo) === parseInt(req.body.phoneNo) &&
-      parseInt(address.postalCode) === parseInt(req.body.postalCode) &&
-      address.country.toLowerCase() === req.body.country.toLowerCase() &&
-      address.state.toLowerCase() === req.body.state.toLowerCase()
+  const existingAddress = user.savedAddress.find((address) =>
+    address?.name?.toLowerCase() === req.body.name?.toLowerCase() &&
+    address?.address?.toLowerCase() === req.body.address?.toLowerCase() &&
+    address?.addressLine?.toLowerCase() === req.body.addressLine?.toLowerCase() &&
+    address?.city?.toLowerCase() === req.body.city?.toLowerCase() &&
+    parseInt(address?.phoneNo) === parseInt(req.body.phoneNo) &&
+    parseInt(address?.postalCode) === parseInt(req.body.postalCode) &&
+    address?.country?.toLowerCase() === req.body.country?.toLowerCase() &&
+    address?.state?.toLowerCase() === req.body.state?.toLowerCase()
   );
+
 
   // If the address already exists, return success response
   if (existingAddress) {
@@ -528,10 +538,10 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
   const addressId = new mongoose.Types.ObjectId();
 
   // Prepare the new address object
-  const newAddress = {
+  const newAddress = user.savedAddress.create({
     ...req.body,
     _id: addressId,
-  };
+  });
 
   // Add the new address to the user's saved addresses array and save the user
   user.savedAddress.push(newAddress);
@@ -543,6 +553,8 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
     message: "Address saved successfully.",
     data: newAddress,
   });
+
+  console.log("New Address:", newAddress);
 });
 
 
@@ -669,7 +681,7 @@ exports.getAllSavedAddresses = catchAsyncError(async (req, res, next) => {
 
 // POST /api/v1/cart/add
 exports.addToCart = catchAsyncError(async (req, res, next) => {
-  const { productId, name, price, image, stock, quantity, variant , tax} = req.body;
+  const { product, name, price, image, stock, quantity, variant, tax } = req.body;
   const userId = req.user.id;
   const user = await User.findById(userId);
 
@@ -678,7 +690,7 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
   }
 
   // Validate the product information
-  if (!productId || !name || !price || !image || !stock) {
+  if (!product || !name || !price || !image || !stock) {
     return next(new ErrorHandler("Incomplete product information", 400));
   }
 
@@ -691,9 +703,9 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
   // Check if the item already exists in the cart
   const existingItem = user.cart.find(item => {
     if (variant) {
-      return item.product.toString() === productId && item.variant && item.variant._id.toString() === variant._id;
+      return item.product.toString() === product && item.variant && item.variant._id.toString() === variant._id;
     }
-    return item.product.toString() === productId;
+    return item.product.toString() === product;
   });
 
   if (existingItem) {
@@ -712,7 +724,7 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
     }
 
     const cartItem = {
-      product: productId,
+      product: product,
       name,
       quantity: quantityNumber,
       image,
@@ -949,3 +961,55 @@ exports.getWishlist = catchAsyncError(async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
+
+exports.sendOTP = async (req, res) => {
+  const { mobile } = req.body;
+
+  if (!mobile) {
+    return res.status(400).json({ message: 'Mobile number is required' });
+  }
+
+  try {
+    const response = await axios.post('https://control.msg91.com/api/v5/otp', {
+      authkey: '447087AKKlbZgmzDW6800e2fdP1',
+      template_id: '6800e5f8d6fc055e721c8712',
+      mobile: `91${mobile}`,
+    });
+
+    res.status(200).json({
+      message: 'OTP sent successfully',
+      data: response.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to send OTP',
+      error: error.response?.data || error.message,
+    });
+  }
+};
+
+// ✅ Verify OTP
+exports.verifyOTP = async (req, res) => {
+  const { mobile, otp } = req.body;
+
+  if (!mobile || !otp) {
+    return res.status(400).json({ message: 'Mobile number and OTP are required' });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://control.msg91.com/api/v5/otp/verify?otp=${otp}&authkey=${MSG91_AUTH_KEY}&mobile=91${mobile}`
+    );
+
+    res.status(200).json({
+      message: 'OTP verified successfully',
+      data: response.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'OTP verification failed',
+      error: error.response?.data || error.message,
+    });
+  }
+};
