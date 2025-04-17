@@ -395,7 +395,7 @@ export default function UserList() {
                                                         <span style={{ color: "#888888" }}>{user.email}</span>
                                                     </td>
                                                     <td>
-                                                        <span style={{ color: "#888888" }}>{user._id}</span>
+                                                        <span style={{ color: "#888888" }}>{user.clocreUserId}</span>
                                                     </td>
 
                                                     <td>

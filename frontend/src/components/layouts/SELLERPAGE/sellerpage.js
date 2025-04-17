@@ -30,7 +30,7 @@ export default function ProcuregSeller() {
               </p>
               <button className="col-lg-3">
                 {" "}
-                <Link to="/dash">Register</Link>
+                <Link to="/seller/register">Register</Link>
               </button>
             </div>
             <div className="col-lg-6 start-your-b2b-right-contents-procureg">

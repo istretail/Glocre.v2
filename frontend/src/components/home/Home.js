@@ -56,7 +56,7 @@ export default function Home() {
       ) : (
         <Fragment>
           <MetaData
-            title={"PROCURE-G - Glocal Sourcing made Smart & Simple."}
+            title={"GLOCRE - Glocal Sourcing made Smart & Simple."}
           />
 
           <section id="products" className="container-fluid">

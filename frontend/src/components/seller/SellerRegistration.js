@@ -70,11 +70,11 @@ const SellerRegistration = () => {
     setIsSubmitting(true);
     try {
       const response = await dispatch(updateProfile(formData));
-      const successMessage = response?.data?.message || "Thank you";
+      const successMessage = response?.data?.message;
       toast.success(successMessage);
     } catch (error) {
-      setSubmitError("Failed to update profile. Please try again.");
-      toast.error("Failed to update profile. Please try again.");
+      // setSubmitError("Failed to update profile. Please try again.");
+      toast.error(error.response?.data?.message);
     } finally {
       setIsSubmitting(false);
     }

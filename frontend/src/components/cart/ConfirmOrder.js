@@ -128,7 +128,7 @@ export default function ConfirmOrder() {
               <Link to={"/cart"}>Cart</Link>
             </li>
             <li>
-              <Link to={"shipping"}>Shipping Address</Link>
+              <Link to={"/shipping"}>Shipping Address</Link>
             </li>
             <li>Confirm Order</li>
           </ul>
@@ -145,7 +145,7 @@ export default function ConfirmOrder() {
                 <p>
                   <b className="info-box-p-b">Name</b>{" "}
                   <b className="info-box-p-b2">:</b>{" "}
-                  <span className="info-box-p-span">{user.name}</span>
+                  <span className="info-box-p-span">{shippingInfo.name}</span>
                 </p>
                 <p>
                   <b className="info-box-p-b">Phone</b>{" "}
@@ -173,7 +173,17 @@ export default function ConfirmOrder() {
                 <p>
                   <b className="info-box-p-b">Name</b>{" "}
                   <b className="info-box-p-b2">:</b>{" "}
-                  <span className="info-box-p-span">{user.name}</span>
+                  <span className="info-box-p-span">{billingInfo.name}</span>
+                </p>
+                <p>
+                  <b className="info-box-p-b">Organization name</b>{" "}
+                  <b className="info-box-p-b2">:</b>
+                  <span className="info-box-p-span">{billingInfo.organizationName}</span>
+                </p>
+                <p>
+                  <b className="info-box-p-b">GST</b>{" "}
+                  <b className="info-box-p-b2">:</b>
+                  <span className="info-box-p-span">{billingInfo.gstNumber}</span>
                 </p>
                 <p>
                   <b className="info-box-p-b">Phone</b>{" "}

@@ -376,7 +376,7 @@ export default function OrderList() {
                                                     <td>
                                                         <div className="d-flex align-items-center">
                                                             <span style={{ color: "#8c8c8c", fontSize: "15px" }}>
-                                                                {adminOrder._id}
+                                                                {adminOrder.clocreOrderId}
                                                             </span>
                                                         </div>
                                                     </td>

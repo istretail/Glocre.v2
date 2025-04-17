@@ -17,7 +17,8 @@ import { orderDetail as orderDetailAction } from "../../actions/orderActions";
 // import lod from "../../images/logo.png";
 import Loader from "../layouts/Loader";
 import "./OrderDetail.css";
-
+import { Button } from "@mui/material";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 export default function OrderDetail() {
   const { orderDetail, loading } = useSelector((state) => state.orderState);
   const {
@@ -352,7 +353,13 @@ export default function OrderDetail() {
                     </button>
                   ) : null}{" "}
                   {/* This will hide the button if the status is not 'Delivered' */}
-                  <button>Back to home</button>
+                    <div className="d-flex align-items-center">
+                      <Link to="/">
+                        <Button className="btn-g">
+                          <KeyboardBackspaceIcon /> Continue Shopping
+                        </Button>
+                      </Link>
+                    </div>
                 </div>
               </div>
             </div>

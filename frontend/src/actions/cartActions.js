@@ -32,8 +32,7 @@ export const removeCartItemFromCart =
     }
   };
 
-export const updateCartItemQuantityInCart =
-  (productId, quantity, stock, variantId) => async (dispatch) => {
+export const updateCartItemQuantityInCart =(productId, quantity, stock, variantId) => async (dispatch) => {
     try {
       await axios.put(`/api/v1/cart/update`, {
         productId,

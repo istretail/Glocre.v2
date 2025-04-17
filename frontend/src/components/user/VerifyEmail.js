@@ -60,7 +60,7 @@ const EmailVerification = () => {
       <div className="empty d-flex align-items-center justify-content-center flex-column mt-5 mb-5">
         <img src={mailsend} alt="image" width="250" className="mt-5" />
         <br />
-        <h3>Welcome for GLOCRE </h3>
+        <h3>Welcome to GLOCRE </h3>
         <p>
           Your account is verified successfully! You can now proceed to explore
           and purchase products on GLOCRE.

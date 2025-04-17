@@ -32,8 +32,7 @@ const Sucess = () => {
         <h3>Thankyou for Choosing GLOCRE </h3>
         <p>
           {' '}
-          Check your inbox or junk folder for the verification link, or wait a
-          moment.
+          Check your inbox or junk folder for the verification link.
         </p>
         <br />
         <Link to="/register">

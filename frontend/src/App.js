@@ -155,7 +155,8 @@ const App = () => {
           <Route path="/seller/orders"  element={<ProtectedRoute isSeller={true}><SellerOrders /></ProtectedRoute>} />
           <Route path="/seller/order/:id"  element={<ProtectedRoute isSeller={true}><SellerOrderDetail/></ProtectedRoute>} />
           <Route path="/seller/products/create"  element={<ProtectedRoute isSeller={true}><SellerCreateProduct /></ProtectedRoute>} />
-          <Route path="/seller/product/:id"  element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} />
+          <Route path="/seller/product/:id" element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} />
+          {/* <Route path="/seller/product/:id" element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} /> */}
         </Routes>
       </AppLayout>
     </Router>

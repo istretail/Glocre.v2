@@ -17,7 +17,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Nav from "../layouts/nav";
-
+import { logEvent } from '../../actions/analyticsActions';
 export default function Cart() {
   const { items } = useSelector((state) => state.cartState);
   const { user } = useSelector((state) => state.authState);
@@ -71,16 +71,22 @@ export default function Cart() {
     navigate("/login?redirect=shipping");
   };
 
-  const removeItemHandler = (productId) => {
+  const removeItemHandler = (productId, variantId) => {
     if (user) {
       // Dispatch removeCartItem action from actions file
-      dispatch(removeCartItemFromCart(productId));
+      dispatch(removeCartItemFromCart(productId, variantId));
     } else {
       // Dispatch removeCartItem action from slice
-      dispatch(removeCartItem(productId));
+      dispatch(removeCartItem({ productId, variantId }));
     }
   };
-
+  useEffect(() => {
+    const startTime = Date.now();
+    return () => {
+      const timeSpent = (Date.now() - startTime) / 1000;
+      logEvent({ event: 'page_view', pageUrl: window.location.pathname, timeSpent });
+    };
+  }, []);
   return (
     <>
       <MetaData title={"Cart"} />
@@ -192,7 +198,7 @@ export default function Cart() {
                                 <span className="cursor">
                                   <DeleteOutlineOutlinedIcon
                                     onClick={() =>
-                                      removeItemHandler(item.product)
+                                      removeItemHandler(removeItemHandler(item.product, item.variant?._id))
                                     }
                                   />
                                 </span>

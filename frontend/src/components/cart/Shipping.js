@@ -69,36 +69,28 @@ export default function Shipping() {
   );
   const addressId = useSelector((state) => state.userState.addressId || {});
   const { savedAddresses = [] } = useSelector((state) => state.userState);
+  const { user } = useSelector((state) => state.authState);
   const [address, setAddress] = useState(shippingInfo.address || "");
-  const [addressLine, setAddressLine] = useState(
-    shippingInfo.addressLine || "",
-  );
+  const [addressLine, setAddressLine] = useState(shippingInfo.addressLine || "",);
   const [city, setCity] = useState(shippingInfo.city || "");
+  const [name, setName] = useState( user.name || ""); 
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo || "");
   const [country, setCountry] = useState(shippingInfo.country || "");
   const [state, setState] = useState(shippingInfo.state || "");
   const [postalCode, setPostalCode] = useState(shippingInfo.postalCode || "");
   const [localities, setLocalities] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [showSavedAddresses, setShowSavedAddresses] = useState(false);
+  const [billingName, setBillingName] = useState(user.name || "");
+  const [gstNumber, setGstNumber] = useState("");
+  const [organizationName, setOrganizationName] = useState(""); 
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
-  const [billingAddress, setBillingAddress] = useState(
-    billingInfo.address || "",
-  );
-  const [billingAddressLine, setBillingAddressLine] = useState(
-    billingInfo.addressLine || "",
-  );
+  const [billingAddress, setBillingAddress] = useState(billingInfo.address || "",);
+  const [billingAddressLine, setBillingAddressLine] = useState(billingInfo.addressLine || "",);
   const [billingCity, setBillingCity] = useState(billingInfo.city || "");
-  const [billingPhoneNo, setBillingPhoneNo] = useState(
-    billingInfo.phoneNo || "",
-  );
-  const [billingCountry, setBillingCountry] = useState(
-    billingInfo.country || "",
-  );
+  const [billingPhoneNo, setBillingPhoneNo] = useState(billingInfo.phoneNo || "",);
+  const [billingCountry, setBillingCountry] = useState(billingInfo.country || "",);
   const [billingState, setBillingState] = useState(billingInfo.state || "");
-  const [billingPostalCode, setBillingPostalCode] = useState(
-    billingInfo.postalCode || "",
-  );
+  const [billingPostalCode, setBillingPostalCode] = useState(billingInfo.postalCode || "",);
   const [billingLocalities, setBillingLocalities] = useState([]);
   const [inputotpCode, setInputOtpCode] = useState(""); // State for OTP
   // const [addressId, setAddressId] = useState(null);
@@ -111,18 +103,34 @@ export default function Shipping() {
   }, [dispatch]);
 
   const submitHandler = useCallback(
-    async (e) => {
+    async (e) => { 
       e.preventDefault();
       setLoading(true);
 
-      if (!billingSameAsShipping && !isValidPostalCode(billingPostalCode)) {
-        toast.error("Please fill the billing information correctly");
-        setLoading(false);
-        return;
+      // Check if billing address is not same, and validate postal code
+      if (!billingSameAsShipping) {
+        if (
+          !billingName ||
+          !billingAddress ||
+          !gstNumber||
+          !organizationName||
+          !billingAddressLine ||
+          !billingCity ||
+          !billingPhoneNo ||
+          !billingPostalCode ||
+          !billingCountry ||
+          !billingState ||
+          !isValidPostalCode(billingPostalCode)
+        ) {
+          toast.error("Please fill all required billing information correctly");
+          setLoading(false);
+          return;
+        }
       }
 
       dispatch(
         saveShippingInfo({
+          name,
           address,
           addressLine,
           city,
@@ -130,12 +138,13 @@ export default function Shipping() {
           postalCode,
           country,
           state,
-        }),
+        })
       );
 
       if (billingSameAsShipping) {
         dispatch(
           saveBillingInfo({
+            name,
             address,
             addressLine,
             city,
@@ -143,11 +152,14 @@ export default function Shipping() {
             postalCode,
             country,
             state,
-          }),
+          })
         );
       } else {
         dispatch(
           saveBillingInfo({
+            name: billingName,
+            gstNumber,
+            organizationName,
             address: billingAddress,
             addressLine: billingAddressLine,
             city: billingCity,
@@ -155,14 +167,14 @@ export default function Shipping() {
             postalCode: billingPostalCode,
             country: billingCountry,
             state: billingState,
-          }),
+          })
         );
       }
 
       try {
-        // Dispatch createSavedAddress and check response
         const addressData = await dispatch(
           createSavedAddress({
+            name,
             address,
             addressLine,
             city,
@@ -170,14 +182,12 @@ export default function Shipping() {
             postalCode,
             country,
             state,
-          }),
+          })
         );
 
         if (addressData?.isPhoneVerified) {
-          // Navigate directly if the address is verified
           navigate("/order/confirm");
         } else {
-          // Show OTP modal if verification is needed
           // setShowOtpModal(true);
           navigate("/order/confirm");
         }
@@ -203,10 +213,15 @@ export default function Shipping() {
       dispatch,
       navigate,
       phoneNo,
+      name,
       postalCode,
       state,
-    ],
+      billingName,
+      gstNumber,
+      organizationName,
+    ]
   );
+
 
   const handleOtpSubmit = async () => {
     if (inputotpCode.length !== 6) {
@@ -265,6 +280,7 @@ export default function Shipping() {
         (addr) => addr._id === selectedAddressId,
       );
       if (selected) {
+        setName(selected.name);
         setAddress(selected.address);
         setAddressLine(selected.addressLine);
         setCity(selected.city);
@@ -375,7 +391,7 @@ export default function Shipping() {
 
             <div className="col-md-8">
               <section className="mb-5">
-                <h1 className="hd ">ADD NEW SHIPPING ADDRESS</h1>
+                <h1 className="hd ">ADD NEW SHIPPING ADDRESS </h1>
                 <div className="row d-flex">
                   <div className="cartWrapper mt-1">
                     <div className="Form Contents">
@@ -428,6 +444,26 @@ export default function Shipping() {
                       </div>
 
                       <div className="row mt-3 mb-4">
+                        <div className="col-md-6">                       
+                          <div className="form-group">
+                            <TextField
+                              label="Name"
+                              variant="outlined"
+                              className="w-100"
+                              size="small"
+                              type="text"
+                              value={name}
+                              required
+                              placeholder="Your name"
+                              id="name"
+                              onChange={(e) => setName(e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        
+                      </div>
+                      <div className="row mt-3 mb-4">
                         <div className="col-md-6">
                           {/* phone no */}
                           <div className="form-group">
@@ -457,7 +493,7 @@ export default function Shipping() {
                               className="w-100"
                               size="small"
                               name="pincode"
-                              placeholder="Pincodfdiszjfiushdiue"
+                              placeholder="Pincode"
                               value={postalCode}
                               onChange={(e) =>
                                 handlePincodeChange(
@@ -601,6 +637,55 @@ export default function Shipping() {
               <>
                 <h1 className="hd mb-4">BILLING ADDRESS</h1>
                 <div className="Form Contents">
+                  <div className="row mt-3 mb-4">
+                    <div className="col-md-6">
+                      {/* Billing name */}
+                      <TextField
+                        label="Billing Name"
+                        variant="outlined"
+                        className="w-100"
+                        size="small"
+                        type="text"
+                        required
+                        value={billingName}
+                        id="billing_name_field"
+                        onChange={(e) => setBillingName(e.target.value)}
+                        maxLength={13}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      {/* Billing name */}
+                      <TextField
+                        label="GST Number"
+                        variant="outlined"
+                        className="w-100"
+                        size="small"
+                        type="text"
+                        value={gstNumber}
+                        required
+                        placeholder="Eg:ABCDE1234F"
+                        id="gst_field"
+                        onChange={(e) => setGstNumber(e.target.value)}
+                      />
+                    </div>
+
+                  </div>
+                  <div className="row mt-3 mb-4">
+                    <div className="col-md-6">
+                      {/* Billing name */}
+                      <TextField
+                        label="Organization Name"
+                        variant="outlined"
+                        className="w-100"
+                        size="small"
+                        type="text"
+                        required
+                        value={organizationName}
+                        id="organization_field"
+                        onChange={(e) => setOrganizationName(e.target.value)}
+                      />
+                    </div>
+                  </div>
                   <div className="row mt-3 mb-4">
                     <div className="col-md-6">
                       {/* phone no */}
