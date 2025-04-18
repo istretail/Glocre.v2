@@ -25,26 +25,29 @@ const SellerCreateProduct = () => {
     variants: [],
     tax: "",
     itemModelNum: "",
-    serialNum: "",
-    connectionType: "",
-    hardwarePlatform: "",
-    os: "",
-    powerConception: "",
-    batteries: "",
-    packageDimension: "",
-    portDescription: "",
-    connectivityType: "",
-    compatibleDevices: "",
-    powerSource: "",
-    specialFeatures: "",
-    includedInThePackage: "",
-    manufacturer: "",
-    itemSize: "",
-    itemWidth: "",
     isRefundable: "false",
-    price: "",
     offPrice: "",
     stock: "",
+    price: "",
+
+    sku: "",
+    upc: "",
+    hsn: "",
+    countryofOrgin: "",
+    manufactureDetails: "",
+    productCertifications: "",
+    itemLength: "",
+    itemHeight: "",
+    itemWeight: "",
+    itemWidth: "",
+    moq: "",
+    shippingCostlol: "",
+    shippingCostNorth: "",
+    shippingCostSouth: "",
+    shippingCostEast: "",
+    shippingCostWest: "",
+    shippingCostNe: "",
+    unit: "",
   });
   const { loading, isProductCreated, error } = useSelector(state => state.productState);
   const [hasVariants, setHasVariants] = useState(false);
@@ -399,7 +402,7 @@ const SellerCreateProduct = () => {
               <div className="row">
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Product Name:</label>
+                    <label>Product Name:<span style={{color:"red"}}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -413,7 +416,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Description:</label>
+                    <label>Description:<span style={{ color: "red" }}> *</span></label>
                     <textarea
                       className="form-control"
                       name="description"
@@ -426,7 +429,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Main Category:</label>
+                    <label>Main Category:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -440,7 +443,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Category:</label>
+                    <label>Category:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -454,7 +457,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Subcategory:</label>
+                    <label>Subcategory:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -468,20 +471,22 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Brand:</label>
+                    <label>Brand:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
                       name="brand"
                       value={formData.brand}
                       onChange={handleChange}
+                      required
+
                     />
                   </div>
                 </div>
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Condition:</label>
+                    <label>Condition:<span style={{ color: "red" }}> *</span></label>
                     <select
                       className="form-control"
                       name="condition"
@@ -489,7 +494,7 @@ const SellerCreateProduct = () => {
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Select Condition</option>
+                      <option value="">Select Condition<span style={{ color: "red" }}> *</span></option>
                       <option value="New">New</option>
                       <option value="Unboxed">Unboxed</option>
                       <option value="Refurbished">Refurbished</option>
@@ -499,7 +504,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Key Points:</label>
+                    <label>Key Points:<span style={{ color: "red" }}> *</span></label>
                     {formData.keyPoints.map((point, index) => (
 
                       <div key={index} className="d-flex mb-2">
@@ -537,7 +542,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Does this product have variants?</label>
+                    <label>Does this product have variants?<span style={{ color: "red" }}> *</span></label>
                     <select
                       className="form-control"
                       value={hasVariants}
@@ -551,7 +556,7 @@ const SellerCreateProduct = () => {
                   {hasVariants && (
                     <>
                       <div className="form-group">
-                        <label>What is the variant type?</label>
+                        <label>What is the variant type?<span style={{ color: "red" }}> *</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -562,7 +567,7 @@ const SellerCreateProduct = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>How many variants?</label>
+                        <label>How many variants?<span style={{ color: "red" }}> *</span></label>
                         <input
                           type="number"
                           className="form-control"
@@ -608,7 +613,7 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Price:</label>
+                            <label>Price:<span style={{ color: "red" }}> *</span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -624,7 +629,7 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Offer Price:</label>
+                            <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -640,7 +645,7 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Stock:</label>
+                            <label>Stock:<span style={{ color: "red" }}> *</span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -656,7 +661,7 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Images:</label>
+                            <label>Images:<span style={{ color: "red" }}> *</span></label>
                             <input
                               type="file"
                               className="form-control"
@@ -704,7 +709,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Tax:</label>
+                    <label>Tax:(GST)<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -718,7 +723,7 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Is Refundable:</label>
+                    <label>Is Refundable:<span style={{ color: "red" }}> *</span></label>
                     <select
                       className="form-control"
                       name="isRefundable"
@@ -737,7 +742,7 @@ const SellerCreateProduct = () => {
                     <div className="row">
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Price:</label>
+                          <label>Price:<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -751,7 +756,7 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Offer Price:</label>
+                          <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -765,7 +770,7 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Stock:</label>
+                          <label>Stock:<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -779,13 +784,14 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Product Images:</label>
+                          <label>Product Images:<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="file"
                             className="form-control"
                             multiple
                             accept="image/*"
                             onChange={handleProductImageChange}
+                            // required
                           />
                           <div className="mt-2">
                             {productImages.map((image, index) => (
@@ -823,12 +829,12 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Serial Number:</label>
+                    <label>Product Code SKU:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
-                      name="serialNum"
-                      value={formData.serialNum}
+                      name="sku"
+                      value={formData.sku}
                       onChange={handleChange}
                     />
                   </div>
@@ -836,12 +842,12 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Connection Type:</label>
+                    <label>UPC:</label>
                     <input
                       type="text"
                       className="form-control"
-                      name="connectionType"
-                      value={formData.connectionType}
+                      name="upc"
+                      value={formData.upc}
                       onChange={handleChange}
                     />
                   </div>
@@ -849,12 +855,40 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Hardware Platform:</label>
+                    <label>HSN:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
-                      name="hardwarePlatform"
-                      value={formData.hardwarePlatform}
+                      name="hsn"
+                      value={formData.hsn}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label>Country of Orgin:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="countryofOrgin"
+                      value={formData.countryofOrgin}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label>Manufacture Details:</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="manufactureDetails"
+                      value={formData.manufactureDetails}
                       onChange={handleChange}
                     />
                   </div>
@@ -862,12 +896,12 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Operating System:</label>
+                    <label>Product Certifications:</label>
                     <input
                       type="text"
                       className="form-control"
-                      name="os"
-                      value={formData.os}
+                      name="productCertifications"
+                      value={formData.productCertifications}
                       onChange={handleChange}
                     />
                   </div>
@@ -875,159 +909,166 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Power Conception:</label>
+                    <label>Item Length:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
-                      name="powerConception"
-                      value={formData.powerConception}
+                      name="itemLength"
+                      value={formData.itemLength}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Batteries:</label>
+                    <label>Item Height:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
-                      name="batteries"
-                      value={formData.batteries}
+                      name="itemHeight"
+                      value={formData.itemHeight}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Package Dimension:</label>
+                    <label>Item Weight:<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
-                      name="packageDimension"
-                      value={formData.packageDimension}
+                      name="itemWeight"
+                      value={formData.itemWeight}
                       onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-6">
-                  <div className="form-group">
-                    <label>Port Description:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="portDescription"
-                      value={formData.portDescription}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-6">
-                  <div className="form-group">
-                    <label>Connectivity Type:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="connectivityType"
-                      value={formData.connectivityType}
-                      onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Compatible Devices:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="compatibleDevices"
-                      value={formData.compatibleDevices}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-4">
-                  <div className="form-group">
-                    <label>Power Source:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="powerSource"
-                      value={formData.powerSource}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-4">
-                  <div className="form-group">
-                    <label>Special Features:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="specialFeatures"
-                      value={formData.specialFeatures}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-4">
-                  <div className="form-group">
-                    <label>Included in the Package:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="includedInThePackage"
-                      value={formData.includedInThePackage}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-4">
-                  <div className="form-group">
-                    <label>Manufacturer:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="manufacturer"
-                      value={formData.manufacturer}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-4">
-                  <div className="form-group">
-                    <label>Item Size:</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="itemSize"
-                      value={formData.itemSize}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-lg-4">
-                  <div className="form-group">
-                    <label>Item Width:</label>
+                    <label>Item Width<span style={{ color: "red" }}> *</span></label>
                     <input
                       type="text"
                       className="form-control"
                       name="itemWidth"
                       value={formData.itemWidth}
                       onChange={handleChange}
+                      required
                     />
                   </div>
                 </div>
+
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>MOQ:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="moq"
+                      value={formData.moq}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost local:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="shippingCostlol"
+                      value={formData.shippingCostlol}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost North:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="shippingCostNorth"
+                      value={formData.shippingCostNorth}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost South:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="shippingCostSouth"
+                      value={formData.shippingCostSouth}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost East:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="shippingCostEast"
+                      value={formData.shippingCostEast}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost West:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="shippingCostWest"
+                      value={formData.shippingCostWest}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost North east:<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="shippingCostNe"
+                      value={formData.shippingCostNe}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *</span></label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="unit"
+                      value={formData.unit}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div style={{ display: 'flex', justifyContent: 'end' }}>
                   <button
                     type="submit"

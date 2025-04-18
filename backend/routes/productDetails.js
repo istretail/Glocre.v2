@@ -23,63 +23,7 @@ const {
   isAuthenticatedUser,
   authorizeRoles,
 } = require("../middlewares/authenticate");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-// Ensure the uploads/product directory exists
-const uploadDir = path.join(__dirname, "..", "uploads/product");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (!file.mimetype.startsWith("image/")) {
-    return cb(new Error("Only image files are allowed!"), false);
-  }
-  cb(null, true);
-};
-
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // 5MB limit
-  fileFilter: fileFilter
-}).fields([
-  { name: 'images', maxCount: 3 },
-  { name: 'variants[0][images]', maxCount: 3 },
-  { name: 'variants[1][images]', maxCount: 3 },
-  { name: 'variants[2][images]', maxCount: 3 },
-  { name: 'variants[3][images]', maxCount: 3 },
-  { name: 'variants[4][images]', maxCount: 3 },
-]);
-
-// Check file type
-function checkFileType(file, cb) {
-  const filetypes = /jpeg|jpg|png/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (mimetype && extname) {
-    return cb(null, true);
-  } else {
-    cb('Error: Images Only!');
-  }
-}
-
-// Configure fields for upload
-// const uploadFields = upload.fields([
-//   { name: "images", maxCount: 3 }, // Main product images
-//   { name: "variantsImages", maxCount: 9 }, // Handle all variant images in one field
-// ]);
-
+const upload = require("../middlewares/upload");
 
 const handleVariantUploads = (req, res, next) => {
   if (req.body.variants && typeof req.body.variants === "string") {
@@ -95,24 +39,43 @@ const handleVariantUploads = (req, res, next) => {
   if (req.files) {
     if (req.files["images"]) {
       req.body.images = req.files["images"].map((file) => ({
-        image: `${req.protocol}://${req.get("host")}/uploads/product/${file.filename}`,
+        image: file.location,
       }));
     }
 
     if (req.files["variantsImages"]) {
       req.body.variants.forEach((variant, index) => {
         variant.images = req.files["variantsImages"].splice(0, 3).map((file) => ({
-          image: `${req.protocol}://${req.get("host")}/uploads/product/${file.filename}`,
+          image: file.location,
         }));
       });
     }
+
     // console.log(req.files);
   }
 
   next();
 };
 
+// Configure fields for upload
+// const uploadFields = upload.fields([
+//   { name: "images", maxCount: 3 }, // Main product images
+//   { name: "variantsImages", maxCount: 9 }, // Handle all variant images in one field
+// ]);
 
+
+// Check file type
+function checkFileType(file, cb) {
+  const filetypes = /jpeg|jpg|png/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb('Error: Images Only!');
+  }
+}
 router.route("/products").get(getProducts);
 router.route("/products/new").post(isAuthenticatedUser, authorizeRoles("admin"), newProduct);
 router.route("/product/:id").get(getSingleProduct);

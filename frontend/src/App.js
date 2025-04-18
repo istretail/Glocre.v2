@@ -66,7 +66,8 @@ import SellerOrders from "./components/seller/SellerOrders";
 import SellerOrderDetail from "./components/seller/SellerOrderDetail";
 import SellerCreateProduct from "./components/seller/SellerCreateProduct";
 import SellerUpdateProduct from "./components/seller/SellerEditProduct";
-
+import AdminBannerPage from "./components/admin/EditBannerPage";
+import Faqs from "./components/layouts/faqs";
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isRestrictedRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/seller");
@@ -122,6 +123,7 @@ const App = () => {
           <Route path="/return" element={<RefundPolicy />} />
           <Route path="/policy" element={<Policy />} />
           <Route path="/success" element={<Sucess />} />
+          <Route path="/faqs" element={<Faqs />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/myprofile"  element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/myprofile/update"  element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
@@ -146,7 +148,8 @@ const App = () => {
           <Route path="/admin/order/:id"  element={<ProtectedRoute isAdmin={true}><UpdateOrder /></ProtectedRoute>} />
           <Route path="/admin/users"  element={<ProtectedRoute isAdmin={true}><UserList /></ProtectedRoute>} />
           <Route path="/admin/user/:id"  element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
-          <Route path="/admin/reviews"  element={<ProtectedRoute isAdmin={true}><ReviewList /></ProtectedRoute>} />
+          <Route path="/admin/reviews" element={<ProtectedRoute isAdmin={true}><ReviewList /></ProtectedRoute>} />
+          <Route path="/admin/edit-banner" element={<ProtectedRoute isAdmin={true}><AdminBannerPage /></ProtectedRoute>} />
 
           {/* Seller Routes */}
           <Route path="/seller/register"  element={<ProtectedRoute><SellerRegistration /></ProtectedRoute>} />

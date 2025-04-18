@@ -25,28 +25,30 @@ const NewProduct = () => {
         variants: [],
         tax: "",
         itemModelNum: "",
-        serialNum: "",
-        connectionType: "",
-        hardwarePlatform: "",
-        os: "",
-        powerConception: "",
-        batteries: "",
-        packageDimension: "",
-        portDescription: "",
-        connectivityType: "",
-        compatibleDevices: "",
-        powerSource: "",
-        specialFeatures: "",
-        includedInThePackage: "",
-        manufacturer: "",
-        itemSize: "",
-        itemWidth: "",
         isRefundable: "false",
-        price: "",
         offPrice: "",
         stock: "",
-
-    });
+        price: "",
+    
+        sku: "",
+        upc: "",
+        hsn: "",
+        countryofOrgin: "",
+        manufactureDetails: "",
+        productCertifications: "",
+        itemLength: "",
+        itemHeight: "",
+        itemWeight: "",
+        itemWidth: "",
+        moq: "",
+        shippingCostlol: "",
+        shippingCostNorth: "",
+        shippingCostSouth: "",
+        shippingCostEast: "",
+        shippingCostWest: "",
+        shippingCostNe: "",
+        unit: "",
+      });
     const { loading, isProductCreated, error } = useSelector(state => state.productState);
     const [hasVariants, setHasVariants] = useState(false);
     const [variantType, setVariantType] = useState("");
@@ -365,10 +367,9 @@ const NewProduct = () => {
                         <Fragment>
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
-
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Product Name:</label>
+                                            <label>Product Name:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -382,7 +383,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Description:</label>
+                                            <label>Description:<span style={{ color: "red" }}> *</span></label>
                                             <textarea
                                                 className="form-control"
                                                 name="description"
@@ -395,7 +396,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Main Category:</label>
+                                            <label>Main Category:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -409,7 +410,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Category:</label>
+                                            <label>Category:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -423,7 +424,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Subcategory:</label>
+                                            <label>Subcategory:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -437,53 +438,22 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Brand:</label>
+                                            <label>Brand:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
                                                 name="brand"
                                                 value={formData.brand}
                                                 onChange={handleChange}
+                                                required
+
                                             />
                                         </div>
                                     </div>
-                                    <label>Key Points</label>
-                                    {formData.keyPoints.map((point, index) => (
-                                         
-                                        <div key={index} className="d-flex mb-2">
-                                           
-                                            <input
-                                                type="text"
-                                                className="form-control me-2"
-                                                value={point}
-                                                onChange={(e) => handleKeyPointsChange(index, e.target.value)}
-                                                required
-                                            />
-                                            {formData.keyPoints.length > 3 && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-danger"
-                                                    onClick={() => handleRemoveKeyPoint(index)}
-                                                >
-                                                    &times;
-                                                </button>
-                                            )}
-                                        </div>
-                                    ))}
-
-                                    {formData.keyPoints.length < 5 && (
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary"
-                                            onClick={handleAddKeyPoint}
-                                        >
-                                            Add Key Point
-                                        </button>
-                                    )}
 
                                     <div className="col-12">
                                         <div className="form-group">
-                                            <label>Condition:</label>
+                                            <label>Condition:<span style={{ color: "red" }}> *</span></label>
                                             <select
                                                 className="form-control"
                                                 name="condition"
@@ -491,7 +461,7 @@ const NewProduct = () => {
                                                 onChange={handleChange}
                                                 required
                                             >
-                                                <option value="">Select Condition</option>
+                                                <option value="">Select Condition<span style={{ color: "red" }}> *</span></option>
                                                 <option value="New">New</option>
                                                 <option value="Unboxed">Unboxed</option>
                                                 <option value="Refurbished">Refurbished</option>
@@ -499,54 +469,87 @@ const NewProduct = () => {
                                         </div>
                                     </div>
 
-                                  
-
-                                    <div className="col-lg-6">
+                                    <div className="col-12">
                                         <div className="form-group">
-                                            <label>Does this product have variants?</label>
+                                            <label>Key Points:<span style={{ color: "red" }}> *</span></label>
+                                            {formData.keyPoints.map((point, index) => (
+
+                                                <div key={index} className="d-flex mb-2">
+
+                                                    <input
+                                                        type="text"
+                                                        className="form-control me-2"
+                                                        value={point}
+                                                        onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                                                        required
+                                                    />
+                                                    {formData.keyPoints.length > 3 && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger"
+                                                            onClick={() => handleRemoveKeyPoint(index)}
+                                                        >
+                                                            &times;
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
+
+                                            {formData.keyPoints.length < 5 && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary"
+                                                    onClick={handleAddKeyPoint}
+                                                >
+                                                    Add Key Point
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="col-12">
+                                        <div className="form-group">
+                                            <label>Does this product have variants?<span style={{ color: "red" }}> *</span></label>
                                             <select
                                                 className="form-control"
                                                 value={hasVariants}
-                                                onChange={(e) => setHasVariants(e.target.value === "true")}
+                                                onChange={e => setHasVariants(e.target.value === 'true')}
                                                 required
                                             >
                                                 <option value="false">No</option>
                                                 <option value="true">Yes</option>
                                             </select>
                                         </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
                                         {hasVariants && (
                                             <>
                                                 <div className="form-group">
-                                                    <label>What is the variant type?</label>
+                                                    <label>What is the variant type?<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="text"
                                                         className="form-control"
                                                         value={variantType}
-                                                        onChange={(e) => setVariantType(e.target.value)}
+                                                        onChange={e => setVariantType(e.target.value)}
                                                         placeholder="e.g., color, size"
                                                         required
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label>How many variants?</label>
+                                                    <label>How many variants?<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
                                                         value={variantCount}
-                                                        onChange={(e) => {
+                                                        onChange={e => {
                                                             const count = Number(e.target.value); // Ensure it's a number
                                                             setVariantCount(count);
                                                             setVariantDetails(
                                                                 Array.from({ length: count }, () => ({
                                                                     variantType: variantType,
-                                                                    variantName: "",
-                                                                    price: "",
-                                                                    offPrice: "",
-                                                                    stock: "",
-                                                                    images: []
+                                                                    variantName: '',
+                                                                    price: '',
+                                                                    offPrice: '',
+                                                                    stock: '',
+                                                                    images: [],
                                                                 }))
                                                             );
                                                         }}
@@ -557,53 +560,81 @@ const NewProduct = () => {
                                                     <div key={index} className="variant-section">
                                                         <h4>Variant {index + 1}</h4>
                                                         <div className="form-group">
-                                                            <label>{variantType.charAt(0).toUpperCase() + variantType.slice(1)}:</label>
+                                                            <label>
+                                                                {variantType.charAt(0).toUpperCase() +
+                                                                    variantType.slice(1)}
+                                                                :
+                                                            </label>
                                                             <input
                                                                 type="text"
                                                                 className="form-control"
                                                                 value={variant.variantName}
-                                                                onChange={(e) => handleVariantChange(index, "variantName", e.target.value)}
+                                                                onChange={e =>
+                                                                    handleVariantChange(
+                                                                        index,
+                                                                        'variantName',
+                                                                        e.target.value
+                                                                    )
+                                                                }
                                                                 required
                                                             />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label>Price:</label>
+                                                            <label>Price:<span style={{ color: "red" }}> *</span></label>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
                                                                 value={variant.price}
-                                                                onChange={(e) => handleVariantChange(index, "price", e.target.value)}
+                                                                onChange={e =>
+                                                                    handleVariantChange(
+                                                                        index,
+                                                                        'price',
+                                                                        e.target.value
+                                                                    )
+                                                                }
                                                                 required
                                                             />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label>Offer Price:</label>
+                                                            <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
                                                                 value={variant.offPrice}
-                                                                onChange={(e) => handleVariantChange(index, "offPrice", e.target.value)}
+                                                                onChange={e =>
+                                                                    handleVariantChange(
+                                                                        index,
+                                                                        'offPrice',
+                                                                        e.target.value
+                                                                    )
+                                                                }
                                                                 required
                                                             />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label>Stock:</label>
+                                                            <label>Stock:<span style={{ color: "red" }}> *</span></label>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
                                                                 value={variant.stock}
-                                                                onChange={(e) => handleVariantChange(index, "stock", e.target.value)}
+                                                                onChange={e =>
+                                                                    handleVariantChange(
+                                                                        index,
+                                                                        'stock',
+                                                                        e.target.value
+                                                                    )
+                                                                }
                                                                 required
                                                             />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label>Images:</label>
+                                                            <label>Images:<span style={{ color: "red" }}> *</span></label>
                                                             <input
                                                                 type="file"
                                                                 className="form-control"
                                                                 multiple
                                                                 accept="image/*"
-                                                                onChange={(e) => handleImageChange(index, e)}
+                                                                onChange={e => handleImageChange(index, e)}
                                                             />
                                                             {imageErrors.length > 0 && (
                                                                 <div className="alert alert-danger mt-2">
@@ -627,7 +658,9 @@ const NewProduct = () => {
                                                                         <button
                                                                             type="button"
                                                                             className="btn btn-danger btn-sm position-absolute top-0 right-0"
-                                                                            onClick={() => handleRemoveImage(index, imageIndex)}
+                                                                            onClick={() =>
+                                                                                handleRemoveImage(index, imageIndex)
+                                                                            }
                                                                         >
                                                                             &times;
                                                                         </button>
@@ -643,7 +676,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Tax:</label>
+                                            <label>Tax:(GST)<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="number"
                                                 className="form-control"
@@ -657,7 +690,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Is Refundable:</label>
+                                            <label>Is Refundable:<span style={{ color: "red" }}> *</span></label>
                                             <select
                                                 className="form-control"
                                                 name="isRefundable"
@@ -671,70 +704,82 @@ const NewProduct = () => {
                                         </div>
                                     </div>
 
-                                    <div className="row">
-                                        {!hasVariants && (
-                                            <>
-                                                <div className="form-group col-lg-6">
-                                                    <label>Price:</label>
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        name="price"
-                                                        value={formData.price}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-
-                                                <div className="form-group col-lg-6">
-                                                    <label>Offer Price:</label>
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        name="offPrice"
-                                                        value={formData.offPrice}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-
-                                                <div className="form-group col-lg-6">
-                                                    <label>Stock:</label>
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        name="stock"
-                                                        value={formData.stock}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-
-                                                <div className="form-group col-lg-6">
-                                                    <label>Product Images:</label>
-                                                    <input
-                                                        type="file"
-                                                        className="form-control"
-                                                        multiple
-                                                        accept="image/*"
-                                                        onChange={handleProductImageChange}
-                                                    />
-                                                    <div className="mt-2">
-                                                        {productImages.map((image, index) => (
-                                                            <div key={index} className="d-inline-block position-relative mr-2">
-                                                                <img
-                                                                    src={URL.createObjectURL(image)}
-                                                                    alt={`Preview ${index}`}
-                                                                    className="img-thumbnail"
-                                                                    width="100"
-                                                                />
-                                                            </div>
-                                                        ))}
+                                    {!hasVariants && (
+                                        <>
+                                            <div className="row">
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>Price:<span style={{ color: "red" }}> *</span></label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            name="price"
+                                                            value={formData.price}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
                                                     </div>
                                                 </div>
-                                            </>
-                                        )}
-                                    </div>
+
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            name="offPrice"
+                                                            value={formData.offPrice}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>Stock:<span style={{ color: "red" }}> *</span></label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            name="stock"
+                                                            value={formData.stock}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>Product Images:<span style={{ color: "red" }}> *</span></label>
+                                                        <input
+                                                            type="file"
+                                                            className="form-control"
+                                                            multiple
+                                                            accept="image/*"
+                                                            onChange={handleProductImageChange}
+                                                        // required
+                                                        />
+                                                        <div className="mt-2">
+                                                            {productImages.map((image, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className="d-inline-block position-relative mr-2"
+                                                                >
+                                                                    <img
+                                                                        src={URL.createObjectURL(image)}
+                                                                        alt={`Preview ${index}`}
+                                                                        className="img-thumbnail"
+                                                                        width="100"
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
@@ -751,12 +796,12 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Serial Number:</label>
+                                            <label>Product Code SKU:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="serialNum"
-                                                value={formData.serialNum}
+                                                name="sku"
+                                                value={formData.sku}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -764,12 +809,12 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Connection Type:</label>
+                                            <label>UPC:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="connectionType"
-                                                value={formData.connectionType}
+                                                name="upc"
+                                                value={formData.upc}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -777,12 +822,40 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Hardware Platform:</label>
+                                            <label>HSN:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="hardwarePlatform"
-                                                value={formData.hardwarePlatform}
+                                                name="hsn"
+                                                value={formData.hsn}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-6">
+                                        <div className="form-group">
+                                            <label>Country of Orgin:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="countryofOrgin"
+                                                value={formData.countryofOrgin}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-6">
+                                        <div className="form-group">
+                                            <label>Manufacture Details:</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="manufactureDetails"
+                                                value={formData.manufactureDetails}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -790,12 +863,12 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Operating System:</label>
+                                            <label>Product Certifications:</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="os"
-                                                value={formData.os}
+                                                name="productCertifications"
+                                                value={formData.productCertifications}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -803,166 +876,175 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Power Conception:</label>
+                                            <label>Item Length:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="powerConception"
-                                                value={formData.powerConception}
+                                                name="itemLength"
+                                                value={formData.itemLength}
                                                 onChange={handleChange}
+                                                required
                                             />
                                         </div>
                                     </div>
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Batteries:</label>
+                                            <label>Item Height:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="batteries"
-                                                value={formData.batteries}
+                                                name="itemHeight"
+                                                value={formData.itemHeight}
                                                 onChange={handleChange}
+                                                required
                                             />
                                         </div>
                                     </div>
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Package Dimension:</label>
+                                            <label>Item Weight:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                name="packageDimension"
-                                                value={formData.packageDimension}
+                                                name="itemWeight"
+                                                value={formData.itemWeight}
                                                 onChange={handleChange}
+                                                required
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="col-lg-6">
+                                    <div className="col-12">
                                         <div className="form-group">
-                                            <label>Port Description:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="portDescription"
-                                                value={formData.portDescription}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Connectivity Type:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="connectivityType"
-                                                value={formData.connectivityType}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Compatible Devices:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="compatibleDevices"
-                                                value={formData.compatibleDevices}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Power Source:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="powerSource"
-                                                value={formData.powerSource}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Special Features:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="specialFeatures"
-                                                value={formData.specialFeatures}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Included in the Package:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="includedInThePackage"
-                                                value={formData.includedInThePackage}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Manufacturer:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="manufacturer"
-                                                value={formData.manufacturer}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Item Size:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="itemSize"
-                                                value={formData.itemSize}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Item Width:</label>
+                                            <label>Item Width<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
                                                 name="itemWidth"
                                                 value={formData.itemWidth}
                                                 onChange={handleChange}
+                                                required
                                             />
                                         </div>
                                     </div>
 
-                                </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>MOQ:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="moq"
+                                                value={formData.moq}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="d-flex justify-content-end mt-3 mb-5">
-                                    <button type="submit" className="btn" style={{ backgroundColor: "#ffad63", color: "#fff" }}>
-                                        Create Product
-                                    </button>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Shipping Cost local:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="shippingCostlol"
+                                                value={formData.shippingCostlol}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Shipping Cost North:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="shippingCostNorth"
+                                                value={formData.shippingCostNorth}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Shipping Cost South:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="shippingCostSouth"
+                                                value={formData.shippingCostSouth}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Shipping Cost East:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="shippingCostEast"
+                                                value={formData.shippingCostEast}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Shipping Cost West:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="shippingCostWest"
+                                                value={formData.shippingCostWest}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Shipping Cost North east:<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="shippingCostNe"
+                                                value={formData.shippingCostNe}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *</span></label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="unit"
+                                                value={formData.unit}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'end' }}>
+                                        <button
+                                            type="submit"
+                                            className="btn mt-3"
+                                            style={{ backgroundColor: '#ffad63', color: '#fff' }}
+                                        >
+                                            Create Product
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </Fragment>

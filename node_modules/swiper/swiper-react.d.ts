@@ -66,25 +66,12 @@ type SwiperProps = Omit<
    * Event will be fired when swiper updates the hash
    */
   onHashSet?: (swiper: SwiperClass) => void;/**
-   * Event will be fired on key press
-   */
-  onKeyPress?: (swiper: SwiperClass, keyCode: string) => void;/**
    * Event will be fired on mousewheel scroll
    */
   onScroll?: (swiper: SwiperClass, event: WheelEvent) => void;/**
-   * Event will be fired on draggable scrollbar drag start
+   * Event will be fired on key press
    */
-  onScrollbarDragStart?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;
-
-  /**
-   * Event will be fired on draggable scrollbar drag move
-   */
-  onScrollbarDragMove?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;
-
-  /**
-   * Event will be fired on draggable scrollbar drag end
-   */
-  onScrollbarDragEnd?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;/**
+  onKeyPress?: (swiper: SwiperClass, keyCode: string) => void;/**
    * Event will be fired on navigation hide
    */
   onNavigationHide?: (swiper: SwiperClass) => void;
@@ -118,6 +105,19 @@ type SwiperProps = Omit<
    * Event will be fired on pagination show
    */
   onPaginationShow?: (swiper: SwiperClass) => void;/**
+   * Event will be fired on draggable scrollbar drag start
+   */
+  onScrollbarDragStart?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;
+
+  /**
+   * Event will be fired on draggable scrollbar drag move
+   */
+  onScrollbarDragMove?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;
+
+  /**
+   * Event will be fired on draggable scrollbar drag end
+   */
+  onScrollbarDragEnd?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;/**
    * Event will be fired on zoom change
    */
   onZoomChange?: (swiper: SwiperClass, scale: number, imageEl: HTMLElement, slideEl: HTMLElement) => void;

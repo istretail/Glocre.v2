@@ -20,15 +20,15 @@ export default function ProcuregSeller() {
             <div className="col-lg-6 start-your-b2b-left-contents-procureg">
               <h3>
                 START YOUR B2B <br /> PROCUREMENT WITH <br />
-                <span>PROCURE G</span>
+                <span>GLOCRE</span>
               </h3>
               <p>
-                ProcureG is a B2B procurement platform that streamlines the
+                GLOCRE is a B2B procurement platform that streamlines the
                 sourcing and purchasing process for businesses. It helps
                 organizations efficiently manage suppliers, negotiate better
                 deals, and optimize procurement workflows.
               </p>
-              <button className="col-lg-3">
+              <button className="col-lg-3 col-5 text-white">
                 {" "}
                 <Link to="/seller/register">Register</Link>
               </button>
@@ -46,14 +46,13 @@ export default function ProcuregSeller() {
       <section className="why-choose-section-procureg">
         <div className="container">
           <div className="why-choose-heading-procureg">
-            <button>REGISTER</button>
             <h3>
               Why choose B2B procurement with <br />
-              <span>ProcureG ?</span>
+              <span>GLOCRE ?</span>
             </h3>
             <div>
               <p>
-                At ProcureG, we stand as a unique e-commerce platform offering a
+                At GLOCRE, we stand as a unique e-commerce platform offering a
                 wide range of utility products to meet diverse industrial needs.
                 We are committed to establishing ourselves as a 'trusted seller'
                 hub, providing our sellers with a secure platform to grow their
@@ -61,7 +60,7 @@ export default function ProcuregSeller() {
                 we’ve seen substantial growth and success, with an ongoing goal
                 of capturing businesses across India. Today, our website
                 showcases an extensive collection of over 10,00,000+ SKUs
-                sourced from globally recognized brands, positioning ProcureG as
+                sourced from globally recognized brands, positioning GLOCRE as
                 a reliable and trusted destination for all industrial
                 requirements.
               </p>
@@ -69,19 +68,19 @@ export default function ProcuregSeller() {
           </div>
           <div className="why-choose-3-contents-procureg">
             <div className="row" style={{ marginLeft: "5%" }}>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mb-2">
                 <div class="card">
                   <img src={prosellerimg6} />
                   <h5 class="card-title">Add Products</h5>
                 </div>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mb-2">
                 <div class="card">
                   <img src={prosellerimg7} />
                   <h5 class="card-title">Available Globally</h5>
                 </div>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-4 mb-2">
                 <div class="card">
                   <img src={prosellerimg8} />
                   <h5 class="card-title">
@@ -97,7 +96,7 @@ export default function ProcuregSeller() {
       {/* WAY TO BECOME SELLER */}
       <center className="way-to-seller-section-procureg">
         <div className="way-to-seller-heading-procureg">
-          <button>HOW IT WORKS</button>
+          {/* <button>HOW IT WORKS</button> */}
           <h3>
             Our way to become a seller process is <br /> <span>very easy</span>
           </h3>

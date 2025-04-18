@@ -77,3 +77,34 @@
     margin: 20px auto;
   }
 }
+
+
+.order-tracking-box-contents-procureg {
+  .card {
+    height: 17vh;
+  }
+}
+
+.order-tracking-section-procureg {
+  .cartRightBox {
+    padding-left: 0 !important;
+  }
+}
+
+
+
+.order-tracking-progress-contents-procureg{
+  margin-top: -2%;
+  text-align: center;
+}
+
+  .iconnn {
+    /* height: 50px;
+    width: 50px; */
+    padding: 1.25rem;
+    border-radius: 50%;
+    background-color: #ffad63;
+    color: #fff;
+    font-size: 17px !important;
+  }
+

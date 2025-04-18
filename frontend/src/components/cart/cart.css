@@ -3,7 +3,7 @@
   /* adjust the width of each column */
   margin: 10px;
 }
-
+ 
 @media (min-width: 992px) {
   /* desktop screen */
   .cart-item > div {
@@ -11,7 +11,7 @@
     /* adjust the width of each column on desktop */
   }
 }
-
+ 
 /* @media (max-width: 576px) {
   .cart-item .col-lg-3, .cart-item .col-lg-2 {
     flex: 1;
@@ -25,55 +25,55 @@
 .minus {
   padding: 0.1rem 0.5rem;
 }
-
+ 
 .qty-input {
   background: transparent;
 }
-
+ 
 .cart-container {
   margin: 2%;
 }
-
+ 
 .cart-item-price {
   margin-top: 14%;
 }
-
+ 
 @media (max-width: 992px) {
   /* desktop screen */
   .cart-item-price {
     margin-top: 0%;
   }
 }
-
+ 
 /* Shipping Address Container */
 .address-container-shipping {
   display: flex;
   align-items: center;
 }
-
+ 
 .address-container-shipping .input-ship {
   align-items: center;
 }
-
+ 
 /* Address Content Styling */
 .address-container-shipping div {
   text-align: start;
   flex-grow: 1;
 }
-
+ 
 /* Address Item Styling */
 .address-item {
   font-size: 14px;
   color: #333;
   display: block;
 }
-
+ 
 /* General container styling */
 .address-container-shipping {
   font-family: Arial, sans-serif;
   color: #333;
 }
-
+ 
 /* Styling for each label */
 .address-item {
   font-size: 14px;
@@ -81,21 +81,21 @@
   display: inline-block;
   margin-right: 5px;
 }
-
+ 
 /* Styling for address sections (each line) */
 .address-container-shipping .address-item:nth-child(1),
 .address-container-shipping .address-item:nth-child(2),
 .address-container-shipping .address-item:nth-child(3) {
   font-weight: bold;
 }
-
+ 
 /* Final label (phone number) */
 .num-shiping {
   color: #0073e6;
   font-size: 16px;
   font-weight: bold;
 }
-
+ 
 /* Center the checkbox and text */
 .card-check-box-shipping {
   display: flex;
@@ -104,17 +104,17 @@
   gap: 10px;
   padding: 10px;
 }
-
+ 
 /* Custom styling for checkbox */
 .card-check-box-shipping {
   .custom-checkbox {
     display: none;
   }
-
+ 
   label {
     margin-bottom: 0 !important;
   }
-
+ 
   .custom-checkbox + label {
     display: inline-block;
     width: 24px;
@@ -127,12 +127,12 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
-
+ 
   .custom-checkbox:checked + label {
     background-color: #ffad63;
     border-color: #ffad63;
   }
-
+ 
   .custom-checkbox:checked + label::after {
     content: "";
     width: 12px;
@@ -145,7 +145,7 @@
     transform: translate(-50%, -50%);
   }
 }
-
+ 
 /* coinfirm order page css */
 .card-check-box-shipping p {
   margin-bottom: 0 !important;
@@ -153,19 +153,19 @@
   color: #333;
   font-weight: bold;
 }
-
+ 
 .button-container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
+ 
 .info-box {
   padding: 15px;
   border-radius: 8px;
   width: 100%;
 }
-
+ 
 .info-box-p-span {
   white-space: normal;
   word-wrap: break-word;
@@ -174,7 +174,7 @@
   max-width: 100%; /* Prevents overflowing */
   color: #ffad63 !important;
 }
-
+ 
 .info-box-p-b {
   width: 180px;
   color: #8c8c8c;
@@ -182,7 +182,7 @@
 .info-box-p-b2 {
   width: 20px;
 }
-
+ 
 .info-box p {
   display: flex;
   border-bottom: 1px solid #eee;
@@ -190,15 +190,15 @@
   margin: 0;
   font-size: 16px;
 }
-
+ 
 .info-box p:last-child {
   border-bottom: none;
 }
-
+ 
 .info-box b {
   color: #333;
 }
-
+ 
 .info-box span {
   color: #007bff;
   font-weight: 500;

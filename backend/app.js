@@ -10,6 +10,7 @@ const products = require('./routes/productDetails');
 const order = require('./routes/order')
 const payment = require('./routes/payment')
 const analyticsRoutes = require('./routes/analyticsRoutes')
+const bannerRoutes = require('./routes/bannerRoute')
 
 app.use('/uploads', express.static(path.join(__dirname,'uploads')))
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use('/api/v1/',auth);
 app.use('/api/v1/',order);
 app.use('/api/v1/',payment);
 app.use('/api/v1/',analyticsRoutes)
+app.use('/api/v1/',bannerRoutes)
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,'../frontend/build')))
     app.get('*', (req,res) => {

@@ -67,9 +67,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
       if (match) {
         const variantIndex = parseInt(match[1], 10);
         if (req.body.variants[variantIndex]) {
-          req.body.variants[variantIndex].images = req.files[key].map((file) => (
-            `${req.protocol}://${req.get("host")}/uploads/product/${file.filename}`
-          ));
+          req.body.variants[variantIndex].images = req.files[key].map((file) => file.location);
         }
       }
     });
@@ -85,9 +83,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     condition: req.body.condition,
     tax: req.body.tax,
     keyPoints: req.body.keyPoints,
-    images: req.files.images ? req.files.images.map(file => (
-      `${req.protocol}://${req.get("host")}/uploads/product/${file.filename}`
-    )) : [],
+    images: req.files.images ? req.files.images.map(file => file.location) : [],
     variants: req.body.variants,
     createdBy: req.user.id,
     isRefundable: req.body.isRefundable === "true",
@@ -95,24 +91,27 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     offPrice: req.body.offPrice,
     stock: req.body.stock,
     itemModelNum: req.body.itemModelNum,
-    serialNum: req.body.serialNum,
-    connectionType: req.body.connectionType,
-    hardwarePlatform: req.body.hardwarePlatform,
-    os: req.body.os,
-    powerConception: req.body.powerConception,
-    batteries: req.body.batteries,
-    packageDimension: req.body.packageDimension,
-    portDescription: req.body.portDescription,
-    connectivityType: req.body.connectivityType,
-    compatibleDevices: req.body.compatibleDevices,
-    powerSource: req.body.powerSource,
-    specialFeatures: req.body.specialFeatures,
-    includedInThePackage: req.body.includedInThePackage,
-    manufacturer: req.body.manufacturer,
-    itemSize: req.body.itemSize,
+    sku: req.body.sku,
+    upc: req.body.upc,
+    hsn: req.body.hsn,
+    countryofOrgin: req.body.countryofOrgin,
+    manufactureDetails: req.body.manufactureDetails,
+    productCertifications: req.body.productCertifications,
+    itemLength: req.body.itemLength,
+    itemHeight: req.body.itemHeight,
+    itemWeight: req.body.itemWeight,
     itemWidth: req.body.itemWidth,
+    moq: req.body.moq,
+    shippingCostlol: req.body.shippingCostlol,
+    shippingCostNorth: req.body.shippingCostNorth,
+    shippingCostSouth: req.body.shippingCostSouth,
+    shippingCostEast: req.body.shippingCostEast,
+    shippingCostWest: req.body.shippingCostWest,
+    shippingCostNe: req.body.shippingCostNe,
+    unit: req.body.unit,
+
   });
-  console.log(req.body)
+  // console.log(req.body)
   res.status(201).json({ success: true, product });
 });
 //getting single product -- api/v1/product/id
@@ -143,61 +142,51 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       message: "Product not found",
     });
   }
-  console.log(req.body)
+  // console.log(req.body)
   const creatorInfo = {
     email: product.createdBy.email,
     name: product.createdBy.name,
   };
 
-  let BASE_URL = process.env.BACKEND_URL;
-  if (process.env.NODE_ENV === "production") {
-    BASE_URL = `${req.protocol}://${req.get("host")}`;
-  }
-
-  // Handle main product images if provided
+  // Handle main product images (S3)
   if (req.files && req.files.images) {
-    req.body.images = req.files.images.map(
-      (file) => `${BASE_URL}/uploads/product/${file.filename}`
-    );
+    req.body.images = req.files.images.map(file => file.location);
   }
 
-  // Preserve existing variants if no variants are provided
+  // Prepare variant updates
   let updatedVariants = product.variants ? [...product.variants] : [];
 
   if (req.body.variants) {
-    // Ensure variants is an array
     if (!Array.isArray(req.body.variants)) {
       req.body.variants = [req.body.variants];
     }
 
     req.body.variants.forEach((variant, index) => {
       if (product.variants[index]) {
-        // Merge existing variant details with updated data
         updatedVariants[index] = { ...product.variants[index], ...variant };
       } else {
-        // Add new variant
         updatedVariants[index] = variant;
       }
     });
   }
 
-  // Handle variant images if uploaded
+  // Handle variant images (S3)
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
       if (match) {
         const variantIndex = parseInt(match[1], 10);
-        if (!updatedVariants[variantIndex]) {
-          updatedVariants[variantIndex] = {};
+        if (!Array.isArray(req.body.variants)) {
+          req.body.variants = product.variants || [];
         }
-        updatedVariants[variantIndex].images = req.files[key].map(
-          (file) => `${BASE_URL}/uploads/product/${file.filename}`
-        );
+        if (!req.body.variants[variantIndex]) {
+          req.body.variants[variantIndex] = product.variants[variantIndex] || {};
+        }
+        req.body.variants[variantIndex].images = req.files[key].map(file => file.location);
       }
     });
   }
 
-  // Assign updated variants back to the request body
   req.body.variants = updatedVariants;
 
   // Merge req.body with existing product data
@@ -439,9 +428,7 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
       if (match) {
         const variantIndex = parseInt(match[1], 10);
         if (req.body.variants[variantIndex]) {
-          req.body.variants[variantIndex].images = req.files[key].map((file) => (
-            `${req.protocol}://${req.get("host")}/uploads/product/${file.filename}`
-          ));
+          req.body.variants[variantIndex].images = req.files[key].map((file) => file.location);
         }
       }
     });
@@ -457,9 +444,7 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     condition: req.body.condition,
     tax: req.body.tax,
     keyPoints: req.body.keyPoints,
-    images: req.files.images ? req.files.images.map(file => (
-      `${req.protocol}://${req.get("host")}/uploads/product/${file.filename}`
-    )) : [],
+    images: req.files.images ? req.files.images.map(file => file.location) : [],
     variants: req.body.variants,
     createdBy: req.user.id,
     isRefundable: req.body.isRefundable === "true",
@@ -467,22 +452,24 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     offPrice: req.body.offPrice,
     stock: req.body.stock,
     itemModelNum: req.body.itemModelNum,
-    serialNum: req.body.serialNum,
-    connectionType: req.body.connectionType,
-    hardwarePlatform: req.body.hardwarePlatform,
-    os: req.body.os,
-    powerConception: req.body.powerConception,
-    batteries: req.body.batteries,
-    packageDimension: req.body.packageDimension,
-    portDescription: req.body.portDescription,
-    connectivityType: req.body.connectivityType,
-    compatibleDevices: req.body.compatibleDevices,
-    powerSource: req.body.powerSource,
-    specialFeatures: req.body.specialFeatures,
-    includedInThePackage: req.body.includedInThePackage,
-    manufacturer: req.body.manufacturer,
-    itemSize: req.body.itemSize,
+    sku: req.body.sku,
+    upc: req.body.upc,
+    hsn: req.body.hsn,
+    countryofOrgin: req.body.countryofOrgin,
+    manufactureDetails: req.body.manufactureDetails,
+    productCertifications: req.body.productCertifications,
+    itemLength: req.body.itemLength,
+    itemHeight: req.body.itemHeight,
+    itemWeight: req.body.itemWeight,
     itemWidth: req.body.itemWidth,
+    moq: req.body.moq,
+    shippingCostlol: req.body.shippingCostlol,
+    shippingCostNorth: req.body.shippingCostNorth,
+    shippingCostSouth: req.body.shippingCostSouth,
+    shippingCostEast: req.body.shippingCostEast,
+    shippingCostWest: req.body.shippingCostWest,
+    shippingCostNe: req.body.shippingCostNe,
+    unit: req.body.unit,
   });
 
   res.status(201).json({ 
@@ -541,34 +528,29 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     name: product.createdBy.name,
   };
 
-  let BASE_URL = process.env.BACKEND_URL;
-  if (process.env.NODE_ENV === "production") {
-    BASE_URL = `${req.protocol}://${req.get("host")}`;
+  // Handle main product images (S3)
+  if (req.files && req.files.images) {
+    req.body.images = req.files.images.map(file => file.location);
   }
 
-  // Handle images
-  if (req.files && req.files.images) {
-    req.body.images = req.files.images.map(
-      (file) => `${BASE_URL}/uploads/product/${file.filename}`
-    );
-  }
+  // Prepare variant updates
   let updatedVariants = product.variants ? [...product.variants] : [];
+
   if (req.body.variants) {
-    // Ensure variants is an array
     if (!Array.isArray(req.body.variants)) {
       req.body.variants = [req.body.variants];
     }
 
     req.body.variants.forEach((variant, index) => {
       if (product.variants[index]) {
-        // Merge existing variant details with updated data
         updatedVariants[index] = { ...product.variants[index], ...variant };
       } else {
-        // Add new variant
         updatedVariants[index] = variant;
       }
     });
   }
+
+  // Handle variant images (S3)
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
@@ -580,23 +562,21 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
         if (!req.body.variants[variantIndex]) {
           req.body.variants[variantIndex] = product.variants[variantIndex] || {};
         }
-        req.body.variants[variantIndex].images = req.files[key].map(
-          (file) => `${BASE_URL}/uploads/product/${file.filename}`
-        );
+        req.body.variants[variantIndex].images = req.files[key].map(file => file.location);
       }
     });
   }
 
   req.body.variants = updatedVariants;
 
-  // Merge req.body with existing product data
+  // Merge existing with updated data
   const updatedData = {
     ...product.toObject(),
     ...req.body,
     status: "pending",
   };
 
-  // Update product
+  // Save updated product
   product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
     new: true,
     runValidators: true,
@@ -606,17 +586,16 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     success: true,
     product,
   });
-  // Send email notification to admin and user about the product update
+
+  // Send notification emails
   try {
-    const adminEmail = process.env.ADMIN_EMAIL; // Ensure you have the admin email in your environment variables
+    const adminEmail = process.env.ADMIN_EMAIL;
     const emailContent = `
       <h2>Product Update Notification</h2>
       <p>Dear ${creatorInfo.name},</p>
       <p>Your product "${product.name}" has been updated and is now pending approval.</p>
-      <p>Thank you for using our platform!</p>
     `;
 
-    // Send email to user
     await sendEmail({
       fromEmail: "donotreply@glocre.com",
       email: creatorInfo.email,
@@ -624,7 +603,6 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
       html: emailContent,
     });
 
-    // Send email to admin
     await sendEmail({
       fromEmail: "donotreply@glocre.com",
       email: adminEmail,

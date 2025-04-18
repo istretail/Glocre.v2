@@ -5,6 +5,7 @@ const authSlice = createSlice({
   initialState: {
     loading: false,
     isAuthenticated: false,
+    banners: [],
   },
   reducers: {
     loginRequest(state, action) {
@@ -215,6 +216,68 @@ const authSlice = createSlice({
         error: action.payload,
       };
     },
+    uploadBannerRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    uploadBannerSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        banners: [action.payload, ...state.banners],
+      };
+    },
+    uploadBannerFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
+
+    getBannersRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    getBannersSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        banners: action.payload.banners,
+      };
+    },
+    getBannersFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
+
+    deleteBannerRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    deleteBannerSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        banners: state.banners.filter((banner) => banner._id !== action.payload),
+      };
+    },
+    deleteBannerFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 const { actions, reducer } = authSlice;
@@ -251,6 +314,15 @@ export const {
   verifyEmailRequest,
   verifyEmailSuccess,
   verifyEmailFail,
+  uploadBannerRequest,
+  uploadBannerSuccess,
+  uploadBannerFail,
+  getBannersRequest,
+  getBannersSuccess,
+  getBannersFail,
+  deleteBannerRequest,
+  deleteBannerSuccess,
+  deleteBannerFail,
 } = actions;
 
 export default reducer;

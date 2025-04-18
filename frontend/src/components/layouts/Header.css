@@ -507,9 +507,61 @@ header .headerTabs li span.badge {
 
 @media (max-width: 400px) {
   .item {
-    flex: 1 1 100%;
-    /* One item per row */
+    flex: 1 1 calc(50% - 16px);
+    /* Two items per row */
   }
 }
 
-/*  */
+.mobile-navbar-glc {
+
+  background-color: #fff; /* or whatever you prefer */
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtle shadow */
+}
+
+
+
+
+
+
+
+
+
+/* Mobile , medium navbar */
+@media (max-width: 1000px) {
+  .headerWrapper {
+    display: none;
+  }
+
+  .mobile-navbar-glc {
+    background-color: #f5f5f5;
+  }
+
+  .second-nav-glc {
+    display: none;
+  }
+
+  .catSliderSection {
+    padding: 0px;
+  }
+
+  .afterHeader{
+    display: none;
+  }
+  
+  body {
+    padding-top: 70px; /* adjust based on navbar height */
+  }
+
+}
+
+@media (min-width: 1000px) {
+  .mobile-navbar-glc {
+    display: none;
+  }
+
+}
+
+
+
+

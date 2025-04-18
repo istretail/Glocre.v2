@@ -1,5 +1,5 @@
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Document,
   Image,
@@ -8,31 +8,31 @@ import {
   StyleSheet,
   Text,
   View,
-} from "@react-pdf/renderer";
-import { Fragment, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import { logEvent } from "../../actions/analyticsActions";
-import { orderDetail as orderDetailAction } from "../../actions/orderActions";
+} from '@react-pdf/renderer';
+import { Fragment, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { logEvent } from '../../actions/analyticsActions';
+import { orderDetail as orderDetailAction } from '../../actions/orderActions';
 // import lod from "../../images/logo.png";
-import Loader from "../layouts/Loader";
-import "./OrderDetail.css";
-import { Button } from "@mui/material";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import Loader from '../layouts/Loader';
+import './OrderDetail.css';
+import Nav from '../layouts/nav';
+
 export default function OrderDetail() {
-  const { orderDetail, loading } = useSelector((state) => state.orderState);
+  const { orderDetail, loading } = useSelector(state => state.orderState);
   const {
     shippingInfo = {},
     billingInfo = {},
     user = {},
-    orderStatus = "Processing",
+    orderStatus = 'Processing',
     orderItems = [],
     totalPrice = 0,
     paymentInfo = {},
     createdAt = 0,
   } = orderDetail;
   const isPaid =
-    paymentInfo && paymentInfo.status === "succeeded" ? true : false;
+    paymentInfo && paymentInfo.status === 'succeeded' ? true : false;
   const dispatch = useDispatch();
   const { id } = useParams();
   const [generatePdf, setGeneratePdf] = useState(false);
@@ -54,13 +54,13 @@ export default function OrderDetail() {
   useEffect(() => {
     // Update progress based on orderStatus
     switch (orderStatus) {
-      case "Processing":
+      case 'Processing':
         setProgress(17);
         break;
-      case "Shipped":
+      case 'Shipped':
         setProgress(50);
         break;
-      case "Delivered":
+      case 'Delivered':
         setProgress(99);
         break;
       default:
@@ -86,34 +86,34 @@ export default function OrderDetail() {
     },
     subheading: {
       fontSize: 16,
-      fontWeight: "bold",
+      fontWeight: 'bold',
       marginTop: 10,
       marginBottom: 5,
     },
     greenColor: {
-      color: "green",
+      color: 'green',
     },
     redColor: {
-      color: "red",
+      color: 'red',
     },
     tableContainer: {
       marginTop: 10,
-      border: "1px solid #000",
+      border: '1px solid #000',
     },
     tableRow: {
-      flexDirection: "row",
-      borderBottom: "1px solid #000",
+      flexDirection: 'row',
+      borderBottom: '1px solid #000',
       padding: 5,
     },
     tableCell: {
-      width: "35%",
+      width: '35%',
       padding: 3,
       fontSize: 10,
     },
     image: {
-      height: "50",
-      width: "50",
-      marginHorizontal: "45%",
+      height: '50',
+      width: '50',
+      marginHorizontal: '45%',
     },
   });
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function OrderDetail() {
     return () => {
       const timeSpent = (Date.now() - startTime) / 1000;
       logEvent({
-        event: "page_view",
+        event: 'page_view',
         pageUrl: window.location.pathname,
         timeSpent,
       });
@@ -139,16 +139,16 @@ export default function OrderDetail() {
           <Text>Name: {orderDetail.user.name}</Text>
           <Text>Phone: {orderDetail.shippingInfo.phoneNo}</Text>
           <Text>
-            Address: {orderDetail.shippingInfo.address},{" "}
-            {orderDetail.shippingInfo.city},{" "}
-            {orderDetail.shippingInfo.postalCode},{" "}
+            Address: {orderDetail.shippingInfo.address},{' '}
+            {orderDetail.shippingInfo.city},{' '}
+            {orderDetail.shippingInfo.postalCode},{' '}
             {orderDetail.shippingInfo.state}, {orderDetail.shippingInfo.country}
           </Text>
           <Text style={styles.subheading}>Billing Info</Text>
           <Text>Name: {orderDetail.user.name}</Text>
           <Text>Phone: {orderDetail.billingInfo.phoneNo}</Text>
           <Text>
-            Address: {orderDetail.billingInfo.address},{" "}
+            Address: {orderDetail.billingInfo.address},{' '}
             {orderDetail.billingInfo.city}, {orderDetail.billingInfo.postalCode}
             , {orderDetail.billingInfo.state}, {orderDetail.billingInfo.country}
           </Text>
@@ -158,22 +158,22 @@ export default function OrderDetail() {
           <Text
             style={
               orderDetail.paymentInfo &&
-              orderDetail.paymentInfo.status === "paid"
+              orderDetail.paymentInfo.status === 'paid'
                 ? styles.greenColor
                 : styles.redColor
             }
           >
             {orderDetail.paymentInfo &&
-            orderDetail.paymentInfo.status === "paid"
-              ? "PAID"
-              : "NOT PAID"}
+            orderDetail.paymentInfo.status === 'paid'
+              ? 'PAID'
+              : 'NOT PAID'}
           </Text>
 
           <Text style={styles.subheading}>Order Status</Text>
           <Text
             style={
               orderDetail.orderStatus &&
-              orderDetail.orderStatus.includes("Delivered")
+              orderDetail.orderStatus.includes('Delivered')
                 ? styles.greenColor
                 : styles.redColor
             }
@@ -191,7 +191,7 @@ export default function OrderDetail() {
               <Text style={styles.tableCell}>Quantity</Text>
             </View>
             {orderDetail.orderItems &&
-              orderDetail.orderItems.map((item) => (
+              orderDetail.orderItems.map(item => (
                 <View key={item._id} style={styles.tableRow}>
                   <Text style={styles.tableCell}>{item.product}</Text>
                   <Text style={styles.tableCell}>202456</Text>
@@ -207,101 +207,128 @@ export default function OrderDetail() {
   );
 
   return (
-    <Fragment>
+    <>
       {loading ? (
         <Loader />
       ) : (
-        <Fragment>
+        <section>
           {/* ORDER TRACKING */}
-          <section className="container order-tracking-section-procureg mt-5">
-            <div class="card">
-              <div class="card-body">
-                <h6 class="card-title">My Orders / Tracking</h6>
+          <Nav />
 
+          <div className="breadcrumbWrapper mb-4">
+            <div className="container-fluid">
+              <ul className="breadcrumb breadcrumb2 mb-0">
+                <li>
+                  <Link to={'/'}>Home</Link>
+                </li>
+                <li>
+                  <Link to={'/orders'}>My Orders</Link>
+                </li>
+                <li>OrderDetails</li>
+              </ul>
+            </div>
+          </div>
+
+          <section className="container-fluid order-tracking-section-procureg mb-4">
+            <div class="">
+              <div class="cartRightBox">
+                <h1 className="hd mb-0">My Orders / Tracking</h1>
                 <hr />
-                <div
-                  className="d-flex"
-                  style={{ justifyContent: "space-between" }}
-                >
-                  <h5 class="card-title2">Order ID :{orderDetail._id} </h5>
-                  <h5 class="card-title2">Total Amount :₹{totalPrice} </h5>
+                <div className="row mb-2">
+                  <div className="col-lg-9">
+                    <h4 style={{ color: '#ffad63' }}>
+                        Order ID :{orderDetail.clocreOrderId}{' '}
+                    </h4>
+                  </div>
+                  <div className="col-lg-3">
+                    <h5 class="card-title2">
+                      TOTAL AMOUNT :{' '}
+                      <span style={{ color: '#ffad63' }}>₹ {totalPrice}</span>
+                    </h5>
+                  </div>
                 </div>
 
-                <div className="order-tracking-box-contents-procureg">
+                <div className="order-tracking-box-contents-procureg ">
                   <div className="row">
-                    <div className="col-lg-3">
-                      <div className="">
-                        <h5>Estimated time of delivery</h5>
-                        <p>{formattedDate}</p>
+                    <div className="col-lg-3 mb-2">
+                      <div className="card box-contents-glc">
+                        <div className="">
+                          <h5>Estimated time of delivery</h5>
+                          <p>{formattedDate}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-3 mb-2">
+                      <div className="card box-contents-glc">
+                        <div className="">
+                          <h5>Delivering to</h5>
+                          <p>
+                            {shippingInfo.address}, {shippingInfo.city},{' '}
+                            {shippingInfo.postalCode}, {shippingInfo.state},{' '}
+                            {shippingInfo.country}{' '}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-3 mb-2">
+                      <div className="card box-contents-glc">
+                        <div className="">
+                          <h5>Status</h5>
+                          <p>{orderStatus}</p>
+                        </div>
                       </div>
                     </div>
                     <div className="col-lg-3">
-                      <div className="">
-                        <h5>Delivering to</h5>
-                        <p>
-                          {shippingInfo.address}, {shippingInfo.city},{" "}
-                          {shippingInfo.postalCode}, {shippingInfo.state},{" "}
-                          {shippingInfo.country}{" "}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="col-lg-3">
-                      <div className="">
-                        <h5>Status</h5>
-                        <p>{orderStatus}</p>
-                      </div>
-                    </div>
-                    <div className="col-lg-3">
-                      <div className="">
-                        <h5>Tracking #:</h5>
-                        <p>BD4696366266 </p>
+                      <div className="card box-contents-glc">
+                        <div className="">
+                          <h5>Tracking # :</h5>
+                          <p>BD4696366266</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <hr className="order-tracking-2nd-hr mt-5" />
-
-                <div style={{ margin: "3% 0" }}>
+                <div
+                  className="progress mt-4"
+                  style={{ backgroundColor: '#f5f5f5', height: '7px' }}
+                >
                   <div
-                    className="progress"
-                    style={{ backgroundColor: "#fff", height: "7px" }}
-                  >
-                    <div
-                      className="progress-bar"
-                      role="progressbar"
-                      style={{ width: `${progress}%` }}
-                      aria-valuenow={progress}
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                    ></div>
-                  </div>
+                    className="progress-bar"
+                    role="progressbar"
+                    style={{ width: `${progress}%` }}
+                    aria-valuenow={progress}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
                 </div>
 
-                <div class="d-flex justify-content-around order-tracking-progress-contents-procureg">
-                  <div className="col-lg-4">
-                    <div>
-                      <FontAwesomeIcon icon={faCheck} className="iconnn" />
-                      <h6>Order Confirmed</h6>
+                <div class="order-tracking-progress-contents-procureg">
+                  <div className="row ">
+                    <div className="col-lg-4" style={{display:"flex", justifyContent:"center"}}>
+                      <div>
+                        <FontAwesomeIcon icon={faCheck} className="iconnn" />
+                        <h6>Order Confirmed</h6>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div>
-                      <FontAwesomeIcon icon={faCheck} className="iconnn" />
-                      <h6>Shipped</h6>
+                    <div className="col-lg-4"  style={{display:"flex", justifyContent:"center"}}>
+                      <div>
+                        <FontAwesomeIcon icon={faCheck} className="iconnn" />
+                        <h6>Shipped</h6>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div>
-                      <FontAwesomeIcon icon={faCheck} className="iconnn" />
-                      <h6>Delivered</h6>
+                    <div className="col-lg-4"  style={{display:"flex", justifyContent:"center"}}>
+                      <div>
+                        <FontAwesomeIcon icon={faCheck} className="iconnn" />
+                        <h6>Delivered</h6>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="order-tracking-pdf-contents-procureg">
                   {orderItems &&
-                    orderItems.map((item) => (
+                    orderItems.map(item => (
                       <div class="card col-3 mb-3 ">
                         <div class="card-body">
                           <div className="row">
@@ -315,13 +342,15 @@ export default function OrderDetail() {
                             <div
                               className="col-lg-9"
                               style={{
-                                display: "flex",
-                                alignItems: "center",
-                                flexDirection: "column",
+                                display: 'flex',
+                                alignItems: 'center',
+                                flexDirection: 'column',
                               }}
                             >
                               <div>
-                                <Link to={`/products/${item.product}`}>
+                                <Link to={`/products/${item.product}`}
+                                style={{color:"#2f4d2a"}}
+                                >
                                   {item.name}
                                 </Link>
                                 <p>₹{item.price}</p>
@@ -344,30 +373,26 @@ export default function OrderDetail() {
                       className="btn-primary"
                     >
                       {({ blob, url, loading, error }) =>
-                        loading ? "Loading..." : "Click to download Invoice"
+                        loading ? 'Loading...' : 'Click to download Invoice'
                       }
                     </PDFDownloadLink>
-                  ) : orderDetail.orderStatus === "Delivered" ? (
+                  ) : orderDetail.orderStatus === 'Delivered' ? (
                     <button onClick={handleGeneratePdf} className="">
                       Generate Invoice
                     </button>
-                  ) : null}{" "}
+                  ) : null}{' '}
                   {/* This will hide the button if the status is not 'Delivered' */}
-                    <div className="d-flex align-items-center">
-                      <Link to="/">
-                        <Button className="btn-g">
-                          <KeyboardBackspaceIcon /> Continue Shopping
-                        </Button>
-                      </Link>
-                    </div>
+                  <Link to="/">
+                    <button className="btn-g">Back to home</button>
+                  </Link>
                 </div>
               </div>
             </div>
           </section>
 
           {/* original */}
-        </Fragment>
+        </section>
       )}
-    </Fragment>
+    </>
   );
 }

@@ -21,8 +21,7 @@
   }
 
   .start-your-b2b-left-contents-procureg span {
-    color: transparent;
-    -webkit-text-stroke: 2px #ffad6380;
+    color: #ffad63;
   }
 
   .start-your-b2b-left-contents-procureg p {
@@ -52,12 +51,6 @@
     transition: 1s;
   }
 
-  .start-your-b2b-left-contents-procureg button:hover {
-    border: 1px solid #ffad63;
-    color: #ffad63;
-    background-color: white;
-    transition: 1s;
-  }
 
   .start-your-b2b-right-contents-procureg {
     display: flex;
@@ -92,8 +85,7 @@
   }
 
   .why-choose-heading-procureg span {
-    color: transparent;
-    -webkit-text-stroke: 1px #ffad6380;
+    color: #ffad63;
   }
 
   .why-choose-heading-procureg div {
@@ -131,15 +123,15 @@
   }
 
   .why-choose-3-contents-procureg .card-title {
-    color: #ffad63;
+    color: #000;
     text-align: center;
-    margin-top: 17px;
+    margin-top: 20px;
   }
 }
 
 /* WAY TO BECOME SELLER */
 .way-to-seller-section-procureg {
-  padding: 5% 0;
+  padding: 3% 0;
 
   .way-to-seller-heading-procureg {
     text-align: center;
@@ -163,8 +155,7 @@
   }
 
   .way-to-seller-heading-procureg span {
-    color: transparent;
-    -webkit-text-stroke: 1px #ffad6380;
+    color: #ffad63;
   }
 
   .way-to-seller-4-contents-procureg {

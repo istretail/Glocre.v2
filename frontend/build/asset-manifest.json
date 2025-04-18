@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.7c36910e.css",
-    "main.js": "/static/js/main.092955c5.js",
+    "main.css": "/static/css/main.41d5e561.css",
+    "main.js": "/static/js/main.a85aebb1.js",
     "static/media/mailsent.jpg": "/static/media/mailsent.2e5a3625ffacb533e874.jpg",
     "static/media/OURBUSINESSG2.png": "/static/media/OURBUSINESSG2.5c61e3d812a9869e38b6.png",
     "static/media/OURBUSINESSG3.png": "/static/media/OURBUSINESSG3.1503920c841ebbd1dcae.png",
@@ -12,18 +12,13 @@
     "static/media/SELLERPAGEIMG1.png": "/static/media/SELLERPAGEIMG1.3efd06355fc6c0ac199d.png",
     "static/media/ordersuccess.jpg": "/static/media/ordersuccess.14e9958430f51565b7f4.jpg",
     "static/media/procure-g-logo.png": "/static/media/procure-g-logo.ad5e4edf2d3cbc9570f5.png",
-    "static/media/GLOCRE-CONTACT-BANNER.png": "/static/media/GLOCRE-CONTACT-BANNER.d6ec348ac784607da2dd.png",
-    "static/media/banner (5).webp": "/static/media/banner (5).7864851028df56e300b6.webp",
-    "static/media/banner (6).webp": "/static/media/banner (6).38e94e06c20bb48ad619.webp",
-    "static/media/banner (4).webp": "/static/media/banner (4).b90eea32646c5bbc2db4.webp",
+    "static/media/GLOCRE-CONTACT-BANNER.png": "/static/media/GLOCRE-CONTACT-BANNER.2f2f8e498d37413e922d.png",
+    "static/media/payment  (5).png": "/static/media/payment  (5).dd56d34acd4d7e0a0fb1.png",
     "static/media/profileimage.svg": "/static/media/profileimage.7533cf011c83bdc3f9e3f7acfdbc9518.svg",
-    "static/media/banner (3).webp": "/static/media/banner (3).02adf63dd41656f670f6.webp",
-    "static/media/banner (2).webp": "/static/media/banner (2).0301ce05a7e7e41fa187.webp",
+    "static/media/banner-3 1.png": "/static/media/banner-3 1.de75a4184cf07b3ef808.png",
     "static/media/OIP.jpg": "/static/media/OIP.ab18fe9bec03ebf1e425.jpg",
     "static/media/FAQs.gif": "/static/media/FAQs.241b5722600b1239df67.gif",
-    "static/media/banner (1).webp": "/static/media/banner (1).066025ffad40ab0ae7f3.webp",
     "static/media/OURBUSINESSG4.png": "/static/media/OURBUSINESSG4.3918599c44f8e5a4002b.png",
-    "static/media/newsletter.png": "/static/media/newsletter.5931358dd220a40019fc.png",
     "static/media/Register-img.avif": "/static/media/Register-img.b7722ca185793d37c128.avif",
     "static/media/payment  (1).png": "/static/media/payment  (1).257843bf06c27a77fd0f.png",
     "static/media/cartempty.png": "/static/media/cartempty.49efd90ea75b10bede28.png",
@@ -34,11 +29,11 @@
     "static/media/fea.webp": "/static/media/fea.90624b3e2ca329e26f30.webp",
     "static/media/fea4.webp": "/static/media/fea4.03ed8956919efff9df8f.webp",
     "index.html": "/index.html",
-    "main.7c36910e.css.map": "/static/css/main.7c36910e.css.map",
-    "main.092955c5.js.map": "/static/js/main.092955c5.js.map"
+    "main.41d5e561.css.map": "/static/css/main.41d5e561.css.map",
+    "main.a85aebb1.js.map": "/static/js/main.a85aebb1.js.map"
   },
   "entrypoints": [
-    "static/css/main.7c36910e.css",
-    "static/js/main.092955c5.js"
+    "static/css/main.41d5e561.css",
+    "static/js/main.a85aebb1.js"
   ]
 }

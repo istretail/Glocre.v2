@@ -16,9 +16,13 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 // import Select from '@mui/material/Select';
 import Select from "../layouts/select";
 import AddIcon from "@mui/icons-material/Add";
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
+import { faCartShopping, faList, faDashboard, faShoppingBag, faSort, faPencil, faUserPlus, faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Drawer from '@mui/material/Drawer';
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
@@ -119,9 +123,16 @@ export default function Header() {
     window.location.href = "/";
   };
 
+
+  // Drawer
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
   return (
     <>
-      <div className="headerWrapper" ref={headerRef}>
+      <div className="headerWrapper">
         <header>
           <div className="container-fluid">
             <div className="row">
@@ -142,7 +153,7 @@ export default function Header() {
                       type="text"
                       id="search_field"
                       className=" desktop-search"
-                      placeholder="Search for items..."
+                      placeholder="Lets us know What you are looking for ?"
                       onChange={e => setKeyword(e.target.value)}
                       value={keyword}
                     />
@@ -153,7 +164,7 @@ export default function Header() {
 
               <div className="col-sm-5 d-flex align-items-center part3 res-hide">
                 <div className="ml-auto d-flex align-items-center">
-                  <div className="countryWrapper">
+                  {/* <div className="countryWrapper">
                     <Select
                       data={countryData}
                       placeholder={'All'}
@@ -163,7 +174,7 @@ export default function Header() {
                       view="country"
                       selectedSelectBoxItem={selectedSelectBoxItem}
                     />
-                  </div>
+                  </div> */}
 
                   <ul className="list list-inline mb-0 headerTabs">
                     <li className="list-inline-item">
@@ -174,7 +185,7 @@ export default function Header() {
                           style={{ fontWeight: 'bolder' }}
                         >
                           {' '}
-                          <AddIcon /> SELL
+                          <CurrencyRupeeIcon className="" style={{ fontSize: "16px" }} /> SELL
                         </button>
                       </Link>
                     </li>
@@ -248,14 +259,14 @@ export default function Header() {
                                 </span>
                               </Link>
                             </li>
-                            <li onClick={() => navigate('./ourbus')}>
+                            {/* <li onClick={() => navigate('./ourbus')}>
                               <Link to="/ourbus">
                                 <span className="drop-text">
                                   <BusinessOutlinedIcon className="me-2" /> Our
                                   Business
                                 </span>
                               </Link>
-                            </li>
+                            </li> */}
                             <li onClick={() => navigate('./orders')}>
                               <Link to="/myList">
                                 <span className="drop-text">
@@ -327,6 +338,157 @@ export default function Header() {
       </div>
 
       <div className="afterHeader"></div>
+
+      {/* Medium Mobile device */}
+      <section
+        className="mobile-navbar-glc"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 1050,
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <div className="d-flex justify-content- align-items-center">
+
+          <div className="me-auto">
+            <Link to="/">
+              <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "35px" }} />
+            </Link>
+          </div>
+
+          <Link to="/sell">
+            <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
+              <FontAwesomeIcon icon={faPlus} />
+            </div>
+          </Link>
+
+          <div className="dropdown me-2">
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{
+                backgroundColor: "#f5f5f5",
+                color: "#2f4d23",
+                height: "35px",
+                width: "35px",
+                borderRadius: "50%",
+                fontSize: "15px",
+                cursor: "pointer"
+              }}
+              id="dropdownMenuIconButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <FontAwesomeIcon icon={faUser} />
+            </div>
+
+            <ul
+              className="dropdown-menu dropdown-menu-end mt-2"
+              aria-labelledby="dropdownMenuIconButton"
+            >
+              {isAuthenticated ? (
+                <>
+                  {user?.role === 'admin' && (
+                    <li>
+                      <span
+                        className="dropdown-item"
+                        onClick={() => navigate('./admin/dashboard')}
+                      >
+                        <DashboardOutlinedIcon className="me-2" />
+                        Dashboard
+                      </span>
+                    </li>
+                  )}
+                  {user?.role === 'seller' && (
+                    <li>
+                      <span
+                        className="dropdown-item"
+                        onClick={() => navigate('./seller/dashboard')}
+                      >
+                        <DashboardOutlinedIcon className="me-2" />
+                        Seller Dashboard
+                      </span>
+                    </li>
+                  )}
+                  <li>
+                    <span
+                      className="dropdown-item"
+                      onClick={() => navigate('./myprofile')}
+                    >
+                      <AccountCircleOutlinedIcon className="me-2" />
+                      Profile
+                    </span>
+                  </li>
+                  <li>
+                    <span
+                      className="dropdown-item"
+                      onClick={() => navigate('./orders')}
+                    >
+                      <ShoppingCartOutlinedIcon className="me-2" />
+                      My Orders
+                    </span>
+                  </li>
+                  <li>
+                    <span className="dropdown-item text-danger" onClick={logoutHandler}>
+                      <LogoutOutlinedIcon className="me-2" />
+                      Log Out
+                    </span>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <span
+                      className="dropdown-item"
+                      onClick={() => navigate('./login')}
+                    >
+                      <i className="me-2 fas fa-sign-in-alt" /> Log In
+                    </span>
+                  </li>
+                  <li>
+                    <span
+                      className="dropdown-item"
+                      onClick={() => navigate('./register')}
+                    >
+                      <i className="me-2 fas fa-user-plus" /> Sign Up
+                    </span>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
+
+
+          <Link to="/cart">
+            <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
+              <FontAwesomeIcon icon={faShoppingCart} />
+            </div>
+          </Link>
+
+          <div className="d-flex justify-content-center align-items-center" style={{ backgroundColor: "#ffad63", color: "#fff", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }} onClick={toggleDrawer}>
+            <FontAwesomeIcon icon={faList} />
+          </div>
+
+          <Drawer open={isDrawerOpen} onClose={toggleDrawer} direction="right" className="drawer" style={{ width: "500px" }}>
+            <div className="drawer-header">
+              <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "50px" }} />
+            </div>
+            <div className="drawer-content">
+              <ul className="drawer-links">
+                <li><Link to="/"><FontAwesomeIcon icon={faDashboard} style={{ marginRight: "15px" }} />Jacks</Link></li>
+                <li><Link to="/"><FontAwesomeIcon icon={faCartShopping} style={{ marginRight: "15px" }} />Wire</Link></li>
+                <li><Link to="/"><FontAwesomeIcon icon={faShoppingBag} style={{ marginRight: "15px" }} />Corriender</Link></li>
+              </ul>
+            </div>
+          </Drawer>
+
+        </div>
+      </section>
+
+
     </>
   );
 }

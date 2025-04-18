@@ -112,8 +112,6 @@ export default function Shipping() {
         if (
           !billingName ||
           !billingAddress ||
-          !gstNumber||
-          !organizationName||
           !billingAddressLine ||
           !billingCity ||
           !billingPhoneNo ||
@@ -615,6 +613,7 @@ export default function Shipping() {
                             id="billingSameAsShipping"
                             className="form-check-input ms-1 custom-checkbox"
                             checked={billingSameAsShipping}
+                            style={{ backgroundColor: "#ffad63", border: "none", width: "20px", height: "20px" }}
                             onChange={(e) =>
                               setBillingSameAsShipping(e.target.checked)
                             }
@@ -753,22 +752,27 @@ export default function Shipping() {
                   <div className="row mb-4">
                     <div className="col-md-6">
                       <div className="form-group">
-                        <select
-                          id="billing_addressLine_field"
-                          className="form-control"
-                          value={billingAddressLine}
-                          onChange={(e) =>
-                            setBillingAddressLine(e.target.value)
-                          }
-                          required
-                        >
-                          <option value="">Select Locality</option>
-                          {billingLocalities.map((locality, index) => (
-                            <option key={index} value={locality}>
-                              {locality}
-                            </option>
-                          ))}
-                        </select>
+
+                        <div className="custom-select-wrapper">
+                          <select
+                            id="billing_addressLine_field"
+                            className="form-control custom-select"
+                            value={billingAddressLine}
+                            onChange={(e) =>
+                              setBillingAddressLine(e.target.value)
+                            }
+                            required
+                          >
+                            <option value="" style={{ fontSize: "15px" }}>Select Locality *</option>
+                            {billingLocalities.map((locality, index) => (
+                              <option key={index} value={locality}>
+                                {locality}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+
                       </div>
                     </div>
 

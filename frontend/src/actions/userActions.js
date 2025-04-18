@@ -29,6 +29,15 @@ import {
   verifyEmailSuccess,
   verifyEmailFail,
   clearError,
+  uploadBannerRequest,
+  uploadBannerSuccess,
+  uploadBannerFail,
+  getBannersRequest,
+  getBannersSuccess,
+  getBannersFail,
+  deleteBannerRequest,
+  deleteBannerSuccess,
+  deleteBannerFail,
 } from "../slices/authSlice";
 
 import {
@@ -382,5 +391,46 @@ export const fetchWishlist = () => async (dispatch) => {
     dispatch(getWishlistSuccess(data.wishlist));
   } catch (error) {
     dispatch(getWishlistFail(error.response.data.message));
+    console.log(error.response.data.message);
+  }
+};
+export const uploadBanner = (formData) => async (dispatch) => {
+  try {
+    dispatch(uploadBannerRequest);
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    const { data } = await axios.post(`/api/v1/banner/upload`, formData, config);
+
+    dispatch(uploadBannerSuccess(data));
+  } catch (error) {
+    dispatch(uploadBannerFail(error.response.data.message));
+    console.log(error.response.data.message);
+  }
+};
+// Get all banner images
+export const getBanners = () => async (dispatch) => {
+  try {
+    dispatch(getBannersRequest);
+
+    const { data } = await axios.get(`/api/v1/banner`);
+
+    dispatch(getBannersSuccess(data));
+  } catch (error) {
+    dispatch(getBannersFail(error.response.data.message));
+  }
+};
+// Delete a banner image
+export const deleteBanner = (id) => async (dispatch) => {
+  try {
+    dispatch(deleteBannerRequest());
+
+    await axios.delete(`/api/v1/banner/${id}`);
+
+    dispatch(deleteBannerSuccess(id));
+  } catch (error) {
+    dispatch(deleteBannerFail(error.response.data.message));
   }
 };

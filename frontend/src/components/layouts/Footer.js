@@ -4,6 +4,7 @@ import Icon1 from "../../images/payment  (1).png";
 import Icon3 from "../../images/payment  (2).png";
 import Icon2 from "../../images/payment  (3).png";
 import Icon4 from "../../images/payment  (4).png";
+import Icon5 from "../../images/payment  (5).png";
 import Logo from "../../images/procure-g-logo.png";
 import { Link } from "react-router-dom";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -15,7 +16,7 @@ import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-import NewsletterImg from "../../images/newsletter.png";
+import NewsletterImg from "../../images/banner-3 1.png";
 // newsletter
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 
@@ -32,7 +33,7 @@ const Footer = () => {
                 <br />
                 Glocre Delivers to You!
               </h2>
-              <p>Start You'r Daily Shopping with us</p>
+              <p>Official or personal, shop everything <br />you need with us</p>
               <br />
               <div className="newsLetterBanner">
                 <SendOutlinedIcon />
@@ -59,9 +60,9 @@ const Footer = () => {
                 <br />
                 <p>
                   <LocationOnOutlinedIcon />
-                  &nbsp; <strong>Address :</strong>
-                  2A, Meenakshi Gardens G.N Mills,
-                  <br /> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; Coimbatore,
+                  &nbsp; <strong>We are Locate us :</strong>
+                  <br /> 2 A, Meenakshi Gardens G.N Mills,
+                  <br /> Coimbatore,
                   Tamil Nadu 641029, India
                 </p>
                 <p>
@@ -92,9 +93,6 @@ const Footer = () => {
                         <Link to="/ourbus">Who We Are</Link>
                       </li>
                       <li>
-                        <Link to="/sell">Become a Seller</Link>
-                      </li>
-                      <li>
                         <Link to="/policy">Privacy Policy</Link>
                       </li>
                       <li>
@@ -102,55 +100,6 @@ const Footer = () => {
                       </li>
                       <li>
                         <Link to="/return">Return Policy</Link>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="col">
-                    <h3>
-                      Quick Links
-                      <hr style={{ width: "80%" }}></hr>
-                    </h3>
-                    <ul class="footer-list mb-sm-5 mb-md-0">
-                      <li>
-                        <Link to="/support">Support Center</Link>
-                      </li>
-                      <li>
-                        <Link to="/orders">Track My Order</Link>
-                      </li>
-                      <li>
-                        <Link to="/support">Online Assist</Link>
-                      </li>
-                      <li>
-                        <Link to="/myprofile">My Profile</Link>
-                      </li>
-                      <li>
-                        <Link to="/sell">Supply to Glocre</Link>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="col">
-                    <h3>
-                      {" "}
-                      Make Money with Us
-                      <hr style={{ width: "80%" }}></hr>
-                    </h3>
-                    <ul class="footer-list mb-sm-5 mb-md-0">
-                      <li>
-                        <Link to="/sell">Sell on Glocre</Link>
-                      </li>
-                      <li>
-                        <Link to="/support">Advertise Your Products</Link>
-                      </li>
-                      <li>
-                        <Link to="/sell">Sell and Build Your Brand</Link>
-                      </li>
-                      <li>
-                        <Link to="/sell">Global Selling</Link>
-                      </li>
-                      <li>
-                        <Link to="/support">Connect us</Link>
                       </li>
                     </ul>
                   </div>
@@ -165,7 +114,7 @@ const Footer = () => {
                         <Link to="/myprofile">My Profile</Link>
                       </li>
                       <li>
-                        <Link to="/support">Faqs</Link>
+                        <Link to="/faqs">FAQ's</Link>
                       </li>
                       <li>
                         <Link to="/orders">My Order</Link>
@@ -178,6 +127,27 @@ const Footer = () => {
                       </li>
                     </ul>
                   </div>
+
+                  <div className="col">
+                    <h3>
+                      {" "}
+                      Sell with Us
+                      <hr style={{ width: "80%" }}></hr>
+                    </h3>
+                    <ul class="footer-list mb-sm-5 mb-md-0">
+                      <li>
+                        <Link to="/sell">Sell on Glocre</Link>
+                      </li>
+                      <li>
+                        <Link to="/support">Advertise Your Products</Link>
+                      </li>
+                      <li>
+                        <Link to="/">Track Your Sales</Link>
+                      </li>
+                    </ul>
+                  </div>
+
+
                 </div>
               </div>
             </div>
@@ -187,7 +157,7 @@ const Footer = () => {
             <div className="row lastStrip">
               <div className="col-md-6 part3 d-flex align-items-center justify-content-start  part_3">
                 <div className="d-flex align-items-center">
-                  <h5>Payment: </h5>
+                  <h5>We Accept Payment through : </h5>
                   <ul className="list-inline d-flex align-items-center">
                     <li className="list-inline-item">
                       <img
@@ -209,8 +179,14 @@ const Footer = () => {
                     </li>
                     <li className="list-inline-item">
                       <img
+                        src={Icon5}
+                        style={{ width: "fit-content", height: "17px" }}
+                      />
+                    </li>
+                    <li className="list-inline-item">
+                      <img
                         src={Icon3}
-                        style={{ width: "fit-content", height: "40px" }}
+                        style={{ width: "fit-content", height: "20px" }}
                       />
                     </li>
                   </ul>
@@ -271,14 +247,6 @@ const Footer = () => {
                         target="_blank"
                       >
                         <InstagramIcon />
-                      </a>
-                    </li>
-                    <li className="list-inline-item">
-                      <a
-                        href="https://youtube.com/@ist_retail?si=Rt0R3LzJ3iaD7yTv"
-                        target="_blank"
-                      >
-                        <YouTubeIcon />
                       </a>
                     </li>
                   </ul>

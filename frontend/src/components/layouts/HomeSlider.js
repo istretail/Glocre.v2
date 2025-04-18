@@ -1,25 +1,26 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Slider from "react-slick";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { getBanners } from "../../actions/userActions";
+import "react-lazy-load-image-component/src/effects/blur.css";
 import "../layouts/Header.css";
-import slide1 from "../../images/banner (1).webp";
-import slide2 from "../../images/banner (2).webp";
-import slide3 from "../../images/banner (3).webp";
-import slide4 from "../../images/banner (4).webp";
-import slide5 from "../../images/banner (5).webp";
-import slide6 from "../../images/banner (6).webp";
+import Nav from "./nav";
 import Featured1 from "../../images/fea.webp";
 import Featured2 from "../../images/fea2.webp";
 import Featured3 from "../../images/fea3.webp";
 import Featured4 from "../../images/fea4.webp";
 import Featured5 from "../../images/fea5.webp";
 import Featured6 from "../../images/fea6.webp";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
-import React, { useEffect, useRef, useState, useContext } from "react";
-import Nav from "./nav";
-
-const images = [slide1, slide2, slide3, slide4, slide5, slide6];
 
 export default function Slideshow() {
+  const dispatch = useDispatch();
+  const { banners = [] } = useSelector((state) => state.authState); // update path if different
+
+  useEffect(() => {
+    dispatch(getBanners());
+  }, [dispatch]);
+
   const settings = {
     infinite: true,
     speed: 500,
@@ -34,10 +35,10 @@ export default function Slideshow() {
       <section className="homeSlider">
         <div className="container position-relative">
           <Slider {...settings} className="home_slider_Main">
-            {images.map((image, index) => (
+            {banners.map((banner, index) => (
               <div className="item" key={index}>
                 <LazyLoadImage
-                  src={image}
+                  src={banner.url}
                   className="w-100"
                   effect="blur"
                   alt={`Slide ${index + 1}`}
@@ -49,7 +50,6 @@ export default function Slideshow() {
       </section>
 
       <Nav />
-
       <CatSlider />
     </>
   );

@@ -28,24 +28,28 @@ export default function UpdateProduct() {
         condition: "",
         brand: "",
         itemModelNum: "",
-        serialNum: "",
-        connectionType: "",
-        hardwarePlatform: "",
-        os: "",
-        powerConception: "",
-        batteries: "",
-        packageDimension: "",
-        portDescription: "",
-        connectivityType: "",
-        compatibleDevices: "",
-        powerSource: "",
-        specialFeatures: "",
-        includedInThePackage: "",
-        status: "",
-        manufacturer: "",
-        itemSize: "",
-        itemWidth: "",
         isRefundable: "false", // Add this line
+        manufacturer:"", 
+
+        sku: "",
+        upc: "",
+        hsn: "",
+        countryofOrgin: "",
+        manufactureDetails: "",
+        productCertifications: "",
+        itemLength: "",
+        itemHeight: "",
+        itemWeight: "",
+        itemWidth: "",
+        moq: "",
+        shippingCostlol: "",
+        shippingCostNorth: "",
+        shippingCostSouth: "",
+        shippingCostEast: "",
+        shippingCostWest: "",
+        shippingCostNe: "",
+        unit: "",
+       
         clocreId: "", // Add this line
     });
 
@@ -162,26 +166,32 @@ export default function UpdateProduct() {
                     stock: product.stock,
                     condition: product.condition,
                     brand: product.brand,
-                    itemModelNum: product.itemModelNum,
-                    serialNum: product.serialNum,
-                    connectionType: product.connectionType,
-                    hardwarePlatform: product.hardwarePlatform,
-                    os: product.os,
-                    powerConception: product.powerConception,
-                    batteries: product.batteries,
-                    packageDimension: product.packageDimension,
-                    portDescription: product.portDescription,
-                    connectivityType: product.connectivityType,
-                    compatibleDevices: product.compatibleDevices,
-                    powerSource: product.powerSource,
-                    specialFeatures: product.specialFeatures,
-                    includedInThePackage: product.includedInThePackage,
-                    manufacturer: product.manufacturer,
-                    itemSize: product.itemSize,
-                    itemWidth: product.itemWidth,
-                    status: product.status,
                     isRefundable: product.isRefundable ? "true" : "false",
                     clocreId: product.clocreId,
+                    itemModelNum: product.itemModelNum,
+                    manufacturer: product.manufacturer,
+                    status: product.status,
+                   
+                    sku: product.sku,
+                    upc: product.upc,
+                    hsn: product.hsn,
+                    
+                    manufactureDetails: product.manufactureDetails,
+                    productCertifications: product.productCertifications,
+                    itemLength: product.itemLength,
+                    itemHeight: product.itemHeight,
+                    itemWeight: product.itemWeight,
+                    itemWidth: product.itemWidth,
+                    shippingCostlol: product.shippingCostlol,
+                    shippingCostNorth: product.shippingCostNorth,
+                    shippingCostSouth: product.shippingCostSouth,
+                    shippingCostEast: product.shippingCostEast,
+                    shippingCostWest: product.shippingCostWest,
+                    shippingCostNe: product.shippingCostNe,
+                    unit: product.unit,
+                    
+                    
+                    
                 });
                 setVariantDetails(product.variants);
                 setHasVariants(product.variants.length > 0);
@@ -829,202 +839,111 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="serialNum_field">Serial Number</label>
+                                                <label htmlFor="sku">SKU</label>
                                                 <input
                                                     type="text"
-                                                    id="serialNum_field"
+                                                    id="sku_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.serialNum}
-                                                    name="serialNum"
+                                                    value={formData.sku}
+                                                    name="sku"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="connectionType_field">Connection Type</label>
+                                                <label htmlFor="upc_field">UPC</label>
                                                 <input
                                                     type="text"
-                                                    id="connectionType_field"
+                                                    id="upc_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.connectionType}
-                                                    name="connectionType"
+                                                    value={formData.upc}
+                                                    name="upc"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="hardwarePlatform_field">Hardware Platform</label>
+                                                <label htmlFor="hsn_field">HSN</label>
                                                 <input
                                                     type="text"
-                                                    id="hardwarePlatform_field"
+                                                    id="hsn_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.hardwarePlatform}
-                                                    name="hardwarePlatform"
+                                                    value={formData.hsn}
+                                                    name="hsn"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="os_field">Operating System</label>
+                                                <label htmlFor="manufactureDetails_field">Manufacture Details</label>
                                                 <input
                                                     type="text"
-                                                    id="os_field"
+                                                    id="manufactureDetails_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.os}
-                                                    name="os"
+                                                    value={formData.manufactureDetails}
+                                                    name="manufactureDetails"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="powerConception_field">Power Conception</label>
+                                                <label htmlFor="productCertifications_field">Product Certifications</label>
                                                 <input
                                                     type="text"
-                                                    id="powerConception_field"
+                                                    id="productCertifications_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.powerConception}
-                                                    name="powerConception"
+                                                    value={formData.productCertifications}
+                                                    name="productCertifications"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="batteries_field">Batteries</label>
+                                                <label htmlFor="batteries_field">itemLength</label>
                                                 <input
                                                     type="text"
-                                                    id="batteries_field"
+                                                    id="itemLength_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.batteries}
-                                                    name="batteries"
+                                                    value={formData.itemLength}
+                                                    name="itemLength"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="packageDimension_field">Package Dimension</label>
+                                                <label htmlFor="itemHeight_field">itemHeight</label>
                                                 <input
                                                     type="text"
-                                                    id="packageDimension_field"
+                                                    id="itemHeight_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.packageDimension}
-                                                    name="packageDimension"
+                                                    value={formData.itemHeight}
+                                                    name="itemHeight"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="portDescription_field">Port Description</label>
+                                                <label htmlFor="portDescription_field">Item Weight</label>
                                                 <input
                                                     type="text"
-                                                    id="portDescription_field"
+                                                    id="itemWeight_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.portDescription}
-                                                    name="portDescription"
+                                                    value={formData.itemWeight}
+                                                    name="itemWeight"
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="connectivityType_field">Connectivity Type</label>
-                                                <input
-                                                    type="text"
-                                                    id="connectivityType_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.connectivityType}
-                                                    name="connectivityType"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="compatibleDevices_field">Compatible Devices</label>
-                                                <input
-                                                    type="text"
-                                                    id="compatibleDevices_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.compatibleDevices}
-                                                    name="compatibleDevices"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="powerSource_field">Power Source</label>
-                                                <input
-                                                    type="text"
-                                                    id="powerSource_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.powerSource}
-                                                    name="powerSource"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="specialFeatures_field">Special Features</label>
-                                                <input
-                                                    type="text"
-                                                    id="specialFeatures_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.specialFeatures}
-                                                    name="specialFeatures"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="includedInThePackage_field">Included in the Package</label>
-                                                <input
-                                                    type="text"
-                                                    id="includedInThePackage_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.includedInThePackage}
-                                                    name="includedInThePackage"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="manufacturer_field">Manufacturer</label>
-                                                <input
-                                                    type="text"
-                                                    id="manufacturer_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.manufacturer}
-                                                    name="manufacturer"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="itemSize_field">Item Size</label>
-                                                <input
-                                                    type="text"
-                                                    id="itemSize_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.itemSize}
-                                                    name="itemSize"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="itemWidth_field">Item Width</label>
+                                                <label htmlFor="itemWidth_field">itemWidth</label>
                                                 <input
                                                     type="text"
                                                     id="itemWidth_field"
@@ -1032,6 +951,111 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.itemWidth}
                                                     name="itemWidth"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostlol_field">Shipping Cost lolcal</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostlol_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostlol}
+                                                    name="shippingCostlol"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="powerSource_field">Shipping Cost North</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostNorth_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostNorth}
+                                                    name="shippingCostNorth"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostNorth_field">Shipping Cost North</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostNorth_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostNorth}
+                                                    name="shippingCostNorth"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostSouth_field">Shipping Cost South</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostSouth_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostSouth}
+                                                    name="shippingCostSouth"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostEast_field">Shipping Cost East</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostEast_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostEast}
+                                                    name="shippingCostEast"
+                                                />
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostWest_field">Shipping Cost West</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostWest_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostWest}
+                                                    name="shippingCostWest"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostNe_field">Shipping Cost NorthEast</label>
+                                                <input
+                                                    type="text"
+                                                    id="shippingCostNe_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostNe}
+                                                    name="shippingCostNe"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="unit_field">unit</label>
+                                                <input
+                                                    type="text"
+                                                    id="unit_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.unit}
+                                                    name="unit"
                                                 />
                                             </div>
                                         </div>

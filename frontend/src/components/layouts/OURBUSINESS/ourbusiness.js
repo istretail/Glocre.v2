@@ -23,10 +23,10 @@ export default function Ourbusiness() {
                   <div class="card-body">
                     <h5 class="card-title">
                       Empowering Global Trade: Simplifying Industrial
-                      Transactions with ProcureG
+                      Transactions with  Glocre
                     </h5>
                     <p class="card-text">
-                      ProcureG is a global e-commerce platform that connects
+                      Glocre is a global e-commerce platform that connects
                       buyers and sellers, simplifying transactions with fast
                       shipping, reliable support, and opportunities for
                       consumers to expand their reach and ensure seamless,
@@ -43,38 +43,20 @@ export default function Ourbusiness() {
         <section className="our-business-section-procureg">
           <div className="container">
             <div className="our-business-contents-procureg">
-              <h3>OUR BUSINESS AT PROCUREG</h3>
+              <h3>OUR BUSINESS AT  Glocre</h3>
               <p>
-                ProcureG is a leading global e-commerce platform that simplifies
-                the purchase of industrial <br /> products, offering fast
-                shipping and dedicated customer support for a seamless
-                experience.
-                <br /> In addition to serving businesses, we also provide
-                consumers with the opportunity to sell their <br /> products,
-                expanding market reach and driving growth. By connecting the
-                global industrial <br /> marketplace, ProcureG empowers vendors
-                and consumers alike, ensuring access to high-quality <br />{" "}
-                products and facilitating business expansion with reliability
-                and ease.
+                Glocre connects global buyers and sellers with
+                seamless, efficient e - commerce solutions.
               </p>
             </div>
           </div>
 
           <div className="global-buyer-contents-procureg">
             <div class="card ">
-              <div>
-                <img class="card-img" src={ourbusineeg2} alt="Card image" />
-              </div>
 
-              <div class="card-img-overlay global-buyer-full-contents-procureg container">
+              <div class=" global-buyer-full-contents-procureg container">
                 <div className="row">
-                  <div className="col-lg-6 mb-5 global-buyer-left-contents-procureg">
-                    <h3>
-                      ProcureG connects global buyers and sellers with
-                      seamless,efficient e-commerce solutions.
-                    </h3>
-                  </div>
-                  <div className="col-lg-6 global-buyer-right-contents-procureg">
+                  < div className="col-lg-6 mb-5 global-buyer-right-contents-procureg" >
                     <div className="row">
                       <div className="col-lg-6">
                         <div class="card">
@@ -105,6 +87,8 @@ export default function Ourbusiness() {
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="col-lg-6 global-buyer-right-contents-procureg">
                     <div className="row mt-4">
                       <div className="col-lg-6">
                         <div class="card">
@@ -141,7 +125,7 @@ export default function Ourbusiness() {
           </div>
         </section>
 
-        <section className="our-core-section-procureg">
+        <section className="our-core-section-procureg mt-5">
           <div className="container">
             <div className="our-core-heading-procureg">
               <h3>OUR CORE VALUES</h3>
@@ -252,11 +236,11 @@ export default function Ourbusiness() {
             <div className="row">
               <div className="col-lg-5 key-benefits-left-procureg">
                 <h3>
-                  Key Benefits of ProcureG: Empowering Global Trade <br /> and
+                  Key Benefits of  Glocre: Empowering Global Trade <br /> and
                   Growth
                 </h3>
                 <p>
-                  ProcureG provides businesses and consumers with global reach,
+                  Glocre provides businesses and consumers with global reach,
                   seamless transactions, and growth opportunities on an
                   efficient,
                   <br /> reliable platform for industrial success.
@@ -268,7 +252,7 @@ export default function Ourbusiness() {
                     <div class="card-body">
                       <h5 class="card-title">Global Reach:</h5>
                       <p class="card-text">
-                        ProcureG connects buyers and sellers globally, breaking
+                        Glocre connects buyers and sellers globally, breaking
                         down geographical barriers for seamless cross-border
                         trade. This opens up access to a larger, international
                         marketplace.
@@ -306,18 +290,17 @@ export default function Ourbusiness() {
           </div>
         </section>
 
-        <section className="buying-selling-section-procureg">
-          <div class="card text-white">
-            <img class="card-img" src={ourbusineeg3} alt="Card image" />
-            <div class="card-img-overlay container">
+        <section className="buying-selling-section-procureg ">
+          <div class="card ">
+            <div class=" container">
               <div className="buying-selling-contents-procureg">
                 <div className="row">
                   <div className="col-lg-6">
                     <div className="">
-                      <h5 class="card-title">01</h5>
-                      <h6 class="card-title">Buying on ProcureG</h6>
+                      <h5 class="card-title text-dark">01</h5>
+                      <h6 class="card-title">Buying on  Glocre</h6>
                       <p class="card-text">
-                        ProcureG offers buyers easy access to a wide variety of{" "}
+                        Glocre offers buyers easy access to a wide variety of{" "}
                         <br /> industrial products from global sellers. With a
                         user-friendly platform, <br /> secure transactions, fast
                         shipping, and reliable customer support, we ensure{" "}
@@ -327,15 +310,15 @@ export default function Ourbusiness() {
                   </div>
                   <div className="col-lg-6 text-end">
                     <div className="">
-                      <h5 class="card-title">02</h5>
-                      <h6 class="card-title">Selling on ProcureG</h6>
-                      <p class="card-text">
-                        For sellers, ProcureG provides an opportunity to reach a
-                        global marketplace, expand their business, and increase
-                        sales. Our platform offers tools and resources to help
-                        sellers manage listings, process orders, and deliver
-                        products efficiently, driving growth and success.
-                      </p>
+                      <h5 class="card-title text-dark" > 02 </h5>
+                        <h6 class="card-title">Selling on  Glocre</h6>
+                        <p class="card-text">
+                          For sellers,  Glocre provides an opportunity to reach a
+                          global marketplace, expand their business, and increase
+                          sales. Our platform offers tools and resources to help
+                          sellers manage listings, process orders, and deliver
+                          products efficiently, driving growth and success.
+                        </p>
                     </div>
                   </div>
                 </div>
@@ -344,24 +327,6 @@ export default function Ourbusiness() {
           </div>
         </section>
 
-        <section className="started-procurement-section-procureg">
-          <div className="row">
-            <div className="col-lg-2 started-procurement-content1-procureg">
-              <img src={ourbusineeg4} alt="Card image" />
-            </div>
-            <div className="col-lg-8 started-procurement-content2-procureg">
-              <h3>Let's Get Started with Your Procurement!</h3>
-              <p>
-                Join ProcureG today to streamline your procurement, access
-                global suppliers, and effortlessly buy or sell quality
-                industrial products for business growth.
-              </p>
-            </div>
-            <div className="col-lg-2 started-procurement-content3-procureg">
-              <button>Contact us</button>
-            </div>
-          </div>
-        </section>
       </body>
     </>
   );
