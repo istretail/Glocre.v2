@@ -90,7 +90,7 @@ const Footer = () => {
 
                     <ul class="footer-list mb-sm-5 mb-md-0">
                       <li>
-                        <Link to="/ourbus">Who We Are</Link>
+                        <Link to="/ourbusiness">Who We Are</Link>
                       </li>
                       <li>
                         <Link to="/policy">Privacy Policy</Link>
@@ -136,13 +136,13 @@ const Footer = () => {
                     </h3>
                     <ul class="footer-list mb-sm-5 mb-md-0">
                       <li>
-                        <Link to="/sell">Sell on Glocre</Link>
+                        <Link to="/seller">Sell on Glocre</Link>
                       </li>
                       <li>
                         <Link to="/support">Advertise Your Products</Link>
                       </li>
                       <li>
-                        <Link to="/">Track Your Sales</Link>
+                        <Link to="/seller">Track Your Sales</Link>
                       </li>
                     </ul>
                   </div>

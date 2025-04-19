@@ -125,9 +125,9 @@ function AnalyticsReport() {
                 </Dropdown>
               </div>
             </div>
-            <div className="col-lg-1" style={{ display: "flex", justifyContent: "start", alignItems: "end" }}>
+            {/* <div className="col-lg-1" style={{ display: "flex", justifyContent: "start", alignItems: "end" }}>
               <img src={avatar1} alt="Avatar" class="avatar" />
-            </div>
+            </div> */}
           </div>
 
           <h3 style={{ color: "#ffad63", marginTop: "40px" }}>ANALYTICS</h3>

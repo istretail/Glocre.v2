@@ -133,9 +133,9 @@ export default function Dashboard() {
                                             </Dropdown.Toggle>
                                         </Dropdown>
                                     </div>
-                                    <div className="col-lg-1 col-md-2">
+                                    {/* <div className="col-lg-1 col-md-2">
                                         <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
 
@@ -163,9 +163,9 @@ export default function Dashboard() {
                                             </Dropdown.Toggle>
                                         </Dropdown>
                                     </div>
-                                    <div className="col-2 text-center">
+                                    {/* <div className="col-2 text-center">
                                         <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
 

@@ -50,7 +50,7 @@ export default function SellerSidebar() {
                                 <i className={`fa ${isCollapsed ? 'fa-angle-right' : 'fa-angle-left'}`} aria-hidden="true"></i>
                             </span>
                         </button> */}
-              <div className="sidebar-logo">
+              <div className="sidebar-logo p-2">
                 <Link to="/">
                   <div
                     style={{

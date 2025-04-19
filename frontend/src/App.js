@@ -56,7 +56,7 @@ import Support from "./components/layouts/support";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateAnalytics } from "./actions/analyticsActions";
-import store from "./store";
+import {store} from "./store";
 import { loadUser } from "./actions/userActions";
 import { ToastContainer } from "react-toastify";
 import SellerRegistration from "./components/seller/SellerRegistration";
@@ -68,6 +68,7 @@ import SellerCreateProduct from "./components/seller/SellerCreateProduct";
 import SellerUpdateProduct from "./components/seller/SellerEditProduct";
 import AdminBannerPage from "./components/admin/EditBannerPage";
 import Faqs from "./components/layouts/faqs";
+import AnalyticsModal from './components/layouts/AnalyticsModal';
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isRestrictedRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/seller");
@@ -100,11 +101,20 @@ const App = () => {
       setModalVisible(false);
     }
   }, [isAuthenticated, dispatch]);
+  const handleAccept = () => {
+    document.cookie = "analytics=true; path=/";
+    setModalVisible(false);
+    dispatch(updateAnalytics());
+  };
 
+  const handleDecline = () => {
+    setModalVisible(false);
+  };
 
   return (
     <Router>
       <ScrollToTop />
+      {isModalVisible && <AnalyticsModal onAccept={handleAccept} onDecline={handleDecline} />}
       <ToastContainer theme="colored" position="bottom-center" />
       <AppLayout>
         <Routes>
@@ -117,8 +127,8 @@ const App = () => {
           <Route path="/support" element={<Support />} />
           <Route path="/register" element={<Register />} />
           <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/ourbus" element={<Ourbusiness />} />
-          <Route path="/sell" element={<ProcuregSeller />} />
+          <Route path="/ourbusiness" element={<Ourbusiness />} />
+          <Route path="/seller" element={<ProcuregSeller />} />
           <Route path="/terms" element={<TermsConditions />} />
           <Route path="/return" element={<RefundPolicy />} />
           <Route path="/policy" element={<Policy />} />

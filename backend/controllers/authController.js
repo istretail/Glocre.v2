@@ -35,7 +35,7 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
         <div style="max-width: 600px; margin: 40px auto; border: 1px solid #ddd; border-radius: 10px; font-family: Arial, sans-serif; overflow: hidden;">
         <div style="background-color: #ffffff;">
         <img 
-        src="https://gratisography.com/wp-content/uploads/2024/10/gratisography-cool-cat-800x525.jpg" 
+        src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png"
         alt="Logo" 
         style="width: 100%; height: auto; display: block;" 
         />

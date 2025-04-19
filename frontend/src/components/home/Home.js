@@ -10,9 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { FaCamera, FaHome, FaBell, FaVideo, FaEllipsisH } from "react-icons/fa"; // Example icons from Font Awesome
 import "../product/ProductDetail.css";
 import Slideshow from "../layouts/HomeSlider";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { logEvent } from "../../actions/analyticsActions";
+
 
 export default function Home() {
   const dispatch = useDispatch();

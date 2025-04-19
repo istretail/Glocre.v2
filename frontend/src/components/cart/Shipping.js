@@ -73,7 +73,7 @@ export default function Shipping() {
   const [address, setAddress] = useState(shippingInfo.address || "");
   const [addressLine, setAddressLine] = useState(shippingInfo.addressLine || "",);
   const [city, setCity] = useState(shippingInfo.city || "");
-  const [name, setName] = useState( user.name || ""); 
+  const [name, setName] = useState(user.name || "");
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo || "");
   const [country, setCountry] = useState(shippingInfo.country || "");
   const [state, setState] = useState(shippingInfo.state || "");
@@ -82,7 +82,7 @@ export default function Shipping() {
   const [selectedAddress, setSelectedAddress] = useState("");
   const [billingName, setBillingName] = useState(user.name || "");
   const [gstNumber, setGstNumber] = useState("");
-  const [organizationName, setOrganizationName] = useState(""); 
+  const [organizationName, setOrganizationName] = useState("");
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
   const [billingAddress, setBillingAddress] = useState(billingInfo.address || "",);
   const [billingAddressLine, setBillingAddressLine] = useState(billingInfo.addressLine || "",);
@@ -103,7 +103,7 @@ export default function Shipping() {
   }, [dispatch]);
 
   const submitHandler = useCallback(
-    async (e) => { 
+    async (e) => {
       e.preventDefault();
       setLoading(true);
 
@@ -442,7 +442,7 @@ export default function Shipping() {
                       </div>
 
                       <div className="row mt-3 mb-4">
-                        <div className="col-md-6">                       
+                        <div className="col-md-6">
                           <div className="form-group">
                             <TextField
                               label="Name"
@@ -459,7 +459,7 @@ export default function Shipping() {
                           </div>
                         </div>
 
-                        
+
                       </div>
                       <div className="row mt-3 mb-4">
                         <div className="col-md-6">
@@ -532,20 +532,23 @@ export default function Shipping() {
                       <div className="row mb-4">
                         <div className="col-md-6">
                           <div className="form-group">
-                            <select
-                              id="addressLine_field"
-                              className="form-control"
-                              value={addressLine}
-                              onChange={(e) => setAddressLine(e.target.value)}
-                              required
-                            >
-                              <option value="">Select Locality</option>
-                              {localities.map((locality, index) => (
-                                <option key={index} value={locality}>
-                                  {locality}
-                                </option>
-                              ))}
-                            </select>
+                            <div className="custom-select-wrapper">
+                              <select
+                                id="addressLine_field"
+                                className="form-control custom-select"
+                                value={addressLine}
+                                onChange={(e) => setAddressLine(e.target.value)}
+                                required
+                              >
+                                <option value="">Select Locality</option>
+                                {localities.map((locality, index) => (
+                                  <option key={index} value={locality}>
+                                    {locality}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
                           </div>
                         </div>
 
@@ -606,24 +609,21 @@ export default function Shipping() {
                         </div>
                       </div>
 
-                      <div className=" mb-1">
-                        <div className="card-check-box-shipping">
+                      <div className="mb-1">
+                        <div className="card-check-box-shipping d-flex align-items-center">
                           <input
                             type="checkbox"
                             id="billingSameAsShipping"
                             className="form-check-input ms-1 custom-checkbox"
                             checked={billingSameAsShipping}
                             style={{ backgroundColor: "#ffad63", border: "none", width: "20px", height: "20px" }}
-                            onChange={(e) =>
-                              setBillingSameAsShipping(e.target.checked)
-                            }
+                            onChange={(e) => setBillingSameAsShipping(e.target.checked)}
                           />
-                          <label for="billingSameAsShipping"></label>
-                          <p className=" ms-2">
-                            Billing address same as shipping address
-                          </p>
+                          <label htmlFor="billingSameAsShipping" className="ms-2 mb-0"></label>
+                          <p className="ms-2 mb-0">Billing address same as shipping address</p>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>

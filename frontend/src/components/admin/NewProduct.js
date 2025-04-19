@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import { createNewProduct } from "../../actions/productActions";
+import { createNewProduct, getCategoryHierarchy } from "../../actions/productActions";
 import { clearError, clearProductCreated } from "../../slices/singleProductSlice";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
@@ -29,7 +29,7 @@ const NewProduct = () => {
         offPrice: "",
         stock: "",
         price: "",
-    
+
         sku: "",
         upc: "",
         hsn: "",
@@ -48,14 +48,17 @@ const NewProduct = () => {
         shippingCostWest: "",
         shippingCostNe: "",
         unit: "",
-      });
+    });
     const { loading, isProductCreated, error } = useSelector(state => state.productState);
+    const { categories = [] } = useSelector(state => state.productsState);
     const [hasVariants, setHasVariants] = useState(false);
     const [variantType, setVariantType] = useState("");
     const [variantCount, setVariantCount] = useState(0);
     const [variantDetails, setVariantDetails] = useState([]);
     const [imageErrors, setImageErrors] = useState([]);
     const [productImages, setProductImages] = useState([]);
+    const [selectedMainCategory, setSelectedMainCategory] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -169,7 +172,7 @@ const NewProduct = () => {
             }
         });
 
- 
+
 
         // Append variants as a JSON string
         productData.append('variants', JSON.stringify(variantDetails));
@@ -234,6 +237,9 @@ const NewProduct = () => {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        dispatch(getCategoryHierarchy());
+    }, [dispatch]);
 
     return (
         <>
@@ -245,7 +251,7 @@ const NewProduct = () => {
                     <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
 
                         <div className="mobile-logo">
-                             <img src={require("../../images/procure-g-logo.png")}/>
+                            <img src={require("../../images/procure-g-logo.png")} />
                         </div>
 
                         <div className="breadcrumbWrapperr">
@@ -305,9 +311,9 @@ const NewProduct = () => {
                                             </Dropdown.Toggle>
                                         </Dropdown>
                                     </div>
-                                    <div className="col-lg-1 col-md-2 dash-cont-glc">
+                                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
                                         <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -335,9 +341,9 @@ const NewProduct = () => {
                                             </Dropdown.Toggle>
                                         </Dropdown>
                                     </div>
-                                    <div className="col-2 text-center">
+                                    {/* <div className="col-2 text-center">
                                         <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
                             {/* Drawer Component */}
@@ -394,47 +400,83 @@ const NewProduct = () => {
                                         </div>
                                     </div>
 
+                                    {/* MAIN CATEGORY */}
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Main Category:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="maincategory"
-                                                value={formData.maincategory}
-                                                onChange={handleChange}
-                                                required
-                                            />
+                                            <div className="custom-select-wrapper">
+
+                                                <label>Main Category:<span style={{ color: "red" }}> *</span></label>
+                                                <select
+                                                    className="form-control custom-select"
+                                                    name="maincategory"
+                                                    value={formData.maincategory}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        setSelectedMainCategory(value);
+                                                        setSelectedCategory(""); // Reset category and subcategory when main changes
+                                                        handleChange(e);
+                                                    }}
+                                                    required
+                                                >
+                                                    <option value="">Select Main Category</option>
+                                                    {Object.keys(categories)?.map((mainCat) => (
+                                                        <option key={mainCat} value={mainCat}>{mainCat}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Category:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="category"
-                                                value={formData.category}
-                                                onChange={handleChange}
-                                                required
-                                            />
+                                    {/* CATEGORY */}
+                                    {selectedMainCategory && (
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <div className="custom-select-wrapper">
+                                                    <label>Category:<span style={{ color: "red" }}> *</span></label>
+                                                    <select
+                                                        className="form-control custom-select"
+                                                        name="category"
+                                                        value={formData.category}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            setSelectedCategory(value);
+                                                            handleChange(e);
+                                                        }}
+                                                        required
+                                                    >
+                                                        <option value="">Select Category</option>
+                                                        {Object.keys(categories[selectedMainCategory] || {}).map((cat) => (
+                                                            <option key={cat} value={cat}>{cat}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Subcategory:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="subcategory"
-                                                value={formData.subcategory}
-                                                onChange={handleChange}
-                                                required
-                                            />
+                                    {/* SUBCATEGORY */}
+                                    {selectedCategory && (
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <div className="custom-select-wrapper">
+                                                    <label>Sub category:<span style={{ color: "red" }}> *</span></label>
+                                                    <select
+                                                        className="form-control custom-select"
+                                                        name="subcategory"
+                                                        value={formData.subcategory}
+                                                        onChange={handleChange}
+                                                        required
+                                                    >
+                                                        <option value="">Select Subcategory</option>
+                                                        {(categories[selectedMainCategory]?.[selectedCategory] || []).map((sub) => (
+                                                            <option key={sub} value={sub}>{sub}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
+
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
@@ -509,7 +551,7 @@ const NewProduct = () => {
 
                                     <div className="col-12">
                                         <div className="form-group">
-                                            <label>Does this product have variants?<span style={{ color: "red" }}> *</span></label>
+                                            <label>Does this product have variants?</label>
                                             <select
                                                 className="form-control"
                                                 value={hasVariants}
@@ -676,7 +718,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Tax:(GST)<span style={{ color: "red" }}> *</span></label>
+                                            <label>Tax:(GST in %)<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="number"
                                                 className="form-control"
@@ -709,7 +751,7 @@ const NewProduct = () => {
                                             <div className="row">
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Price:<span style={{ color: "red" }}> *</span></label>
+                                                        <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -723,7 +765,7 @@ const NewProduct = () => {
 
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
+                                                        <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -737,7 +779,7 @@ const NewProduct = () => {
 
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Stock:<span style={{ color: "red" }}> *</span></label>
+                                                        <label>No Of Stock:<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -822,7 +864,7 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>HSN:<span style={{ color: "red" }}> *</span></label>
+                                            <label>HSN code:<span style={{ color: "red" }}> *</span></label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -876,9 +918,9 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Item Length:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="itemLength"
                                                 value={formData.itemLength}
@@ -890,9 +932,9 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Item Height:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="itemHeight"
                                                 value={formData.itemHeight}
@@ -904,9 +946,9 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Item Weight:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="itemWeight"
                                                 value={formData.itemWeight}
@@ -918,9 +960,9 @@ const NewProduct = () => {
 
                                     <div className="col-12">
                                         <div className="form-group">
-                                            <label>Item Width<span style={{ color: "red" }}> *</span></label>
+                                            <label>Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="itemWidth"
                                                 value={formData.itemWidth}
@@ -932,9 +974,9 @@ const NewProduct = () => {
 
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>MOQ:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="moq"
                                                 value={formData.moq}
@@ -946,9 +988,9 @@ const NewProduct = () => {
 
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Shipping Cost local:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Shipping Cost local (in '₹')(based on seller pincode):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="shippingCostlol"
                                                 value={formData.shippingCostlol}
@@ -959,9 +1001,9 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Shipping Cost North:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Shipping Cost North India (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="shippingCostNorth"
                                                 value={formData.shippingCostNorth}
@@ -972,9 +1014,9 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Shipping Cost South:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Shipping Cost South India (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="shippingCostSouth"
                                                 value={formData.shippingCostSouth}
@@ -985,9 +1027,9 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Shipping Cost East:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Shipping Cost East India (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="shippingCostEast"
                                                 value={formData.shippingCostEast}
@@ -998,9 +1040,9 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Shipping Cost West:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Shipping Cost West India (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="shippingCostWest"
                                                 value={formData.shippingCostWest}
@@ -1011,9 +1053,9 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Shipping Cost North east:<span style={{ color: "red" }}> *</span></label>
+                                            <label>Shipping Cost North east India (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="shippingCostNe"
                                                 value={formData.shippingCostNe}
@@ -1026,7 +1068,7 @@ const NewProduct = () => {
                                         <div className="form-group">
                                             <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *</span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="unit"
                                                 value={formData.unit}

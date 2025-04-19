@@ -5,6 +5,7 @@ const productsSlice = createSlice({
   initialState: {
     loading: false,
     isProductUpdated: false,
+    categories: [],
   },
   reducers: {
     productsRequest(state, action) {
@@ -71,6 +72,30 @@ const productsSlice = createSlice({
         error: null,
       };
     },
+    getCategoriesRequest(state, action) {
+      return {
+        loading: true,
+      };
+    },
+    getCategoriesSuccess(state, action) {
+      return {
+        loading: false,
+        ...state,
+        categories: action.payload
+      };
+    },
+    getCategoriesFail(state, action) {
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    },
+    clearError(state, action) {
+      return {
+        ...state,
+        error: null,
+      };
+    },
   },
 });
 
@@ -83,6 +108,9 @@ export const {
   adminProductsFail,
   adminProductsRequest,
   adminProductsSuccess,
+  getCategoriesSuccess,
+  getCategoriesRequest,
+  getCategoriesFail,
 } = actions;
 
 export default reducer;

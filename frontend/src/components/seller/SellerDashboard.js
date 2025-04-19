@@ -71,7 +71,7 @@ export default function SellerDashboard() {
             </div>
             <div className="col-12 col-lg-10 col-md-12 ">
               <Link to="/">
-                <div className="mobile-logo">
+                <div className="mobile-logo p-2">
                   <img src={require('../../images/procure-g-logo.png')} />
                 </div>
               </Link>
@@ -153,9 +153,9 @@ export default function SellerDashboard() {
                         </Dropdown.Toggle>
                       </Dropdown>
                     </div>
-                    <div className="col-lg-1 col-md-2 dash-cont-glc">
+                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
                       <img src={avatar1} alt="Avatar" className="avatar" />
-                    </div>
+                    </div> */}
                   </div>
                 )}
                 {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -191,9 +191,9 @@ export default function SellerDashboard() {
                         </Dropdown.Toggle>
                       </Dropdown>
                     </div>
-                    <div className="col-2 text-center">
+                    {/* <div className="col-2 text-center">
                       <img src={avatar1} alt="Avatar" className="avatar" />
-                    </div>
+                    </div> */}
                   </div>
                 )}
 

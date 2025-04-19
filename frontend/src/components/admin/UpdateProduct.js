@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdminProducts, updateProduct } from "../../actions/productActions";
+import { getAdminProducts, updateProduct, getCategoryHierarchy } from "../../actions/productActions";
 import { clearError, clearProductUpdated } from "../../slices/singleProductSlice";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,7 +29,7 @@ export default function UpdateProduct() {
         brand: "",
         itemModelNum: "",
         isRefundable: "false", // Add this line
-        manufacturer:"", 
+        manufacturer: "",
 
         sku: "",
         upc: "",
@@ -49,12 +49,12 @@ export default function UpdateProduct() {
         shippingCostWest: "",
         shippingCostNe: "",
         unit: "",
-       
+
         clocreId: "", // Add this line
     });
 
     const { id: productId } = useParams();
-    const { loading, error, products } = useSelector(state => state.productsState);
+    const { loading, error, products, categories = {} } = useSelector(state => state.productsState);
     const { isProductUpdated, } = useSelector(state => state.productState);
 
     const dispatch = useDispatch();
@@ -68,6 +68,7 @@ export default function UpdateProduct() {
     const [rejectionReason, setRejectionReason] = useState('');
     const [variantDetails, setVariantDetails] = useState([]);
     const [hasVariants, setHasVariants] = useState(false);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -171,11 +172,11 @@ export default function UpdateProduct() {
                     itemModelNum: product.itemModelNum,
                     manufacturer: product.manufacturer,
                     status: product.status,
-                   
+
                     sku: product.sku,
                     upc: product.upc,
                     hsn: product.hsn,
-                    
+
                     manufactureDetails: product.manufactureDetails,
                     productCertifications: product.productCertifications,
                     itemLength: product.itemLength,
@@ -189,9 +190,9 @@ export default function UpdateProduct() {
                     shippingCostWest: product.shippingCostWest,
                     shippingCostNe: product.shippingCostNe,
                     unit: product.unit,
-                    
-                    
-                    
+
+
+
                 });
                 setVariantDetails(product.variants);
                 setHasVariants(product.variants.length > 0);
@@ -199,7 +200,9 @@ export default function UpdateProduct() {
             }
         }
     }, [products, productId]);
-
+    useEffect(() => {
+        dispatch(getCategoryHierarchy());
+    }, [dispatch]);
     const openModal = (image) => {
         setModalImage(image);
         setShowModal(true);
@@ -342,7 +345,7 @@ export default function UpdateProduct() {
                     </div>
                     <div className="col-12 col-lg-10 col-md-12 ">
                         <div className="mobile-logo">
-                                <img src={require("../../images/procure-g-logo.png")}/>
+                            <img src={require("../../images/procure-g-logo.png")} />
                         </div>
 
                         <Fragment>
@@ -411,9 +414,9 @@ export default function UpdateProduct() {
                                                     </Dropdown.Toggle>
                                                 </Dropdown>
                                             </div>
-                                            <div className="col-lg-1 col-md-2 dash-cont-glc">
+                                            {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
                                                 <img src={avatar1} alt="Avatar" className="avatar" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     )}
                                     {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -441,9 +444,9 @@ export default function UpdateProduct() {
                                                     </Dropdown.Toggle>
                                                 </Dropdown>
                                             </div>
-                                            <div className="col-2 text-center">
+                                            {/* <div className="col-2 text-center">
                                                 <img src={avatar1} alt="Avatar" className="avatar" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     )}
 
@@ -476,7 +479,7 @@ export default function UpdateProduct() {
 
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="name_field">Name</label>
+                                                <label htmlFor="name_field">Name:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="name_field"
@@ -490,7 +493,7 @@ export default function UpdateProduct() {
 
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="description_field">Description</label>
+                                                <label htmlFor="description_field">Description:<span style={{ color: "red" }}> *</span></label>
                                                 <textarea
                                                     className="form-control"
                                                     id="description_field"
@@ -501,49 +504,104 @@ export default function UpdateProduct() {
                                                 ></textarea>
                                             </div>
                                         </div>
-                                        
+
+                                        {/* MAIN CATEGORY */}
                                         <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="maincategory">Main Category</label>
-                                                <input
-                                                    type="text"
-                                                    id="maincategory"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.maincategory}
-                                                    name="maincategory"
-                                                />
+                                            <div className="form-group relative">
+                                                <div className="custom-select-wrapper">
+                                                    <label htmlFor="maincategory">
+                                                        Main Category:<span style={{ color: "red" }}> *</span>
+                                                    </label>
+                                                    <select
+                                                        id="maincategory"
+                                                        name="maincategory"
+                                                        className="form-control appearance-none pr-8 custom-select"
+                                                        value={formData.maincategory}
+                                                        onChange={(e) => {
+                                                            handleChange(e);
+                                                            // Reset category and subcategory when main category changes
+                                                            setFormData((prev) => ({
+                                                                ...prev,
+                                                                category: "",
+                                                                subcategory: ""
+                                                            }));
+                                                        }}
+                                                    >
+                                                        <option value="">Select Main Category</option>
+                                                        {Object.keys(categories).map((main) => (
+                                                            <option key={main} value={main}>
+                                                                {main}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
+                                        {/* CATEGORY */}
                                         <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="category_field">Category</label>
-                                                <input
-                                                    type="text"
-                                                    id="category_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.category}
-                                                    name="category"
-                                                />
+                                            <div className="form-group relative">
+                                                <div className="custom-select-wrapper">
+                                                    <label htmlFor="category">
+                                                        Category:<span style={{ color: "red" }}> *</span>
+                                                    </label>
+                                                    <select
+                                                        id="category"
+                                                        name="category"
+                                                        className="form-control appearance-none pr-8 custom-select"
+                                                        value={formData.category}
+                                                        onChange={(e) => {
+                                                            handleChange(e);
+                                                            setFormData((prev) => ({
+                                                                ...prev,
+                                                                subcategory: ""
+                                                            }));
+                                                        }}
+                                                        disabled={!formData.maincategory}
+                                                    >
+                                                        <option value="">Select Category</option>
+                                                        {formData.maincategory &&
+                                                            Object.keys(categories[formData.maincategory] || {}).map((cat) => (
+                                                                <option key={cat} value={cat}>
+                                                                    {cat}
+                                                                </option>
+                                                            ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
+
+                                        {/* SUB CATEGORY */}
                                         <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="subcategory_field">Sub Category</label>
-                                                <input
-                                                    type="text"
-                                                    id="subcategory_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.subcategory}
-                                                    name="subcategory"
-                                                />
+                                            <div className="form-group relative">
+                                                <div className="custom-select-wrapper">
+                                                    <label htmlFor="subcategory">
+                                                        Sub Category:<span style={{ color: "red" }}> *</span>
+                                                    </label>
+                                                    <select
+                                                        id="subcategory"
+                                                        name="subcategory"
+                                                        className="form-control appearance-none pr-8 custom-select"
+                                                        value={formData.subcategory}
+                                                        onChange={handleChange}
+                                                        disabled={!formData.category}
+                                                    >
+                                                        <option value="">Select Subcategory</option>
+                                                        {formData.maincategory &&
+                                                            formData.category &&
+                                                            (categories[formData.maincategory]?.[formData.category] || []).map(
+                                                                (sub, i) => (
+                                                                    <option key={i} value={sub}>
+                                                                        {sub}
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="col-12">
                                             <div className="form-group">
-                                                <label>Key Points:</label>
+                                                <label>Key Points::<span style={{ color: "red" }}> *</span></label>
                                                 {formData.keyPoints.map((point, index) => (
 
                                                     <div key={index} className="d-flex mb-2">
@@ -580,7 +638,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="tax_field">Tax</label>
+                                                <label htmlFor="tax_field">Tax:(GST)<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="tax_field"
@@ -595,7 +653,7 @@ export default function UpdateProduct() {
                                         {!hasVariants && (
                                             <>
                                                 <div className="form-group">
-                                                    <label htmlFor="price_field">Price</label>
+                                                    <label htmlFor="price_field">Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         id="price_field"
@@ -607,7 +665,7 @@ export default function UpdateProduct() {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="offPrice_field">Offer Price</label>
+                                                    <label htmlFor="offPrice_field">Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         id="offPrice_field"
@@ -619,7 +677,7 @@ export default function UpdateProduct() {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="stock_field">Stock</label>
+                                                    <label htmlFor="stock_field">Stock:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         id="stock_field"
@@ -631,7 +689,7 @@ export default function UpdateProduct() {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label>Images</label>
+                                                    <label>Images:<span style={{ color: "red" }}> *</span></label>
                                                     <div className='custom-file'>
                                                         <input
                                                             type='file'
@@ -680,7 +738,7 @@ export default function UpdateProduct() {
 
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="condition_field">Condition</label>
+                                                <label htmlFor="condition_field">Condition:<span style={{ color: "red" }}> *</span></label>
                                                 <select
                                                     className="form-control"
                                                     id="condition_field"
@@ -697,7 +755,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="isRefundable_field">Is Refundable</label>
+                                                <label htmlFor="isRefundable_field">Is Refundable:<span style={{ color: "red" }}> *</span></label>
                                                 <select
                                                     className="form-control"
                                                     id="isRefundable_field"
@@ -712,7 +770,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-12">
                                             <div className="form-group">
-                                                <label htmlFor="brand_field">Brand</label>
+                                                <label htmlFor="brand_field">Brand:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="brand_field"
@@ -728,7 +786,7 @@ export default function UpdateProduct() {
                                                 <h4>Variant {index + 1}</h4>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Variant Type:</label>
+                                                        <label>Variant Type::<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="text"
                                                             className="form-control"
@@ -740,7 +798,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Variant Name:</label>
+                                                        <label>Variant Name::<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="text"
                                                             className="form-control"
@@ -752,7 +810,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Price:</label>
+                                                        <label>Price(MRP):<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -764,7 +822,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Offer Price:</label>
+                                                        <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -776,7 +834,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Stock:</label>
+                                                        <label>Stock:<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -788,7 +846,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Images:</label>
+                                                        <label>Images:<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="file"
                                                             className="form-control"
@@ -839,7 +897,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="sku">SKU</label>
+                                                <label htmlFor="sku">SKU:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="sku_field"
@@ -865,7 +923,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="hsn_field">HSN</label>
+                                                <label htmlFor="hsn_field">HSN Code:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="hsn_field"
@@ -878,7 +936,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="manufactureDetails_field">Manufacture Details</label>
+                                                <label htmlFor="manufactureDetails_field">Manufacture Details:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="manufactureDetails_field"
@@ -904,7 +962,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="batteries_field">itemLength</label>
+                                                <label htmlFor="batteries_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="itemLength_field"
@@ -917,7 +975,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="itemHeight_field">itemHeight</label>
+                                                <label htmlFor="itemHeight_field">Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="itemHeight_field"
@@ -930,7 +988,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="portDescription_field">Item Weight</label>
+                                                <label htmlFor="portDescription_field">Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="itemWeight_field"
@@ -943,7 +1001,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="itemWidth_field">itemWidth</label>
+                                                <label htmlFor="itemWidth_field">Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="itemWidth_field"
@@ -956,7 +1014,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostlol_field">Shipping Cost lolcal</label>
+                                                <label htmlFor="shippingCostlol_field">Shipping Cost lolcal(Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostlol_field"
@@ -969,7 +1027,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="powerSource_field">Shipping Cost North</label>
+                                                <label htmlFor="powerSource_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostNorth_field"
@@ -982,7 +1040,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostNorth_field">Shipping Cost North</label>
+                                                <label htmlFor="shippingCostNorth_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostNorth_field"
@@ -995,7 +1053,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostSouth_field">Shipping Cost South</label>
+                                                <label htmlFor="shippingCostSouth_field">Shipping Cost South India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostSouth_field"
@@ -1008,7 +1066,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostEast_field">Shipping Cost East</label>
+                                                <label htmlFor="shippingCostEast_field">Shipping Cost East India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostEast_field"
@@ -1019,10 +1077,10 @@ export default function UpdateProduct() {
                                                 />
                                             </div>
                                         </div>
-                                        
+
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostWest_field">Shipping Cost West</label>
+                                                <label htmlFor="shippingCostWest_field">Shipping Cost West India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostWest_field"
@@ -1035,7 +1093,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostNe_field">Shipping Cost NorthEast</label>
+                                                <label htmlFor="shippingCostNe_field">Shipping Cost NorthEast India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="shippingCostNe_field"
@@ -1048,7 +1106,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="unit_field">unit</label>
+                                                <label htmlFor="unit_field">Unit(EA/ML/Set):<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="unit_field"
@@ -1061,7 +1119,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="status_field">Status</label>
+                                                <label htmlFor="status_field">Status:<span style={{ color: "red" }}> *</span></label>
                                                 <select
                                                     className="form-control"
                                                     id="status_field"
@@ -1078,7 +1136,7 @@ export default function UpdateProduct() {
                                         {formData.status === 'rejected' && (
                                             <div className="col-lg-6">
                                                 <div className="form-group">
-                                                    <label htmlFor="rejectionReason_field">Rejection Reason</label>
+                                                    <label htmlFor="rejectionReason_field">Rejection Reason:<span style={{ color: "red" }}> *</span></label>
                                                     <textarea
                                                         className="from-control"
                                                         id="rejectionReason_field"
@@ -1086,6 +1144,7 @@ export default function UpdateProduct() {
                                                         onChange={(e) => setRejectionReason(e.target.value)}
                                                         value={rejectionReason}
                                                         name="rejectionReason"
+                                                        style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}
                                                     ></textarea>
                                                 </div>
                                             </div>

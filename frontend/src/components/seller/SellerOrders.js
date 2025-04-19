@@ -160,9 +160,9 @@ export default function SellerOrders() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    <div className="col-lg-1 col-md-2 dash-cont-glc">
+                                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
                                         <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -197,9 +197,9 @@ export default function SellerOrders() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    <div className="col-2 text-center">
+                                    {/* <div className="col-2 text-center">
                                         <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
 

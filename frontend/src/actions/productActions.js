@@ -6,6 +6,9 @@ import {
   adminProductsRequest,
   adminProductsSuccess,
   adminProductsFail,
+  getCategoriesRequest,
+  getCategoriesSuccess,
+  getCategoriesFail,
 } from "../slices/productSlice";
 import {
   productRequest,
@@ -254,5 +257,15 @@ export const getSellerSingleProduct = (id) => async (dispatch) => {
     dispatch(getSellerSingleProductSuccess(data));
   } catch (error) {
     dispatch(getSellerSingleProductFail(error.response.data.message));
+  }
+};
+
+export const getCategoryHierarchy = () => async (dispatch) => {
+  try {
+    dispatch(getCategoriesRequest);
+    const { data } = await axios.get('/api/v1/cetegories');
+    dispatch(getCategoriesSuccess(data));
+  } catch (error) {
+    dispatch(getCategoriesFail(error.response.data.message));
   }
 };

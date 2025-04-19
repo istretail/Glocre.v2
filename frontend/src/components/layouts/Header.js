@@ -178,7 +178,7 @@ export default function Header() {
 
                   <ul className="list list-inline mb-0 headerTabs">
                     <li className="list-inline-item">
-                      <Link to="/sell">
+                      <Link to="/seller">
                         <button
                           type="button"
                           class="btn bg-light"
@@ -322,7 +322,7 @@ export default function Header() {
                                 className="dropdown-item"
                                 onClick={() => navigate('./register')}
                               >
-                                Sign In
+                                Sign Up
                               </p>
                             </li>
                           </ul>
@@ -360,7 +360,7 @@ export default function Header() {
             </Link>
           </div>
 
-          <Link to="/sell">
+          <Link to="/seller">
             <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
               <FontAwesomeIcon icon={faPlus} />
             </div>

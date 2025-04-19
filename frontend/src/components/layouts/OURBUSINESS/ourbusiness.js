@@ -1,9 +1,7 @@
 import React from "react";
 import "./ourbus.css";
 import ourbusineeg1 from "../OURBUSINESS/OURBUSINESS--IMAGES/OURBUSINESSG1.png";
-import ourbusineeg2 from "../OURBUSINESS/OURBUSINESS--IMAGES/OURBUSINESSG2.png";
-import ourbusineeg3 from "../OURBUSINESS/OURBUSINESS--IMAGES/OURBUSINESSG3.png";
-import ourbusineeg4 from "../OURBUSINESS/OURBUSINESS--IMAGES/OURBUSINESSG4.png";
+
 import Nav from "../nav";
 
 export default function Ourbusiness() {
@@ -43,7 +41,7 @@ export default function Ourbusiness() {
         <section className="our-business-section-procureg">
           <div className="container">
             <div className="our-business-contents-procureg">
-              <h3>OUR BUSINESS AT  Glocre</h3>
+              <h3>OUR BUSINESS AT GLOCRE</h3>
               <p>
                 Glocre connects global buyers and sellers with
                 seamless, efficient e - commerce solutions.
@@ -125,52 +123,70 @@ export default function Ourbusiness() {
           </div>
         </section>
 
-        <section className="our-core-section-procureg mt-5">
+        <section className="our-core-section-procureg mt-5 mb-5">
           <div className="container">
             <div className="our-core-heading-procureg">
               <h3>OUR CORE VALUES</h3>
             </div>
 
-            <div className="our-core-sub-section-procureg">
-              <h3>Customer-Centricity</h3>
-              <p>
-                We focus on delivering exceptional customer experiences through
-                fast shipping, reliable support, and <br /> seamless
-                transactions. Our goal is to consistently meet and exceed
-                customer expectations, building
-                <br /> long-lasting relationships.
-              </p>
+            <div className="d-flex flex-column justify-content-center align-items-center">
+              <div className="row g-4" style={{ width: "100%", maxWidth: "1700px" }}>
+                <div className="col-lg-6">
+                  <div className="our-core-sub-section-procureg p-4" style={{ backgroundColor: "#fff", borderRadius: "15px" }}>
+                    <h3>Customer-Centricity</h3>
+                    <p>
+                      We focus on delivering exceptional customer experiences through fast
+                      shipping, reliable support, and seamless transactions. Our goal is to
+                      consistently meet and exceed customer expectations, building
+                      long-lasting relationships.
+                    </p>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div
+                    className="our-core-sub-section-procureg p-4"
+                    style={{ backgroundColor: "#fff", borderRadius: "15px" }}
+                  >
+                    <h3>Innovation</h3>
+                    <p>
+                      We continuously improve our platform using the latest technology to
+                      simplify the buying and selling process. By staying ahead of market
+                      trends, we ensure our users have access to efficient,
+                      state-of-the-art solutions.
+                    </p>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div
+                    className="our-core-sub-section-procureg p-4"
+                    style={{ backgroundColor: "#fff", borderRadius: "15px" }}
+                  >
+                    <h3>Global Connectivity</h3>
+                    <p>
+                      We bridge the gap between buyers and sellers worldwide, enabling
+                      businesses to expand their reach and engage in cross-border trade.
+                      Our platform promotes global commerce and fosters international
+                      growth opportunities.
+                    </p>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div
+                    className="our-core-sub-section-procureg p-4"
+                    style={{ backgroundColor: "#fff", borderRadius: "15px" }}
+                  >
+                    <h3>Reliability</h3>
+                    <p>
+                      We are committed to providing dependable service with consistent,
+                      high-quality experiences. Our focus on trust and reliability ensures
+                      customers can count on us for timely support and smooth transactions.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="our-core-sub-section-procureg">
-              <h3>Innovation</h3>
-              <p>
-                We continuously improve our platform using the latest technology
-                to simplify the buying and selling <br /> process. By staying
-                ahead of market trends, we ensure our users have access to
-                efficient, <br /> state-of-the-art solutions.
-              </p>
-            </div>
 
-            <div className="our-core-sub-section-procureg">
-              <h3>Global Connectivity</h3>
-              <p>
-                We bridge the gap between buyers and sellers worldwide, enabling
-                businesses to expand their reach and <br /> engage in
-                cross-border trade. Our platform promotes global commerce and{" "}
-                <br /> fosters international growth opportunities.
-              </p>
-            </div>
-
-            <div className="our-core-sub-section-procureg">
-              <h3>Reliability</h3>
-              <p>
-                We are committed to providing dependable service with
-                consistent, high-quality experiences. <br /> Our focus on trust
-                and reliability ensures customers can count on us for <br />{" "}
-                timely support and smooth transactions.
-              </p>
-            </div>
           </div>
         </section>
 

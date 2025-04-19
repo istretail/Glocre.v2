@@ -7,7 +7,7 @@ const sendEmail = require("../utils/email");
 const categoryHierarchy = require("../config/categoryHierarchy");
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 12;
+  const resPerPage = 100;
 
   // Validate and sanitize limit
   let limit = parseInt(req.query.limit);
@@ -733,3 +733,8 @@ exports.unarchiveProduct = catchAsyncError(async (req, res, next) => {
     message: "Product unarchived successfully",
   });
 });
+
+// get category and subcategory 
+exports.getCategoryHierarchy = (req, res) => {
+  res.status(200).json(categoryHierarchy);
+};

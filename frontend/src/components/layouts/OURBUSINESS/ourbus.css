@@ -129,35 +129,34 @@
     font-size: 16px;
   }
 }
-
 /* OUR CORE VALUES */
 .our-core-section-procureg {
   padding: 7% 0;
   background-color: #ffad63;
-  text-align: center;
-
+  border-radius: 15px;
+ 
   .our-core-heading-procureg {
     padding: 0 0 2% 0;
   }
-
+ 
   .our-core-heading-procureg h3 {
     color: white;
     font-size: 40px;
     font-weight: bold;
   }
-
+ 
   .our-core-sub-section-procureg {
-    padding: 2% 0;
+    padding: 25px;
   }
-
+ 
   .our-core-sub-section-procureg h3 {
-    color: white;
+    color: #ffad63;
     font-size: 22px;
     font-weight: bold;
   }
-
+ 
   .our-core-sub-section-procureg p {
-    color: #c0c0c0;
+    color: #8c8c8c;
   }
 }
 
