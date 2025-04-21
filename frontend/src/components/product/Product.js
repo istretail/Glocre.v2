@@ -130,9 +130,11 @@ const openProductDetailPage = () => {
                 <div className="d-flex align-items-center mt-3 mb-2">
                   <div className="d-flex align-items-center w-100">
                     <span className="price text-g font-weight-bold">
-                      ₹{product.offPrice}.00/-
+                      ₹{product?.offPrice || product?.variants?.[0]?.offPrice || product?.variants?.[1]?.offPrice || 0}.00/-
                     </span>
-                    <span className="oldPrice ml-2">₹{product.price}.00/-</span>
+                    <span className="oldPrice ml-2">
+                      ₹{product?.price || product?.variants?.[0]?.price || product?.variants?.[1]?.price || 0}.00/-
+                      </span>
                   </div>
                 </div>
                 <button

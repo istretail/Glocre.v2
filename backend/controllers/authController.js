@@ -511,7 +511,7 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
-  console.log("Request Body:", req.body);
+  // console.log("Request Body:", req.body);
   // Check if the address already exists in the user's saved addresses
   const existingAddress = user.savedAddress.find((address) =>
     address?.name?.toLowerCase() === req.body.name?.toLowerCase() &&
@@ -554,7 +554,7 @@ exports.createSavedAddress = catchAsyncError(async (req, res, next) => {
     data: newAddress,
   });
 
-  console.log("New Address:", newAddress);
+  // console.log("New Address:", newAddress);
 });
 
 

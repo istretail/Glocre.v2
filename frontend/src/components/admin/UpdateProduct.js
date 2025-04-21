@@ -24,6 +24,7 @@ export default function UpdateProduct() {
         maincategory: "",
         category: "",
         subcategory: "",
+        fssai: "",
         stock: "",
         condition: "",
         brand: "",
@@ -164,6 +165,7 @@ export default function UpdateProduct() {
                     maincategory: product.maincategory,
                     category: product.category,
                     subcategory: product.subcategory,
+                    fssai: product.fssai,
                     stock: product.stock,
                     condition: product.condition,
                     brand: product.brand,
@@ -201,8 +203,11 @@ export default function UpdateProduct() {
         }
     }, [products, productId]);
     useEffect(() => {
-        dispatch(getCategoryHierarchy());
-    }, [dispatch]);
+        if (products) {
+            // Once product is fetched, then get categories
+            dispatch(getCategoryHierarchy());
+        }
+    }, [products, dispatch]);
     const openModal = (image) => {
         setModalImage(image);
         setShowModal(true);
@@ -334,6 +339,7 @@ export default function UpdateProduct() {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
 
     return (
         <>
@@ -473,7 +479,7 @@ export default function UpdateProduct() {
                                 <form onSubmit={handleSubmit} className="updateproduct-right-glc" encType='multipart/form-data'>
 
                                     <h3 style={{ color: "#ffad63", marginTop: "40px" }}>UPDATE PRODUCT</h3>
-                                    <p>Glocre</p>
+                                    
 
                                     <div className="row">
 
@@ -599,6 +605,22 @@ export default function UpdateProduct() {
                                                 </div>
                                             </div>
                                         </div>
+                                        {formData.maincategory === "Food and Beverage Products" && (
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>FSSAI Number:<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="fssai"
+                                                        value={formData.fssai.toLocaleUpperCase()}
+                                                        onChange={handleChange}
+                                                        maxLength={14}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
                                         <div className="col-12">
                                             <div className="form-group">
                                                 <label>Key Points::<span style={{ color: "red" }}> *</span></label>
@@ -611,6 +633,7 @@ export default function UpdateProduct() {
                                                             className="form-control me-2"
                                                             value={point}
                                                             onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                                                            maxLength={80}
                                                             required
                                                         />
                                                         {formData.keyPoints.length > 3 && (
@@ -638,12 +661,13 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="tax_field">Tax:(GST)<span style={{ color: "red" }}> *</span></label>
+                                                <label htmlFor="tax_field">Tax:(GST in %)<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="tax_field"
                                                     className="form-control"
                                                     onChange={handleChange}
+                                                    maxLength={2}
                                                     value={formData.tax}
                                                     name="tax"
                                                 />
@@ -810,7 +834,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Price(MRP):<span style={{ color: "red" }}> *</span></label>
+                                                        <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -822,7 +846,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
+                                                        <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -890,7 +914,8 @@ export default function UpdateProduct() {
                                                     id="itemModelNum_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.itemModelNum}
+                                                    value={formData.itemModelNum.toLocaleUpperCase()}
+                                                    maxLength={15}
                                                     name="itemModelNum"
                                                 />
                                             </div>
@@ -903,7 +928,8 @@ export default function UpdateProduct() {
                                                     id="sku_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.sku}
+                                                    value={formData.sku.toLocaleUpperCase()}
+                                                    maxLength={15}
                                                     name="sku"
                                                 />
                                             </div>
@@ -916,7 +942,8 @@ export default function UpdateProduct() {
                                                     id="upc_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.upc}
+                                                    maxLength={15}
+                                                    value={formData.upc.toLocaleUpperCase()}
                                                     name="upc"
                                                 />
                                             </div>
@@ -929,7 +956,8 @@ export default function UpdateProduct() {
                                                     id="hsn_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.hsn}
+                                                    maxLength={10}
+                                                    value={formData.hsn.toLocaleUpperCase()}
                                                     name="hsn"
                                                 />
                                             </div>
@@ -1112,7 +1140,7 @@ export default function UpdateProduct() {
                                                     id="unit_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.unit}
+                                                    value={formData.unit.toLocaleUpperCase()}
                                                     name="unit"
                                                 />
                                             </div>

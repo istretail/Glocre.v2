@@ -83,6 +83,7 @@ const productSchema = new mongoose.Schema({
   productCertifications: { type: String },
   packageDimension: { type: String },
   manufacturer: { type: String },
+  fssai: { type: String },
   itemLength:{ type: String, required: true },
   itemHeight: { type: String, required: true },
   itemWeight: { type: String, required: true },

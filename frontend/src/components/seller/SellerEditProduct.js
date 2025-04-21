@@ -24,6 +24,7 @@ export default function SellerUpdateProduct() {
     maincategory: "",
     category: "",
     subcategory: "",
+    fssai: "",
     stock: "",
     condition: "",
     brand: "",
@@ -146,6 +147,7 @@ export default function SellerUpdateProduct() {
         maincategory: product.maincategory,
         category: product.category,
         subcategory: product.subcategory,
+        fssai: product.fssai,
         stock: product.stock,
         condition: product.condition,
         brand: product.brand,
@@ -184,8 +186,11 @@ export default function SellerUpdateProduct() {
   }, [product, productId]);
 
   useEffect(() => {
-    dispatch(getCategoryHierarchy());
-  }, [dispatch]);
+    if (product) {
+      dispatch(getCategoryHierarchy());
+    }
+
+  }, [product, dispatch]);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -515,7 +520,7 @@ export default function SellerUpdateProduct() {
               >
                 UPDATE PRODUCT
               </h3>
-              <p>Glocre</p>
+              
 
               <form
                 onSubmit={handleSubmit}
@@ -563,6 +568,7 @@ export default function SellerUpdateProduct() {
                             className="form-control me-2"
                             value={point}
                             onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                            maxLength={80}
                             required
                           />
                           {formData.keyPoints.length > 3 && (
@@ -588,7 +594,6 @@ export default function SellerUpdateProduct() {
                       )}
                     </div>
                   </div>
-
 
                   {/* MAIN CATEGORY */}
                   <div className="col-lg-6">
@@ -684,15 +689,31 @@ export default function SellerUpdateProduct() {
                       </div>
                     </div>
                   </div>
-
+                    {formData.maincategory === "Food and Beverage Products" && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label>FSSAI Number:<span style={{ color: "red" }}> *</span></label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            name="fssai"
+                            value={formData.fssai.toLocaleUpperCase()}
+                            onChange={handleChange}
+                            maxLength={14} 
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="tax_field">Tax:<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="tax_field">Tax:(GST in %):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="text"
                         id="tax_field"
                         className="form-control"
                         onChange={handleChange}
+                        maxLength={2}
                         value={formData.tax}
                         name="tax"
                       />
@@ -891,7 +912,7 @@ export default function SellerUpdateProduct() {
                           />
                         </div>
                         <div className="form-group">
-                          <label>Price:<span style={{ color: "red" }}> *</span></label>
+                          <label>Maximum Retail price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -907,7 +928,7 @@ export default function SellerUpdateProduct() {
                           />
                         </div>
                         <div className="form-group">
-                          <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
+                          <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -996,7 +1017,8 @@ export default function SellerUpdateProduct() {
                         id="itemModelNum_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.itemModelNum}
+                        maxLength={15}
+                        value={formData.itemModelNum.toLocaleUpperCase()}
                         name="itemModelNum"
                       />
                     </div>
@@ -1010,7 +1032,8 @@ export default function SellerUpdateProduct() {
                         id="sku_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.sku}
+                        value={formData.sku.toLocaleUpperCase()}
+                        maxLength={15}
                         name="sku"
                       />
                     </div>
@@ -1026,7 +1049,8 @@ export default function SellerUpdateProduct() {
                         id="upc_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.upc}
+                        maxLength={15}
+                        value={formData.upc.toLocaleUpperCase()}
                         name="upc"
                       />
                     </div>
@@ -1042,7 +1066,8 @@ export default function SellerUpdateProduct() {
                         id="hsn_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.hsn}
+                        maxLength={10}
+                        value={formData.hsn.toLocaleUpperCase()}
                         name="hsn"
                       />
                     </div>
@@ -1264,7 +1289,7 @@ export default function SellerUpdateProduct() {
                         id="unit_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.unit}
+                        value={formData.unit.toLocaleUpperCase()}
                         name="unit"
                       />
                     </div>

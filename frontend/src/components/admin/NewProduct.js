@@ -19,6 +19,7 @@ const NewProduct = () => {
         maincategory: "",
         category: "",
         subcategory: "",
+        fssai:"",
         brand: "",
         condition: "",
         keyPoints: ["", "", "", "", ""],
@@ -33,7 +34,7 @@ const NewProduct = () => {
         sku: "",
         upc: "",
         hsn: "",
-        countryofOrgin: "",
+        countryofOrgin: "India",
         manufactureDetails: "",
         productCertifications: "",
         itemLength: "",
@@ -477,6 +478,22 @@ const NewProduct = () => {
                                         </div>
                                     )}
 
+                                    {formData.maincategory === "Food and Beverage Products" && (
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label>FSSAI Number:<span style={{ color: "red" }}> *</span></label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    name="fssai"
+                                                    value={formData.fssai.to}
+                                                    onChange={handleChange}
+                                                    maxLength={14}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
@@ -878,15 +895,36 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Country of Orgin:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="text"
+                                            <div className="custom-select-wrapper custom-select">
+                                            <label>Country of Origin:<span style={{ color: "red" }}> *</span></label>
+                                            <select
                                                 className="form-control"
                                                 name="countryofOrgin"
                                                 value={formData.countryofOrgin}
                                                 onChange={handleChange}
                                                 required
-                                            />
+                                            >
+                                                {[
+                                                    "India",
+                                                    "United States",
+                                                    "United Kingdom",
+                                                    "China",
+                                                    "Germany",
+                                                    "France",
+                                                    "Japan",
+                                                    "Australia",
+                                                    "Canada",
+                                                    "Brazil",
+                                                    "Italy",
+                                                    "South Korea",
+                                                    "Singapore",
+                                                    "UAE",
+                                                    "South Africa"
+                                                ].map((country) => (
+                                                    <option key={country} value={country}>{country}</option>
+                                                ))}
+                                            </select>
+                                            </div>
                                         </div>
                                     </div>
 

@@ -818,7 +818,7 @@ export default function ProductDetail() {
                 <>
                     <MetaData title={product.name} />
                     <Nav />
-                    <div className="breadcrumbWrapper mb-2 mt-5">
+                    <div className="breadcrumbWrapper mb-2">
                         <div className="container-fluid">
                             <ul className="breadcrumb breadcrumb2 mb-0">
                                 <li>

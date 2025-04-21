@@ -19,6 +19,7 @@ const SellerCreateProduct = () => {
     maincategory: "",
     category: "",
     subcategory: "",
+    fssai:"",
     brand: "",
     condition: "",
     keyPoints: ["", "", "", "", ""],
@@ -401,7 +402,7 @@ const SellerCreateProduct = () => {
             <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
               CREATE PRODUCT
             </h3>
-            <p>Glocre</p>
+            
 
             <form onSubmit={handleSubmit}>
               <div className="row">
@@ -507,7 +508,22 @@ const SellerCreateProduct = () => {
                     </div>
                   </div>
                 )}
-
+                {formData.maincategory === "Food and Beverage Products" && (
+                  <div className="col-lg-6">
+                    <div className="form-group">
+                      <label>FSSAI Number:<span style={{ color: "red" }}> *</span></label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="fssai"
+                        value={formData.fssai.toLocaleUpperCase()}
+                        onChange={handleChange}
+                        maxLength={14}
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
                 <div className="col-lg-6">
                   <div className="form-group">
                     <label>Brand:<span style={{ color: "red" }}> *</span></label>
@@ -553,6 +569,7 @@ const SellerCreateProduct = () => {
                           className="form-control me-2"
                           value={point}
                           onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                          maxLength={80}
                           required
                         />
                         {formData.keyPoints.length > 3 && (
@@ -610,24 +627,32 @@ const SellerCreateProduct = () => {
                         <input
                           type="number"
                           className="form-control"
+                          min="2"
                           value={variantCount}
                           onChange={e => {
-                            const count = Number(e.target.value); // Ensure it's a number
-                            setVariantCount(count);
-                            setVariantDetails(
-                              Array.from({ length: count }, () => ({
-                                variantType: variantType,
-                                variantName: '',
-                                price: '',
-                                offPrice: '',
-                                stock: '',
-                                images: [],
-                              }))
-                            );
+                            const count = Number(e.target.value);
+
+                            // Guard clause: only proceed if count is 2 or more
+                            if (count >= 2) {
+                              setVariantCount(count);
+                              setVariantDetails(
+                                Array.from({ length: count }, () => ({
+                                  variantType: variantType,
+                                  variantName: '',
+                                  price: '',
+                                  offPrice: '',
+                                  stock: '',
+                                  images: [],
+                                }))
+                              );
+                            } else {
+                              setVariantCount(2); // fallback value if user tries to go below 2
+                            }
                           }}
                           required
                         />
                       </div>
+
                       {variantDetails.map((variant, index) => (
                         <div key={index} className="variant-section">
                           <h4>Variant {index + 1}</h4>
@@ -754,6 +779,7 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="tax"
                       value={formData.tax}
+                      maxLength={2}
                       onChange={handleChange}
                       required
                     />
@@ -781,7 +807,7 @@ const SellerCreateProduct = () => {
                     <div className="row">
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Price:<span style={{ color: "red" }}> *</span></label>
+                          <label>Maximum Retail Price (in '₹')<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -795,7 +821,7 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Offer Price:<span style={{ color: "red" }}> *</span></label>
+                          <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -860,7 +886,8 @@ const SellerCreateProduct = () => {
                       type="text"
                       className="form-control"
                       name="itemModelNum"
-                      value={formData.itemModelNum}
+                      value={formData.itemModelNum.toLocaleUpperCase()}
+                      maxLength={15}
                       onChange={handleChange}
                     />
                   </div>
@@ -873,7 +900,8 @@ const SellerCreateProduct = () => {
                       type="text"
                       className="form-control"
                       name="sku"
-                      value={formData.sku}
+                      value={formData.sku.toLocaleUpperCase()}
+                      maxLength={15}
                       onChange={handleChange}
                     />
                   </div>
@@ -886,7 +914,8 @@ const SellerCreateProduct = () => {
                       type="text"
                       className="form-control"
                       name="upc"
-                      value={formData.upc}
+                      value={formData.upc.toLocaleUpperCase()}
+                      maxLength={15}
                       onChange={handleChange}
                     />
                   </div>
@@ -899,7 +928,8 @@ const SellerCreateProduct = () => {
                       type="text"
                       className="form-control"
                       name="hsn"
-                      value={formData.hsn}
+                      value={formData.hsn.toLocaleUpperCase()}
+                      maxLength={10}
                       onChange={handleChange}
                       required
                     />
@@ -908,15 +938,36 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Country of Orgin:<span style={{ color: "red" }}> *</span></label>
-                    <input
-                      type="text"
-                      className="form-control"
+                    <div className="custom-select-wrapper">
+                    <label>Country of Origin:<span style={{ color: "red" }}> *</span></label>
+                    <select
+                      className="form-control custom-select"
                       name="countryofOrgin"
                       value={formData.countryofOrgin}
                       onChange={handleChange}
                       required
-                    />
+                    >
+                      {[
+                        "India",
+                        "United States",
+                        "United Kingdom",
+                        "China",
+                        "Germany",
+                        "France",
+                        "Japan",
+                        "Australia",
+                        "Canada",
+                        "Brazil",
+                        "Italy",
+                        "South Korea",
+                        "Singapore",
+                        "UAE",
+                        "South Africa"
+                      ].map((country) => (
+                        <option key={country} value={country}>{country}</option>
+                      ))}
+                    </select>
+                    </div>
                   </div>
                 </div>
 
@@ -1101,7 +1152,7 @@ const SellerCreateProduct = () => {
                       type="text"
                       className="form-control"
                       name="unit"
-                      value={formData.unit}
+                      value={formData.unit.toLocaleUpperCase()}
                       onChange={handleChange}
                       required
                     />

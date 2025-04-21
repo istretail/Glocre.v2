@@ -176,7 +176,7 @@ export default function Header() {
                     />
                   </div> */}
 
-                  <ul className="list list-inline mb-0 headerTabs">
+                  <ul className="list list-inline mb-0 headerTabs" style={{cursor: "pointer"}}>
                     <li className="list-inline-item">
                       <Link to="/seller">
                         <button
@@ -388,6 +388,7 @@ export default function Header() {
             <ul
               className="dropdown-menu dropdown-menu-end mt-2"
               aria-labelledby="dropdownMenuIconButton"
+              style={{ cursor: "pointer" }}
             >
               {isAuthenticated ? (
                 <>
@@ -440,7 +441,7 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <li>
+                  <li >
                     <span
                       className="dropdown-item"
                       onClick={() => navigate('./login')}
