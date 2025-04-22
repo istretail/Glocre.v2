@@ -3,8 +3,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../../actions/userActions";
 import { toast } from "react-toastify";
 import Loader from "../layouts/Loader";
+import SellerSidebar from "./SellerSidebar";
+import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import Drawer from '@mui/material/Drawer';
+import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+import { TextField } from "@mui/material";
+import Button from "@mui/material/Button";
+
 
 const SellerRegistration = () => {
+  // Navbar
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1000);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  // Drawer
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.authState);
 
@@ -90,94 +117,199 @@ const SellerRegistration = () => {
     );
   }
 
+
+
+
   return (
     <>
-      {isSubmitting && <Loader />}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            readOnly
-            required
-          />
+      <section className="seller-create-product-glc">
+        <div className="row container-fluid">
+          <div className="col-12 col-md-2">
+            {/* <SellerSidebar /> */}
+          </div>
+
+          <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
+            <Link to="/">
+              <div className="mobile-logo">
+                <img src={require('../../images/procure-g-logo.png')} />
+              </div>
+            </Link>
+            
+
+            <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
+              SELLER REGISTRATION
+            </h3>
+
+
+
+            {isSubmitting && <Loader />}
+            <form onSubmit={handleSubmit}>
+
+              <div className="row mt-3 mb-4">
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Name :"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="text"
+                      required
+                      placeholder="Your name"
+                      id="name"
+                      value={formData.name}
+                      readOnly
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Last Name:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="text"
+                      required
+                      placeholder="Your name"
+                      id="name"
+                      value={formData.lastName}
+                      readOnly
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="row mt-3 mb-4">
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Email:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="text"
+                      required
+                      placeholder="Your name"
+                      id="name"
+                      value={formData.email}
+                      readOnly
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="GST Number:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="text"
+                      required
+                      placeholder="Your name"
+                      id="name"
+                      value={formData.gstNumber}
+                      onChange={handleChange}
+                    />
+                    {errors.gstNumber && <p className="error">{errors.gstNumber}</p>}
+                  </div>
+                </div>
+              </div>
+
+              <div className="row mt-3 mb-4">
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Business Name:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="text"
+                      required
+                      placeholder="Business Name"
+                      id="name"
+                      value={formData.businessName}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Business Email:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="email"
+                      required
+                      placeholder="Business Email"
+                      id="name"
+                      value={formData.businessEmail}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="row mt-3 mb-4">
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Business Contact Number:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="text"
+                      required
+                      placeholder="Business Name"
+                      id="name"
+                      value={formData.businessContactNumber}
+                      onChange={handleChange}
+                    />
+                    {errors.businessContactNumber && (
+                      <p className="error">{errors.businessContactNumber}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="Business Address:"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      type="email"
+                      required
+                      placeholder="Business Email"
+                      id="name"
+                      onChange={handleChange}
+                      name="businessAddress"
+                      value={formData.businessAddress}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="">
+                <Button
+                  disabled={isSubmitting}
+                  type="submit"
+                  className="btn-g btn-lg w-20 mb-5"
+                  id="shipping_btn"
+                >
+                  SAVE & CONTINUE
+                </Button>
+              </div>
+              {submitError && <p className="error">{submitError}</p>}
+
+            </form>
+          </div>
         </div>
-        <div>
-          <label>Last Name:</label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            readOnly
-            required
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            readOnly
-            required
-          />
-        </div>
-        <div>
-          <label>GST Number:</label>
-          <input
-            type="text"
-            name="gstNumber"
-            value={formData.gstNumber}
-            onChange={handleChange}
-          />
-          {errors.gstNumber && <p className="error">{errors.gstNumber}</p>}
-        </div>
-        <div>
-          <label>Business Name:</label>
-          <input
-            type="text"
-            name="businessName"
-            value={formData.businessName}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Business Email:</label>
-          <input
-            type="email"
-            name="businessEmail"
-            value={formData.businessEmail}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Business Contact Number:</label>
-          <input
-            type="text"
-            name="businessContactNumber"
-            value={formData.businessContactNumber}
-            onChange={handleChange}
-          />
-          {errors.businessContactNumber && (
-            <p className="error">{errors.businessContactNumber}</p>
-          )}
-        </div>
-        <div>
-          <label>Business Address:</label>
-          <input
-            type="text"
-            name="businessAddress"
-            value={formData.businessAddress}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit" disabled={isSubmitting}>
-          Submit
-        </button>
-        {submitError && <p className="error">{submitError}</p>}
-      </form>
+      </section>
     </>
   );
 };

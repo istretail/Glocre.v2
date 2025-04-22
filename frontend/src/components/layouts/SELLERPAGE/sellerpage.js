@@ -9,10 +9,12 @@ import prosellerimg6 from "../SELLERPAGE/SELLERPAGE--IMAGES/SELLERPAGEIMG6.png";
 import prosellerimg7 from "../SELLERPAGE/SELLERPAGE--IMAGES/SELLERPAGEIMG7.png";
 import prosellerimg8 from "../SELLERPAGE/SELLERPAGE--IMAGES/SELLERPAGEIMG8.png";
 import { Link } from "react-router-dom";
+import MetaData from "../MetaData";
 
 export default function ProcuregSeller() {
   return (
     <>
+    <MetaData title={"Become a Seller"} />
       {/* START YOUR B2B */}
       <section className="start-your-b2b-section-procureg">
         <div className="container">
@@ -28,10 +30,13 @@ export default function ProcuregSeller() {
                 organizations efficiently manage suppliers, negotiate better
                 deals, and optimize procurement workflows.
               </p>
+              <Link to="/register/seller" style={{ color: "white" }}> 
               <button className="col-lg-3 col-5 text-white">
                 {" "}
-                <Link to="/seller/register">Register</Link>
+                Register
               </button>
+              </Link>
+             
             </div>
             <div className="col-lg-6 start-your-b2b-right-contents-procureg">
               <div>

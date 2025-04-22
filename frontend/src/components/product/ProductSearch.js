@@ -11,139 +11,114 @@ import Pagination from "react-js-pagination";
 import { useParams } from "react-router-dom";
 import Slider from "rc-slider";
 import Nav from "../layouts/nav";
-import Tooltip from "rc-tooltip";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faStar } from "@fortawesome/free-solid-svg-icons";
-import { FaCamera, FaHome, FaBell, FaVideo, FaEllipsisH } from "react-icons/fa";
 import "rc-slider/assets/index.css";
 import "rc-tooltip/assets/bootstrap.css";
 import "./ProductDetail.css";
-import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-// import bannerImg from "../../main-images/banner (1).webp";
-import Rating from "@mui/material/Rating";
-import RangeSlider from "react-range-slider-input";
+
 import "react-range-slider-input/dist/style.css";
 
 export default function ProductSearch({ onFilterChange }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { products, maincategory, loading, error, productsCount, resPerPage } =
-    useSelector((state) => state.productsState);
+  const { products =[], loading, error, productsCount, resPerPage } =useSelector((state) => state.productsState);
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([1, 2000]);
-  const [priceChanged, setPriceChanged] = useState(price);
-  const [activeSubcategory, setActiveSubcategory] = useState(null);
+
+
+
   const [rating, setRating] = useState(null);
   const { keyword, category } = useParams();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const filterRef = useRef(null);
-  const priceDropdownRef = useRef(null); // New ref for price dropdown
-  const categoryList = [
-    { name: "NVR", icon: <FaVideo /> },
-    { name: "SMART HOME", icon: <FaHome /> },
-    { name: "SENSORS", icon: <FaBell /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-  ];
+
+  const [selectedMain, setSelectedMain] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [price, setPrice] = useState([1, 2000]);            // Current selected price
+
+  // 1. Toast error separately
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  // 2. Fetch products separately
+  useEffect(() => {
+    dispatch(
+      getProducts(
+        keyword,
+        price,
+        selectedMain,
+        selectedCategory,
+        selectedSubCategory,
+        rating,
+        currentPage
+      )
+    );
+  }, [
+    dispatch,
+    currentPage,
+    keyword,
+    selectedMain,
+    selectedCategory,
+    selectedSubCategory,
+    rating,
+    JSON.stringify(price)
+  ]);
+
+
+
+  const filteredProducts = products?.filter(p => {
+    return (
+      (!selectedMain || p.maincategory === selectedMain) &&
+      (!selectedCategory || p.category === selectedCategory) &&
+      (!selectedSubCategory || p.subcategory === selectedSubCategory)
+    );
+  }) || [];
+
+ 
+  
+  const mainCategories = products && products.length ?[...new Set(products.map(p => p.maincategory))] : [];
+
+  // Filter and get unique categories based on selected main
+  const categories = selectedMain
+    ? [...new Set(
+      products
+        .filter(p => p.maincategory === selectedMain)
+        .map(p => p.category)
+    )]
+    : [];
+
+  // Filter and get unique subcategories based on selected category
+  const subCategories = selectedMain && selectedCategory
+    ? [...new Set(
+      products
+        .filter(p =>
+          p.maincategory === selectedMain && p.category === selectedCategory
+        )
+        .map(p => p.subcategory)
+    )]
+    : [];
+
+
 
   const setCurrentPageNo = (pageNo) => {
     setCurrentPage(pageNo);
   };
 
-  useEffect(() => {
-    if (error) {
-      return toast.error(error);
-    }
 
-    const subcategoryParams =
-      activeSubcategory && activeSubcategory !== "All"
-        ? `subcategory=${activeSubcategory}`
-        : "";
+  const handleMainChange = (cat) => {
+    setSelectedMain(cat);
+    setSelectedCategory(null);
+    setSelectedSubCategory(null);
 
-    dispatch(
-      getProducts(
-        keyword,
-        priceChanged,
-        maincategory,
-        category,
-        subcategoryParams,
-        rating,
-        currentPage,
-      ),
-    );
-  }, [
-    error,
-    dispatch,
-    currentPage,
-    keyword,
-    maincategory,
-    category,
-    activeSubcategory,
-    priceChanged,
-    rating,
-  ]);
-
-  const handleSubCategoryClick = (selectedSubCategory) => {
-    setActiveSubcategory(selectedSubCategory);
   };
 
-  const handlePriceApply = () => {
-    setPriceChanged(price);
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    setSelectedSubCategory(null);
   };
 
-  const handleCategoryClick = (category) => {
-    navigate(`/category/${category}`);
-    setActiveSubcategory("All"); // Reset subcategory to 'All' when main category is clicked
-  };
-
-  // const handlePriceChange = (newPrice) => {
-  //     setPrice(newPrice);
-  // };
-
-  const handleRadioChange = (priceRange) => {
-    const [min, max] = priceRange.split("-").map((val) => parseInt(val, 10));
-    setPrice([min, max]);
-    setPriceChanged([min, max]);
-  };
-
-  const handleClearRatingFilter = () => {
-    setPrice([1, 2000]);
-    setPriceChanged([1, 2000]);
-    setRating(null);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-      if (
-        priceDropdownRef.current &&
-        !priceDropdownRef.current.contains(event.target)
-      ) {
-        // Close price dropdown on click outside
-        setIsFilterOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handlePriceChange = (newPrice) => {
-    setPrice(newPrice);
-    if (onFilterChange) {
-      onFilterChange(newPrice); // Call the function only if it's defined
-    } else {
-      console.error("onFilterChange is not defined.");
-    }
+  const handleSubCategoryChange = (sub) => {
+    setSelectedSubCategory(sub);
   };
 
   return (
@@ -159,76 +134,196 @@ export default function ProductSearch({ onFilterChange }) {
               <div className="row">
                 <div className="col-md-2 sidebarWrapper pt-0">
                   <div className="sidebar">
-                    <div className="card border-0 shadow">
-                      <h3>Category</h3>
-                      <div className="catList">
-                        {categoryList.map((cat) => (
-                          <div
-                            className="catItem d-flex align-items-center"
-                            key={cat.name}
-                            onClick={() => handleCategoryClick(cat.name)}
-                          >
-                            <span className="img">
-                              <div width={30}>{cat.icon}</div>
-                            </span>
-                            <h4 className="mb-0 ml-3 mr-3 text-capitalize">
-                              {cat.name}
-                            </h4>
-                          </div>
-                        ))}
+                      <div className="card border-0 shadow p-3">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h3>Main Categories</h3>
+                          {selectedMain && (
+                            <button
+                              className="btn-outline-secondary"
+                              onClick={() => {
+                                setSelectedMain(null);
+                                setSelectedCategory(null);
+                                setSelectedSubCategory(null);
+                              }}
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                        <div className="catList">
+                          {mainCategories.map(cat => (
+                            <div
+                              key={cat}
+                              className="catItem d-flex align-items-center"
+                              onClick={() => {
+                                handleMainChange(cat);
+                              }}
+                            >
+                              <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
+                            </div>
+                          ))}
+                        </div>
+
+                        {selectedMain && (
+                          <>
+                            <div className="d-flex justify-content-between align-items-center mt-4">
+                              <h3>Categories</h3>
+                              {selectedCategory && (
+                                <button
+                                  className=" btn-outline-secondary"
+                                  onClick={() => {
+                                    setSelectedCategory(null);
+                                    setSelectedSubCategory(null);
+                                  }}
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                            <div className="catList">
+                              {categories.map(cat => (
+                                <div
+                                  key={cat}
+                                  className="catItem d-flex align-items-center"
+                                  onClick={() => {
+                                    handleCategoryChange(cat);
+                                  }}
+                                >
+                                  <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
+
+                        {selectedCategory && (
+                          <>
+                            <div className="d-flex justify-content-between align-items-center mt-4">
+                              <h3>Subcategories</h3>
+                              {selectedSubCategory && (
+                                <button
+                                  className="btn-outline-secondary"
+                                  onClick={() => setSelectedSubCategory(null)}
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                            <div className="catList">
+                              {subCategories.map(sub => (
+                                <div
+                                  key={sub}
+                                  className="catItem d-flex align-items-center"
+                                  onClick={() => {
+                                    handleSubCategoryChange(sub);
+                                  }
+                                  }
+                                >
+                                  <h4 className="mb-0 ml-3 mr-3 text-capitalize">{sub}</h4>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </div>
-                    </div>
 
-                    <div className="card border-0 shadow priceCard">
-                      <h3 className="mb-4">Filter by price</h3>
 
-                      <Slider
-                        range={true}
-                        min={1}
-                        max={2000}
-                        defaultValue={price}
-                        onChange={handlePriceChange}
-                      />
 
-                      <div className="d-flex pt-2 pb-2 priceRange">
-                        <span>
-                          From:{" "}
-                          <strong className="text-success">
-                            Rs: {price[0]}
-                          </strong>
-                        </span>
-                        <span className="ml-auto">
-                          To:{" "}
-                          <strong className="text-success">
-                            Rs: {price[1]}
-                          </strong>
-                        </span>
+                      <div className="card border-0 shadow priceCard">
+                        <h3 className="mb-4">Filter by Price</h3>
+
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="price"
+                            id="price1"
+                            onChange={() => setPrice([0, 1000])}
+                            checked={price[0] === 0 && price[1] === 1000}
+                          />
+                          <label className="form-check-label" htmlFor="price1">
+                            ₹0 – ₹1000
+                          </label>
+                        </div>
+
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="price"
+                            id="price2"
+                            onChange={() => setPrice([1000, 3000])}
+                            checked={price[0] === 1000 && price[1] === 3000}
+                          />
+                          <label className="form-check-label" htmlFor="price2">
+                            ₹1000 – ₹3000
+                          </label>
+                        </div>
+
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="price"
+                            id="price3"
+                            onChange={() => setPrice([3000, 5000])}
+                            checked={price[0] === 3000 && price[1] === 5000}
+                          />
+                          <label className="form-check-label" htmlFor="price3">
+                            ₹3000 – ₹5000
+                          </label>
+                        </div>
+
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="price"
+                            id="price4"
+                            onChange={() => setPrice([5000, 10000])}
+                            checked={price[0] === 5000 && price[1] === 10000}
+                          />
+                          <label className="form-check-label" htmlFor="price4">
+                            ₹5000 – ₹10000
+                          </label>
+                        </div>
+
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="price"
+                            id="price5"
+                            onChange={() => setPrice([10000, Infinity])}
+                            checked={price[0] === 10000 && price[1] === Infinity}
+                          />
+                          <label className="form-check-label" htmlFor="price5">
+                            ₹10000 and above
+                          </label>
+                        </div>
                       </div>
-                    </div>
+
 
                     <div className="card border-0 shadow">
                       <h3>brand</h3>
-                      <div className="catList">
+                      {/* <div className="catList">
                         {categoryList.map((cat) => (
                           <div
                             className="catItem d-flex align-items-center"
                             key={cat.name}
                             onClick={() => handleCategoryClick(cat.name)}
                           >
-                            <span className="img">
-                              <div width={30}>{cat.icon}</div>
-                            </span>
                             <h4 className="mb-0 ml-3 mr-3 text-capitalize">
                               {cat.name}
                             </h4>
                           </div>
                         ))}
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="card border-0 shadow">
                       <h3>Discount</h3>
-                      <div className="catList">
+                      {/* <div className="catList">
                         {categoryList.map((cat) => (
                           <div
                             className="catItem d-flex align-items-center"
@@ -243,7 +338,7 @@ export default function ProductSearch({ onFilterChange }) {
                             </h4>
                           </div>
                         ))}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

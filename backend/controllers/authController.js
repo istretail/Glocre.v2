@@ -88,9 +88,10 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
         "Verification email sent. Please verify your email to complete registration.",
     });
   } catch (error) {
-    if (error.code === 11000) {
-      // MongoDB duplicate key error
-      res.status(400).json({
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
         success: false,
         message: "Email already exists.",
       });

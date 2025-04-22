@@ -19,17 +19,7 @@ export default function Home() {
     (state) => state.productsState,
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [price, setPrice] = useState([1, 2000]);
-  const [priceChanged, setPriceChanged] = useState(price);
-  const [categories, setCategories] = useState([]);
 
-  const categoryList = [
-    { name: "NVR", icon: <FaVideo /> },
-    { name: "SMART HOME", icon: <FaHome /> },
-    { name: "SENSORS", icon: <FaBell /> },
-    { name: "CAMERA", icon: <FaCamera /> },
-    { name: "OTHERS", icon: <FaEllipsisH /> },
-  ];
   const setCurrentPageNo = (pageNo) => {
     setCurrentPage(pageNo);
   };
@@ -40,7 +30,7 @@ export default function Home() {
     }
 
     dispatch(getProducts(null, null, null, null, null, null, currentPage));
-  }, [error, dispatch, currentPage, categories, priceChanged]);
+  }, [error, dispatch, currentPage]);
 
   const handleCategoryClick = (category) => {
     navigate(`/category/${category}`);

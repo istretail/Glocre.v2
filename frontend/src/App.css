@@ -6475,6 +6475,7 @@ textarea.form-control {
 
 .form-check-label {
   margin-bottom: 0;
+  font-size: 1rem;
 }
 
 .form-check-inline {

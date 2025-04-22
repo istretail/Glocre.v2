@@ -11,6 +11,9 @@ import { Link } from "react-router-dom";
 import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, DropdownButton, Image } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import { styled } from '@mui/material/styles';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export default function UpdateProduct() {
     const [formData, setFormData] = useState({
@@ -340,6 +343,19 @@ export default function UpdateProduct() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+        <Tooltip {...props} classes={{ popper: className }} />
+    ))(({ theme }) => ({
+        [`& .${tooltipClasses.tooltip}`]: {
+            backgroundColor: theme.palette.common.white,
+            color: '#8c8c8c',
+            boxShadow: theme.shadows[1],
+            fontSize: 11,
+            border: "1px solid rgba(255, 172, 99, 0.42)",
+            outline: "none",
+        },
+    }));
+
 
     return (
         <>
@@ -479,13 +495,13 @@ export default function UpdateProduct() {
                                 <form onSubmit={handleSubmit} className="updateproduct-right-glc" encType='multipart/form-data'>
 
                                     <h3 style={{ color: "#ffad63", marginTop: "40px" }}>UPDATE PRODUCT</h3>
-                                    
+
 
                                     <div className="row">
 
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="name_field">Name:<span style={{ color: "red" }}> *</span></label>
+                                                <label htmlFor="name_field">Product Name:<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="text"
                                                     id="name_field"
@@ -493,13 +509,16 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.name}
                                                     name="name"
+                                                    maxLength={80}
                                                 />
                                             </div>
                                         </div>
 
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="description_field">Description:<span style={{ color: "red" }}> *</span></label>
+                                                <label htmlFor="description_field">Description:<span style={{ color: "red" }}> * <LightTooltip title="Describe what the product is, what it does, and who it's for." arrow>
+                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                </LightTooltip></span></label>
                                                 <textarea
                                                     className="form-control"
                                                     id="description_field"
@@ -516,7 +535,11 @@ export default function UpdateProduct() {
                                             <div className="form-group relative">
                                                 <div className="custom-select-wrapper">
                                                     <label htmlFor="maincategory">
-                                                        Main Category:<span style={{ color: "red" }}> *</span>
+                                                        Main Category:<span style={{ color: "red" }}> *
+                                                            <LightTooltip title="Select the most appropriate category for your product." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip>
+                                                        </span>
                                                     </label>
                                                     <select
                                                         id="maincategory"
@@ -548,7 +571,12 @@ export default function UpdateProduct() {
                                             <div className="form-group relative">
                                                 <div className="custom-select-wrapper">
                                                     <label htmlFor="category">
-                                                        Category:<span style={{ color: "red" }}> *</span>
+                                                        Category:<span style={{ color: "red" }}> *
+                                                            <LightTooltip title="Select the most appropriate category for your product." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip>
+
+                                                        </span>
                                                     </label>
                                                     <select
                                                         id="category"
@@ -581,7 +609,11 @@ export default function UpdateProduct() {
                                             <div className="form-group relative">
                                                 <div className="custom-select-wrapper">
                                                     <label htmlFor="subcategory">
-                                                        Sub Category:<span style={{ color: "red" }}> *</span>
+                                                        Sub Category:<span style={{ color: "red" }}> *
+                                                            <LightTooltip title="Select the most appropriate category for your product." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip>
+                                                        </span>
                                                     </label>
                                                     <select
                                                         id="subcategory"
@@ -608,7 +640,11 @@ export default function UpdateProduct() {
                                         {formData.maincategory === "Food and Beverage Products" && (
                                             <div className="col-lg-6">
                                                 <div className="form-group">
-                                                    <label>FSSAI Number:<span style={{ color: "red" }}> *</span></label>
+                                                    <label>FSSAI Number:<span style={{ color: "red" }}> *
+                                                        <LightTooltip title="Enter your FSSAI license number, required for food products in India." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
                                                     <input
                                                         type="text"
                                                         className="form-control"
@@ -623,7 +659,10 @@ export default function UpdateProduct() {
                                         )}
                                         <div className="col-12">
                                             <div className="form-group">
-                                                <label>Key Points::<span style={{ color: "red" }}> *</span></label>
+                                                <label>Key Points:<span style={{ color: "red" }}> *
+                                                    <LightTooltip title="Specify if the product is new, used, or refurbished." arrow>
+                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                    </LightTooltip></span></label>
                                                 {formData.keyPoints.map((point, index) => (
 
                                                     <div key={index} className="d-flex mb-2">
@@ -689,7 +728,10 @@ export default function UpdateProduct() {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="offPrice_field">Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label htmlFor="offPrice_field">Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                                                        <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip></span></label>
                                                     <input
                                                         type="number"
                                                         id="offPrice_field"
@@ -810,7 +852,7 @@ export default function UpdateProduct() {
                                                 <h4>Variant {index + 1}</h4>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Variant Type::<span style={{ color: "red" }}> *</span></label>
+                                                        <label>Variant Type:<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="text"
                                                             className="form-control"
@@ -822,7 +864,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Variant Name::<span style={{ color: "red" }}> *</span></label>
+                                                        <label>Variant Name:<span style={{ color: "red" }}> *</span></label>
                                                         <input
                                                             type="text"
                                                             className="form-control"
@@ -950,7 +992,10 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="hsn_field">HSN Code:<span style={{ color: "red" }}> *</span></label>
+                                                <label htmlFor="hsn_field">HSN Code:<span style={{ color: "red" }}> *
+                                                    <LightTooltip title="HSN code for GST classification of your product." arrow>
+                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                    </LightTooltip></span></label>
                                                 <input
                                                     type="text"
                                                     id="hsn_field"
@@ -964,7 +1009,10 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="manufactureDetails_field">Manufacture Details:<span style={{ color: "red" }}> *</span></label>
+                                                <label htmlFor="manufactureDetails_field">Manufacture Details:<span style={{ color: "red" }}> *
+                                                     <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                                                                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                                                                    </LightTooltip></span></label>
                                                 <input
                                                     type="text"
                                                     id="manufactureDetails_field"
@@ -992,7 +1040,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="batteries_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemLength_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1005,7 +1053,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="itemHeight_field">Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemHeight_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1018,7 +1066,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="portDescription_field">Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemWeight_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1031,7 +1079,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="itemWidth_field">Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemWidth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1044,7 +1092,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostlol_field">Shipping Cost lolcal(Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostlol_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1057,7 +1105,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="powerSource_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostNorth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1070,7 +1118,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostNorth_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostNorth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1083,7 +1131,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostSouth_field">Shipping Cost South India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostSouth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1096,7 +1144,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostEast_field">Shipping Cost East India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostEast_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1110,7 +1158,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostWest_field">Shipping Cost West India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostWest_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1123,7 +1171,7 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostNe_field">Shipping Cost NorthEast India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostNe_field"
                                                     className="form-control"
                                                     onChange={handleChange}
@@ -1142,6 +1190,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.unit.toLocaleUpperCase()}
                                                     name="unit"
+                                                    maxLength={10}
                                                 />
                                             </div>
                                         </div>
@@ -1211,10 +1260,10 @@ export default function UpdateProduct() {
                                     </div>
                                 </div>
                             )}
-                        </Fragment>
-                    </div>
-                </div>
-            </section>
+                        </Fragment >
+                    </div >
+                </div >
+            </section >
         </>
     );
 }

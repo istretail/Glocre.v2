@@ -128,7 +128,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/ourbusiness" element={<Ourbusiness />} />
-          <Route path="/seller" element={<ProcuregSeller />} />
+          <Route path="/becomeseller" element={<ProcuregSeller />} />
           <Route path="/terms" element={<TermsConditions />} />
           <Route path="/return" element={<RefundPolicy />} />
           <Route path="/policy" element={<Policy />} />
@@ -162,7 +162,7 @@ const App = () => {
           <Route path="/admin/edit-banner" element={<ProtectedRoute isAdmin={true}><AdminBannerPage /></ProtectedRoute>} />
 
           {/* Seller Routes */}
-          <Route path="/seller/register"  element={<ProtectedRoute><SellerRegistration /></ProtectedRoute>} />
+          <Route path="/register/seller"  element={<ProtectedRoute><SellerRegistration /></ProtectedRoute>} />
           <Route path="/seller/dashboard"  element={<ProtectedRoute isSeller={true}><SellerDashboard /></ProtectedRoute>} />
           <Route path="/seller/products"  element={<ProtectedRoute isSeller={true}><SellerProducts /></ProtectedRoute>} />
           <Route path="/seller/orders"  element={<ProtectedRoute isSeller={true}><SellerOrders /></ProtectedRoute>} />

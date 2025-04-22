@@ -11,6 +11,10 @@ import { Dropdown, DropdownButton, Image } from "react-bootstrap";
 import avatar1 from '../../images/OIP.jpg';
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { styled } from '@mui/material/styles';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { ErrorOutline } from "@mui/icons-material";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const SellerCreateProduct = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +23,7 @@ const SellerCreateProduct = () => {
     maincategory: "",
     category: "",
     subcategory: "",
-    fssai:"",
+    fssai: "",
     brand: "",
     condition: "",
     keyPoints: ["", "", "", "", ""],
@@ -221,9 +225,23 @@ const SellerCreateProduct = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
   useEffect(() => {
     dispatch(getCategoryHierarchy());
   }, [dispatch]);
+
+  const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.white,
+      color: '#8c8c8c',
+      boxShadow: theme.shadows[1],
+      fontSize: 11,
+      border: "1px solid rgba(255, 172, 99, 0.42)",
+      outline: "none",
+    },
+  }));
 
   return (
     <>
@@ -402,19 +420,21 @@ const SellerCreateProduct = () => {
             <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
               CREATE PRODUCT
             </h3>
-            
+
 
             <form onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Product Name:<span style={{ color: "red" }}> *</span></label>
+                    <label>Product Name:<span style={{ color: "red" }}> *
+                    </span></label>
                     <input
                       type="text"
                       className="form-control"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
+                       maxlength="80"
                       required
                     />
                   </div>
@@ -422,7 +442,11 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Description:<span style={{ color: "red" }}> *</span></label>
+                    <label>Description:<span style={{ color: "red" }}> *
+                      <LightTooltip title="Describe what the product is, what it does, and who it's for." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+                    </span></label>
                     <textarea
                       className="form-control"
                       name="description"
@@ -437,7 +461,13 @@ const SellerCreateProduct = () => {
                 <div className="col-lg-6">
                   <div className="form-group">
                     <div className="custom-select-wrapper">
-                      <label>Main Category:<span style={{ color: "red" }}> *</span></label>
+                      <label>Main Category:<span style={{ color: "red" }}> *
+
+                        <LightTooltip title="Select the most appropriate category for your product." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+
+                      </span></label>
                       <select
                         className="form-control custom-select"
                         name="maincategory"
@@ -464,7 +494,13 @@ const SellerCreateProduct = () => {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <div className="custom-select-wrapper">
-                        <label>Category:<span style={{ color: "red" }}> *</span></label>
+                        <label>Category:<span style={{ color: "red" }}> *
+
+                          <LightTooltip title="Select the most appropriate category for your product." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+
+                        </span></label>
                         <select
                           className="form-control custom-select"
                           name="category"
@@ -491,7 +527,13 @@ const SellerCreateProduct = () => {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <div className="custom-select-wrapper">
-                        <label>Sub category:<span style={{ color: "red" }}> *</span></label>
+                        <label>Sub category:<span style={{ color: "red" }}> *
+
+                          <LightTooltip title="Select the most appropriate category for your product." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+
+                        </span></label>
                         <select
                           className="form-control custom-select"
                           name="subcategory"
@@ -511,7 +553,13 @@ const SellerCreateProduct = () => {
                 {formData.maincategory === "Food and Beverage Products" && (
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label>FSSAI Number:<span style={{ color: "red" }}> *</span></label>
+                      <label>FSSAI Number:<span style={{ color: "red" }}> *
+
+                        <LightTooltip title="Enter your FSSAI license number, required for food products in India." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+
+                      </span></label>
                       <input
                         type="text"
                         className="form-control"
@@ -526,7 +574,9 @@ const SellerCreateProduct = () => {
                 )}
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Brand:<span style={{ color: "red" }}> *</span></label>
+                    <label>Brand:<span style={{ color: "red" }}> *
+
+                    </span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -541,7 +591,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Condition:<span style={{ color: "red" }}> *</span></label>
+                    <label>Condition:<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="Specify if the product is new, used, or refurbished." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <select
                       className="form-control"
                       name="condition"
@@ -549,7 +605,13 @@ const SellerCreateProduct = () => {
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Select Condition<span style={{ color: "red" }}> *</span></option>
+                      <option value="">Select Condition<span style={{ color: "red" }}> *
+
+                        <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+
+                      </span></option>
                       <option value="New">New</option>
                       <option value="Unboxed">Unboxed</option>
                       <option value="Refurbished">Refurbished</option>
@@ -559,7 +621,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Key Points:<span style={{ color: "red" }}> *</span></label>
+                    <label>Key Points:<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="Highlight key features or selling points of the product." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     {formData.keyPoints.map((point, index) => (
 
                       <div key={index} className="d-flex mb-2">
@@ -598,7 +666,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Does this product have variants?<span style={{ color: "red" }}> *</span></label>
+                    <label>Does this product have variants?<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="List product variants like size, color, etc." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <select
                       className="form-control"
                       value={hasVariants}
@@ -612,7 +686,13 @@ const SellerCreateProduct = () => {
                   {hasVariants && (
                     <>
                       <div className="form-group">
-                        <label>What is the variant type?<span style={{ color: "red" }}> *</span></label>
+                        <label>What is the variant type?<span style={{ color: "red" }}> *
+
+                          <LightTooltip title="List product variants like size, color, etc." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+
+                        </span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -623,7 +703,13 @@ const SellerCreateProduct = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>How many variants?<span style={{ color: "red" }}> *</span></label>
+                        <label>How many variants?<span style={{ color: "red" }}> *
+
+                          <LightTooltip title="List product variants like size, color, etc." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+
+                        </span></label>
                         <input
                           type="number"
                           className="form-control"
@@ -677,7 +763,8 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                            <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                            </span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -693,7 +780,13 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                            <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+
+                              <LightTooltip title="Enter the discounted price (if any)." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
+
+                            </span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -709,7 +802,13 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Stock:<span style={{ color: "red" }}> *</span></label>
+                            <label>Stock:<span style={{ color: "red" }}> *
+
+                              <LightTooltip title="Enter the quantity currently in stock." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
+
+                            </span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -725,7 +824,13 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Images:<span style={{ color: "red" }}> *</span></label>
+                            <label>Images:<span style={{ color: "red" }}> *
+
+                              <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
+
+                            </span></label>
                             <input
                               type="file"
                               className="form-control"
@@ -773,7 +878,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Tax:(GST in %)<span style={{ color: "red" }}> *</span></label>
+                    <label>Tax:(GST in %)<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="Enter the applicable tax percentage or value." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -788,7 +899,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Is Refundable:<span style={{ color: "red" }}> *</span></label>
+                    <label>Is Refundable:<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="Select whether this product can be refunded after purchase." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <select
                       className="form-control"
                       name="isRefundable"
@@ -807,7 +924,8 @@ const SellerCreateProduct = () => {
                     <div className="row">
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Maximum Retail Price (in '₹')<span style={{ color: "red" }}> *</span></label>
+                          <label>Maximum Retail Price (in '₹')<span style={{ color: "red" }}> *
+                          </span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -821,7 +939,13 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                          <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+
+                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+
+                          </span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -835,7 +959,13 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Stock:<span style={{ color: "red" }}> *</span></label>
+                          <label>Stock:<span style={{ color: "red" }}> *
+
+                            <LightTooltip title="Enter the quantity currently in stock." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+
+                          </span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -849,7 +979,13 @@ const SellerCreateProduct = () => {
 
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label>Product Images:<span style={{ color: "red" }}> *</span></label>
+                          <label>Product Images:<span style={{ color: "red" }}> *
+
+                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+
+                          </span></label>
                           <input
                             type="file"
                             className="form-control"
@@ -895,7 +1031,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Product Code SKU:<span style={{ color: "red" }}> *</span></label>
+                    <label>Product Code SKU:<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="Stock Keeping Unit – your internal tracking code for this product." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -909,7 +1051,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>UPC:</label>
+                    <label>UPC:
+
+                      <LightTooltip title="Universal Product Code – used for barcode identification." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -923,7 +1071,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>HSN Code:<span style={{ color: "red" }}> *</span></label>
+                    <label>HSN Code:<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="HSN code for GST classification of your product." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <input
                       type="text"
                       className="form-control"
@@ -939,41 +1093,53 @@ const SellerCreateProduct = () => {
                 <div className="col-lg-6">
                   <div className="form-group">
                     <div className="custom-select-wrapper">
-                    <label>Country of Origin:<span style={{ color: "red" }}> *</span></label>
-                    <select
-                      className="form-control custom-select"
-                      name="countryofOrgin"
-                      value={formData.countryofOrgin}
-                      onChange={handleChange}
-                      required
-                    >
-                      {[
-                        "India",
-                        "United States",
-                        "United Kingdom",
-                        "China",
-                        "Germany",
-                        "France",
-                        "Japan",
-                        "Australia",
-                        "Canada",
-                        "Brazil",
-                        "Italy",
-                        "South Korea",
-                        "Singapore",
-                        "UAE",
-                        "South Africa"
-                      ].map((country) => (
-                        <option key={country} value={country}>{country}</option>
-                      ))}
-                    </select>
+                      <label>Country of Origin:<span style={{ color: "red" }}> *
+
+                        <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+
+                      </span></label>
+                      <select
+                        className="form-control custom-select"
+                        name="countryofOrgin"
+                        value={formData.countryofOrgin}
+                        onChange={handleChange}
+                        required
+                      >
+                        {[
+                          "India",
+                          "United States",
+                          "United Kingdom",
+                          "China",
+                          "Germany",
+                          "France",
+                          "Japan",
+                          "Australia",
+                          "Canada",
+                          "Brazil",
+                          "Italy",
+                          "South Korea",
+                          "Singapore",
+                          "UAE",
+                          "South Africa"
+                        ].map((country) => (
+                          <option key={country} value={country}>{country}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Manufacture Details:</label>
+                    <label>Manufacture Details:
+
+                      <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -986,7 +1152,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Product Certifications:</label>
+                    <label>Product Certifications:
+
+                      <LightTooltip title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -999,7 +1171,8 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
+                    <label>Item Length in Centimeters:<span style={{ color: "red" }}> *
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1013,7 +1186,8 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
+                    <label>Item Height in Centimeters:<span style={{ color: "red" }}> *
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1027,7 +1201,8 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Item Weight in kgs:<span style={{ color: "red" }}> *</span></label>
+                    <label>Item Weight in kgs:<span style={{ color: "red" }}> *
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1041,7 +1216,8 @@ const SellerCreateProduct = () => {
 
                 <div className="col-12">
                   <div className="form-group">
-                    <label>Item Width in Centimeters<span style={{ color: "red" }}> *</span></label>
+                    <label>Item Width in Centimeters<span style={{ color: "red" }}> *
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1055,7 +1231,13 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-4">
                   <div className="form-group">
-                    <label>Minimum Odere QTY(MOQ):<span style={{ color: "red" }}> *</span></label>
+                    <label>Minimum Odere QTY(MOQ):<span style={{ color: "red" }}> *
+
+                      <LightTooltip title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1069,7 +1251,8 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-4">
                   <div className="form-group">
-                    <label>Shipping Cost local (in '₹') (Based on pincode):<span style={{ color: "red" }}> *</span></label>
+                    <label>Shipping Cost local (in '₹') (Based on pincode):<span style={{ color: "red" }}> *
+                    </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1134,7 +1317,7 @@ const SellerCreateProduct = () => {
                 </div>
                 <div className="col-lg-4">
                   <div className="form-group">
-                    <label>Shipping Cost North east India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                    <label>Shipping Cost North east India (in '₹'):<span style={{ color: "red" }}> * </span></label>
                     <input
                       type="number"
                       className="form-control"
@@ -1170,6 +1353,9 @@ const SellerCreateProduct = () => {
                 </div>
               </div>
             </form>
+
+
+
           </div>
         </div>
       </section>

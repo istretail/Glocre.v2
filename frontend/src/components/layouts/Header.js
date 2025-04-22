@@ -178,7 +178,7 @@ export default function Header() {
 
                   <ul className="list list-inline mb-0 headerTabs" style={{cursor: "pointer"}}>
                     <li className="list-inline-item">
-                      <Link to="/seller">
+                      <Link to="/becomeseller">
                         <button
                           type="button"
                           class="btn bg-light"
