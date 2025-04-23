@@ -40,20 +40,11 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
 
   const products = await buildQuery().paginate(limit).query.sort("-createdAt");
 
-  const subcategoryCounts = {};
-  const allApprovedProducts = await Product.find({ status: "approved" });
-  allApprovedProducts.forEach((product) => {
-    if (subcategoryCounts[product.subcategory]) {
-      subcategoryCounts[product.subcategory]++;
-    } else {
-      subcategoryCounts[product.subcategory] = 1;
-    }
-  });
 
   res.status(200).json({
     success: true,
     count: productsCount,
-    subcategoryCounts,
+
     resPerPage: limit,
     products,
   });
@@ -739,4 +730,54 @@ exports.unarchiveProduct = catchAsyncError(async (req, res, next) => {
 // get category and subcategory 
 exports.getCategoryHierarchy = (req, res) => {
   res.status(200).json(categoryHierarchy);
+};
+
+exports.getAvailableCategories = async (req, res) => {
+  try {
+    const products = await Product.find({ status: "approved" }).select("maincategory category subcategory -_id");
+
+    const usedMain = new Set();
+    const usedCat = new Set();
+    const usedSub = new Set();
+
+    for (let p of products) {
+      if (p.maincategory) usedMain.add(p.maincategory.trim());
+      if (p.category) usedCat.add(p.category.trim());
+      if (p.subcategory) usedSub.add(p.subcategory.trim());
+    }
+
+    const result = [];
+
+    for (const [mainName, categories] of Object.entries(categoryHierarchy)) {
+      if (!usedMain.has(mainName.trim())) continue;
+
+      const filteredSubcategories = [];
+
+      for (const [catName, subcats] of Object.entries(categories)) {
+        if (!usedCat.has(catName.trim())) continue;
+
+        const validSubcats = subcats.filter((sub) => usedSub.has(sub.trim()));
+        if (validSubcats.length) {
+          filteredSubcategories.push({
+            category: catName.trim(),
+            subcategories: validSubcats,
+          });
+        }
+      }
+
+      if (filteredSubcategories.length) {
+        result.push({
+          maincategory: mainName.trim(),
+          categories: filteredSubcategories,
+        });
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };

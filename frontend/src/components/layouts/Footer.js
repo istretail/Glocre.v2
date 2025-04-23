@@ -154,168 +154,96 @@ const Footer = () => {
 
             <hr />
 
-            <div className="row lastStrip">
-              <div className="col-md-6 part3 d-flex align-items-center justify-content-start  part_3">
-                <div className="d-flex align-items-center">
-                  <h5>We Accept Payment through : </h5>
-                  <ul className="list-inline d-flex align-items-center">
-                    <li className="list-inline-item">
-                      <img
-                        src={Icon1}
-                        style={{ width: "fit-content", height: "40px" }}
-                      />
-                    </li>
-                    <li className="list-inline-item">
-                      <img
-                        src={Icon2}
-                        style={{ width: "fit-content", height: "40px" }}
-                      />
-                    </li>
-                    <li className="list-inline-item">
-                      <img
-                        src={Icon4}
-                        style={{ width: "fit-content", height: "40px" }}
-                      />
-                    </li>
-                    <li className="list-inline-item">
-                      <img
-                        src={Icon5}
-                        style={{ width: "fit-content", height: "17px" }}
-                      />
-                    </li>
-                    <li className="list-inline-item">
-                      <img
-                        src={Icon3}
-                        style={{ width: "fit-content", height: "20px" }}
-                      />
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div className="col-md-6 part_1 d-flex align-items-center justify-content-end">
-                <ul className="list-inline d-flex align-items-center">
-                  <li className="list-inline-item ">
-                    <Link to="/terms">
-                      <p className="mb-0 list-inline-item ">
-                        Terms & Conditions |
-                      </p>
-                    </Link>
-                  </li>
-                  <li className="list-inline-item mb-0">
-                    <Link to="/policy">
-                      <p className="mb-0 list-inline-item ">Privacy Policy |</p>
-                    </Link>
-                  </li>
-                  <li className="list-inline-item">
-                    <Link to="/return">
-                      <p className="mb-0 list-inline-item ">Return Policy</p>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
+             <div className="row lastStrip">
+                          <div className="col-md-6 part3 row part_3">
+                            <div className="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-sm-start text-center text-sm-start w-100">
+                              <h5 className="mb-2 mb-sm-0 me-sm-2">We Accept Payment through:</h5>
+                              <ul className="list-inline d-flex flex-wrap justify-content-center justify-content-sm-start align-items-center mb-0">
+                                <li className="list-inline-item mx-2">
+                                  <img src={Icon1} style={{ height: "40px" }} alt="payment-icon-1" />
+                                </li>
+                                <li className="list-inline-item mx-2">
+                                  <img src={Icon2} style={{ height: "40px" }} alt="payment-icon-2" />
+                                </li>
+                                <li className="list-inline-item mx-2">
+                                  <img src={Icon4} style={{ height: "40px" }} alt="payment-icon-3" />
+                                </li>
+                                <li className="list-inline-item mx-2">
+                                  <img src={Icon5} style={{ height: "17px" }} alt="payment-icon-4" />
+                                </li>
+                                <li className="list-inline-item mx-2">
+                                  <img src={Icon3} style={{ height: "20px" }} alt="payment-icon-5" />
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+            
+            
+                          <div className="col-md-6 part_1 d-flex align-items-center justify-content-center justify-content-md-end text-center text-md-end">
+                            <ul className="list-inline d-flex flex-wrap align-items-center justify-content-center justify-content-md-end mb-0">
+                              <li className="list-inline-item mx-2">
+                                <Link to="/terms">
+                                  <p className="mb-0">Terms & Conditions |</p>
+                                </Link>
+                              </li>
+                              <li className="list-inline-item mx-2">
+                                <Link to="/policy">
+                                  <p className="mb-0">Privacy Policy |</p>
+                                </Link>
+                              </li>
+                              <li className="list-inline-item mx-2">
+                                <Link to="/return">
+                                  <p className="mb-0">Return Policy</p>
+                                </Link>
+                              </li>
+                            </ul>
+                          </div>
+            
+                        </div>
             <hr />
 
-            <div className="row lastStrip">
-              <div className="col-md-6 part_1 d-flex align-items-center">
-                <p className="mb-0">
-                  Copyright © 2025 GLOCRE All rights reserved.
-                </p>
-              </div>
-
-              <div className="col-md-6 part3 d-flex align-items-center justify-content-end  part_3">
-                <div className="d-flex align-items-center">
-                  <h5>Follow Us : </h5>
-                  <ul className="list list-inline">
-                    <li className="list-inline-item">
-                      <a
-                        href="https://www.facebook.com/ISTforyou"
-                        target="_blank"
-                      >
-                        <FacebookOutlinedIcon />
-                      </a>
-                    </li>
-                    <li className="list-inline-item">
-                      <a href="mailto:support@glocre.com">
-                        <EmailOutlinedIcon />
-                      </a>
-                    </li>
-                    <li className="list-inline-item">
-                      <a
-                        href="https://www.instagram.com/ist_retail/?hl=en"
-                        target="_blank"
-                      >
-                        <InstagramIcon />
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+           <div className="row lastStrip">
+                         <div className="col-md-6 part_1 d-flex align-items-center justify-content-center justify-content-md-start text-center text-md-start mb-2 mb-md-0">
+                           <p className="mb-0">
+                             Copyright © 2025 GLOCRE All rights reserved.
+                           </p>
+                         </div>
+           
+                         <div className="col-md-6 part3 part_3">
+                           <div className="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-md-end text-center text-md-end w-100">
+                             <h5 className="mb-2 mb-sm-0 me-sm-2">Follow Us:</h5>
+                             <ul className="list list-inline d-flex justify-content-center justify-content-md-end align-items-center mb-0">
+                               <li className="list-inline-item mx-2">
+                                 <a
+                                   href="https://www.facebook.com/ISTforyou"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                 >
+                                   <FacebookOutlinedIcon />
+                                 </a>
+                               </li>
+                               <li className="list-inline-item mx-2">
+                                 <a href="mailto:support@glocre.com">
+                                   <EmailOutlinedIcon />
+                                 </a>
+                               </li>
+                               <li className="list-inline-item mx-2">
+                                 <a
+                                   href="https://www.instagram.com/ist_retail/?hl=en"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                 >
+                                   <InstagramIcon />
+                                 </a>
+                               </li>
+                             </ul>
+                           </div>
+                         </div>
+           
+                       </div>
           </div>
         </footer>
       </div>
-
-      {/* {context.windowWidth < 992 && context?.isBottomShow === true && (
-        <div className="fixed-bottom-menu d-flex align-self-center justify-content-between">
-          <Link to="/" onClick={() => context?.closeSearch()}>
-            <Button className="circle">
-              <div className="d-flex align-items-center justify-content-center flex-column">
-                <IoHomeOutline />
-                <span className="title">Home</span>
-              </div>
-            </Button>
-          </Link>
-
-          {context.enableFilterTab === true && (
-            <Button className="circle" onClick={() => {
-              openFilter();
-              context?.closeSearch()
-            }}>
-              <div className="d-flex align-items-center justify-content-center flex-column">
-                <CiFilter />
-                <span className="title">Filters</span>
-              </div>
-            </Button>
-          )}
-
-          <Button className="circle" onClick={()=>context?.openSearch(true) }>
-            <div className="d-flex align-items-center justify-content-center flex-column">
-              <IoIosSearch />
-              <span className="title">Search</span>
-            </div>
-          </Button>
-
-          <Link to="/myList"  onClick={() => context?.closeSearch()}>
-            <Button className="circle">
-              <div className="d-flex align-items-center justify-content-center flex-column">
-                <IoMdHeartEmpty />
-                <span className="title">Wishlist</span>
-              </div>
-            </Button>
-          </Link>
-
-          <Link to="/orders"  onClick={() => context?.closeSearch()}>
-          <Button className="circle">
-            <div className="d-flex align-items-center justify-content-center flex-column">
-              <IoBagCheckOutline />
-              <span className="title">Orders</span>
-            </div>
-          </Button>
-        </Link>
-          
-
-          <Link to="/my-account"  onClick={() => context?.closeSearch()}>
-            <Button className="circle">
-              <div className="d-flex align-items-center justify-content-center flex-column">
-                <FaRegUser />
-                <span className="title">Account</span>
-              </div>
-            </Button>
-          </Link>
-        </div>
-      )} */}
     </>
   );
 };

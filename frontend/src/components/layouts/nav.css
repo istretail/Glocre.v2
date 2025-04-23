@@ -288,4 +288,39 @@ nav .dropdown_menu li button:hover {
 }
  
  
- 
+.dropdown_menu {
+  background: #fff;
+  border: 1px solid #ccc;
+  position: absolute;
+  z-index: 1000;
+  padding: 10px;
+  display: none;
+}
+
+li.sec-nav-pro:hover .dropdown_menu {
+  display: block;
+}
+
+.dropdown-hover {
+  position: relative;
+}
+
+.dropdown-hover .sub-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.dropdown-hover:hover .sub-dropdown {
+  display: block;
+}
+
+.sub-dropdown li {
+  margin-bottom: 4px;
+  cursor: pointer;
+}

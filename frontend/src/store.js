@@ -10,7 +10,7 @@ import userReducer from "./slices/userSlice";
 import wishlistReducer from "./slices/wishlistSlice";
 import relatedProductsReducer from "./slices/relatedProductSlice";
 import analyticsReducer from "./slices/analyticsSlice.js";
-
+import categoryReducer from "./slices/categorySlice.js";
 // Configuration for persisting authentication state
 const authPersistConfig = {
   key: "auth",
@@ -30,6 +30,7 @@ const reducer = combineReducers({
   wishlistState: wishlistReducer,
   relatedProductsState: relatedProductsReducer,
   analyticsState: analyticsReducer,
+  categoryState:categoryReducer,
 });
 
 const store = configureStore({

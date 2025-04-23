@@ -7,8 +7,8 @@ import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
 import './newproduct.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+import { faCartShopping,  faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
@@ -397,7 +397,7 @@ const NewProduct = () => {
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleChange}
-                                                 maxlength="80"
+                                                maxlength="80"
                                                 required
                                             />
                                         </div>
@@ -406,7 +406,7 @@ const NewProduct = () => {
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>Description:<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Describe what the product is, what it does, and who it's for." arrow>
+                                                <LightTooltip placement="top" title="Describe what the product is, what it does, and who it's for." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip></span></label>
                                             <textarea
@@ -425,7 +425,7 @@ const NewProduct = () => {
                                             <div className="custom-select-wrapper">
 
                                                 <label>Main Category:<span style={{ color: "red" }}> *
-                                                    <LightTooltip title="Select the most appropriate category for your product." arrow>
+                                                    <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                                                         <ErrorOutlineIcon className="errorout-icon" />
                                                     </LightTooltip>
                                                 </span></label>
@@ -456,7 +456,7 @@ const NewProduct = () => {
                                             <div className="form-group">
                                                 <div className="custom-select-wrapper">
                                                     <label>Category:<span style={{ color: "red" }}> *
-                                                        <LightTooltip title="Select the most appropriate category for your product." arrow>
+                                                        <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip>
                                                     </span></label>
@@ -487,7 +487,7 @@ const NewProduct = () => {
                                             <div className="form-group">
                                                 <div className="custom-select-wrapper">
                                                     <label>Sub category:<span style={{ color: "red" }}> *
-                                                        <LightTooltip title="Select the most appropriate category for your product." arrow>
+                                                        <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip></span></label>
                                                     <select
@@ -511,7 +511,7 @@ const NewProduct = () => {
                                         <div className="col-lg-6">
                                             <div className="form-group">
                                                 <label>FSSAI Number:<span style={{ color: "red" }}> *
-                                                    <LightTooltip title="Enter your FSSAI license number, required for food products in India." arrow>
+                                                    <LightTooltip placement="top" title="Enter your FSSAI license number, required for food products in India." arrow>
                                                         <ErrorOutlineIcon className="errorout-icon" />
                                                     </LightTooltip></span></label>
                                                 <input
@@ -544,32 +544,34 @@ const NewProduct = () => {
 
                                     <div className="col-12">
                                         <div className="form-group">
-                                            <label>Condition:<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Specify if the product is new, used, or refurbished." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip></span></label>
-                                            <select
-                                                className="form-control"
-                                                name="condition"
-                                                value={formData.condition}
-                                                onChange={handleChange}
-                                                required
-                                            >
-                                                <option value="">Select Condition<span style={{ color: "red" }}> *
-                                                    <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                                            <div className="custom-select-wrapper">
+                                                <label>Condition:<span style={{ color: "red" }}> *
+                                                    <LightTooltip placement="top" title="Specify if the product is new, used, or refurbished." arrow>
                                                         <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip></span></option>
-                                                <option value="New">New</option>
-                                                <option value="Unboxed">Unboxed</option>
-                                                <option value="Refurbished">Refurbished</option>
-                                            </select>
+                                                    </LightTooltip></span></label>
+                                                <select
+                                                    className="form-control custom-select"
+                                                    name="condition"
+                                                    value={formData.condition}
+                                                    onChange={handleChange}
+                                                    required
+                                                >
+                                                    <option value="">Select Condition<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip></span></option>
+                                                    <option value="New">New</option>
+                                                    <option value="Unboxed">Unboxed</option>
+                                                    <option value="Refurbished">Refurbished</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="col-12">
                                         <div className="form-group">
                                             <label>Key Points:<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Highlight key features or selling points of the product." arrow>
+                                                <LightTooltip placement="top" title="Highlight key features or selling points of the product." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip></span></label>
                                             {formData.keyPoints.map((point, index) => (
@@ -609,26 +611,28 @@ const NewProduct = () => {
 
                                     <div className="col-12">
                                         <div className="form-group">
-                                            <label>Does this product have variants?
-                                                <LightTooltip title="List product variants like size, color, etc." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </label>
-                                            <select
-                                                className="form-control"
-                                                value={hasVariants}
-                                                onChange={e => setHasVariants(e.target.value === 'true')}
-                                                required
-                                            >
-                                                <option value="false">No</option>
-                                                <option value="true">Yes</option>
-                                            </select>
+                                            <div className="custom-select-wrapper">
+                                                <label>Does this product have variants?
+                                                    <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
+                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                    </LightTooltip>
+                                                </label>
+                                                <select
+                                                    className="form-control custom-select"
+                                                    value={hasVariants}
+                                                    onChange={e => setHasVariants(e.target.value === 'true')}
+                                                    required
+                                                >
+                                                    <option value="false">No</option>
+                                                    <option value="true">Yes</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         {hasVariants && (
                                             <>
                                                 <div className="form-group">
                                                     <label>What is the variant type?<span style={{ color: "red" }}> *
-                                                        <LightTooltip title="List product variants like size, color, etc." arrow>
+                                                        <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip></span></label>
                                                     <input
@@ -642,7 +646,7 @@ const NewProduct = () => {
                                                 </div>
                                                 <div className="form-group">
                                                     <label>How many variants?<span style={{ color: "red" }}> *
-                                                        <LightTooltip title="List product variants like size, color, etc." arrow>
+                                                        <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip></span></label>
                                                     <input
@@ -707,7 +711,7 @@ const NewProduct = () => {
                                                         </div>
                                                         <div className="form-group">
                                                             <label>Offer Price:<span style={{ color: "red" }}> *
-                                                                <LightTooltip title="Enter the discounted price (if any)." arrow>
+                                                                <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
@@ -727,7 +731,7 @@ const NewProduct = () => {
                                                         </div>
                                                         <div className="form-group">
                                                             <label>Stock:<span style={{ color: "red" }}> *
-                                                                <LightTooltip title="Enter the quantity currently in stock." arrow>
+                                                                <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
@@ -747,7 +751,7 @@ const NewProduct = () => {
                                                         </div>
                                                         <div className="form-group">
                                                             <label>Images:<span style={{ color: "red" }}> *
-                                                                <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                                                                <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
@@ -799,7 +803,7 @@ const NewProduct = () => {
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>Tax:(GST in %)<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Enter the applicable tax percentage or value." arrow>
+                                                <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </span></label>
@@ -816,107 +820,111 @@ const NewProduct = () => {
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
-                                            <label>Is Refundable:<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Select whether this product can be refunded after purchase." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </span></label>
-                                            <select
-                                                className="form-control"
-                                                name="isRefundable"
-                                                value={formData.isRefundable}
-                                                onChange={handleChange}
-                                                required
-                                            >
-                                                <option value="false">No</option>
-                                                <option value="true">Yes</option>
-                                            </select>
+                                            <div className="custom-select-wrapper">
+                                                <label>Is Refundable:<span style={{ color: "red" }}> *
+                                                    <LightTooltip placement="top" title="Select whether this product can be refunded after purchase." arrow>
+                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                    </LightTooltip>
+                                                </span></label>
+                                                <select
+                                                    className="form-control custom-select"
+                                                    name="isRefundable"
+                                                    value={formData.isRefundable}
+                                                    onChange={handleChange}
+                                                    required
+                                                >
+                                                    <option value="false">No</option>
+                                                    <option value="true">Yes</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
                                     {!hasVariants && (
                                         <>
-                                            <div className="row">
-                                                <div className="col-lg-6">
-                                                    <div className="form-group">
-                                                        <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control"
-                                                            name="price"
-                                                            value={formData.price}
-                                                            onChange={handleChange}
-                                                            required
-                                                        />
-                                                    </div>
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="price"
+                                                        value={formData.price}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
                                                 </div>
+                                            </div>
 
-                                                <div className="col-lg-6">
-                                                    <div className="form-group">
-                                                        <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
-                                                                <ErrorOutlineIcon className="errorout-icon" />
-                                                            </LightTooltip>
-                                                        </span></label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control"
-                                                            name="offPrice"
-                                                            value={formData.offPrice}
-                                                            onChange={handleChange}
-                                                            required
-                                                        />
-                                                    </div>
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="offPrice"
+                                                        value={formData.offPrice}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
                                                 </div>
+                                            </div>
 
-                                                <div className="col-lg-6">
-                                                    <div className="form-group">
-                                                        <label>No Of Stock:<span style={{ color: "red" }}> *
-                                                            <LightTooltip title="Enter the quantity currently in stock." arrow>
-                                                                <ErrorOutlineIcon className="errorout-icon" />
-                                                            </LightTooltip>
-                                                        </span></label>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control"
-                                                            name="stock"
-                                                            value={formData.stock}
-                                                            onChange={handleChange}
-                                                            required
-                                                        />
-                                                    </div>
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>No Of Stock:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="stock"
+                                                        value={formData.stock}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
                                                 </div>
+                                            </div>
 
-                                                <div className="col-lg-6">
-                                                    <div className="form-group">
-                                                        <label>Product Images:<span style={{ color: "red" }}> *
-                                                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
-                                                                <ErrorOutlineIcon className="errorout-icon" />
-                                                            </LightTooltip>
-                                                        </span></label>
-                                                        <input
-                                                            type="file"
-                                                            className="form-control"
-                                                            multiple
-                                                            accept="image/*"
-                                                            onChange={handleProductImageChange}
-                                                        // required
-                                                        />
-                                                        <div className="mt-2">
-                                                            {productImages.map((image, index) => (
-                                                                <div
-                                                                    key={index}
-                                                                    className="d-inline-block position-relative mr-2"
-                                                                >
-                                                                    <img
-                                                                        src={URL.createObjectURL(image)}
-                                                                        alt={`Preview ${index}`}
-                                                                        className="img-thumbnail"
-                                                                        width="100"
-                                                                    />
-                                                                </div>
-                                                            ))}
-                                                        </div>
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Product Images:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="file"
+                                                        className="form-control"
+                                                        multiple
+                                                        accept="image/*"
+                                                        onChange={handleProductImageChange}
+                                                    // required
+                                                    />
+                                                    <div className="mt-2">
+                                                        {productImages.map((image, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className="d-inline-block position-relative mr-2"
+                                                            >
+                                                                <img
+                                                                    src={URL.createObjectURL(image)}
+                                                                    alt={`Preview ${index}`}
+                                                                    className="img-thumbnail"
+                                                                    width="100"
+                                                                />
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
                                             </div>
@@ -939,7 +947,7 @@ const NewProduct = () => {
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>Product Code SKU:<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Stock Keeping Unit – your internal tracking code for this product." arrow>
+                                                <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </span></label>
@@ -956,7 +964,7 @@ const NewProduct = () => {
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>UPC:
-                                                <LightTooltip title="Universal Product Code – used for barcode identification." arrow>
+                                                <LightTooltip placement="top" title="Universal Product Code – used for barcode identification." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </label>
@@ -973,7 +981,7 @@ const NewProduct = () => {
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>HSN code:<span style={{ color: "red" }}> *
-                                                <LightTooltip title="HSN code for GST classification of your product." arrow>
+                                                <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </span></label>
@@ -988,11 +996,13 @@ const NewProduct = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-lg-6">
+
+
+                                    {/* <div className="col-lg-6">
                                         <div className="form-group">
                                             <div className="custom-select-wrapper custom-select">
                                                 <label>Country of Origin:<span style={{ color: "red" }}> *
-                                                    <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                                                    <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
                                                         <ErrorOutlineIcon className="errorout-icon" />
                                                     </LightTooltip>
                                                 </span></label>
@@ -1025,12 +1035,57 @@ const NewProduct = () => {
                                                 </select>
                                             </div>
                                         </div>
+                                    </div> */}
+
+                                    <div className="col-lg-6">
+                                        <div className="form-group">
+                                            <div className="custom-select-wrapper">
+                                                <label>
+                                                    Country of Origin:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span>
+                                                </label>
+                                                <select
+                                                    className="form-control custom-select"
+                                                    name="countryofOrgin"
+                                                    value={formData.countryofOrgin}
+                                                    onChange={handleChange}
+                                                    required
+                                                >
+                                                    <option value="" disabled>Select Country</option>
+                                                    {[
+                                                        "India",
+                                                        "United States",
+                                                        "United Kingdom",
+                                                        "China",
+                                                        "Germany",
+                                                        "France",
+                                                        "Japan",
+                                                        "Australia",
+                                                        "Canada",
+                                                        "Brazil",
+                                                        "Italy",
+                                                        "South Korea",
+                                                        "Singapore",
+                                                        "UAE",
+                                                        "South Africa"
+                                                    ].map((country) => (
+                                                        <option key={country} value={country}>{country}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
+
+
+
 
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>Manufacture Details:
-                                                <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                                                <LightTooltip placement="top" title="Add the name and address of the product manufacturer." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </label>
@@ -1047,7 +1102,7 @@ const NewProduct = () => {
                                     <div className="col-lg-6">
                                         <div className="form-group">
                                             <label>Product Certifications:
-                                                <LightTooltip title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
+                                                <LightTooltip placement="top" title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </label>
@@ -1120,7 +1175,7 @@ const NewProduct = () => {
                                     <div className="col-lg-4">
                                         <div className="form-group">
                                             <label>Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *
-                                                <LightTooltip title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
+                                                <LightTooltip placement="top" title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                 </LightTooltip>
                                             </span></label>
@@ -1215,15 +1270,18 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="form-group">
-                                            <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *</span></label>
+                                            <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *
+                                                <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
+                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                </LightTooltip>
+                                            </span></label>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 name="unit"
                                                 value={formData.unit}
                                                 onChange={handleChange}
                                                 required
-                                                maxLength={10}
                                             />
                                         </div>
                                     </div>

@@ -225,7 +225,7 @@ const SellerCreateProduct = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   useEffect(() => {
     dispatch(getCategoryHierarchy());
   }, [dispatch]);
@@ -434,7 +434,7 @@ const SellerCreateProduct = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                       maxlength="80"
+                      maxlength="80"
                       required
                     />
                   </div>
@@ -443,7 +443,7 @@ const SellerCreateProduct = () => {
                 <div className="col-lg-6">
                   <div className="form-group">
                     <label>Description:<span style={{ color: "red" }}> *
-                      <LightTooltip title="Describe what the product is, what it does, and who it's for." arrow>
+                      <LightTooltip placement="top" title="Describe what the product is, what it does, and who it's for." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
                     </span></label>
@@ -463,7 +463,7 @@ const SellerCreateProduct = () => {
                     <div className="custom-select-wrapper">
                       <label>Main Category:<span style={{ color: "red" }}> *
 
-                        <LightTooltip title="Select the most appropriate category for your product." arrow>
+                        <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
 
@@ -496,7 +496,7 @@ const SellerCreateProduct = () => {
                       <div className="custom-select-wrapper">
                         <label>Category:<span style={{ color: "red" }}> *
 
-                          <LightTooltip title="Select the most appropriate category for your product." arrow>
+                          <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
 
@@ -529,7 +529,7 @@ const SellerCreateProduct = () => {
                       <div className="custom-select-wrapper">
                         <label>Sub category:<span style={{ color: "red" }}> *
 
-                          <LightTooltip title="Select the most appropriate category for your product." arrow>
+                          <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
 
@@ -555,7 +555,7 @@ const SellerCreateProduct = () => {
                     <div className="form-group">
                       <label>FSSAI Number:<span style={{ color: "red" }}> *
 
-                        <LightTooltip title="Enter your FSSAI license number, required for food products in India." arrow>
+                        <LightTooltip placement="top" title="Enter your FSSAI license number, required for food products in India." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
 
@@ -593,7 +593,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Condition:<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="Specify if the product is new, used, or refurbished." arrow>
+                      <LightTooltip placement="top" title="Specify if the product is new, used, or refurbished." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -607,7 +607,7 @@ const SellerCreateProduct = () => {
                     >
                       <option value="">Select Condition<span style={{ color: "red" }}> *
 
-                        <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
 
@@ -623,7 +623,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Key Points:<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="Highlight key features or selling points of the product." arrow>
+                      <LightTooltip placement="top" title="Highlight key features or selling points of the product." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -668,7 +668,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Does this product have variants?<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="List product variants like size, color, etc." arrow>
+                      <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -688,7 +688,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>What is the variant type?<span style={{ color: "red" }}> *
 
-                          <LightTooltip title="List product variants like size, color, etc." arrow>
+                          <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
 
@@ -705,7 +705,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>How many variants?<span style={{ color: "red" }}> *
 
-                          <LightTooltip title="List product variants like size, color, etc." arrow>
+                          <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
 
@@ -764,6 +764,9 @@ const SellerCreateProduct = () => {
                           </div>
                           <div className="form-group">
                             <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                              <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
                             </span></label>
                             <input
                               type="number"
@@ -782,7 +785,7 @@ const SellerCreateProduct = () => {
                           <div className="form-group">
                             <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
 
-                              <LightTooltip title="Enter the discounted price (if any)." arrow>
+                              <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
 
@@ -804,7 +807,7 @@ const SellerCreateProduct = () => {
                           <div className="form-group">
                             <label>Stock:<span style={{ color: "red" }}> *
 
-                              <LightTooltip title="Enter the quantity currently in stock." arrow>
+                              <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
 
@@ -826,7 +829,7 @@ const SellerCreateProduct = () => {
                           <div className="form-group">
                             <label>Images:<span style={{ color: "red" }}> *
 
-                              <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                              <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
 
@@ -880,7 +883,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Tax:(GST in %)<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="Enter the applicable tax percentage or value." arrow>
+                      <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -901,9 +904,10 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Is Refundable:<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="Select whether this product can be refunded after purchase." arrow>
+                      <LightTooltip placement="top" title="Select whether this product can be refunded after purchase." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
+
 
                     </span></label>
                     <select
@@ -921,94 +925,95 @@ const SellerCreateProduct = () => {
 
                 {!hasVariants && (
                   <>
-                    <div className="row">
-                      <div className="col-lg-6">
-                        <div className="form-group">
-                          <label>Maximum Retail Price (in '₹')<span style={{ color: "red" }}> *
-                          </span></label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
+                    <div className="col-lg-6">
+                      <div className="form-group">
+                        <label>Maximum Retail Price (in '₹')<span style={{ color: "red" }}> *
+                          <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+                        </span></label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          name="price"
+                          value={formData.price}
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
+                    </div>
 
-                      <div className="col-lg-6">
-                        <div className="form-group">
-                          <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                    <div className="col-lg-6">
+                      <div className="form-group">
+                        <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
 
-                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip>
+                          <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
 
-                          </span></label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            name="offPrice"
-                            value={formData.offPrice}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
+                        </span></label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          name="offPrice"
+                          value={formData.offPrice}
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
+                    </div>
 
-                      <div className="col-lg-6">
-                        <div className="form-group">
-                          <label>Stock:<span style={{ color: "red" }}> *
+                    <div className="col-lg-6">
+                      <div className="form-group">
+                        <label>Stock:<span style={{ color: "red" }}> *
 
-                            <LightTooltip title="Enter the quantity currently in stock." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip>
+                          <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
 
-                          </span></label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            name="stock"
-                            value={formData.stock}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
+                        </span></label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          name="stock"
+                          value={formData.stock}
+                          onChange={handleChange}
+                          required
+                        />
                       </div>
+                    </div>
 
-                      <div className="col-lg-6">
-                        <div className="form-group">
-                          <label>Product Images:<span style={{ color: "red" }}> *
+                    <div className="col-lg-6">
+                      <div className="form-group">
+                        <label>Product Images:<span style={{ color: "red" }}> *
 
-                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip>
+                          <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
 
-                          </span></label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            multiple
-                            accept="image/*"
-                            onChange={handleProductImageChange}
-                          // required
-                          />
-                          <div className="mt-2">
-                            {productImages.map((image, index) => (
-                              <div
-                                key={index}
-                                className="d-inline-block position-relative mr-2"
-                              >
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  alt={`Preview ${index}`}
-                                  className="img-thumbnail"
-                                  width="100"
-                                />
-                              </div>
-                            ))}
-                          </div>
+                        </span></label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          multiple
+                          accept="image/*"
+                          onChange={handleProductImageChange}
+                        // required
+                        />
+                        <div className="mt-2">
+                          {productImages.map((image, index) => (
+                            <div
+                              key={index}
+                              className="d-inline-block position-relative mr-2"
+                            >
+                              <img
+                                src={URL.createObjectURL(image)}
+                                alt={`Preview ${index}`}
+                                className="img-thumbnail"
+                                width="100"
+                              />
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -1017,7 +1022,11 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Item Model Number:</label>
+                    <label>Item Model Number:
+                      <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -1033,7 +1042,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Product Code SKU:<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="Stock Keeping Unit – your internal tracking code for this product." arrow>
+                      <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -1053,7 +1062,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>UPC:
 
-                      <LightTooltip title="Universal Product Code – used for barcode identification." arrow>
+                      <LightTooltip placement="top" title="Universal Product Code – used for barcode identification." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -1073,7 +1082,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>HSN Code:<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="HSN code for GST classification of your product." arrow>
+                      <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -1095,7 +1104,7 @@ const SellerCreateProduct = () => {
                     <div className="custom-select-wrapper">
                       <label>Country of Origin:<span style={{ color: "red" }}> *
 
-                        <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
 
@@ -1135,7 +1144,7 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Manufacture Details:
 
-                      <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
+                      <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -1154,9 +1163,10 @@ const SellerCreateProduct = () => {
                   <div className="form-group">
                     <label>Product Certifications:
 
-                      <LightTooltip title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
+                      <LightTooltip placement="top" title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
+
 
                     </label>
                     <input
@@ -1231,9 +1241,9 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-4">
                   <div className="form-group">
-                    <label>Minimum Odere QTY(MOQ):<span style={{ color: "red" }}> *
+                    <label>Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *
 
-                      <LightTooltip title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
+                      <LightTooltip placement="top" title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
 
@@ -1330,7 +1340,11 @@ const SellerCreateProduct = () => {
                 </div>
                 <div className="col-lg-4">
                   <div className="form-group">
-                    <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *</span></label>
+                    <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *
+                      <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
+                        <ErrorOutlineIcon className="errorout-icon" />
+                      </LightTooltip>
+                    </span></label>
                     <input
                       type="text"
                       className="form-control"

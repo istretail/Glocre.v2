@@ -463,9 +463,47 @@ export default function Header() {
           </div>
 
 
-          <Link to="/cart">
-            <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
+          {/* <Link to="/wishlist">
+            <div
+              className="position-relative d-flex justify-content-center align-items-center me-2"
+              style={{
+                backgroundColor: "#f5f5f5",
+                color: "#2f4d23",
+                height: "35px",
+                width: "35px",
+                borderRadius: "50%",
+              }}
+            >
+              <FavoriteBorderOutlinedIcon />
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                style={{ fontSize: "10px", backgroundColor: "#ffad63" }}
+              >
+                {wishlist.length}
+              </span>
+            </div>
+          </Link> */}
+
+
+          <Link to="./cart">
+            <div
+              className="position-relative d-flex justify-content-center align-items-center me-2"
+              style={{
+                backgroundColor: "#f5f5f5",
+                color: "#2f4d23",
+                height: "35px",
+                width: "35px",
+                borderRadius: "50%",
+                fontSize: "15px",
+              }}
+            >
               <FontAwesomeIcon icon={faShoppingCart} />
+              <span
+                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                style={{ fontSize: "10px", backgroundColor: "#ffad63" }}
+              >
+                {items.length}
+              </span>
             </div>
           </Link>
 

@@ -50,6 +50,7 @@ import {
   relatedProductsSuccess,
   relatedProductsFail,
 } from "../slices/relatedProductSlice";
+import { getCategoryFail, getCategoryRequest, getCategorySuccess } from "../slices/categorySlice";
 
 export const getProducts =
   (keyword, price, maincategory, category, subcategory, rating, currentPage) =>
@@ -269,3 +270,13 @@ export const getCategoryHierarchy = () => async (dispatch) => {
     dispatch(getCategoriesFail(error.response.data.message));
   }
 };
+
+export const getCategories =() => async (dispatch) => {
+  try{
+    dispatch(getCategoryRequest())
+    const { data } = await axios.get('/api/v1/availablecategories')
+    dispatch(getCategorySuccess(data))
+  } catch (error) {
+    dispatch(getCategoryFail(error.response.data.message))
+  }
+}

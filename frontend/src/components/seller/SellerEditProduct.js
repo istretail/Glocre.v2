@@ -5,15 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getSellerSingleProduct, updateSellerProduct, getCategoryHierarchy } from "../../actions/productActions";
 import { clearError, clearProductUpdated } from "../../slices/singleProductSlice";
 import { toast } from "react-toastify"; import Loader from "../layouts/Loader";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping,  faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 import { Dropdown, DropdownButton, Image } from "react-bootstrap";
-import avatar1 from '../../images/OIP.jpg';
 import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-import { ErrorOutline } from "@mui/icons-material";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export default function SellerUpdateProduct() {
@@ -563,7 +561,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="description_field">Description:<span style={{ color: "red" }}> *
-                        <LightTooltip title="Describe what the product is, what it does, and who it's for." arrow>
+                        <LightTooltip placement="top" title="Describe what the product is, what it does, and who it's for." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip></span></label>
                       <textarea
@@ -579,7 +577,10 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-12">
                     <div className="form-group">
-                      <label>Key Points:<span style={{ color: "red" }}> *</span></label>
+                      <label>Key Points:<span style={{ color: "red" }}> *
+                        <LightTooltip placement="top" title="Highlight key features or selling points of the product." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip></span></label>
                       {formData.keyPoints.map((point, index) => (
 
                         <div key={index} className="d-flex mb-2">
@@ -607,7 +608,8 @@ export default function SellerUpdateProduct() {
                       {formData.keyPoints.length < 5 && (
                         <button
                           type="button"
-                          className="btn btn-primary"
+                          className="btn"
+                          style={{ backgroundColor: '#ffad63', color: '#fff' }}
                           onClick={handleAddKeyPoint}
                         >
                           Add Key Point
@@ -622,7 +624,7 @@ export default function SellerUpdateProduct() {
                       <div className="custom-select-wrapper">
                         <label htmlFor="maincategory">
                           Main Category:<span style={{ color: "red" }}> *
-                            <LightTooltip title="Select the most appropriate category for your product." arrow>
+                            <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </span>
@@ -658,7 +660,7 @@ export default function SellerUpdateProduct() {
                       <div className="custom-select-wrapper">
                         <label htmlFor="category">
                           Category:<span style={{ color: "red" }}> *
-                            <LightTooltip title="Select the most appropriate category for your product." arrow>
+                            <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </span>
@@ -695,7 +697,7 @@ export default function SellerUpdateProduct() {
                       <div className="custom-select-wrapper">
                         <label htmlFor="subcategory">
                           Sub Category:<span style={{ color: "red" }}> *
-                            <LightTooltip title="Select the most appropriate category for your product." arrow>
+                            <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </span>
@@ -726,7 +728,7 @@ export default function SellerUpdateProduct() {
                     <div className="col-lg-6">
                       <div className="form-group">
                         <label>FSSAI Number:<span style={{ color: "red" }}> *
-                          <LightTooltip title="Enter your FSSAI license number, required for food products in India." arrow>
+                          <LightTooltip placement="top" title="Enter your FSSAI license number, required for food products in India." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
                         </span></label>
@@ -745,7 +747,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="tax_field">Tax:(GST in %):<span style={{ color: "red" }}> *
-                        <LightTooltip title="Enter the applicable tax percentage or value." arrow>
+                        <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip></span></label>
                       <input
@@ -762,113 +764,115 @@ export default function SellerUpdateProduct() {
 
                   {!hasVariants && (
                     <>
-                      <div className="row">
-                        <div className="col-lg-6">
-                          <div className="form-group">
-                            <label htmlFor="price_field">Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                            <input
-                              type="number"
-                              id="price_field"
-                              className="form-control"
-                              onChange={handleChange}
-                              value={formData.price}
-                              name="price"
-                              required
-                            />
-                          </div>
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label htmlFor="price_field">Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </span></label>
+                          <input
+                            type="number"
+                            id="price_field"
+                            className="form-control"
+                            onChange={handleChange}
+                            value={formData.price}
+                            name="price"
+                            required
+                          />
                         </div>
+                      </div>
 
-                        <div className="col-lg-6">
-                          <div className="form-group">
-                            <label htmlFor="offPrice_field">
-                              Offer Price (in '₹')
-                              <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip>
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label htmlFor="offPrice_field">
+                            Offer Price (in '₹')
+                            <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </label>
+                          <input
+                            type="number"
+                            id="offPrice_field"
+                            className="form-control"
+                            onChange={handleChange}
+                            value={formData.offPrice}
+                            name="offPrice"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label htmlFor="stock_field">Stock:<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip></span></label>
+                          <input
+                            type="number"
+                            id="stock_field"
+                            className="form-control"
+                            onChange={handleChange}
+                            value={formData.stock}
+                            name="stock"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-6">
+                        <div className="form-group">
+                          <label>Product Images:<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip></span></label>
+                          <div className="custom-file">
+                            <input
+                              type="file"
+                              name="product_images"
+                              className="custom-file-input"
+                              id="customFile"
+                              accept="image/*"
+                              multiple
+                              onChange={handleImageChange}
+                              required={formData.images.length === 0}
+                            />
+                            <label
+                              className="custom-file-label"
+                              htmlFor="customFile"
+                            >
+                              Choose Images
                             </label>
-                            <input
-                              type="number"
-                              id="offPrice_field"
-                              className="form-control"
-                              onChange={handleChange}
-                              value={formData.offPrice}
-                              name="offPrice"
-                              required
-                            />
                           </div>
-                        </div>
-
-                        <div className="col-lg-6">
-                          <div className="form-group">
-                            <label htmlFor="stock_field">Stock:<span style={{ color: "red" }}> *
-                              <LightTooltip title="Enter the quantity currently in stock." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip></span></label>
-                            <input
-                              type="number"
-                              id="stock_field"
-                              className="form-control"
-                              onChange={handleChange}
-                              value={formData.stock}
-                              name="stock"
-                              required
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-lg-6">
-                          <div className="form-group">
-                            <label>Product Images:<span style={{ color: "red" }}> *
-                              <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip></span></label>
-                            <div className="custom-file">
-                              <input
-                                type="file"
-                                name="product_images"
-                                className="custom-file-input"
-                                id="customFile"
-                                accept="image/*"
-                                multiple
-                                onChange={handleImageChange}
-                                required={formData.images.length === 0}
-                              />
-                              <label
-                                className="custom-file-label"
-                                htmlFor="customFile"
-                              >
-                                Choose Images
-                              </label>
+                          {imageErrors?.length > 0 && (
+                            <div className="alert alert-danger mt-2">
+                              {imageErrors?.map((error, index) => (
+                                <p key={index}>{error}</p>
+                              ))}
                             </div>
-                            {imageErrors?.length > 0 && (
-                              <div className="alert alert-danger mt-2">
-                                {imageErrors?.map((error, index) => (
-                                  <p key={index}>{error}</p>
-                                ))}
-                              </div>
-                            )}
-                            {formData?.images?.length > 0 && (
-                              <span
-                                className="mr-2"
-                                onClick={clearImagesHandler}
-                                style={{ color: '#2f4d2a' }}
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </span>
-                            )}
-                            {formData?.images?.map((image, index) => (
-                              <img
-                                className="mt-3 mr-2"
-                                key={index}
-                                src={image}
-                                alt={`Image Preview`}
-                                width="55"
-                                height="52"
-                                onClick={() => openModal(image)}
-                                style={{ cursor: 'pointer' }}
-                              />
-                            ))}
-                          </div>
+                          )}
+                          {formData?.images?.length > 0 && (
+                            <span
+                              className="mr-2"
+                              onClick={clearImagesHandler}
+                              style={{ color: '#2f4d2a' }}
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </span>
+                          )}
+                          {formData?.images?.map((image, index) => (
+                            <img
+                              className="mt-3 mr-2"
+                              key={index}
+                              src={image}
+                              alt={`Image Preview`}
+                              width="55"
+                              height="52"
+                              onClick={() => openModal(image)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                          ))}
                         </div>
                       </div>
                     </>
@@ -876,44 +880,52 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="condition_field">Condition:<span style={{ color: "red" }}> *
-                        <LightTooltip title="Specify if the product is new, used, or refurbished." arrow>
-                          <ErrorOutlineIcon className="errorout-icon" />
-                        </LightTooltip></span></label>
-                      <select
-                        className="form-control"
-                        id="condition_field"
-                        onChange={handleChange}
-                        value={formData.condition}
-                        name="condition"
-                      >
-                        <option value="">Select Condition</option>
-                        <option value="New">New</option>
-                        <option value="Unboxed">Unboxed</option>
-                        <option value="Refurbished">Refurbished</option>
-                      </select>
+                      <div className="custom-select-wrapper">
+                        <label htmlFor="condition_field">Condition:<span style={{ color: "red" }}> *
+                          <LightTooltip placement="top" title="Specify if the product is new, used, or refurbished." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip></span></label>
+                        <select
+                          className="form-control custom-select"
+                          id="condition_field"
+                          onChange={handleChange}
+                          value={formData.condition}
+                          name="condition"
+                        >
+                          <option value="">Select Condition</option>
+                          <option value="New">New</option>
+                          <option value="Unboxed">Unboxed</option>
+                          <option value="Refurbished">Refurbished</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="isRefundable_field">
-                        Is Refundable:<span style={{ color: "red" }}> *</span>
-                      </label>
-                      <select
-                        className="form-control"
-                        id="isRefundable_field"
-                        onChange={handleChange}
-                        value={formData.isRefundable}
-                        name="isRefundable"
-                      >
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
-                      </select>
+                      <div className="custom-select-wrapper">
+                        <label htmlFor="isRefundable_field">
+                          Is Refundable:<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Select whether this product can be refunded after purchase." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </span>
+                        </label>
+                        <select
+                          className="form-control  custom-select"
+                          id="isRefundable_field"
+                          onChange={handleChange}
+                          value={formData.isRefundable}
+                          name="isRefundable"
+                        >
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="col-lg-6">
+                  <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="brand_field">Brand:<span style={{ color: "red" }}> *</span></label>
                       <input
@@ -964,7 +976,10 @@ export default function SellerUpdateProduct() {
                           />
                         </div>
                         <div className="form-group">
-                          <label>Maximum Retail price (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                          <label>Maximum Retail price (in '₹'):<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip></span></label>
                           <input
                             type="number"
                             className="form-control"
@@ -981,7 +996,7 @@ export default function SellerUpdateProduct() {
                         </div>
                         <div className="form-group">
                           <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                            <LightTooltip title="Enter the discounted price (if any)." arrow>
+                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
                           <input
@@ -1000,7 +1015,7 @@ export default function SellerUpdateProduct() {
                         </div>
                         <div className="form-group">
                           <label>Stock:<span style={{ color: "red" }}> *
-                            <LightTooltip title="Enter the quantity currently in stock." arrow>
+                            <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
                           <input
@@ -1019,7 +1034,7 @@ export default function SellerUpdateProduct() {
                         </div>
                         <div className="form-group">
                           <label>Images:<span style={{ color: "red" }}> *
-                            <LightTooltip title="Provide the manufacturer’s model number, if available." arrow>
+                            <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
                           <input
@@ -1072,6 +1087,9 @@ export default function SellerUpdateProduct() {
                     <div className="form-group">
                       <label htmlFor="itemModelNum_field">
                         Item Model Number
+                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
                       </label>
                       <input
                         type="text"
@@ -1088,7 +1106,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="sku_field">SKU
-                        <LightTooltip title="Stock Keeping Unit – your internal tracking code for this product." arrow>
+                        <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
                       </label>
@@ -1108,6 +1126,9 @@ export default function SellerUpdateProduct() {
                     <div className="form-group">
                       <label htmlFor="upc_field">
                         UPC
+                        <LightTooltip placement="top" title="Universal Product Code – used for barcode identification." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
                       </label>
                       <input
                         type="text"
@@ -1125,7 +1146,7 @@ export default function SellerUpdateProduct() {
                     <div className="form-group">
                       <label htmlFor="hsn_field">
                         HSN Code
-                        <LightTooltip title="HSN code for GST classification of your product." arrow>
+                        <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
                       </label>
@@ -1143,7 +1164,11 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="countryofOrgin_field">Country of Orgin</label>
+                      <label htmlFor="countryofOrgin_field">Country of Orgin
+                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+                      </label>
                       <input
                         type="text"
                         id="countryofOrgin_field"
@@ -1159,7 +1184,7 @@ export default function SellerUpdateProduct() {
                     <div className="form-group">
                       <label htmlFor="productCertifications_field">
                         Product Certifications
-                        <LightTooltip title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
+                        <LightTooltip placement="top" title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
                       </label>
@@ -1176,9 +1201,9 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="manufactureDetails_field">Manufacture Details
-                          <LightTooltip title="Enter the country where the product was manufactured or produced." arrow>
-                                                <ErrorOutlineIcon className="errorout-icon" />
-                                              </LightTooltip>
+                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
                       </label>
                       <input
                         type="text"
@@ -1236,7 +1261,7 @@ export default function SellerUpdateProduct() {
                     </div>
                   </div>
 
-                  <div className="col-lg-6">
+                  <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="itemWidth_field">
                         Item Width in Centimeters
@@ -1358,7 +1383,11 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="unit_field">Unit (EA/ML/Set)</label>
+                      <label htmlFor="unit_field">Unit (EA/ML/Set)
+                        <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+                      </label>
                       <input
                         type="text"
                         id="unit_field"

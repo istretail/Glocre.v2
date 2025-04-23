@@ -8,27 +8,28 @@ import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../../actions/productActions";
+import { getCategories } from "../../actions/productActions";
 import { toast } from "react-toastify";
 
 export default function Nav() {
   const dispatch = useDispatch();
-  const { products = [], error, resPerPage } = useSelector((state) => state.productsState);
+  const { categories = [], error } = useSelector((state) => state.categoryState);
   const navigate = useNavigate();
-  // Get unique maincategories from products
-  const availableMainCategories = [
-    ...new Set(products.map((product) => product.maincategory).filter(Boolean)),
-  ];
+
+
 
   useEffect(() => {
     if (error) {
       toast.error(error);
     }
-    dispatch(getProducts(null, null, null, null, null, null, resPerPage));
-  }, [dispatch]);
+    dispatch(getCategories());
+  }, [dispatch, error]);
 
   const handleCategoryClick = (category) => {
-    navigate(`/category/${category}`);
+    navigate(`/maincategory/${category}`);
+  };
+  const handleSubCategoryClick = (category) => {
+    navigate(`/maincategory/${category}`);
   };
   return (
     <div className="nav d-flex align-items-center">
@@ -43,9 +44,12 @@ export default function Nav() {
                 </Button>
                 <div className="dropdown_menu">
                   <ul className="mb-0 p-0">
-                    {availableMainCategories?.map((main) => (
-                      <li key={main} onClick={() => handleCategoryClick(main)}>
-                        <HomeIcon className="icon-sec-nav" /> {main}
+                    {categories.map((main, i) => (
+                      <li
+                        key={i}
+                        onClick={() => handleCategoryClick(main.maincategory)}
+                      >
+                        <HomeIcon className="icon-sec-nav" /> {main.maincategory}
                       </li>
                     ))}
                   </ul>
@@ -57,15 +61,34 @@ export default function Nav() {
           <div className="col-sm-8 part2 position-static">
             <nav>
               <ul className="list list-inline mb-0">
-                <li className="list-inline-item sec-nav-pro">
-                  Electricals <KeyboardArrowDownIcon className="rotateIcon" />
-                </li>
-                <li className="list-inline-item sec-nav-pro">Power Tools</li>
-                <li className="list-inline-item sec-nav-pro">Pumps & Motors</li>
-                <li className="list-inline-item sec-nav-pro">
-                  Office Stationery & Supplies
-                </li>
-                <li className="list-inline-item sec-nav-pro">Medical Supplies</li>
+                {categories.flatMap((main) =>
+                  main.categories?.map((cat) => ({
+                    maincategory: main.maincategory,
+                    category: cat.category,
+                    subcategories: cat.subcategories || []
+                  }))
+                ).slice(0, 7).map((catItem, i) => (
+                  <li className="list-inline-item sec-nav-pro dropdown-hover" key={i}>
+                    {catItem.category}
+                    <ul className="sub-dropdown">
+                      {catItem.subcategories.map((sub, j) => (
+                        <li
+                          key={j}
+                          onClick={() => navigate(`/maincategory/${catItem.maincategory}`, {
+                            state: {
+                              category: catItem.category,
+                              subcategory: sub,
+                            },
+                          })}
+
+                        >
+                          {sub}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+
               </ul>
             </nav>
           </div>

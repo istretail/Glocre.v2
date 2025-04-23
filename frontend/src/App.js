@@ -121,7 +121,7 @@ const App = () => {
           {/* User Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/search/:keyword" element={<ProductSearch />} />
-          <Route path="/category/:category" element={<ProductCategory />} />
+          <Route path="/maincategory/:maincategory" element={<ProductCategory />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/support" element={<Support />} />

@@ -91,7 +91,7 @@ export default function Cart() {
     <>
       <MetaData title={"Cart"} />
 
-      {/* <Nav /> */}
+      <Nav />
       <div className="breadcrumbWrapper mb-4">
         <div className="container-fluid">
           <ul className="breadcrumb breadcrumb2 mb-0">

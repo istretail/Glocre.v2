@@ -18,6 +18,7 @@ const {
   unarchiveProduct,
   getArchiveProducts,
   getCategoryHierarchy,
+  getAvailableCategories,
 } = require("../controllers/productController");
 const router = express.Router();
 const {
@@ -78,6 +79,7 @@ function checkFileType(file, cb) {
   }
 }
 router.route("/products").get(getProducts);
+router.route("/availablecategories").get(getAvailableCategories)
 router.route("/products/new").post(isAuthenticatedUser, authorizeRoles("admin"), newProduct);
 router.route("/product/:id").get(getSingleProduct);
 router.route("/review").put(isAuthenticatedUser, createReview)

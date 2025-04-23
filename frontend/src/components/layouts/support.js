@@ -59,7 +59,7 @@ export default function Support() {
           {/* Contact form Heading */}
           <div className="contact-heading-glc">
             <p>FILL BELOW FORM TO CONTACT US</p>
-            <h2>WITH YOU REQUIREMENT</h2>
+            <h2>In line with your request</h2>
           </div>
 
           {/* Input Feilds */}
