@@ -9,6 +9,7 @@ const userSlice = createSlice({
     isUserUpdated: false,
     isUserDeleted: false,
     savedAddresses: [],
+
   },
   reducers: {
     usersRequest(state, action) {
@@ -220,6 +221,26 @@ const userSlice = createSlice({
         error: action.payload,
       };
     },
+    contactFormRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    contactFormSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message,
+      };
+    },
+    contactFormFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -256,6 +277,9 @@ export const {
   verifyAddressOtpRequest,
   verifyAddressOtpSuccess,
   verifyAddressOtpFail,
+  contactFormRequest,
+  contactFormSuccess,
+  contactFormFail
 } = actions;
 
 export default reducer;

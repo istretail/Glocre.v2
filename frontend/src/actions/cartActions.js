@@ -15,7 +15,7 @@ export const addCartItemToCart = (cartItem) => async (dispatch) => {
     dispatch(addCartItem(cartItem));
     toast.success("Item added to cart successfully");
   } catch (error) {
-    toast.error("Sorry, unable to add to cart");
+    toast.error(error.response.data.message );
   }
 };
 

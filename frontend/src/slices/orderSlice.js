@@ -5,6 +5,7 @@ const orderSlice = createSlice({
     orderDetail: {},
     userOrders: [],
     adminOrders: [],
+    cost: [],
     loading: false,
     isOrderDeleted: false,
     isOrderUpdated: false,
@@ -196,6 +197,26 @@ const orderSlice = createSlice({
         error: action.payload,
       };
     },
+    getShippingCostRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    getShippingCostSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        cost: action.payload,
+      };
+    },
+    getShippingCostFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -229,6 +250,9 @@ export const {
   getSellerSingleOrderRequest,
   getSellerSingleOrderSuccess,
   getSellerSingleOrderFail,
+  getShippingCostRequest,
+  getShippingCostSuccess,
+  getShippingCostFail
 } = actions;
 
 export default reducer;

@@ -231,10 +231,7 @@ export default function Cart() {
                         </span>
                       </h3>
                     </div>
-                    <div className="d-flex align-items-center mb-4">
-                      <h5 className="mb-0 text-light">Shipping</h5>
-                      <h3 className="ml-auto mb-0 font-weight-bold">Free</h3>
-                    </div>
+                   
                     <div className="d-flex align-items-center mb-4">
                       <h5 className="mb-0 text-light">items</h5>
                       <h3 className="ml-auto mb-0 font-weight-bold">

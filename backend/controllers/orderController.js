@@ -6,6 +6,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const { createTracking, getTracking } = require('../utils/trackPackage');
 const User = require("../models/userModel");
 const sendEmail = require('../utils/email');
+const pincodes = require("../config/pincodes")
 //Create New Order - api/v1/order/new
 
 
@@ -483,3 +484,131 @@ exports.trackOrder = catchAsyncError(async (req, res, next) => {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 });
+
+
+
+exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
+    const { shippingInfo = [], cartItem } = req.body;
+    
+    if (!Array.isArray(cartItem) || !shippingInfo) {
+        return next(new ErrorHandler("Missing or invalid cart items or shipping info", 400));
+    }
+
+    const getRegionFromState = (state) => {
+        if (!state) return null;
+
+        const northStates = [
+            "Delhi",
+            "Haryana",
+            "Uttar Pradesh",
+            "Punjab",
+            "Chandigarh",
+            "Himachal Pradesh",
+            "Jammu and Kashmir",
+            "Ladakh",
+            "Uttarakhand"
+        ];
+        const southStates = [
+            "Andhra Pradesh",
+            "Telangana",
+            "Karnataka",
+            "Kerala",
+            "Tamil Nadu",
+            "Puducherry",
+            "Lakshadweep",
+            "Andaman and Nicobar Islands"
+        ];
+        const eastStates = [
+            "Bihar",
+            "Odisha",
+            "Jharkhand",
+            "West Bengal"
+            // You could also include "Andaman and Nicobar Islands" here if following east grouping
+        ];
+        const westStates = [
+            "Rajasthan",
+            "Gujarat",
+            "Maharashtra",
+            "Goa",
+            "Dadra and Nagar Haveli and Daman and Diu"
+        ];
+        const centralStates = [
+            "Madhya Pradesh",
+            "Chhattisgarh"
+        ];
+        const northeastStates = [
+            "Assam",
+            "Meghalaya",
+            "Manipur",
+            "Mizoram",
+            "Nagaland",
+            "Tripura",
+            "Arunachal Pradesh",
+            "Sikkim"
+        ];
+
+
+        state = state.trim(); // Normalize spacing
+
+        if (northStates.includes(state)) return "North";
+        if (southStates.includes(state)) return "South";
+        if (eastStates.includes(state)) return "East";
+        if (westStates.includes(state)) return "West";
+        if (centralStates.includes(state)) return "Central";
+        if (northeastStates.includes(state)) return "North-East";
+
+        return null;
+    };
+
+
+    const isLocalDelivery = (shippingPin, businessPin) => {
+        return shippingPin?.substring(0, 3) === businessPin?.substring(0, 3);
+    };
+
+    const shippingPin = shippingInfo?.postalCode;
+    const state = shippingInfo?.state;
+    // console.log("state:", state);
+    // console.log("shippingPin:", shippingPin);
+    const region = getRegionFromState(state);
+    const results = [];
+
+    for (const item of cartItem) {
+        const seller = await User.findById(item.createdBy);
+        const businessPin = seller?.businessAddress?.[0]?.postalCode || "641001";
+        let shippingCost = 0;
+        let localDelivery = isLocalDelivery(shippingPin, businessPin);
+
+        if (localDelivery) {
+            shippingCost = item.shippingCostlol;
+        } else {
+            switch (region) {
+                case "North": shippingCost = item.shippingCostNorth; break;
+                case "South": shippingCost = item.shippingCostSouth; break;
+                case "East": shippingCost = item.shippingCostEast; break;
+                case "West": shippingCost = item.shippingCostWest; break;
+                case "Central": shippingCost = item.shippingCostCentral; break;
+                case "North-East": shippingCost = item.shippingCostNe; break;
+                default: shippingCost = 0;
+            }
+        }
+        // console.log("Region:", region);
+        results.push({
+            productId: item.product,
+            shippingCost,
+            sellerId: item.createdBy,
+            region: region || "Unknown",
+            isLocal: localDelivery,
+        });
+    }
+
+    const totalShippingCost = results.reduce((sum, r) => sum + (r.shippingCost || 0), 0);
+
+    res.status(200).json({
+        success: true,
+        totalShippingCost,
+        breakdown: results,
+    });
+    console.log("Result", results);
+    console.log("Total Shipping cost", totalShippingCost);
+});
+

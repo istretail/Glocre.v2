@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import "./Footer.css";
 import contactban from "../../images/GLOCRE-CONTACT-BANNER.png";
 import enquirygif from "../../images/mogli-chat.gif";
 import faqgif from "../../images/FAQs.gif";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { submitContactForm } from "../../actions/userActions";
+import Loader from "./Loader";
 
 export default function Support() {
-
+  const { loading } = useSelector((state) => state.userState)
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     organization: "",
@@ -21,25 +25,44 @@ export default function Support() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   const mobilePattern = /^[0-9]{10}$/;
+
+  //   if (!emailPattern.test(formData.email)) {
+  //     alert("Please enter a valid email address.");
+  //     return;
+  //   }
+
+  //   if (!mobilePattern.test(formData.mobile)) {
+  //     alert("Please enter a valid 10-digit mobile number.");
+  //     return;
+  //   }
+
+  //   // Submit the form or do something with formData
+  //   console.log("Form submitted:", formData);
+  // };
+
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const mobilePattern = /^[0-9]{10}$/;
-
-    if (!emailPattern.test(formData.email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-
-    if (!mobilePattern.test(formData.mobile)) {
-      alert("Please enter a valid 10-digit mobile number.");
-      return;
-    }
-
-    // Submit the form or do something with formData
-    console.log("Form submitted:", formData);
+    dispatch(submitContactForm(formData, () => {
+      // Reset form after successful submission
+      setFormData({
+        name: "",
+        organization: "",
+        function: "",
+        mobile: "",
+        email: "",
+        pincode: "",
+        requirements: "",
+      });
+    }));
   };
+
 
 
   return (
@@ -53,92 +76,102 @@ export default function Support() {
           </div>
         </section>
         {/* Form */}
-        {/* <form onSubmit={handleSubmit}> */}
-        <section className="container mb-5">
+        {loading ? (
+          <Loader />
+        ) : (
+          <section className="container mb-5">
 
-          {/* Contact form Heading */}
-          <div className="contact-heading-glc">
-            <p>FILL BELOW FORM TO CONTACT US</p>
-            <h2>In line with your request</h2>
-          </div>
+            {/* Contact form Heading */}
+            <div className="contact-heading-glc">
+              <p>FILL BELOW FORM TO CONTACT US</p>
+              <h2>In line with your request</h2>
+            </div>
 
-          {/* Input Feilds */}
+            <Fragment>
+              <form onSubmit={handleSubmit}>
+                {/* Input Feilds */}
 
-          <div className="row input-contact-glc">
+                <div className="row input-contact-glc">
 
-            <div className="col-lg-6">
-              <p>
-                Your Name <span>*</span>
-              </p>
-              <input type="text" name="name" required onChange={handleChange} />
-            </div>
-            <div className="col-lg-6">
-              <p>
-                Organization Name
-              </p>
-              <input type="text" name="organization" onChange={handleChange} />
-            </div>
-            <div className="col-lg-6">
-              <p>
-                Your Function
-              </p>
-              <input type="text" name="function" onChange={handleChange} />
-            </div>
-            <div className="col-lg-6">
-              <p>
-                Mobile Number <span>*</span>
-              </p>
-              <input
-                type="tel"
-                name="mobile"
-                required
-                pattern="[0-9]{10}"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-lg-6">
-              <p>
-                E-Mail Address<span>*</span>
-              </p>
-              <input
-                type="email"
-                name="email"
-                required
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-lg-6">
-              <p>
-                Pincode <span>*</span>
-              </p>
-              <input type="text" name="pincode" required onChange={handleChange} />
-            </div>
-            <div className="col-12">
-              <p>
-                Your Requirements ( Feedback / Suggestions / New Product Enquiry ) <span>*</span>
-              </p>
-              <input
-                type="text-area"
-                id="fname"
-                name="requirements" required
-                style={{ height: "125px" }}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="d-flex justify-content-center pt-3">
-            <button
-              className="btn"
-              type="submit"
-              style={{ backgroundColor: "#2f4d2a", color: "#fff" }}
-            >
-              Submit
-            </button>
-          </div>
+                  <div className="col-lg-6">
+                    <p>
+                      Your Name <span>*</span>
+                    </p>
+                    <input type="text" name="name" required onChange={handleChange} />
+                  </div>
+                  <div className="col-lg-6">
+                    <p>
+                      Organization Name
+                    </p>
+                    <input type="text" name="organization" onChange={handleChange} />
+                  </div>
+                  <div className="col-lg-6">
+                    <p>
+                      Your Function
+                    </p>
+                    <input type="text" name="function" onChange={handleChange} />
+                  </div>
+                  <div className="col-lg-6">
+                    <p>
+                      Mobile Number <span>*</span>
+                    </p>
+                    <input
+                      type="tel"
+                      name="mobile"
+                      required
+                      pattern="[0-9]{10}"
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="col-lg-6">
+                    <p>
+                      E-Mail Address<span>*</span>
+                    </p>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="col-lg-6">
+                    <p>
+                      Pincode <span>*</span>
+                    </p>
+                    <input type="text" name="pincode" required onChange={handleChange} />
+                  </div>
+                  <div className="col-12">
+                    <p>
+                      Your Requirements ( Feedback / Suggestions / New Product Enquiry ) <span>*</span>
+                    </p>
+                    <input
+                      type="text-area"
+                      id="fname"
+                      name="requirements" required
+                      style={{ height: "125px" }}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="d-flex justify-content-center pt-3">
+                  <button
+                    className="btn"
+                    type="submit"
+                    style={{ backgroundColor: "#2f4d2a", color: "#fff" }}
+                  >
+                    Submit
+                  </button>
+                </div>
+
+              </form>
+            </Fragment>
 
 
 
-        </section>
+
+          </section>
+        )}
+
         {/* </form> */}
         {/* Enquiry */}
         <section

@@ -48,6 +48,7 @@ export default function SellerUpdateProduct() {
     shippingCostNorth: "",
     shippingCostSouth: "",
     shippingCostEast: "",
+    shippingCostCentral:"",
     shippingCostWest: "",
     shippingCostNe: "",
     unit: "",
@@ -172,6 +173,7 @@ export default function SellerUpdateProduct() {
         shippingCostSouth: product.shippingCostSouth,
 
         shippingCostEast: product.shippingCostEast,
+        shippingCostCentral: product.shippingCostCentral,
         shippingCostWest: product.shippingCostWest,
         shippingCostNe: product.shippingCostNe,
         unit: product.unit,
@@ -1378,6 +1380,19 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostNe}
                         name="shippingCostNe"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <div className="form-group">
+                        <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in '₹')</label>
+                      <input
+                        type="number"
+                          id="shippingCostCentral_field"
+                        className="form-control"
+                        onChange={handleChange}
+                          value={formData.shippingCostCentral}
+                          name="shippingCostCentral"
                       />
                     </div>
                   </div>

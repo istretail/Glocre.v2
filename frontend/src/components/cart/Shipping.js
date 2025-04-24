@@ -13,11 +13,9 @@ import {
 import "bootstrap/dist/js/bootstrap.js";
 import { logEvent } from "../../actions/analyticsActions.js";
 import Loader from "../layouts/Loader.js";
-import PhoneInput from "react-phone-input-2";
 import Nav from "../layouts/nav.js";
 import { Link } from "react-router-dom";
 import Accordion from "@mui/material/Accordion";
-import AccordionActions from "@mui/material/AccordionActions";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";

@@ -68,6 +68,9 @@ import {
   verifyAddressOtpRequest,
   verifyAddressOtpSuccess,
   verifyAddressOtpFail,
+  contactFormRequest,
+  contactFormSuccess,
+  contactFormFail,
 } from "../slices/userSlice";
 import {
   addWishlistRequest,
@@ -81,6 +84,7 @@ import {
   getWishlistFail,
 } from "../slices/wishlistSlice";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const login = (email, password) => async (dispatch) => {
   try {
@@ -432,5 +436,16 @@ export const deleteBanner = (id) => async (dispatch) => {
     dispatch(deleteBannerSuccess(id));
   } catch (error) {
     dispatch(deleteBannerFail(error.response.data.message));
+  }
+};
+
+export const submitContactForm = (formData) => async (dispatch) => {
+  try {
+    dispatch(contactFormRequest());
+    const response = await axios.post("/api/v1/contact", formData);
+    dispatch(contactFormSuccess(response.data));
+    toast.success("Form submitted successfully! We’ll contact you soon.");
+  } catch (error) {
+    dispatch(contactFormFail(error.response.data.message));
   }
 };

@@ -11,6 +11,7 @@ const OTP_VALIDITY_DURATION = 10 * 60 * 1000; // 10 minutes
 const APIFeatures = require("../utils/apiFeatures"); // Adjust the path as necessary
 const mongoose = require("mongoose");
 const axios = require('axios');
+
 //register user --/api/v1/Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
   const { name, lastName, email, password } = req.body;
@@ -334,26 +335,26 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     newUserData.businessAddress = req.body.businessAddress;
 
     // Twilio OTP Verification
-    let otpCode;
-    if (req.body.businessContactNumber) {
-      try {
-        otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        const otpExpire = Date.now() + 10 * 60 * 1000;
+    // let otpCode;
+    // if (req.body.businessContactNumber) {
+    //   try {
+    //     otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    //     const otpExpire = Date.now() + 10 * 60 * 1000;
 
-        await client.messages.create({
-          body: `Your OTP for business contact verification is: ${otpCode}`,
-          from: TWILIO_PHONE_NUMBER,
-          to: req.body.businessContactNumber,
-        });
+    //     await client.messages.create({
+    //       body: `Your OTP for business contact verification is: ${otpCode}`,
+    //       from: TWILIO_PHONE_NUMBER,
+    //       to: req.body.businessContactNumber,
+    //     });
 
-        newUserData.businessContactNumber = req.body.businessContactNumber;
-        newUserData.otpCode = otpCode;
-        newUserData.otpExpire = otpExpire;
-        newUserData.isPhoneVerified = false;
-      } catch (error) {
-        return next(new ErrorHandler("Failed to send OTP for business contact", 500));
-      }
-    }
+    //     newUserData.businessContactNumber = req.body.businessContactNumber;
+    //     newUserData.otpCode = otpCode;
+    //     newUserData.otpExpire = otpExpire;
+    //     newUserData.isPhoneVerified = false;
+    //   } catch (error) {
+    //     return next(new ErrorHandler("Failed to send OTP for business contact", 500));
+    //   }
+    // }
 
     // Prepare email content
     const adminEmail = process.env.ADMIN_EMAIL || "atpldesign04@outlook.com";
@@ -682,7 +683,7 @@ exports.getAllSavedAddresses = catchAsyncError(async (req, res, next) => {
 
 // POST /api/v1/cart/add
 exports.addToCart = catchAsyncError(async (req, res, next) => {
-  const { product, name, price, image, stock, quantity, variant, tax } = req.body;
+  const { product, name, price, image, stock, quantity, variant, tax, shippingCostlol, shippingCostNorth, shippingCostSouth, shippingCostEast, shippingCostWest, shippingCostCentral, shippingCostNe, createdBy } = req.body;
   const userId = req.user.id;
   const user = await User.findById(userId);
 
@@ -731,7 +732,15 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
       image,
       price,
       stock,
-      tax
+      tax,
+      shippingCostlol,
+      shippingCostNorth,
+      shippingCostSouth,
+      shippingCostEast,
+      shippingCostWest,
+      shippingCostCentral,
+      shippingCostNe,
+      createdBy,
     };
 
     if (variant) {
@@ -990,7 +999,7 @@ exports.sendOTP = async (req, res) => {
   }
 };
 
-// ✅ Verify OTP
+// Verify OTP
 exports.verifyOTP = async (req, res) => {
   const { mobile, otp } = req.body;
 
@@ -1014,3 +1023,60 @@ exports.verifyOTP = async (req, res) => {
     });
   }
 };
+
+exports.sendContactEmail = catchAsyncError( async (req, res) => {
+  try {
+    const {
+      name,
+      organization,
+      function: userFunction,
+      mobile,
+      email,
+      pincode,
+      requirements,
+    } = req.body;
+    console.log(req.body)
+  
+    const adminHtmlMessage = `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Organization:</strong> ${organization}</p>
+      <p><strong>Function:</strong> ${userFunction}</p>
+      <p><strong>Mobile:</strong> ${mobile}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Pincode:</strong> ${pincode}</p>
+      <p><strong>Requirements:</strong> ${requirements}</p>
+    `;
+
+    await sendEmail({
+      fromEmail: "donotreply@glocre.com",
+      email: process.env.ADMIN_EMAIL,
+      subject: "New Contact Form Submission",
+      html: adminHtmlMessage,
+    });
+
+    // 2️⃣ Confirmation Email to User
+    const userHtmlMessage = `
+      <h2>Thank you for contacting GLOCRe</h2>
+      <p>Hi ${name},</p>
+      <p>We have received your message and our team will reach out to you shortly.</p>
+      <p>In the meantime, feel free to explore our website or reply to this email if you have additional queries.</p>
+      <br/>
+      <p>Best regards,</p>
+      <p><strong>GLOCRe Support Team</strong></p>
+    `;
+
+    await sendEmail({
+      fromEmail: "donotreply@glocre.com",
+      email: email,
+      subject: "We’ve received your message – GLOCRe",
+      html: userHtmlMessage,
+    });
+
+    res.status(200).json({ message: "Your message has been sent successfully." });
+
+  } catch (error) {
+    console.error("Error in contact form:", error);
+    res.status(500).json({ message: "Something went wrong. Please try again later." });
+  }
+});

@@ -94,6 +94,8 @@ const productSchema = new mongoose.Schema({
   shippingCostSouth: { type: Number, required: true },
   shippingCostEast: { type: Number, required: true },
   shippingCostWest: { type: Number, required: true },
+
+  shippingCostCentral: { type: Number, required: true },
   shippingCostNe: { type: Number, required: true },
   unit: { type: String, required: true },
   images: [{ type: String, required: false }],

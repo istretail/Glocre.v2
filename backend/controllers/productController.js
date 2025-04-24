@@ -99,6 +99,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     shippingCostSouth: req.body.shippingCostSouth,
     shippingCostEast: req.body.shippingCostEast,
     shippingCostWest: req.body.shippingCostWest,
+    shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
     unit: req.body.unit,
 
@@ -461,6 +462,7 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     shippingCostSouth: req.body.shippingCostSouth,
     shippingCostEast: req.body.shippingCostEast,
     shippingCostWest: req.body.shippingCostWest,
+    shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
     unit: req.body.unit,
   });

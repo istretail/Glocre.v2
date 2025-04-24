@@ -8,7 +8,8 @@ const { newOrder,
     getSellerOrdersAndSales,
     getSellerSingleOrder,
     updateOrderStatus,
-    trackOrder
+    trackOrder,
+    calculateShippingCost
  } = require('../controllers/orderController');
 const router = express.Router();
 const {isAuthenticatedUser, authorizeRoles,} = require('../middlewares/authenticate');
@@ -17,6 +18,7 @@ router.route('/order/new').post(isAuthenticatedUser,newOrder);
 router.route('/order/:id').get(isAuthenticatedUser,getSingleOrder);
 router.route('/myorders').get(isAuthenticatedUser,myOrders);
 router.route('/order/track/:id').get(isAuthenticatedUser,trackOrder);
+router.route('/calculateshipping').post(isAuthenticatedUser,calculateShippingCost)
     
 //Admin Routes
 router.route('/admin/orders').get(isAuthenticatedUser, authorizeRoles('admin'), orders)

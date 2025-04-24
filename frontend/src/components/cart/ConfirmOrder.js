@@ -12,7 +12,7 @@ import { logEvent } from "../../actions/analyticsActions.js";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { clearError as clearOrderError } from "../../slices/orderSlice";
-import { createOrder } from "../../actions/orderActions";
+import { createOrder, getShippingCost } from "../../actions/orderActions";
 import { clearCart } from "../../actions/cartActions";
 
 export default function ConfirmOrder() {
@@ -24,7 +24,7 @@ export default function ConfirmOrder() {
     items: cartItems,
   } = useSelector((state) => state.cartState);
   const { user } = useSelector((state) => state.authState);
-  const { error: orderError } = useSelector((state) => state.orderState);
+  const { error: orderError, cost=[] } = useSelector((state) => state.orderState);
 
   const itemsPrice = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -34,7 +34,7 @@ export default function ConfirmOrder() {
     (acc, item) => acc + item.quantity * item.price * (item.tax / 100),
     0,
   );
-  const shippingPrice = itemsPrice > 250 ? 0 : 250;
+  const shippingPrice = cost.totalShippingCost
   const totalPrice = Number(itemsPrice + shippingPrice + totalTax).toFixed(2);
 
   useEffect(() => {
@@ -112,6 +112,11 @@ export default function ConfirmOrder() {
       toast("Payment failed! Please try again.", { type: "error" });
     }
   };
+  useEffect(() => {
+    if (shippingInfo) {
+      dispatch(getShippingCost(cartItems,shippingInfo));
+    }
+  }, [shippingInfo, dispatch]);
   return (
     <>
       <MetaData title={"Confirm Order"} />

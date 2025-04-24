@@ -6,6 +6,10 @@ const orderSchema = mongoose.Schema({
         unique: true,
     }, // Store as String for formatted ID
     shippingInfo: {
+        name: {
+            type: String,
+            required: true,
+        },
         address: {
             type: String,
             required: true,
@@ -35,6 +39,10 @@ const orderSchema = mongoose.Schema({
         },
     },
     billingInfo: {
+        name: {
+            type: String,
+            required: true,
+        },
         address: {
             type: String,
             required: true,

@@ -64,6 +64,18 @@ const cartItemSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  shippingCostlol: { type: Number, required: true },
+  shippingCostNorth: { type: Number, required: true },
+  shippingCostSouth: { type: Number, required: true },
+  shippingCostEast: { type: Number, required: true },
+  shippingCostWest: { type: Number, required: true },
+  shippingCostCentral: { type: Number, required: true },
+  shippingCostNe: { type: Number, required: true },
+  createdBy: {
+    type: mongoose.SchemaTypes.ObjectId,
+    required: true,
+    ref: 'User'
+},
   variant: variantSchema
 });
 

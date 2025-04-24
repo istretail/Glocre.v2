@@ -40,7 +40,8 @@ const {
    removeFromWishlist,
    verifySellerOtp,
    sendOTP,
-   verifyOTP
+   verifyOTP,
+   sendContactEmail
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
@@ -59,6 +60,7 @@ router.route('/users/address/verify-otp').post(isAuthenticatedUser,verifyAddress
 router.route('/users/savedAddresses/:id').put(isAuthenticatedUser, updateSavedAddress)
                                           .delete(isAuthenticatedUser, deleteSavedAddress)
 router.route('/users/allsavedAddresses').get(isAuthenticatedUser, getAllSavedAddresses)
+router.route('/contact').post(sendContactEmail)
 //cart Routes 
 router.route('/cart/add').post(isAuthenticatedUser, addToCart)
 router.route('/cart').get(isAuthenticatedUser, getCartItems)

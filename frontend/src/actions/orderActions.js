@@ -14,6 +14,9 @@ import {
   getSellerSingleOrderFail,
   getSellerSingleOrderRequest,
   getSellerSingleOrderSuccess,
+  getShippingCostFail,
+  getShippingCostRequest,
+  getShippingCostSuccess,
   orderDetailFail,
   orderDetailRequest,
   orderDetailSuccess,
@@ -112,3 +115,16 @@ export const getSellerSingleOrder = (id) => async (dispatch) => {
     dispatch(getSellerSingleOrderFail(error.response.data.message));
   }
 };
+
+export const getShippingCost = (cartItem, shippingInfo) => async (dispatch) => {
+    try {
+      dispatch(getShippingCostRequest());
+
+      const { data } = await axios.post(`/api/v1/calculateshipping`, { cartItem,shippingInfo,
+      });
+
+      dispatch(getShippingCostSuccess(data));
+    } catch (error) {
+      dispatch(getShippingCostFail(error.response.data.message));
+    }
+  };

@@ -50,6 +50,7 @@ const SellerCreateProduct = () => {
     shippingCostNorth: "",
     shippingCostSouth: "",
     shippingCostEast: "",
+    shippingCostCentral: "",
     shippingCostWest: "",
     shippingCostNe: "",
     unit: "",
@@ -1333,6 +1334,19 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="shippingCostNe"
                       value={formData.shippingCostNe}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Shipping Cost central India (in '₹'):<span style={{ color: "red" }}> * </span></label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="shippingCostCentral"
+                      value={formData.shippingCostCentral}
                       onChange={handleChange}
                       required
                     />

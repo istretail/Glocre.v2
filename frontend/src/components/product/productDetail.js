@@ -744,7 +744,15 @@ export default function ProductDetail() {
       stock: selectedVariant ? selectedVariant.stock : product.stock,
       quantity,
       tax: product.tax,
-      variant: selectedVariant ? {
+      shippingCostlol:product.shippingCostlol,
+        shippingCostNorth:product.shippingCostNorth,
+        shippingCostEast:product.shippingCostEast,
+        shippingCostWest:product.shippingCostWest,
+        shippingCostSouth:product.shippingCostSouth,
+        shippingCostCentral:product.shippingCostCentral,
+        shippingCostNe:product.shippingCostNe,
+        createdBy: product.createdBy,
+        variant: selectedVariant ? {
         _id: selectedVariant._id,
         variantType: selectedVariant.variantType,
         variantName: selectedVariant.variantName,
@@ -752,6 +760,7 @@ export default function ProductDetail() {
         offPrice: selectedVariant.offPrice,
         stock: selectedVariant.stock,
         images: selectedVariant.images,
+       
       } : null
     };
 
