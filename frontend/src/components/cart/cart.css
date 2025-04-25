@@ -107,7 +107,7 @@
  
 /* Custom styling for checkbox */
 .card-check-box-shipping {
-  .custom-checkbox {
+  .custom-checkbox1 {
     display: none;
   }
  
@@ -115,7 +115,7 @@
     margin-bottom: 0 !important;
   }
  
-  .custom-checkbox + label {
+  .custom-checkbox1 + label {
     display: inline-block;
     width: 24px;
     height: 24px;
@@ -128,12 +128,12 @@
     transition: all 0.3s ease;
   }
  
-  .custom-checkbox:checked + label {
+  .custom-checkbox1:checked + label {
     background-color: #ffad63;
     border-color: #ffad63;
   }
  
-  .custom-checkbox:checked + label::after {
+  .custom-checkbox1:checked + label::after {
     content: "";
     width: 12px;
     height: 12px;

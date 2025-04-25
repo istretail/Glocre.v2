@@ -9,11 +9,11 @@ import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify';
 import Sidebar from "./Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import debounce from 'lodash.debounce';
+
 import Pagination from 'react-js-pagination';
-import avatar1 from '../../images/OIP.jpg'
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+
+import { faCartShopping,  faFilter, faPencil, faSearch, faTrash,  faDashboard, faList,  faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown,  } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 
 export default function UserList() {
@@ -32,21 +32,21 @@ export default function UserList() {
     const setCurrentPageNo = (pageNo) => {
         setCurrentPage(pageNo);
     };
-    const debouncedSearch = debounce((term) => {
-        dispatch(getUsers(term, roleFilter));
-    }, 300);
+    // const debouncedSearch = debounce((term) => {
+    //     dispatch(getUsers(term, roleFilter));
+    // }, 300);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!searchKeyword.trim()) return; // Prevent empty searches
+    // const handleSearch = (e) => {
+    //     e.preventDefault();
+    //     if (!searchKeyword.trim()) return; // Prevent empty searches
 
-        const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
-        dispatch(getUsers({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
-    };
+    //     const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
+    //     dispatch(getUsers({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
+    // };
 
-    const handleFilterClick = () => {
-        setFilterVisible(!filterVisible);
-    };
+    // const handleFilterClick = () => {
+    //     setFilterVisible(!filterVisible);
+    // };
 
     const handleFilterChange = (role) => {
         setRoleFilter(role);
@@ -104,7 +104,7 @@ export default function UserList() {
                     <div className="col-12 col-lg-10 col-md-12 ">
 
                         <div className="mobile-logo">
-                                 <img src={require("../../images/procure-g-logo.png")}/>
+                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
                         </div>
 
                         <div className="breadcrumbWrapperr">
@@ -252,121 +252,13 @@ export default function UserList() {
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>USER LIST</h3>
                         <p>Glocre</p>
 
-                        <Fragment>
 
-                            <div className="reviewlist-list-filter-procureg">
-                                {/* <div className="row">
-                                <div className="col-lg-6">
-                                    <Dropdown className="d-inline text-dark">
-                                        <Dropdown.Toggle
-                                            variant="default text-white"
-                                            id="dropdown-basic"
-                                            className="text-dark dropdown1 icon-list-filter-procureg"
-                                            style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
-                                        >
-                                            <FontAwesomeIcon icon={faFilter} className="" />
-                                        </Dropdown.Toggle>
-
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item onClick={() => handleFilterChange("admin")} className="text-dark">
-                                                Admin
-                                            </Dropdown.Item>
-                                            <Dropdown.Item onClick={() => handleFilterChange("user")} className="text-dark">
-                                                User
-                                            </Dropdown.Item>
-                                            <Dropdown.Item onClick={() => handleFilterChange("")} className="text-dark">
-                                                All
-                                            </Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
+                        {loading ? (
+                            <Loader />) : users.length === 0 ? (
+                                <div className="text-center py-5">
+                                    <p style={{ color: "#8c8c8c", fontSize: "18px" }}>We have no Users. Please create one.</p>                                  
                                 </div>
-                                <div className="topnav col-lg-6">
-                                    <div className="search-container">
-                                        <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
-                                            <input
-                                                type="text"
-                                                placeholder="Search"
-                                                value={searchKeyword}
-                                                onChange={(e) => setSearchKeyword(e.target.value)}
-                                                name="search"
-                                            />
-                                            <button type="submit">
-                                                <FontAwesomeIcon icon={faSearch} />
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div> */}
-
-                                {/* {loading ? <Loader /> :
-                                <div className="heading-userlist-main-procureg mt-2">
-                                    <div className="heading-userlist-contents-procureg">
-                                        <div className="row">
-                                            <div className="col-lg-2">
-                                                <h6>NAME</h6>
-                                            </div>
-                                            <div className="col-lg-2">
-                                                <h6>E-MAIL</h6>
-                                            </div>
-                                            <div className="col-lg-2">
-                                                <h6>ID</h6>
-                                            </div>
-                                            <div className="col-lg-2">
-                                                <h6>ROLE</h6>
-                                            </div>
-                                            <div className="col-lg-2">
-                                                <h6>DATE</h6>
-                                            </div>
-                                            <div className="col-lg-2">
-                                                <h6>ACTIONS</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <hr />
-
-                                    {users.map(user => (
-                                        <div className="contents-userlist-main-procureg mt-2" key={user._id}>
-                                            <div className="contents-userlist-contents-procureg">
-                                                <div className="row">
-                                                    <div className="col-lg-2">
-                                                        <p>{user.name} {user.lastName}</p>
-                                                    </div>
-                                                    <div className="col-lg-2">
-                                                        <p>{user.email}</p>
-                                                    </div>
-                                                    <div className="col-lg-2">
-                                                        <p>{user._id}</p>
-                                                    </div>
-                                                    <div className="col-lg-2">
-                                                        <p>{user.role}</p>
-                                                    </div>
-                                                    <div className="col-lg-2">
-                                                        <p>{user.createdAt}</p>
-                                                    </div>
-                                                    <div className="col-lg-2">
-                                                        <Fragment>
-                                                            <Link to={`/admin/user/${user._id}`} className="btn btn-primary">
-                                                                <i className="fa fa-pencil"></i>
-                                                            </Link>
-                                                            <Button onClick={(e) => deleteHandler(e, user._id)} className="btn btn-danger py-1 px-2 ml-2">
-                                                                <i className="fa fa-trash"></i>
-                                                            </Button>
-                                                        </Fragment>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            } */}
-
-                            </div>
-
-                        </Fragment>
-
-                        {loading ? <Loader /> :
-                            <div className="cartWrapper mt-4">
+                            ) : ( <div className="cartWrapper mt-4">
                                 <div className="table-responsive" style={{ overflowX: "auto" }}>
                                     <table className="table">
                                         <thead>
@@ -423,6 +315,9 @@ export default function UserList() {
                                     </table>
                                 </div>
                             </div>
+                        )
+                        
+                            
                         }
                         <br />
                     </div>

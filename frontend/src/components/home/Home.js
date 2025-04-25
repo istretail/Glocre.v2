@@ -48,7 +48,7 @@ export default function Home() {
           />
 
           <section id="products" className="container-fluid">
-            <h2 className=" hd">Popular Products</h2>
+            <h2 className=" hd">Popular Products and Recent Products</h2>
             <div className="productRow">
               {products &&
                 products.map((product) => (

@@ -635,7 +635,7 @@ exports.getSellerSingleProduct = catchAsyncError(async (req, res, next) => {
 exports.cloneProduct = catchAsyncError(async (req, res, next) => {
   // Find the product to be cloned
   const productToClone = await Product.findById(req.params.id);
-
+  
   if (!productToClone) {
     return res.status(404).json({
       success: false,
@@ -662,22 +662,25 @@ exports.cloneProduct = catchAsyncError(async (req, res, next) => {
     offPrice: productToClone.offPrice,
     stock: productToClone.stock,
     itemModelNum: productToClone.itemModelNum,
-    serialNum: productToClone.serialNum,
-    connectionType: productToClone.connectionType,
-    hardwarePlatform: productToClone.hardwarePlatform,
-    os: productToClone.os,
-    powerConception: productToClone.powerConception,
-    batteries: productToClone.batteries,
-    packageDimension: productToClone.packageDimension,
-    portDescription: productToClone.portDescription,
-    connectivityType: productToClone.connectivityType,
-    compatibleDevices: productToClone.compatibleDevices,
-    powerSource: productToClone.powerSource,
-    specialFeatures: productToClone.specialFeatures,
-    includedInThePackage: productToClone.includedInThePackage,
-    manufacturer: productToClone.manufacturer,
-    itemSize: productToClone.itemSize,
+    sku: productToClone.sku,
+    upc: productToClone.upc,
+    hsn: productToClone.hsn,
+    countryofOrgin: productToClone.countryofOrgin,
+    manufactureDetails: productToClone.manufactureDetails,
+    productCertifications: productToClone.productCertifications,
+    itemLength: productToClone.itemLength,
+    itemHeight: productToClone.itemHeight,
+    itemWeight: productToClone.itemWeight,
     itemWidth: productToClone.itemWidth,
+    moq: productToClone.moq,
+    shippingCostlol: productToClone.shippingCostlol,
+    shippingCostNorth: productToClone.shippingCostNorth,
+    shippingCostSouth: productToClone.shippingCostSouth,
+    shippingCostEast: productToClone.shippingCostEast,
+    shippingCostWest: productToClone.shippingCostWest,
+    shippingCostCentral: productToClone.shippingCostCentral,
+    shippingCostNe: productToClone.shippingCostNe,
+    unit: productToClone.unit,
     status: "pending", // Set status to pending for the cloned product
   });
 

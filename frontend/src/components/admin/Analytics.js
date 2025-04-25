@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
-import avatar1 from './OIP.jpg'
+import { faFilter, faSearch,  } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown,  } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Sidebar from './Sidebar';
 

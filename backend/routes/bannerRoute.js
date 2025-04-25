@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const uploadBanner = require("../middlewares/uploadBanner")
-const { uploadBannerImage, deleteBannerImage, getAllBannerImages } = require("../controllers/bannerController");
+const { uploadBannerImage, deleteBannerImage, getAllBannerImages, getAllImages } = require("../controllers/bannerController");
 const {
   isAuthenticatedUser,
   authorizeRoles,
@@ -22,4 +22,5 @@ router.delete(
     deleteBannerImage
 );
 
+// router.route("/get-images").get(isAuthenticatedUser,authorizeRoles("admin"),getAllImages)
 module.exports = router;

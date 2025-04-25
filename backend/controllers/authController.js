@@ -105,6 +105,89 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
   }
 });
 
+exports.resendVerificationEmail = catchAsyncError(async (req, res, next) => {
+  const { email } = req.body;
+  console.log("Request body",req.body)
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide an email address.",
+    });
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "This is a new email. Please register first.",
+    });
+  }
+
+  if (user.isVerified) {
+    return res.status(400).json({
+      success: false,
+      message: "Your account is already verified. Please login.",
+    });
+  }
+
+  // Generate a new token or reuse the existing one
+  const emailToken = crypto.randomBytes(20).toString("hex");
+  const BASE_URL = process.env.NODE_ENV === "production"
+    ? `${req.protocol}://${req.get("host")}`
+    : process.env.FRONTEND_URL;
+
+  const verificationLink = `${BASE_URL}/verify-email/${emailToken}`;
+
+  const htmlMessage = `
+    <div style="max-width: 600px; margin: 40px auto; border: 1px solid #ddd; border-radius: 10px; font-family: Arial, sans-serif; overflow: hidden;">
+    <div style="background-color: #ffffff;">
+      <img 
+        src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png"
+        alt="Logo" 
+        style="width: 100%; height: auto; display: block;" 
+      />
+    </div>
+    <div style="padding: 30px 20px; background-color: #f9f9f9; text-align: center;">
+      <h2 style="font-size: 24px; color: #333;">Verify Your Email Address</h2>
+      <p style="font-size: 16px; color: #555;">
+        Please confirm your email by clicking the button below:
+      </p>
+      <a href="${verificationLink}" style="
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: rgb(223, 113, 10);
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 16px;
+      ">
+        Verify Email
+      </a>
+    </div>
+    </div>
+  `;
+
+  // Update user with new token
+  user.verifyEmailToken = emailToken;
+  user.verifyEmailTokenExpire = Date.now() + 30 * 60 * 1000; // 30 mins
+  await user.save();
+
+  // Send email
+  await sendEmail({
+    fromEmail: "donotreply@glocre.com",
+    email,
+    subject: "Resend Email Verification",
+    html: htmlMessage,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Verification email has been resent. Please check your inbox.",
+  });
+});
+
 // Endpoint to handle email verification
 exports.verifyEmail = catchAsyncError(async (req, res, next) => {
   // Hash the token from the request parameters (if needed)

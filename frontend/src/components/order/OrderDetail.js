@@ -232,8 +232,7 @@ export default function OrderDetail() {
           <section className="container-fluid order-tracking-section-procureg mb-4">
             <div class="">
               <div class="cartRightBox">
-                <h1 className="hd mb-0">My Orders / Tracking</h1>
-                <hr />
+               
                 <div className="row mb-2">
                   <div className="col-lg-9">
                     <h4 style={{ color: '#ffad63' }}>

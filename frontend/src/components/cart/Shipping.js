@@ -538,7 +538,7 @@ export default function Shipping() {
                                 onChange={(e) => setAddressLine(e.target.value)}
                                 required
                               >
-                                <option value="">Select Locality</option>
+                                <option value="">Select Locality *</option>
                                 {localities.map((locality, index) => (
                                   <option key={index} value={locality}>
                                     {locality}
@@ -612,7 +612,7 @@ export default function Shipping() {
                           <input
                             type="checkbox"
                             id="billingSameAsShipping"
-                            className="form-check-input ms-1 custom-checkbox"
+                            className=" ms-1 custom-checkbox1"
                             checked={billingSameAsShipping}
                             style={{ backgroundColor: "#ffad63", border: "none", width: "20px", height: "20px" }}
                             onChange={(e) => setBillingSameAsShipping(e.target.checked)}

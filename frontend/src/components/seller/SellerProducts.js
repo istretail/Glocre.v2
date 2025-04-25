@@ -1,75 +1,78 @@
-import { Fragment, useEffect, useState } from "react"
+import {  useEffect, useState } from "react"
 import '../admin/productlist.css'
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { deleteProduct, getSellerProducts } from "../../actions/productActions"
-import { clearError, clearProductDeleted } from "../../slices/singleProductSlice"
+import { addArchiveProduct, cloneProduct, getSellerProducts } from "../../actions/productActions"
+import { clearError, clearProductCloned, clearProductDeleted, clearProductArchive } from "../../slices/singleProductSlice"
 import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Pagination from 'react-js-pagination';
-import debounce from 'lodash.debounce'; // Install lodash.debounce if not already
 import SellerSidebar from "./SellerSidebar"
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort,  } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
-import avatar1 from '../../images/OIP.jpg';
+import { Dropdown, } from "react-bootstrap";
+
 
 export default function SellerProducts() {
-    // const { loading = true, productsCount } = useSelector(state => state.productsState)
-    const { loading = true, products = [], sellerProductCount, isProductDeleted, resPerPage, error } = useSelector(state => state.productState)
+
+  const { loading = true, products = [], sellerProductCount, isProductDeleted, resPerPage, isProductCreated, isProductUpdated, error } = useSelector(state => state.productState)
+  
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
-    const [filterVisible, setFilterVisible] = useState(false);
+
 
     const [currentPage, setCurrentPage] = useState(1);
 
     const dispatch = useDispatch();
-    const deleteHandler = (e, id) => {
-        e.target.disabled = true;
-        dispatch(deleteProduct(id))
-    }
 
+  const cloneHandler = (e, id) => {
+    e.target.disabled = true;
+    dispatch(cloneProduct(id))
+  }
+  const archiveHandler = (e, id) => {
+    e.target.disabled = true;
+    dispatch(addArchiveProduct(id))
+  }
     const setCurrentPageNo = (pageNo) => {
         setCurrentPage(pageNo);
     };
 
-    const debouncedSearch = debounce((term) => {
-        dispatch(getSellerProducts(term, filterStatus));
-    }, 300);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!searchKeyword.trim()) return; // Prevent empty searches
-
-        const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
-        dispatch(getSellerProducts({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
-    };
-    const handleFilterClick = () => {
-        setFilterVisible(!filterVisible);
-    };
     const handleFilterChange = (status) => {
         setFilterStatus(status);
-        setFilterVisible(false);
+ 
         dispatch(getSellerProducts(searchKeyword, status));
     };
-    useEffect(() => {
-        if (error) {
-            toast(error, {
-                type: 'error',
-                onOpen: () => { dispatch(clearError()) }
-            })
-            return
-        }
-        if (isProductDeleted) {
-            toast('Product Deleted Succesfully!', {
-                type: 'success',
-                onOpen: () => dispatch(clearProductDeleted())
-            })
-            return;
-        }
-        dispatch(getSellerProducts(searchKeyword, filterStatus, currentPage))
-    }, [dispatch, error, isProductDeleted, searchKeyword, filterStatus, currentPage])
+  useEffect(() => {
+    if (error) {
+      toast(error, {
+        type: 'error',
+        onOpen: () => { dispatch(clearError()) }
+      })
+      return
+    }
+    if (isProductDeleted) {
+      toast('Product Deleted Succesfully!', {
+        type: 'success',
+        onOpen: () => dispatch(clearProductDeleted())
+      })
+      return;
+    }
+    if (isProductCreated) {
+      toast.success('Product Cloned Successfully!', {
+        onOpen: () => dispatch(clearProductCloned())
+      })
+      return;
+    }
+    if (isProductUpdated) {
+      toast.success('Product Archived Successfully!', {
+        onOpen: () => dispatch(clearProductArchive())
+      })
+      return;
+    }
+    dispatch(getSellerProducts(searchKeyword, filterStatus, currentPage))
+  }, [dispatch, error, isProductDeleted, isProductUpdated, isProductCreated, searchKeyword, filterStatus, currentPage])
 
 
     // Drawer
@@ -102,7 +105,7 @@ export default function SellerProducts() {
               <Link to="/">
                 <div className="mobile-logo">
                   <img
-                    src={require('../../images/procure-g-logo.png')}
+                    src={require('../../images/procure-g-logo.png') } alt="glocre"
                   />
                 </div>
               </Link>
@@ -348,6 +351,8 @@ export default function SellerProducts() {
                         <th style={{ minWidth: '180px' }}>Date</th>
                         <th style={{ minWidth: '300px' }}>ID</th>
                         <th style={{ minWidth: '150px' }}>Update Product</th>
+                        <th style={{ minWidth: '150px' }}>Clone</th>
+                        <th style={{ minWidth: '150px' }}>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -357,6 +362,17 @@ export default function SellerProducts() {
                             <Loader />
                           </td>
                         </tr>
+                      ) : products.length === 0 ? (
+                        <div className="text-center py-5">
+                          <p style={{ color: "#8c8c8c", fontSize: "18px" }}>You have no products. Please create one.</p>
+                            <Link to="/seller/products/create">
+                              <button
+                                className="btn mt-3"
+                                style={{ backgroundColor: '#ffad63', color: '#fff' }}>
+                                Create Product
+                              </button>
+                          </Link>
+                        </div>
                       ) : (
                         products.map(product => (
                           <tr key={product._id}>
@@ -389,7 +405,7 @@ export default function SellerProducts() {
                             </td>
                             <td>
                               <span style={{ color: '#888888' }}>
-                                {product._id}
+                                {product.clocreProductId}
                               </span>
                             </td>
                             <td>
@@ -403,6 +419,12 @@ export default function SellerProducts() {
                               >
                                 <FontAwesomeIcon icon={faPencil} />
                               </Link>
+                            </td>
+                            <td>
+                              <button onClick={e => cloneHandler(e, product._id)}>Clone</button>
+                            </td>
+                            <td>
+                              <button className="m-3" onClick={e => archiveHandler(e, product._id)}>archive</button>
                             </td>
                           </tr>
                         ))

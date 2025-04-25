@@ -21,8 +21,7 @@ import UpdatePassword from "./components/user/UpdatePassword";
 import Cart from "./components/cart/Cart";
 import Shipping from "./components/cart/Shipping";
 import ConfirmOrder from "./components/cart/ConfirmOrder";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+
 import OrderSuccess from "./components/cart/OrderSuccess";
 import UserOrders from "./components/order/UserOrders";
 import OrderDetail from "./components/order/OrderDetail";
@@ -67,8 +66,10 @@ import SellerOrderDetail from "./components/seller/SellerOrderDetail";
 import SellerCreateProduct from "./components/seller/SellerCreateProduct";
 import SellerUpdateProduct from "./components/seller/SellerEditProduct";
 import AdminBannerPage from "./components/admin/EditBannerPage";
+import SellerArchiveProducts from './components/seller/SellerArciveProducts';
 import Faqs from "./components/layouts/faqs";
 import AnalyticsModal from './components/layouts/AnalyticsModal';
+import ResendVerification from "./components/user/ResendVerification";
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isRestrictedRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/seller");
@@ -124,6 +125,7 @@ const App = () => {
           <Route path="/maincategory/:maincategory" element={<ProductCategory />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/resend-verification" element={<ResendVerification />} />
           <Route path="/support" element={<Support />} />
           <Route path="/register" element={<Register />} />
           <Route path="/wishlist" element={<Wishlist />} />
@@ -169,6 +171,7 @@ const App = () => {
           <Route path="/seller/order/:id"  element={<ProtectedRoute isSeller={true}><SellerOrderDetail/></ProtectedRoute>} />
           <Route path="/seller/products/create"  element={<ProtectedRoute isSeller={true}><SellerCreateProduct /></ProtectedRoute>} />
           <Route path="/seller/product/:id" element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} />
+          <Route path='/seller/archive/product' element={<ProtectedRoute isSeller={true}><SellerArchiveProducts /></ProtectedRoute>} />
           {/* <Route path="/seller/product/:id" element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} /> */}
         </Routes>
       </AppLayout>

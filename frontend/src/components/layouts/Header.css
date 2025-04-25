@@ -23,7 +23,7 @@ header {
   padding: 10px 0px;
 }
 
-header .part1 .logo {
+.part1 .logo {
   width: 150px;
   height: auto !important;
 }
@@ -43,7 +43,7 @@ header .part1 .logo {
   /* Adjust icon size if necessary */
 }
 
-header .headerSearch {
+.headerSearch {
   width: 100%;
   height: 45px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -51,7 +51,7 @@ header .headerSearch {
   padding: 0px 20px;
 }
 
-header .headerSearch .selectDropWrapper {
+.headerSearch .selectDropWrapper {
   width: 30%;
   font-size: 16px;
   font-weight: 500;
@@ -63,7 +63,7 @@ header .headerSearch .selectDropWrapper {
   opacity: 0.7 !important;
 }
 
-header .headerSearch .selectDropWrapper:after {
+.headerSearch .selectDropWrapper:after {
   content: "";
   width: 1px;
   height: 30px;
@@ -73,12 +73,12 @@ header .headerSearch .selectDropWrapper:after {
   right: 0px;
 }
 
-header .headerSearch .search {
+.headerSearch .search {
   width: 100%;
   position: relative;
 }
 
-header .headerSearch .search input {
+.headerSearch .search input {
   width: 100%;
   height: 38px;
   border: 0px;
@@ -88,26 +88,26 @@ header .headerSearch .search input {
   color: rgba(0, 0, 0, 0.8);
 }
 
-header .headerSearch .search input:focus {
+.headerSearch .search input:focus {
   outline: none;
 }
 
-header .headerSearch .search input::-webkit-input-placeholder {
+.headerSearch .search input::-webkit-input-placeholder {
   color: rgba(0, 0, 0, 0.8);
 }
 
-header .headerSearch .search input::-moz-placeholder {
+.headerSearch .search input::-moz-placeholder {
   color: rgba(0, 0, 0, 0.8);
 }
 
-header .headerSearch .search .searchIcon {
+.headerSearch .search .searchIcon {
   position: absolute;
   right: 0px;
   font-size: 23px !important;
   color: rgba(0, 0, 0, 0.8);
 }
 
-header .headerSearch .search .searchIcon.loading_ {
+.headerSearch .search .searchIcon.loading_ {
   width: 25px !important;
   height: 25px !important;
 }
@@ -138,41 +138,41 @@ header .headerSearch .search .searchIcon.loading_ {
   color: #ffad63 !important;
 }
 
-header .headerTabs {
+.headerTabs {
   padding-left: 16px;
 }
 
-header .headerTabs li {
+.headerTabs li {
   position: relative;
   margin-left: 16px;
 }
 
-header .headerTabs li span {
+.headerTabs li span {
   font-size: 13px;
   cursor: pointer;
   text-decoration: none;
   color: rgba(0, 0, 0, 0.8);
 }
 
-header .headerTabs li span:hover {
+.headerTabs li span:hover {
   text-decoration: none;
 }
 
-header .headerTabs li span * {
+.headerTabs li span * {
   color: rgba(0, 0, 0, 0.8) !important;
 }
 
-header .headerTabs li span a:hover {
+.headerTabs li span a:hover {
   text-decoration: none;
 }
 
-header .headerTabs li span svg {
+.headerTabs li span svg {
   margin-right: 10px;
   width: 22px !important;
   height: auto !important;
 }
 
-header .headerTabs li span.badge {
+.headerTabs li span.badge {
   width: 20px;
   height: 20px;
   color: #000000 !important;
@@ -460,7 +460,7 @@ header .headerTabs li span.badge {
 }
 
 .item {
-  flex: 1 1 calc(16.66% - 16px);
+  flex: 1 1 calc(16.66% - 160px);
   /* Six items per row with 16px gap */
   box-sizing: border-box;
 }
@@ -513,9 +513,8 @@ header .headerTabs li span.badge {
 }
 
 .mobile-navbar-glc {
-
   background-color: #fff; /* or whatever you prefer */
-  padding: 10px 20px;
+  padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtle shadow */
 }
 
@@ -528,7 +527,7 @@ header .headerTabs li span.badge {
 
 
 /* Mobile , medium navbar */
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .headerWrapper {
     display: none;
   }
@@ -550,12 +549,12 @@ header .headerTabs li span.badge {
   }
   
   body {
-    padding-top: 70px; /* adjust based on navbar height */
+    padding-top: 130px; /* adjust based on navbar height */
   }
 
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1201px) {
   .mobile-navbar-glc {
     display: none;
   }
@@ -564,4 +563,12 @@ header .headerTabs li span.badge {
 
 
 
-
+/* Dropdown for signin */
+.dropdown-item-header{
+  padding: 10px;
+  cursor: pointer;
+}
+.dropdown-item-header:hover {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}

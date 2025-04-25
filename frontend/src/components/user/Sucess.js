@@ -27,7 +27,7 @@ const Sucess = () => {
       </div>
 
       <div className="empty d-flex align-items-center justify-content-center flex-column mt-5 mb-5">
-        <img src={mailsend} alt="image" width="350" className="mt-5" />
+        <img src={mailsend} alt="glocre" width="350" className="mt-5" />
         <br />
         <h3>Thankyou for Choosing GLOCRE </h3>
         <p>
@@ -35,7 +35,7 @@ const Sucess = () => {
           Check your inbox or junk folder for the verification link.
         </p>
         <br />
-        <Link to="/register">
+        <Link to="/resend-verification">
           <Button
             className="btn-g bg-g btn-lg btn-big btn-round"
             disabled={loading}

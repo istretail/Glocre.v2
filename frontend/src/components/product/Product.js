@@ -146,10 +146,10 @@ const openProductDetailPage = () => {
                     fontWeight: "bolder",
                     textTransform: "uppercase",
                   }}
-                  disabled={product.stock === 0}
+                  
                   onClick={openProductDetailPage}
                 >
-                  ADD TO CART
+                 View More details
                 </button>
               </div>
             </div>

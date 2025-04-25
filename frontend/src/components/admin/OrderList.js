@@ -9,12 +9,12 @@ import { clearError, clearOrderDeleted } from "../../slices/orderSlice"
 import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify'
 import Sidebar from "./Sidebar"
-import debounce from 'lodash.debounce'; // Install lodash.debounce if not already
+// import debounce from 'lodash.debounce'; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from 'react-js-pagination';
-import avatar1 from '../../images/OIP.jpg'
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+
+import { faCartShopping,  faFilter, faPencil, faSearch, faTrash,faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown,  } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 
 export default function OrderList() {
@@ -32,17 +32,17 @@ export default function OrderList() {
     const setCurrentPageNo = (pageNo) => {
         setCurrentPage(pageNo);
     };
-    const debouncedSearch = debounce((term) => {
-        dispatch(adminOrdersAction(term, statusFilter));
-    }, 300);
+    // const debouncedSearch = debounce((term) => {
+    //     dispatch(adminOrdersAction(term, statusFilter));
+    // }, 300);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!searchKeyword.trim()) return; // Prevent empty searches
+    // const handleSearch = (e) => {
+    //     e.preventDefault();
+    //     if (!searchKeyword.trim()) return; // Prevent empty searches
 
-        const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
-        dispatch(adminOrdersAction({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
-    };
+    //     const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
+    //     dispatch(adminOrdersAction({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
+    // };
     const handleFilterClick = () => {
         setFilterVisible(!filterVisible);
     };
@@ -102,7 +102,7 @@ export default function OrderList() {
                     <div className="col-12 col-lg-10 col-md-12 ">
 
                         <div className="mobile-logo">
-                                <img src={require("../../images/procure-g-logo.png")}/>
+                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
                         </div>
                         <div className="breadcrumbWrapperr">
 
@@ -170,9 +170,7 @@ export default function OrderList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
+                                   
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -209,9 +207,7 @@ export default function OrderList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-2 text-center">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
+                                   
                                 </div>
                             )}
                             {/* Drawer Component */}
@@ -237,121 +233,6 @@ export default function OrderList() {
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>ORDERS LIST</h3>
                         <p>Glocre</p>
 
-                        {/* OLD ORDERLIST */}
-                        {/* <div className="reviewlist-list-filter-procureg">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <Dropdown className="d-inline text-dark">
-                                <Dropdown.Toggle
-                                    variant="default text-white"
-                                    id="dropdown-basic"
-                                    className="text-dark dropdown1 icon-list-filter-procureg"
-                                    style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
-                                >
-                                    <FontAwesomeIcon icon={faFilter} className="" />
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => handleFilterChange("Processing")}>Processing</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleFilterChange("Shipped")}>Shipped</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleFilterChange("Delivered")}>Delivered</Dropdown.Item>
-                                    <Dropdown.Item onClick={() => handleFilterChange("")}>All</Dropdown.Item>
-                                </Dropdown.Menu>
-
-                            </Dropdown>
-                        </div>
-                        <div className="topnav col-lg-6">
-                            <div className="search-container">
-                                <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
-                                    <input
-                                        type="text"
-                                        placeholder="Search"
-                                        value={searchKeyword}
-                                        onChange={(e) => setSearchKeyword(e.target.value)}
-                                        name="search"
-                                    />
-                                    <button type="submit">
-                                        <FontAwesomeIcon icon={faSearch} />
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-
-                        {/* <section className="orderlist-section-procureg mt-2">
-
-                    <div className="orderlist-main-heading">
-                        <div className="row">
-                            <div className="col-lg-2">
-                                <h6>
-                                    ORDER ID
-                                </h6>
-                            </div>
-                            <div className="col-lg-2">
-                                <h6>
-                                    STATUS
-                                </h6>
-                            </div>
-                            <div className="col-lg-2">
-                                <h6>
-                                    NUMBER OF ITEMS
-                                </h6>
-                            </div>
-                            <div className="col-lg-2">
-                                <h6>
-                                    PRICE
-                                </h6>
-                            </div>
-                            <div className="col-lg-2">
-                                <h6>
-                                    DATE
-                                </h6>
-                            </div>
-                            <div className="col-lg-2">
-                                <h6>
-                                    ACTION
-                                </h6>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr />
-                    {loading ? (
-                        <Loader />
-                    ) : (
-                        adminOrders.map((adminOrder) => (
-                            <div className="orderlist-main-contents mb-1">
-                                <div className="row">
-                                    <div className="col-lg-2">
-                                        <p>{adminOrder._id}</p>
-                                    </div>
-                                    <div className="col-lg-2">
-                                        <p style={{ color: adminOrder.orderStatus.includes('Processing') ? 'red' : 'green' }}>{adminOrder.orderStatus}</p>
-                                    </div>
-                                    <div className="col-lg-2">
-                                        <p>{adminOrder.orderItems.length}</p>
-                                    </div>
-                                    <div className="col-lg-2">
-                                        <p>₹{adminOrder.totalPrice}</p>
-                                    </div>
-                                    <div className="col-lg-2">
-                                        <p>{new Date(adminOrder.createdAt).toLocaleDateString()}</p>
-                                    </div>
-                                    <div className="col-lg-2">
-
-                                        <Link to={`/admin/order/${adminOrder._id}`} className="btn btn-primary"> <i className="fa fa-pencil"></i></Link>
-                                        <Button onClick={e => deleteHandler(e, adminOrder._id)} className="btn btn-danger py-1 px-2 ml-2">
-                                            <i className="fa fa-trash"></i>
-                                        </Button>
-
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </section> */}
-
 
                         <div className="cartWrapper pr-3 mt-4">
                             <div className="table-responsive" style={{ overflowX: "auto" }}>
@@ -370,7 +251,12 @@ export default function OrderList() {
                                     <tbody >
                                         {loading ? (
                                             <Loader />
-                                        ) : (
+                                        ) : adminOrders.length === 0 ? (
+                                            <div className="text-center py-5">
+                                                <p style={{ color: "#8c8c8c", fontSize: "18px" }}>We have no Orders.</p>
+                                                
+                                            </div>
+                                        ) :(
                                             adminOrders.map((adminOrder) => (
                                                 <tr colSpan="6">
                                                     <td>

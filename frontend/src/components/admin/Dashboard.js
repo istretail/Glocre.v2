@@ -7,9 +7,9 @@ import { getUsers } from '../../actions/userActions'
 import { adminOrders as adminOrdersAction } from '../../actions/orderActions'
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
-import avatar1 from '../../images/OIP.jpg'
+import { faCartShopping,  faMoneyBillTrendUp,  faUser, faFilter, faPencil, faSearch, faDashboard, faList,  faShoppingBag, faSort, faUserPlus,} from "@fortawesome/free-solid-svg-icons";
+import { Dropdown, } from "react-bootstrap";
+
 import Drawer from '@mui/material/Drawer';
 import React from "react";
 import { useState } from "react";
@@ -19,7 +19,7 @@ import { useState } from "react";
 export default function Dashboard() {
     const { products = [], productsCount } = useSelector(state => state.productsState);
     const { adminOrders = [], orderCount, totalPrice } = useSelector(state => state.orderState);
-    const { users = [], userConut } = useSelector(state => state.userState);
+    const {  userConut } = useSelector(state => state.userState);
     const dispatch = useDispatch();
     let outOfStock = 0;
     if (products.length > 0) {

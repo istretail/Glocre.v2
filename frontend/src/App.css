@@ -17163,7 +17163,7 @@ nav .dropdown_menu li {
 
 .nav nav .dropdown_menu li button {
   color: #ffad63 !important;
-  font-size: 13px !important;
+  font-size: 10px !important;
   justify-content: flex-start !important;
   padding: 6px 18px !important;
   text-align: left !important;
@@ -17174,9 +17174,9 @@ nav .dropdown_menu li {
 .nav nav .dropdown_menu li button a {
   color: rgba(0, 0, 0, 0.8) !important;
   display: block;
-  font-size: 13px !important;
+  font-size: 10px !important;
   font-weight: 500 !important;
-  padding: 0 !important;
+  padding: 0 !important;  
   width: 100%;
 }
 

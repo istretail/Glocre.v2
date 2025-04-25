@@ -37,15 +37,10 @@ export default function Login() {
     }
 
     if (error) {
-      toast(error, {
-        type: 'error',
-        onOpen: () => {
-          dispatch(clearAuthError);
-        },
-      });
-      return;
+          setTimeout(() => dispatch(clearAuthError()), 1000);
     }
   }, [error, isAuthenticated, dispatch, navigate, redirect]);
+
 
   return (
     <>
@@ -135,6 +130,13 @@ export default function Login() {
                 <b>
                   {' '}
                   <Link to="/register">Sign Up</Link>
+                </b>
+              </p>
+              <p className="text-center">
+               Need to Verify your email?
+                <b>
+                  {' '}
+                  <Link to="/resend-verification">Verify Email</Link>
                 </b>
               </p>
             </form>

@@ -1,5 +1,5 @@
 const Banner = require("../models/bannerModel");
-
+const s3 = require('../config/s3');
 exports.uploadBannerImage = async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
@@ -72,3 +72,40 @@ exports.deleteBannerImage = async (req, res) => {
         });
     }
 };
+
+// exports.getAllImages = async (req, res) => {
+//     const bucketName = 'glocreawsimagebucket';
+
+//     const params = {
+//         Bucket: bucketName,
+//         // If you saved uploads inside a folder, add Prefix here
+//         // Prefix: "uploads/"
+//     };
+
+//     try {
+//         const data = await s3.listObjectsV2(params).promise();
+
+//         // Filter only image files (jpg, png, etc.)
+//         const imageUrls = data.Contents
+//             .filter(item =>
+//                 item.Key.match(/\.(jpg|jpeg|png|webp|gif)$/i)
+//             )
+//             .map(item => ({
+//                 key: item.Key,
+//                 url: `https://${bucketName}.s3.eu-north-1.amazonaws.com/${item.Key}`,
+//             }));
+
+//         res.status(200).json({
+//             success: true,
+//             count: imageUrls.length,
+//             images: imageUrls,
+//         });
+//     } catch (error) {
+//         console.error('S3 List Error:', error);
+//         res.status(500).json({
+//             success: false,
+//             message: 'Unable to retrieve images',
+//             error: error.message,
+//         });
+//     }
+// };

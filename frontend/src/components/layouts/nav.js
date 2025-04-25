@@ -70,7 +70,7 @@ export default function Nav() {
                 ).slice(0, 7).map((catItem, i) => (
                   <li className="list-inline-item sec-nav-pro dropdown-hover" key={i}>
                     {catItem.category}
-                    <ul className="sub-dropdown">
+                    <ul className="dropdown_menu mt-1">
                       {catItem.subcategories.map((sub, j) => (
                         <li
                           key={j}
@@ -93,7 +93,7 @@ export default function Nav() {
             </nav>
           </div>
 
-          <div className="col-sm-2 part3 d-flex align-items-center">
+          {/* <div className="col-sm-2 part3 d-flex align-items-center">
             <div className="phNo d-flex align-items-center ml-auto">
               <span>
                 <HeadphonesOutlinedIcon />
@@ -104,7 +104,7 @@ export default function Nav() {
                 </Link>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

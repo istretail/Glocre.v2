@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react"
 import './productlist.css'
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { deleteProduct, getAdminProducts } from "../../actions/productActions"
+import { getAdminProducts } from "../../actions/productActions"
 import { clearError, clearProductDeleted } from "../../slices/singleProductSlice"
 import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify'
@@ -10,15 +10,8 @@ import Sidebar from "./Sidebar"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Dropdown } from "react-bootstrap";
 import Pagination from 'react-js-pagination';
-import debounce from 'lodash.debounce'; // Install lodash.debounce if not already
-import avatar1 from '../../images/OIP.jpg'
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+
+import { faCartShopping,  faFilter, faPencil, faSearch,   faDashboard, faList,  faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 
 export default function ProductList() {
@@ -29,32 +22,32 @@ export default function ProductList() {
     const [filterVisible, setFilterVisible] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [limit, setLimit] = useState(10);
+    // const [limit, setLimit] = useState(10);
 
     const dispatch = useDispatch();
-    const deleteHandler = (e, id) => {
-        e.target.disabled = true;
-        dispatch(deleteProduct(id))
-    }
+    // const deleteHandler = (e, id) => {
+    //     e.target.disabled = true;
+    //     dispatch(deleteProduct(id))
+    // }
 
     const setCurrentPageNo = (pageNo) => {
         setCurrentPage(pageNo);
     };
 
-    const debouncedSearch = debounce((term) => {
-        dispatch(getAdminProducts(term, filterStatus));
-    }, 300);
+    // const debouncedSearch = debounce((term) => {
+    //     dispatch(getAdminProducts(term, filterStatus));
+    // }, 300);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!clocreProductId.trim()) return; // Prevent empty searches
+    // const handleSearch = (e) => {
+    //     e.preventDefault();
+    //     if (!clocreProductId.trim()) return; // Prevent empty searches
 
-        const isObjectId = /^[a-f\d]{24}$/i.test(clocreProductId.trim()); // Check for ObjectId format
-        dispatch(getAdminProducts({ keyword: clocreProductId.trim(), idSearch: isObjectId }));
-    };
-    const handleFilterClick = () => {
-        setFilterVisible(!filterVisible);
-    };
+    //     const isObjectId = /^[a-f\d]{24}$/i.test(clocreProductId.trim()); // Check for ObjectId format
+    //     dispatch(getAdminProducts({ keyword: clocreProductId.trim(), idSearch: isObjectId }));
+    // };
+    // const handleFilterClick = () => {
+    //     setFilterVisible(!filterVisible);
+    // };
     const handleFilterChange = (status) => {
         setFilterStatus(status);
         setFilterVisible(false);
@@ -106,7 +99,7 @@ export default function ProductList() {
                     </div>
                     <div className="col-12 col-lg-10 col-md-12 ">
                         <div className="mobile-logo">
-                                 <img src={require("../../images/procure-g-logo.png")}/>
+                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
                         </div>
                         <div className="breadcrumbWrapperr">
 
@@ -179,9 +172,7 @@ export default function ProductList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
+                             
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -221,9 +212,7 @@ export default function ProductList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-2 text-center">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
+                                
                                 </div>
                             )}
                             {/* Drawer Component */}
@@ -268,7 +257,18 @@ export default function ProductList() {
                                         <tbody >
                                             {loading ? (
                                                 <Loader colSpan="6" />
-                                            ) : (
+                                            ) : products.length === 0 ? (
+                                                <div className="text-center py-5">
+                                                    <p style={{ color: "#8c8c8c", fontSize: "18px" }}>You have no products. Please create one.</p>
+                                                        <Link to="/admin/products/create">
+                                                            <button 
+                                                            className="btn mt-3"
+                                                            style={{ backgroundColor: '#ffad63', color: '#fff' }}>
+                                                            Create Product
+                                                        </button>
+                                                    </Link>
+                                                </div>
+                                            ):(
                                                 products.map((product) => (
                                                     <>
                                                         <tr  key={product._id}>

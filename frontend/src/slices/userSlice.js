@@ -241,6 +241,26 @@ const userSlice = createSlice({
         error: action.payload,
       };
     },
+    resendVerificationRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    resendVerificationSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message,
+      };
+    },
+    resendVerificationFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -279,7 +299,10 @@ export const {
   verifyAddressOtpFail,
   contactFormRequest,
   contactFormSuccess,
-  contactFormFail
+  contactFormFail,
+  resendVerificationRequest,
+  resendVerificationSuccess,
+  resendVerificationFail,
 } = actions;
 
 export default reducer;

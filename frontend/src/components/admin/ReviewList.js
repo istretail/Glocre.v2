@@ -4,15 +4,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { deleteReview, getReviews } from "../../actions/productActions"
 import { clearError, clearReviewDeleted } from "../../slices/singleProductSlice"
 import Loader from '../layouts/Loader';
-import { MDBDataTable } from 'mdbreact';
+
 import { toast } from 'react-toastify'
 import Sidebar from "./Sidebar"
 import './reviewlist.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "react-router-dom"
-import avatar1 from '../../images/OIP.jpg'
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 
 export default function ReviewList() {
@@ -27,10 +26,10 @@ export default function ReviewList() {
         dispatch(deleteReview(productId, id))
     }
 
-    const submitHandler = (e) => {
-        e.preventDefault();
-        dispatch(getReviews(productId))
-    }
+    // const submitHandler = (e) => {
+    //     e.preventDefault();
+    //     dispatch(getReviews(productId))
+    // }
 
     useEffect(() => {
         if (error) {
@@ -83,7 +82,7 @@ export default function ReviewList() {
                     </div>
                     <div className="col-12 col-lg-10 col-md-12 ">
                         <div className="mobile-logo">
-                          <img src={require("../../images/procure-g-logo.png")}/>
+                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
                         </div>
                         <div className="breadcrumbWrapperr">
 
@@ -223,6 +222,11 @@ export default function ReviewList() {
                                         <tbody >
                                             {loading ? (
                                                 <Loader />
+                                            ) : reviews.length === 0 ? (
+                                                <div className="text-center py-5">
+                                                    <p style={{ color: "#8c8c8c", fontSize: "18px" }}>Please serach the product ID. to get a reviews of the product.</p>
+                                                   
+                                                </div>
                                             ) : (
                                                 reviews.map((review) => (
                                                     <tr>

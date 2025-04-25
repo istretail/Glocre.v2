@@ -71,6 +71,9 @@ import {
   contactFormRequest,
   contactFormSuccess,
   contactFormFail,
+  resendVerificationRequest,
+  resendVerificationSuccess,
+  resendVerificationFail,
 } from "../slices/userSlice";
 import {
   addWishlistRequest,
@@ -93,13 +96,15 @@ export const login = (email, password) => async (dispatch) => {
     dispatch(loginSuccess(data));
   } catch (error) {
     dispatch(loginFail(error.response.data.message));
+    toast(error.response.data.message);
   }
 };
 export const clearAuthError = () => {
   return (dispatch) => {
-    dispatch(clearError);
+    dispatch({ type: 'clearError' });
   };
 };
+
 
 export const register = (userData) => async (dispatch) => {
   try {
@@ -447,5 +452,15 @@ export const submitContactForm = (formData) => async (dispatch) => {
     toast.success("Form submitted successfully! We’ll contact you soon.");
   } catch (error) {
     dispatch(contactFormFail(error.response.data.message));
+  }
+};
+export const resendVerification = (email) => async (dispatch) => {
+  try {
+    dispatch(resendVerificationRequest());
+    const response = await axios.post("/api/v1/resend-verification", { email });
+    dispatch(resendVerificationSuccess(response.data));
+    toast.success(response.data.message);
+  } catch (error) {
+    dispatch(resendVerificationFail(error.response.data.message));
   }
 };

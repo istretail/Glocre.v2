@@ -96,6 +96,29 @@ const productsSlice = createSlice({
         error: null,
       };
     },
+    getArchiveProductsRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+
+      }
+    },
+    getArchiveProductsScuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        products: action.payload.products,
+        productsCount: action.payload.totalProductsCount,
+        resperPage: action.payload.resperPage
+      }
+    },
+    getArchiveProductsFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+    },
   },
 });
 
@@ -111,6 +134,9 @@ export const {
   getCategoriesSuccess,
   getCategoriesRequest,
   getCategoriesFail,
+  getArchiveProductsRequest,
+  getArchiveProductsScuccess,
+  getArchiveProductsFail,
 } = actions;
 
 export default reducer;

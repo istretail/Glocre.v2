@@ -7,12 +7,13 @@ import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
 import './newproduct.css'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping,  faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Loader from "../layouts/Loader";
 
 const NewProduct = () => {
     const [formData, setFormData] = useState({
@@ -259,6 +260,7 @@ const NewProduct = () => {
 
     return (
         <>
+            
             <section className="newprod-section">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">
@@ -267,7 +269,7 @@ const NewProduct = () => {
                     <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
 
                         <div className="mobile-logo">
-                            <img src={require("../../images/procure-g-logo.png")} />
+                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
                         </div>
 
                         <div className="breadcrumbWrapperr">
@@ -384,353 +386,504 @@ const NewProduct = () => {
 
 
                         <h3 style={{ color: "#ffad63", marginTop: "40px" }}>CREATE NEW PRODUCT</h3>
-
-                        <Fragment>
-                            <form onSubmit={handleSubmit}>
-                                <div className="row">
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Product Name:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="name"
-                                                value={formData.name}
-                                                onChange={handleChange}
-                                                maxlength="80"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Description:<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="Describe what the product is, what it does, and who it's for." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip></span></label>
-                                            <textarea
-                                                className="form-control"
-                                                name="description"
-                                                value={formData.description}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* MAIN CATEGORY */}
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <div className="custom-select-wrapper">
-
-                                                <label>Main Category:<span style={{ color: "red" }}> *
-                                                    <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
-                                                        <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip>
-                                                </span></label>
-                                                <select
-                                                    className="form-control custom-select"
-                                                    name="maincategory"
-                                                    value={formData.maincategory}
-                                                    onChange={(e) => {
-                                                        const value = e.target.value;
-                                                        setSelectedMainCategory(value);
-                                                        setSelectedCategory(""); // Reset category and subcategory when main changes
-                                                        handleChange(e);
-                                                    }}
-                                                    required
-                                                >
-                                                    <option value="">Select Main Category</option>
-                                                    {Object.keys(categories)?.map((mainCat) => (
-                                                        <option key={mainCat} value={mainCat}>{mainCat}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* CATEGORY */}
-                                    {selectedMainCategory && (
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <div className="custom-select-wrapper">
-                                                    <label>Category:<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip>
-                                                    </span></label>
-                                                    <select
-                                                        className="form-control custom-select"
-                                                        name="category"
-                                                        value={formData.category}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value;
-                                                            setSelectedCategory(value);
-                                                            handleChange(e);
-                                                        }}
-                                                        required
-                                                    >
-                                                        <option value="">Select Category</option>
-                                                        {Object.keys(categories[selectedMainCategory] || {}).map((cat) => (
-                                                            <option key={cat} value={cat}>{cat}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* SUBCATEGORY */}
-                                    {selectedCategory && (
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <div className="custom-select-wrapper">
-                                                    <label>Sub category:<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip></span></label>
-                                                    <select
-                                                        className="form-control custom-select"
-                                                        name="subcategory"
-                                                        value={formData.subcategory}
-                                                        onChange={handleChange}
-                                                        required
-                                                    >
-                                                        <option value="">Select Subcategory</option>
-                                                        {(categories[selectedMainCategory]?.[selectedCategory] || []).map((sub) => (
-                                                            <option key={sub} value={sub}>{sub}</option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {formData.maincategory === "Food and Beverage Products" && (
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label>FSSAI Number:<span style={{ color: "red" }}> *
-                                                    <LightTooltip placement="top" title="Enter your FSSAI license number, required for food products in India." arrow>
-                                                        <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip></span></label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="fssai"
-                                                    value={formData.fssai.to}
-                                                    onChange={handleChange}
-                                                    maxLength={14}
-                                                    required
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Brand:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="brand"
-                                                value={formData.brand}
-                                                onChange={handleChange}
-                                                required
-
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12">
-                                        <div className="form-group">
-                                            <div className="custom-select-wrapper">
-                                                <label>Condition:<span style={{ color: "red" }}> *
-                                                    <LightTooltip placement="top" title="Specify if the product is new, used, or refurbished." arrow>
-                                                        <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip></span></label>
-                                                <select
-                                                    className="form-control custom-select"
-                                                    name="condition"
-                                                    value={formData.condition}
-                                                    onChange={handleChange}
-                                                    required
-                                                >
-                                                    <option value="">Select Condition<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip></span></option>
-                                                    <option value="New">New</option>
-                                                    <option value="Unboxed">Unboxed</option>
-                                                    <option value="Refurbished">Refurbished</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12">
-                                        <div className="form-group">
-                                            <label>Key Points:<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="Highlight key features or selling points of the product." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip></span></label>
-                                            {formData.keyPoints.map((point, index) => (
-
-                                                <div key={index} className="d-flex mb-2">
-
+                        {
+                            loading ? (<Loader />) : (
+                                <Fragment>
+                                    <form onSubmit={handleSubmit}>
+                                        <div className="row">
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Product Name:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="text"
-                                                        className="form-control me-2"
-                                                        value={point}
-                                                        onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                                                        className="form-control"
+                                                        name="name"
+                                                        value={formData.name}
+                                                        onChange={handleChange}
+                                                        maxlength="80"
                                                         required
                                                     />
-                                                    {formData.keyPoints.length > 3 && (
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Description:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Describe what the product is, what it does, and who it's for." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip></span></label>
+                                                    <textarea
+                                                        className="form-control"
+                                                        name="description"
+                                                        value={formData.description}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* MAIN CATEGORY */}
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <div className="custom-select-wrapper">
+
+                                                        <label>Main Category:<span style={{ color: "red" }}> *
+                                                            <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip>
+                                                        </span></label>
+                                                        <select
+                                                            className="form-control custom-select"
+                                                            name="maincategory"
+                                                            value={formData.maincategory}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                setSelectedMainCategory(value);
+                                                                setSelectedCategory(""); // Reset category and subcategory when main changes
+                                                                handleChange(e);
+                                                            }}
+                                                            required
+                                                        >
+                                                            <option value="">Select Main Category</option>
+                                                            {Object.keys(categories)?.map((mainCat) => (
+                                                                <option key={mainCat} value={mainCat}>{mainCat}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* CATEGORY */}
+                                            {selectedMainCategory && (
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <div className="custom-select-wrapper">
+                                                            <label>Category:<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip>
+                                                            </span></label>
+                                                            <select
+                                                                className="form-control custom-select"
+                                                                name="category"
+                                                                value={formData.category}
+                                                                onChange={(e) => {
+                                                                    const value = e.target.value;
+                                                                    setSelectedCategory(value);
+                                                                    handleChange(e);
+                                                                }}
+                                                                required
+                                                            >
+                                                                <option value="">Select Category</option>
+                                                                {Object.keys(categories[selectedMainCategory] || {}).map((cat) => (
+                                                                    <option key={cat} value={cat}>{cat}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* SUBCATEGORY */}
+                                            {selectedCategory && (
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <div className="custom-select-wrapper">
+                                                            <label>Sub category:<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="Select the most appropriate category for your product." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip></span></label>
+                                                            <select
+                                                                className="form-control custom-select"
+                                                                name="subcategory"
+                                                                value={formData.subcategory}
+                                                                onChange={handleChange}
+                                                                required
+                                                            >
+                                                                <option value="">Select Subcategory</option>
+                                                                {(categories[selectedMainCategory]?.[selectedCategory] || []).map((sub) => (
+                                                                    <option key={sub} value={sub}>{sub}</option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {formData.maincategory === "Food and Beverage Products" && (
+                                                <div className="col-lg-6">
+                                                    <div className="form-group">
+                                                        <label>FSSAI Number:<span style={{ color: "red" }}> *
+                                                            <LightTooltip placement="top" title="Enter your FSSAI license number, required for food products in India." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip></span></label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            name="fssai"
+                                                            value={formData.fssai.to}
+                                                            onChange={handleChange}
+                                                            maxLength={14}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Brand:<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="brand"
+                                                        value={formData.brand}
+                                                        onChange={handleChange}
+                                                        required
+
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-12">
+                                                <div className="form-group">
+                                                    <div className="custom-select-wrapper">
+                                                        <label>Condition:<span style={{ color: "red" }}> *
+                                                            <LightTooltip placement="top" title="Specify if the product is new, used, or refurbished." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip></span></label>
+                                                        <select
+                                                            className="form-control custom-select"
+                                                            name="condition"
+                                                            value={formData.condition}
+                                                            onChange={handleChange}
+                                                            required
+                                                        >
+                                                            <option value="">Select Condition<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip></span></option>
+                                                            <option value="New">New</option>
+                                                            <option value="Unboxed">Unboxed</option>
+                                                            <option value="Refurbished">Refurbished</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-12">
+                                                <div className="form-group">
+                                                    <label>Key Points:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Highlight key features or selling points of the product." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip></span></label>
+                                                    {formData.keyPoints.map((point, index) => (
+
+                                                        <div key={index} className="d-flex mb-2">
+
+                                                            <input
+                                                                type="text"
+                                                                className="form-control me-2"
+                                                                value={point}
+                                                                onChange={(e) => handleKeyPointsChange(index, e.target.value)}
+                                                                required
+                                                            />
+                                                            {formData.keyPoints.length > 3 && (
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-danger"
+                                                                    onClick={() => handleRemoveKeyPoint(index)}
+                                                                >
+                                                                    &times;
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    ))}
+
+                                                    {formData.keyPoints.length < 5 && (
                                                         <button
                                                             type="button"
-                                                            className="btn btn-danger"
-                                                            onClick={() => handleRemoveKeyPoint(index)}
+                                                            className="btn btn-primary"
+                                                            onClick={handleAddKeyPoint}
                                                         >
-                                                            &times;
+                                                            Add Key Point
                                                         </button>
                                                     )}
                                                 </div>
-                                            ))}
-
-                                            {formData.keyPoints.length < 5 && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary"
-                                                    onClick={handleAddKeyPoint}
-                                                >
-                                                    Add Key Point
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12">
-                                        <div className="form-group">
-                                            <div className="custom-select-wrapper">
-                                                <label>Does this product have variants?
-                                                    <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
-                                                        <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip>
-                                                </label>
-                                                <select
-                                                    className="form-control custom-select"
-                                                    value={hasVariants}
-                                                    onChange={e => setHasVariants(e.target.value === 'true')}
-                                                    required
-                                                >
-                                                    <option value="false">No</option>
-                                                    <option value="true">Yes</option>
-                                                </select>
                                             </div>
-                                        </div>
-                                        {hasVariants && (
-                                            <>
+
+                                            <div className="col-12">
                                                 <div className="form-group">
-                                                    <label>What is the variant type?<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip></span></label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        value={variantType}
-                                                        onChange={e => setVariantType(e.target.value)}
-                                                        placeholder="e.g., color, size"
-                                                        required
-                                                    />
+                                                    <div className="custom-select-wrapper">
+                                                        <label>Does this product have variants?
+                                                            <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip>
+                                                        </label>
+                                                        <select
+                                                            className="form-control custom-select"
+                                                            value={hasVariants}
+                                                            onChange={e => setHasVariants(e.target.value === 'true')}
+                                                            required
+                                                        >
+                                                            <option value="false">No</option>
+                                                            <option value="true">Yes</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                                <div className="form-group">
-                                                    <label>How many variants?<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip></span></label>
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        value={variantCount}
-                                                        onChange={e => {
-                                                            const count = Number(e.target.value); // Ensure it's a number
-                                                            setVariantCount(count);
-                                                            setVariantDetails(
-                                                                Array.from({ length: count }, () => ({
-                                                                    variantType: variantType,
-                                                                    variantName: '',
-                                                                    price: '',
-                                                                    offPrice: '',
-                                                                    stock: '',
-                                                                    images: [],
-                                                                }))
-                                                            );
-                                                        }}
-                                                        required
-                                                    />
-                                                </div>
-                                                {variantDetails.map((variant, index) => (
-                                                    <div key={index} className="variant-section">
-                                                        <h4>Variant {index + 1}</h4>
+                                                {hasVariants && (
+                                                    <>
                                                         <div className="form-group">
-                                                            <label>
-                                                                {variantType.charAt(0).toUpperCase() +
-                                                                    variantType.slice(1)}
-                                                                :
-                                                            </label>
+                                                            <label>What is the variant type?<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip></span></label>
                                                             <input
                                                                 type="text"
                                                                 className="form-control"
-                                                                value={variant.variantName}
-                                                                onChange={e =>
-                                                                    handleVariantChange(
-                                                                        index,
-                                                                        'variantName',
-                                                                        e.target.value
-                                                                    )
-                                                                }
+                                                                value={variantType}
+                                                                onChange={e => setVariantType(e.target.value)}
+                                                                placeholder="e.g., color, size"
                                                                 required
                                                             />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label>Price:<span style={{ color: "red" }}> *</span></label>
+                                                            <label>How many variants?<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip></span></label>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
-                                                                value={variant.price}
-                                                                onChange={e =>
-                                                                    handleVariantChange(
-                                                                        index,
-                                                                        'price',
-                                                                        e.target.value
-                                                                    )
-                                                                }
+                                                                value={variantCount}
+                                                                onChange={e => {
+                                                                    const count = Number(e.target.value); // Ensure it's a number
+                                                                    setVariantCount(count);
+                                                                    setVariantDetails(
+                                                                        Array.from({ length: count }, () => ({
+                                                                            variantType: variantType,
+                                                                            variantName: '',
+                                                                            price: '',
+                                                                            offPrice: '',
+                                                                            stock: '',
+                                                                            images: [],
+                                                                        }))
+                                                                    );
+                                                                }}
                                                                 required
                                                             />
                                                         </div>
+                                                        {variantDetails.map((variant, index) => (
+                                                            <div key={index} className="variant-section">
+                                                                <h4>Variant {index + 1}</h4>
+                                                                <div className="form-group">
+                                                                    <label>
+                                                                        {variantType.charAt(0).toUpperCase() +
+                                                                            variantType.slice(1)}
+                                                                        :
+                                                                    </label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        value={variant.variantName}
+                                                                        onChange={e =>
+                                                                            handleVariantChange(
+                                                                                index,
+                                                                                'variantName',
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="form-group">
+                                                                    <label>Price:<span style={{ color: "red" }}> *</span></label>
+                                                                    <input
+                                                                        type="number"
+                                                                        className="form-control"
+                                                                        value={variant.price}
+                                                                        onChange={e =>
+                                                                            handleVariantChange(
+                                                                                index,
+                                                                                'price',
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="form-group">
+                                                                    <label>Offer Price:<span style={{ color: "red" }}> *
+                                                                        <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                                        </LightTooltip>
+                                                                    </span></label>
+                                                                    <input
+                                                                        type="number"
+                                                                        className="form-control"
+                                                                        value={variant.offPrice}
+                                                                        onChange={e =>
+                                                                            handleVariantChange(
+                                                                                index,
+                                                                                'offPrice',
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="form-group">
+                                                                    <label>Stock:<span style={{ color: "red" }}> *
+                                                                        <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                                        </LightTooltip>
+                                                                    </span></label>
+                                                                    <input
+                                                                        type="number"
+                                                                        className="form-control"
+                                                                        value={variant.stock}
+                                                                        onChange={e =>
+                                                                            handleVariantChange(
+                                                                                index,
+                                                                                'stock',
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                        required
+                                                                    />
+                                                                </div>
+                                                                <div className="form-group">
+                                                                    <label>Images:<span style={{ color: "red" }}> *
+                                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                                        </LightTooltip>
+                                                                    </span></label>
+                                                                    <input
+                                                                        type="file"
+                                                                        className="form-control"
+                                                                        multiple
+                                                                        accept="image/*"
+                                                                        onChange={e => handleImageChange(index, e)}
+                                                                    />
+                                                                    {imageErrors.length > 0 && (
+                                                                        <div className="alert alert-danger mt-2">
+                                                                            {imageErrors.map((error, index) => (
+                                                                                <p key={index}>{error}</p>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+                                                                    <div className="mt-2">
+                                                                        {variant.images.map((image, imageIndex) => (
+                                                                            <div
+                                                                                key={imageIndex}
+                                                                                className="d-inline-block position-relative mr-2"
+                                                                            >
+                                                                                <img
+                                                                                    src={URL.createObjectURL(image)}
+                                                                                    alt={`Preview ${imageIndex}`}
+                                                                                    className="img-thumbnail"
+                                                                                    width="100"
+                                                                                />
+                                                                                <button
+                                                                                    type="button"
+                                                                                    className="btn btn-danger btn-sm position-absolute top-0 right-0"
+                                                                                    onClick={() =>
+                                                                                        handleRemoveImage(index, imageIndex)
+                                                                                    }
+                                                                                >
+                                                                                    &times;
+                                                                                </button>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                )}
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Tax:(GST in %)<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="tax"
+                                                        value={formData.tax}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <div className="custom-select-wrapper">
+                                                        <label>Is Refundable:<span style={{ color: "red" }}> *
+                                                            <LightTooltip placement="top" title="Select whether this product can be refunded after purchase." arrow>
+                                                                <ErrorOutlineIcon className="errorout-icon" />
+                                                            </LightTooltip>
+                                                        </span></label>
+                                                        <select
+                                                            className="form-control custom-select"
+                                                            name="isRefundable"
+                                                            value={formData.isRefundable}
+                                                            onChange={handleChange}
+                                                            required
+                                                        >
+                                                            <option value="false">No</option>
+                                                            <option value="true">Yes</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {!hasVariants && (
+                                                <>
+                                                    <div className="col-lg-6">
                                                         <div className="form-group">
-                                                            <label>Offer Price:<span style={{ color: "red" }}> *
-                                                                <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                                                            <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
-                                                                value={variant.offPrice}
-                                                                onChange={e =>
-                                                                    handleVariantChange(
-                                                                        index,
-                                                                        'offPrice',
-                                                                        e.target.value
-                                                                    )
-                                                                }
+                                                                name="price"
+                                                                value={formData.price}
+                                                                onChange={handleChange}
                                                                 required
                                                             />
                                                         </div>
+                                                    </div>
+
+                                                    <div className="col-lg-6">
                                                         <div className="form-group">
-                                                            <label>Stock:<span style={{ color: "red" }}> *
+                                                            <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip>
+                                                            </span></label>
+                                                            <input
+                                                                type="number"
+                                                                className="form-control"
+                                                                name="offPrice"
+                                                                value={formData.offPrice}
+                                                                onChange={handleChange}
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="col-lg-6">
+                                                        <div className="form-group">
+                                                            <label>No Of Stock:<span style={{ color: "red" }}> *
                                                                 <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
@@ -738,19 +891,17 @@ const NewProduct = () => {
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
-                                                                value={variant.stock}
-                                                                onChange={e =>
-                                                                    handleVariantChange(
-                                                                        index,
-                                                                        'stock',
-                                                                        e.target.value
-                                                                    )
-                                                                }
+                                                                name="stock"
+                                                                value={formData.stock}
+                                                                onChange={handleChange}
                                                                 required
                                                             />
                                                         </div>
+                                                    </div>
+
+                                                    <div className="col-lg-6">
                                                         <div className="form-group">
-                                                            <label>Images:<span style={{ color: "red" }}> *
+                                                            <label>Product Images:<span style={{ color: "red" }}> *
                                                                 <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
@@ -760,245 +911,97 @@ const NewProduct = () => {
                                                                 className="form-control"
                                                                 multiple
                                                                 accept="image/*"
-                                                                onChange={e => handleImageChange(index, e)}
+                                                                onChange={handleProductImageChange}
+                                                            // required
                                                             />
-                                                            {imageErrors.length > 0 && (
-                                                                <div className="alert alert-danger mt-2">
-                                                                    {imageErrors.map((error, index) => (
-                                                                        <p key={index}>{error}</p>
-                                                                    ))}
-                                                                </div>
-                                                            )}
                                                             <div className="mt-2">
-                                                                {variant.images.map((image, imageIndex) => (
+                                                                {productImages.map((image, index) => (
                                                                     <div
-                                                                        key={imageIndex}
+                                                                        key={index}
                                                                         className="d-inline-block position-relative mr-2"
                                                                     >
                                                                         <img
                                                                             src={URL.createObjectURL(image)}
-                                                                            alt={`Preview ${imageIndex}`}
+                                                                            alt={`Preview ${index}`}
                                                                             className="img-thumbnail"
                                                                             width="100"
                                                                         />
-                                                                        <button
-                                                                            type="button"
-                                                                            className="btn btn-danger btn-sm position-absolute top-0 right-0"
-                                                                            onClick={() =>
-                                                                                handleRemoveImage(index, imageIndex)
-                                                                            }
-                                                                        >
-                                                                            &times;
-                                                                        </button>
                                                                     </div>
                                                                 ))}
                                                             </div>
                                                         </div>
                                                     </div>
-                                                ))}
-                                            </>
-                                        )}
-                                    </div>
+                                                </>
+                                            )}
 
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Tax:(GST in %)<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="tax"
-                                                value={formData.tax}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <div className="custom-select-wrapper">
-                                                <label>Is Refundable:<span style={{ color: "red" }}> *
-                                                    <LightTooltip placement="top" title="Select whether this product can be refunded after purchase." arrow>
-                                                        <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip>
-                                                </span></label>
-                                                <select
-                                                    className="form-control custom-select"
-                                                    name="isRefundable"
-                                                    value={formData.isRefundable}
-                                                    onChange={handleChange}
-                                                    required
-                                                >
-                                                    <option value="false">No</option>
-                                                    <option value="true">Yes</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {!hasVariants && (
-                                        <>
                                             <div className="col-lg-6">
                                                 <div className="form-group">
-                                                    <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                                                    <label>Item Model Number:</label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="itemModelNum"
+                                                        value={formData.itemModelNum}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Product Code SKU:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip>
                                                     </span></label>
                                                     <input
-                                                        type="number"
+                                                        type="text"
                                                         className="form-control"
-                                                        name="price"
-                                                        value={formData.price}
+                                                        name="sku"
+                                                        value={formData.sku}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>UPC:
+                                                        <LightTooltip placement="top" title="Universal Product Code – used for barcode identification." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="upc"
+                                                        value={formData.upc}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>HSN code:<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="hsn"
+                                                        value={formData.hsn}
                                                         onChange={handleChange}
                                                         required
                                                     />
                                                 </div>
                                             </div>
 
-                                            <div className="col-lg-6">
-                                                <div className="form-group">
-                                                    <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip>
-                                                    </span></label>
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        name="offPrice"
-                                                        value={formData.offPrice}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="col-lg-6">
-                                                <div className="form-group">
-                                                    <label>No Of Stock:<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip>
-                                                    </span></label>
-                                                    <input
-                                                        type="number"
-                                                        className="form-control"
-                                                        name="stock"
-                                                        value={formData.stock}
-                                                        onChange={handleChange}
-                                                        required
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="col-lg-6">
-                                                <div className="form-group">
-                                                    <label>Product Images:<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
-                                                            <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip>
-                                                    </span></label>
-                                                    <input
-                                                        type="file"
-                                                        className="form-control"
-                                                        multiple
-                                                        accept="image/*"
-                                                        onChange={handleProductImageChange}
-                                                    // required
-                                                    />
-                                                    <div className="mt-2">
-                                                        {productImages.map((image, index) => (
-                                                            <div
-                                                                key={index}
-                                                                className="d-inline-block position-relative mr-2"
-                                                            >
-                                                                <img
-                                                                    src={URL.createObjectURL(image)}
-                                                                    alt={`Preview ${index}`}
-                                                                    className="img-thumbnail"
-                                                                    width="100"
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </>
-                                    )}
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Item Model Number:</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="itemModelNum"
-                                                value={formData.itemModelNum}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Product Code SKU:<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="sku"
-                                                value={formData.sku}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>UPC:
-                                                <LightTooltip placement="top" title="Universal Product Code – used for barcode identification." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="upc"
-                                                value={formData.upc}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>HSN code:<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </span></label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="hsn"
-                                                value={formData.hsn}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
 
 
-
-                                    {/* <div className="col-lg-6">
+                                            {/* <div className="col-lg-6">
                                         <div className="form-group">
                                             <div className="custom-select-wrapper custom-select">
                                                 <label>Country of Origin:<span style={{ color: "red" }}> *
@@ -1037,267 +1040,272 @@ const NewProduct = () => {
                                         </div>
                                     </div> */}
 
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <div className="custom-select-wrapper">
-                                                <label>
-                                                    Country of Origin:<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <div className="custom-select-wrapper">
+                                                        <label>
+                                                            Country of Origin:<span style={{ color: "red" }}> *
+                                                                <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                                                                    <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip>
+                                                            </span>
+                                                        </label>
+                                                        <select
+                                                            className="form-control custom-select"
+                                                            name="countryofOrgin"
+                                                            value={formData.countryofOrgin}
+                                                            onChange={handleChange}
+                                                            required
+                                                        >
+                                                            <option value="" disabled>Select Country</option>
+                                                            {[
+                                                                "India",
+                                                                "United States",
+                                                                "United Kingdom",
+                                                                "China",
+                                                                "Germany",
+                                                                "France",
+                                                                "Japan",
+                                                                "Australia",
+                                                                "Canada",
+                                                                "Brazil",
+                                                                "Italy",
+                                                                "South Korea",
+                                                                "Singapore",
+                                                                "UAE",
+                                                                "South Africa"
+                                                            ].map((country) => (
+                                                                <option key={country} value={country}>{country}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Manufacture Details:
+                                                        <LightTooltip placement="top" title="Add the name and address of the product manufacturer." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip>
-                                                    </span>
-                                                </label>
-                                                <select
-                                                    className="form-control custom-select"
-                                                    name="countryofOrgin"
-                                                    value={formData.countryofOrgin}
-                                                    onChange={handleChange}
-                                                    required
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="manufactureDetails"
+                                                        value={formData.manufactureDetails}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Product Certifications:
+                                                        <LightTooltip placement="top" title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="productCertifications"
+                                                        value={formData.productCertifications}
+                                                        onChange={handleChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="itemLength"
+                                                        value={formData.itemLength}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="itemHeight"
+                                                        value={formData.itemHeight}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="itemWeight"
+                                                        value={formData.itemWeight}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-12">
+                                                <div className="form-group">
+                                                    <label>Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="itemWidth"
+                                                        value={formData.itemWidth}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="moq"
+                                                        value={formData.moq}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost local (in '₹')(based on seller pincode):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostlol"
+                                                        value={formData.shippingCostlol}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost North India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostNorth"
+                                                        value={formData.shippingCostNorth}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost South India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostSouth"
+                                                        value={formData.shippingCostSouth}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost East India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostEast"
+                                                        value={formData.shippingCostEast}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost West India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostWest"
+                                                        value={formData.shippingCostWest}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost North east India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostNe"
+                                                        value={formData.shippingCostNe}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *
+                                                        <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="unit"
+                                                        value={formData.unit}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: 'flex', justifyContent: 'end' }}>
+                                                <button
+                                                    type="submit"
+                                                    className="btn mt-3"
+                                                    style={{ backgroundColor: '#ffad63', color: '#fff' }}
                                                 >
-                                                    <option value="" disabled>Select Country</option>
-                                                    {[
-                                                        "India",
-                                                        "United States",
-                                                        "United Kingdom",
-                                                        "China",
-                                                        "Germany",
-                                                        "France",
-                                                        "Japan",
-                                                        "Australia",
-                                                        "Canada",
-                                                        "Brazil",
-                                                        "Italy",
-                                                        "South Korea",
-                                                        "Singapore",
-                                                        "UAE",
-                                                        "South Africa"
-                                                    ].map((country) => (
-                                                        <option key={country} value={country}>{country}</option>
-                                                    ))}
-                                                </select>
+                                                    Create Product
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </form>
+                                </Fragment>
+                            )
 
 
+                        }
 
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Manufacture Details:
-                                                <LightTooltip placement="top" title="Add the name and address of the product manufacturer." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="manufactureDetails"
-                                                value={formData.manufactureDetails}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Product Certifications:
-                                                <LightTooltip placement="top" title="List any certifications (e.g., ISO, CE, Organic) your product has." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                name="productCertifications"
-                                                value={formData.productCertifications}
-                                                onChange={handleChange}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="itemLength"
-                                                value={formData.itemLength}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="itemHeight"
-                                                value={formData.itemHeight}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-6">
-                                        <div className="form-group">
-                                            <label>Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="itemWeight"
-                                                value={formData.itemWeight}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12">
-                                        <div className="form-group">
-                                            <label>Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="itemWidth"
-                                                value={formData.itemWidth}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="Minimum Order Quantity – smallest amount a buyer can purchase." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="moq"
-                                                value={formData.moq}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Shipping Cost local (in '₹')(based on seller pincode):<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="shippingCostlol"
-                                                value={formData.shippingCostlol}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Shipping Cost North India (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="shippingCostNorth"
-                                                value={formData.shippingCostNorth}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Shipping Cost South India (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="shippingCostSouth"
-                                                value={formData.shippingCostSouth}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Shipping Cost East India (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="shippingCostEast"
-                                                value={formData.shippingCostEast}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Shipping Cost West India (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="shippingCostWest"
-                                                value={formData.shippingCostWest}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Shipping Cost North east India (in '₹'):<span style={{ color: "red" }}> *</span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="shippingCostNe"
-                                                value={formData.shippingCostNe}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *
-                                                <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
-                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                </LightTooltip>
-                                            </span></label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="unit"
-                                                value={formData.unit}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', justifyContent: 'end' }}>
-                                        <button
-                                            type="submit"
-                                            className="btn mt-3"
-                                            style={{ backgroundColor: '#ffad63', color: '#fff' }}
-                                        >
-                                            Create Product
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </Fragment>
 
                     </div>
                 </div>

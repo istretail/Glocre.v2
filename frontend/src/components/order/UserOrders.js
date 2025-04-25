@@ -94,7 +94,7 @@ export default function UserOrders() {
                             <tbody>
                               <tr>
                                 <td width="30%">
-                                  <span>{items._id}</span>
+                                  <span>{items.clocreOrderId}</span>
                                 </td>
                                 <td width="20%">
                                   <span>{items.orderItems.length}</span>

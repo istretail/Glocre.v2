@@ -1,11 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useLocation } from "react-router-dom";
-import { NavDropdown } from 'react-bootstrap';
+import { Link, } from 'react-router-dom';
 import './side.css'
-import logo from '../../images/procure-g-logo.png'
-import { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faBoxOpen, faChartLine, faChartPie, faComments, faEnvelope, faPlusSquare, faShoppingBag, faShoppingCart, faStar, faTachometerAlt, faTh, faUser, faUserFriends, faUsers } from '@fortawesome/free-solid-svg-icons';
+import {useState } from 'react';
+
 
 export default function Sidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -30,7 +26,7 @@ export default function Sidebar() {
                         <div className='sidebar-logo'>
                             <Link to="/">
                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                    <img src={require("../../images/procure-g-logo.png")} className='w-75' />
+                                    <img src={require("../../images/procure-g-logo.png")} className='w-75' alt="glocre" />
                                 </div>
                             </Link>
                         </div>
@@ -51,7 +47,7 @@ export default function Sidebar() {
                             <Link to="/admin/products">
                                 <li className="nav__item is-active">
                                     <button className="nav__button">
-                                        <span className="nav__icon">
+                                        <span className="nav__icon"> 
                                             <i className="fa fa-envelope" aria-hidden="true"></i>
                                         </span>
                                         <span className="nav__label">Product List</span>

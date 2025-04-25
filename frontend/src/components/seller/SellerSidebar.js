@@ -1,12 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { NavDropdown } from 'react-bootstrap';
+import { Link,  } from 'react-router-dom';
 import { useState } from 'react';
 import './sellersidebar.css'
 
 export default function SellerSidebar() {
 
-    const navigate = useNavigate();
-
+ 
 
         const [isCollapsed, setIsCollapsed] = useState(false);
     
@@ -59,7 +57,7 @@ export default function SellerSidebar() {
                       justifyContent: 'center',
                     }}
                   >
-                    <img src={require('../../images/procure-g-logo.png')} />
+                    <img src={require('../../images/procure-g-logo.png')} alt='glocre'/>
                   </div>
                 </Link>
               </div>
@@ -104,6 +102,16 @@ export default function SellerSidebar() {
                         <i className="fa fa-flag" aria-hidden="true"></i>
                       </span>
                       <span className="nav__label">Orders List</span>
+                    </button>
+                  </li>
+                </Link>
+                <Link to="/seller/archive/product">
+                  <li className="nav__item is-active">
+                    <button className="nav__button">
+                      <span className="nav__icon">
+                        <i className="fa fa-flag" aria-hidden="true"></i>
+                      </span>
+                      <span className="nav__label">Archived Products</span>
                     </button>
                   </li>
                 </Link>

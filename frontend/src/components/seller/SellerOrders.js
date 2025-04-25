@@ -1,47 +1,48 @@
 import { Fragment, useEffect, useState } from "react"
 import '../admin/userlist.css';
 import '../admin/orderlist.css'
-import { Button } from "react-bootstrap"
+
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { getSellerOrders } from "../../actions/orderActions"
 import { clearError, } from "../../slices/orderSlice"
 import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify'
-import debounce from 'lodash.debounce';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from 'react-js-pagination';
 import SellerSidebar from "./SellerSidebar";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch,  faDashboard, faList,  faShoppingBag, faSort, } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
-import avatar1 from '../../images/OIP.jpg';
+import { Dropdown,  } from "react-bootstrap";
+
 
 export default function SellerOrders() {
-    const { sellerOrders = [], loading = true, error, isOrderDeleted, orderCount, resPerPage } = useSelector(state => state.orderState)
+    const { sellerOrders = [], loading = true, error, orderCount, resPerPage } = useSelector(state => state.orderState)
     const [searchKeyword, setSearchKeyword] = useState("");
     const [statusFilter, setStatusFilter] = useState('');
-    const [filterVisible, setFilterVisible] = useState(false);
+
     const [currentPage, setCurrentPage] = useState(1);
     const dispatch = useDispatch();
 
     const setCurrentPageNo = (pageNo) => {
         setCurrentPage(pageNo);
     };
-    const debouncedSearch = debounce((term) => {
-        dispatch(getSellerOrders(term, statusFilter));
-    }, 300);
+    // const debouncedSearch = debounce((term) => {
+    //     dispatch(getSellerOrders(term, statusFilter));
+    // }, 300);
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!searchKeyword.trim()) return; // Prevent empty searches
+    // const handleSearch = (e) => {
+    //     e.preventDefault();
+    //     if (!searchKeyword.trim()) return; // Prevent empty searches
 
-        const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
-        dispatch(getSellerOrders({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
-    };
-    const handleFilterClick = () => {
-        setFilterVisible(!filterVisible);
-    };
+    //     const isObjectId = /^[a-f\d]{24}$/i.test(searchKeyword.trim()); // Check for ObjectId format
+    //     dispatch(getSellerOrders({ keyword: searchKeyword.trim(), idSearch: isObjectId }));
+    // };
+
+    // const handleFilterClick = () => {
+    //     setFilterVisible(!filterVisible);
+    // };
 
     const handleFilterChange = (orderStatus) => {
         setStatusFilter(orderStatus);
@@ -93,7 +94,7 @@ export default function SellerOrders() {
 
                         <Link to="/">
                             <div className="mobile-logo">
-                                 <img src={require('../../images/procure-g-logo.png')} />
+                                <img src={require('../../images/procure-g-logo.png')} alt="glocre" />
                             </div>
                         </Link>
 
@@ -245,6 +246,11 @@ export default function SellerOrders() {
                                                     <Loader />
                                                 </td>
                                             </tr>
+                                        ) : sellerOrders.length === 0 ? (
+                                            <div className="text-center py-5">
+                                                <p style={{ color: "#8c8c8c", fontSize: "18px" }}>We have no orders.</p>
+                                                
+                                            </div>
                                         ) : (
                                             sellerOrders.map((SellerOrder) => (
                                                 <tr key={SellerOrder._id}>

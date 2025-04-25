@@ -280,6 +280,81 @@ const productSlice = createSlice({
         error: action.payload,
       };
     },
+    cloneProductRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      }
+    },
+    cloneProductSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        isProductCreated: true
+      }
+    },
+    cloneProductFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+    },
+    clearProductCloned(state, action) {
+      return {
+        ...state,
+        isProductCreated: false
+      }
+    },
+    addArchiveProductRequest(state, action) {
+      return {
+        ...state,
+        loading: true
+      }
+    },
+    addArchiveProductSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        isProductUpdated: true,
+        message: action.payload,
+
+      }
+    },
+    addArchiveProductFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+    },
+    removeArchiveProductRequest(state, action) {
+      return {
+        ...state,
+        loading: true
+      }
+    },
+    removeArciveProductSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        isProductUpdated: true,
+        message: action.payload
+      }
+    },
+    removeArchiveProductFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+    },
+    clearProductArchive(state, action) {
+      return {
+        ...state,
+        isProductUpdated: false
+      }
+    },
   },
 });
 
@@ -329,6 +404,17 @@ export const {
   getSellerSingleProductRequest,
   getSellerSingleProductSuccess,
   getSellerSingleProductFail,
+  cloneProductRequest,
+  cloneProductSuccess,
+  cloneProductFail,
+  clearProductCloned,
+  addArchiveProductRequest,
+  addArchiveProductSuccess,
+  addArchiveProductFail,
+  removeArchiveProductRequest,
+  removeArciveProductSuccess,
+  removeArchiveProductFail,
+  clearProductArchive,
 } = actions;
 
 export default reducer;

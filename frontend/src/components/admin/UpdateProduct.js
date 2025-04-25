@@ -15,6 +15,11 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export default function UpdateProduct() {
+
+    const { id: productId } = useParams();
+    const { loading, error, products, categories = {} } = useSelector(state => state.productsState);
+    const { isProductUpdated, } = useSelector(state => state.productState);
+
     const [formData, setFormData] = useState({
         name: "",
         offPrice: "",
@@ -55,10 +60,6 @@ export default function UpdateProduct() {
 
         clocreId: "", // Add this line
     });
-
-    const { id: productId } = useParams();
-    const { loading, error, products, categories = {} } = useSelector(state => state.productsState);
-    const { isProductUpdated, } = useSelector(state => state.productState);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();

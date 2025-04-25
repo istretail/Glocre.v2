@@ -9,6 +9,9 @@ import {
   getCategoriesRequest,
   getCategoriesSuccess,
   getCategoriesFail,
+  getArchiveProductsRequest, 
+  getArchiveProductsScuccess, 
+  getArchiveProductsFail,
 } from "../slices/productSlice";
 import {
   productRequest,
@@ -44,6 +47,7 @@ import {
   getSellerSingleProductRequest,
   getSellerSingleProductSuccess,
   getSellerSingleProductFail,
+  cloneProductRequest, cloneProductSuccess, cloneProductFail, addArchiveProductRequest, addArchiveProductSuccess, addArchiveProductFail, removeArchiveProductRequest, removeArciveProductSuccess, removeArchiveProductFail
 } from "../slices/singleProductSlice";
 import {
   relatedProductsRequest,
@@ -278,5 +282,45 @@ export const getCategories =() => async (dispatch) => {
     dispatch(getCategorySuccess(data))
   } catch (error) {
     dispatch(getCategoryFail(error.response.data.message))
+  }
+}
+export const cloneProduct = id => async (dispatch) => {
+  try {
+    dispatch(cloneProductRequest())
+    const { data } = await axios.post(`/api/v1/seller/product/clone/${id}`);
+    dispatch(cloneProductSuccess(data))
+  }
+  catch (error) {
+    dispatch(cloneProductFail(error.response.data.message))
+  }
+}
+
+export const addArchiveProduct = (id) => async (dispatch) => {
+  try {
+    dispatch(addArchiveProductRequest())
+    const { data } = await axios.put(`/api/v1/seller/product/archive/${id}`);
+    dispatch(addArchiveProductSuccess(data))
+  }
+  catch (error) {
+    dispatch(addArchiveProductFail(error.response.data.message))
+  }
+}
+export const removeArchiveProduct = (id) => async (dispatch) => {
+  try {
+    dispatch(removeArchiveProductRequest())
+    const { data } = await axios.put(`/api/v1/seller/product/unarchive/${id}`);
+    dispatch(removeArciveProductSuccess(data))
+  } catch (error) {
+    dispatch(removeArchiveProductFail(error.response.data.message))
+  }
+}
+
+export const getArchiveProducts = () => async (dispatch) => {
+  try {
+    dispatch(getArchiveProductsRequest())
+    const { data } = await axios.get(`/api/v1/seller/archive/products`)
+    dispatch(getArchiveProductsScuccess(data))
+  } catch (error) {
+    dispatch(getArchiveProductsFail(error.response.data.message))
   }
 }

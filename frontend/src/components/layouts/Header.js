@@ -9,23 +9,23 @@ import { toast } from "react-toastify";
 import logo from "../../images/procure-g-logo.png";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 // import Select from '@mui/material/Select';
-import Select from "../layouts/select";
-import AddIcon from "@mui/icons-material/Add";
+
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
-import { faCartShopping, faList, faDashboard, faShoppingBag, faSort, faPencil, faUserPlus, faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
+
+import { faList,  faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Drawer from '@mui/material/Drawer';
-
+import { getCategories } from "../../actions/productActions";
 export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
+    const { categories = [], error } = useSelector((state) => state.categoryState);
   const { items } = useSelector((state) => state.cartState);
   const { wishlist } = useSelector((state) => state.wishlistState);
   const dispatch = useDispatch();
@@ -33,8 +33,15 @@ export default function Header() {
   const location = useLocation();
   const [keyword, setKeyword] = useState("");
   const [showMobileInput, setShowMobileInput] = useState(false);
-  const inputRef = useRef(null);
 
+  const inputRef = useRef(null);
+    useEffect(() => {
+      if (error) {
+        toast.error(error);
+      }
+      dispatch(getCategories());
+    }, [dispatch, error]);
+  
   useEffect(() => {
     if (keyword.trim() !== "") {
       navigate(`/search/${keyword}`);
@@ -513,13 +520,37 @@ export default function Header() {
 
           <Drawer open={isDrawerOpen} onClose={toggleDrawer} direction="right" className="drawer" style={{ width: "500px" }}>
             <div className="drawer-header">
-              <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "50px" }} />
+              <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "50px" }} alt="glocre"/>
             </div>
             <div className="drawer-content">
               <ul className="drawer-links">
-                <li><Link to="/"><FontAwesomeIcon icon={faDashboard} style={{ marginRight: "15px" }} />Jacks</Link></li>
-                <li><Link to="/"><FontAwesomeIcon icon={faCartShopping} style={{ marginRight: "15px" }} />Wire</Link></li>
-                <li><Link to="/"><FontAwesomeIcon icon={faShoppingBag} style={{ marginRight: "15px" }} />Corriender</Link></li>
+                {categories.flatMap((main) =>
+                  main.categories?.map((cat) => ({
+                    maincategory: main.maincategory,
+                    category: cat.category,
+                    subcategories: cat.subcategories || []
+                  }))
+                ).slice(0, 7).map((catItem, i) => (
+                  <li className="" key={i}>
+                    {catItem.category}
+                    <ul className="dropdown_menu mt-1">
+                      {catItem.subcategories.map((sub, j) => (
+                        <li
+                          key={j}
+                          onClick={() => navigate(`/maincategory/${catItem.maincategory}`, {
+                            state: {
+                              category: catItem.category,
+                              subcategory: sub,
+                            },
+                          })}
+
+                        >
+                          {sub}
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
               </ul>
             </div>
           </Drawer>

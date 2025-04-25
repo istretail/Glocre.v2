@@ -41,11 +41,13 @@ const {
    verifySellerOtp,
    sendOTP,
    verifyOTP,
-   sendContactEmail
+   sendContactEmail,
+   resendVerificationEmail
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
 router.route('/register').post(upload.single('avatar'), registerUser);
+router.route('/resend-verification').post(resendVerificationEmail)
 router.route('/verify-email/:token').get(verifyEmail)
 router.route('/login').post(loginUser);
 router.route('/logout').get(logoutUser);
