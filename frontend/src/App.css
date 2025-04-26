@@ -380,7 +380,7 @@ p {
 
 .sidebarWrapper .sidebar {
   position: sticky;
-  top: 110px;
+  /* top: 110px; */
 }
 
 .sidebarWrapper .sidebar img {
@@ -1958,7 +1958,7 @@ p {
 
 .sidebarWrapper .sidebar {
   position: sticky;
-  top: 110px;
+  /* top: 110px; */
 }
 
 .sidebarWrapper .sidebar img {
@@ -15590,7 +15590,7 @@ p {
 .sidebarWrapper .sidebar {
   position: -webkit-sticky;
   position: sticky;
-  top: 110px;
+  /* top: 110px; */
 }
 
 .sidebarWrapper .sidebar img {

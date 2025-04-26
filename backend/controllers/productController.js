@@ -102,6 +102,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
     unit: req.body.unit,
+    
 
   });
   // console.log(req.body)
@@ -214,7 +215,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       `;
 
       if (req.body.status === "rejected" && req.body.rejectionReason) {
-        emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`;
+        emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`; //rejectedReason: req.body.rejectedReason,
       }
 
       await sendEmail({
@@ -240,7 +241,7 @@ exports.deleteProduct = catchAsyncError(async (req, res, next) => {
     });
   }
 
-  await product.remove();
+  await product.deleteOne();
 
   res.status(200).json({
     success: true,

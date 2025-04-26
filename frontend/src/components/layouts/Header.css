@@ -1,14 +1,29 @@
 a {
   text-decoration: none;
 }
-
+.dropdown_menu {
+  transition: all 0.3s ease-in-out;
+}
 .custom-dropdown-toggle {
   position: relative;
   /* Ensure dropdown button is relative to dropdown content */
   z-index: 10;
   /* Priority for button */
 }
+.drawer-sub-li{
+  border-bottom: none !important;
+}
+.dropdown_menu {
+  list-style-type: disc;
+  /* show bullet points */
+  padding-left: 1.5rem;
+  /* space for bullets */
+}
 
+.drawer-sub-li {
+  margin-bottom: 0.5rem;
+  /* optional: space between sub-items */
+}
 .dropdown-menu {
   position: absolute;
   top: -10px;
@@ -513,22 +528,19 @@ header {
 }
 
 .mobile-navbar-glc {
-  background-color: #fff; /* or whatever you prefer */
+  background-color: #fff;
+  /* or whatever you prefer */
   padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* subtle shadow */
 }
-
-
-
-
-
-
-
-
 
 /* Mobile , medium navbar */
 @media (max-width: 1200px) {
   .headerWrapper {
+    display: none;
+  }
+  .respon-nav {
     display: none;
   }
 
@@ -544,12 +556,12 @@ header {
     padding: 0px;
   }
 
-  .afterHeader{
+  .afterHeader {
     display: none;
   }
-  
+
   body {
-    padding-top: 130px; /* adjust based on navbar height */
+    padding-top: 130px;
   }
 
 }
@@ -561,13 +573,12 @@ header {
 
 }
 
-
-
 /* Dropdown for signin */
-.dropdown-item-header{
+.dropdown-item-header {
   padding: 10px;
   cursor: pointer;
 }
+
 .dropdown-item-header:hover {
   background-color: #f5f5f5;
   border-radius: 10px;

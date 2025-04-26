@@ -958,7 +958,8 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="sku"
-                                                        value={formData.sku}
+                                                        value={formData.sku.toLocaleUpperCase()}
+                                                        maxLength={15}
                                                         onChange={handleChange}
                                                     />
                                                 </div>
@@ -975,7 +976,8 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="upc"
-                                                        value={formData.upc}
+                                                        value={formData.upc.toLocaleUpperCase()}
+                                                        maxLength={15}
                                                         onChange={handleChange}
                                                     />
                                                 </div>
@@ -992,7 +994,8 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="hsn"
-                                                        value={formData.hsn}
+                                                        value={formData.hsn.toLocaleUpperCase()}
+                                                        maxLength={10}
                                                         onChange={handleChange}
                                                         required
                                                     />
@@ -1279,7 +1282,7 @@ const NewProduct = () => {
                                                         </LightTooltip>
                                                     </span></label>
                                                     <input
-                                                        type="number"
+                                                        type="text"
                                                         className="form-control"
                                                         name="unit"
                                                         value={formData.unit}

@@ -21,8 +21,9 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 
 import { faList,  faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Drawer from '@mui/material/Drawer';
+import Drawer from '@mui/material/Drawer';  
 import { getCategories } from "../../actions/productActions";
+
 export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
     const { categories = [], error } = useSelector((state) => state.categoryState);
@@ -137,6 +138,14 @@ export default function Header() {
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
+
+
+    const [openIndex, setOpenIndex] = useState(null);
+
+    const handleToggle = (index) => {
+      setOpenIndex(openIndex === index ? null : index);
+    };
+    
   return (
     <>
       <div className="headerWrapper">
@@ -171,17 +180,6 @@ export default function Header() {
 
               <div className="col-sm-5 d-flex align-items-center part3 res-hide">
                 <div className="ml-auto d-flex align-items-center">
-                  {/* <div className="countryWrapper">
-                    <Select
-                      data={countryData}
-                      placeholder={'All'}
-                      icon={
-                        <LocationOnOutlinedIcon style={{ opacity: '0.5' }} />
-                      }
-                      view="country"
-                      selectedSelectBoxItem={selectedSelectBoxItem}
-                    />
-                  </div> */}
 
                   <ul className="list list-inline mb-0 headerTabs" style={{cursor: "pointer"}}>
                     <li className="list-inline-item">
@@ -353,14 +351,15 @@ export default function Header() {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100%",
+          width: "100%",          
           zIndex: 1050,
           backgroundColor: "#fff",
           boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <div className="d-flex justify-content- align-items-center">
+         <div>
 
+          <div className="d-flex justify-content- align-items-center">
           <div className="me-auto">
             <Link to="/">
               <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "35px" }} />
@@ -469,29 +468,6 @@ export default function Header() {
             </ul>
           </div>
 
-
-          {/* <Link to="/wishlist">
-            <div
-              className="position-relative d-flex justify-content-center align-items-center me-2"
-              style={{
-                backgroundColor: "#f5f5f5",
-                color: "#2f4d23",
-                height: "35px",
-                width: "35px",
-                borderRadius: "50%",
-              }}
-            >
-              <FavoriteBorderOutlinedIcon />
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                style={{ fontSize: "10px", backgroundColor: "#ffad63" }}
-              >
-                {wishlist.length}
-              </span>
-            </div>
-          </Link> */}
-
-
           <Link to="./cart">
             <div
               className="position-relative d-flex justify-content-center align-items-center me-2"
@@ -522,38 +498,78 @@ export default function Header() {
             <div className="drawer-header">
               <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "50px" }} alt="glocre"/>
             </div>
-            <div className="drawer-content">
-              <ul className="drawer-links">
-                {categories.flatMap((main) =>
-                  main.categories?.map((cat) => ({
-                    maincategory: main.maincategory,
-                    category: cat.category,
-                    subcategories: cat.subcategories || []
-                  }))
-                ).slice(0, 7).map((catItem, i) => (
-                  <li className="" key={i}>
-                    {catItem.category}
-                    <ul className="dropdown_menu mt-1">
-                      {catItem.subcategories.map((sub, j) => (
-                        <li
-                          key={j}
-                          onClick={() => navigate(`/maincategory/${catItem.maincategory}`, {
-                            state: {
-                              category: catItem.category,
-                              subcategory: sub,
-                            },
-                          })}
+           <div className="drawer-content">
+      <ul className="drawer-links">
+        {categories
+          .flatMap((main) =>
+            main.categories?.map((cat) => ({
+              maincategory: main.maincategory,
+              category: cat.category,
+              subcategories: cat.subcategories || [],
+            }))
+          )
+          .slice(0, 7)
+          .map((catItem, i) => (
+            <li className="" key={i}>
+<div
+  className="cursor-pointer font-semibold  flex justify-between items-center"
+  onClick={() => handleToggle(i)}
+>
+  <span className="text-left">{catItem.category}</span>
+  <span className="text-gray-400 text-sm ms-2" style={{fontSize:"10px"}}>
+    {openIndex === i ? "▲" : "▼"}
+  </span>
+</div>
 
-                        >
-                          {sub}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
-            </div>
+
+              {openIndex === i && (
+                <ul className="dropdown_menu mt-2">
+                  {catItem.subcategories.map((sub, j) => (
+                    <li
+                      key={j}
+                      className="cursor-pointer drawer-sub-li"
+                      
+                      onClick={() =>
+                        navigate(`/maincategory/${catItem.maincategory}`, {
+                          state: {
+                            category: catItem.category,
+                            subcategory: sub,
+                          },
+                        })
+                      }
+                    >
+                      {sub}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+      </ul>
+    </div>
           </Drawer>
+
+ </div>
+
+<div className=" mt-2">
+                <div className="headerSearch  align-items-center">
+                  <div
+                    className="search d-flex align-items-center"
+                    ref={inputRef}
+                    onSubmit={searchHandler}
+                  >
+                    <input
+                      type="text"
+                      id="search_field"
+                      className=" desktop-search"
+                      placeholder="Lets us know What you are looking for ?"
+                      onChange={e => setKeyword(e.target.value)}
+                      value={keyword}
+                    />
+                    <SearchIcon className="searchIcon cursor ms-2" />
+                  </div>
+                </div>
+              </div>
 
         </div>
       </section>
@@ -562,3 +578,5 @@ export default function Header() {
     </>
   );
 }
+
+

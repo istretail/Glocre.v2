@@ -62,6 +62,23 @@ export default function Cart() {
     }
   };
 
+  const handleQuantityChange = (e, item) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value >= 0 && value <= item.stock) {
+      if (user) {
+        dispatch(updateCartItemQuantityInCart(item.product, value));
+      } else {
+        dispatch(
+          updateCartItemQuantity({
+            productId: item.product,
+            quantity: value,
+            stock: item.stock,
+          })
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     // Fetch cart items when the component mounts
     dispatch(getCartItemsFromCart());
@@ -180,12 +197,13 @@ export default function Cart() {
                                   <input
                                     type="number"
                                     value={item.quantity}
-                                    readOnly
+                                    onChange={(e) => handleQuantityChange(e, item)}
                                   />
                                   <Button onClick={() => increaseQty(item)}>
                                     <AddIcon />
                                   </Button>
                                 </div>
+
                               </td>
 
                               <td>

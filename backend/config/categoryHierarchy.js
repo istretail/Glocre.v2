@@ -26,31 +26,31 @@ const categoryHierarchy = {
 
         "Cutting Tools": ["Cutting Torches", "Band Saws", "CNC Milling Machines", "Hole Saw Kits", "Hacksaws", "Scissors and Shears", "Metal Cutters "],
 
-        "Lifting and Rigging Equipment": ["Hoists", "Chain Slings and Shackles", "Lifting Straps", "Winches", "Overhead Cranes", "Forklifts and Pallet Jacks", "Pulley Systems "],
+        "Lifting and Rigging Equipment": ["Hoists", "Chain Slings and Shackles", "Lifting Straps", "Winches", "Overhead Cranes", "Forklifts and Pallet Jacks", "Pulley Systems"],
 
-        "Welding and Soldering Tools": ["MIG Welders, TIG Welders", "Welding Torches and Accessories", "Soldering Irons", "Welding Helmets and Masks", "Plasma Cutters", "Welding Rods and Electrodes "],
+        "Welding and Soldering Tools": ["MIG Welders, TIG Welders", "Welding Torches and Accessories", "Soldering Irons", "Welding Helmets and Masks", "Plasma Cutters", "Welding Rods and Electrodes"],
 
-        "Fastening Tools": ["Pneumatic Nail Guns, Staple Guns", "Rivet Guns", "Screw Guns", "Torque Wrenches", "Pneumatic Fasteners", "Power Staplers "],
+        "Fastening Tools": ["Pneumatic Nail Guns, Staple Guns", "Rivet Guns", "Screw Guns", "Torque Wrenches", "Pneumatic Fasteners", "Power Staplers"],
 
-        "Heavy Machinery": ["Mini Excavators", "Bulldozers", "Skid Steer Loaders", "Backhoe Loaders", "Track Loaders", "Cranes", "Excavator Attachments "],
+        "Heavy Machinery": ["Mini Excavators", "Bulldozers", "Skid Steer Loaders", "Backhoe Loaders", "Track Loaders", "Cranes", "Excavator Attachments"],
 
     },
 
-    "Electrical Instruments and Appliances ": {
+    "Electrical Instruments and Appliances": {
 
-        "Circuit Breakers and Fuses": ["Miniature Circuit Breakers, Molded Case Circuit Breakers", "Fuse Holders and Bases", "Cartridge Fuses", "Thermal Circuit Breakers", "Resettable Fuses", "Surge Protection Devices "],
+        "Circuit Breakers and Fuses": ["Miniature Circuit Breakers, Molded Case Circuit Breakers", "Fuse Holders and Bases", "Cartridge Fuses", "Thermal Circuit Breakers", "Resettable Fuses", "Surge Protection Devices"],
 
-        "Cable and Wiring": ["Electrical Cables, Extension Cords", "Coaxial Cables", "Ethernet Cables", "Power Cords and Plugs", "PVC Insulated Wires", "Armored Cables "],
+        "Cable and Wiring": ["Electrical Cables, Extension Cords", "Coaxial Cables", "Ethernet Cables", "Power Cords and Plugs", "PVC Insulated Wires", "Armored Cables"],
 
-        "Electrical Testers and Meters": ["Multimeters, Clamp Meters", "Circuit Testers", "Voltage Detectors", "Insulation Resistance Testers", "Power Analyzers", "Earth Ground Resistance Meters "],
+        "Electrical Testers and Meters": ["Multimeters, Clamp Meters", "Circuit Testers", "Voltage Detectors", "Insulation Resistance Testers", "Power Analyzers", "Earth Ground Resistance Meters"],
 
-        "Switches and Sockets": ["Light Switches, Dimmer Switches", "Electrical Outlets", "GFCI Outlets", "Smart Switches", "Push Button Switches", "USB Wall Outlets", "Electrical Outlet Boxes "],
+        "Switches and Sockets": ["Light Switches, Dimmer Switches", "Electrical Outlets", "GFCI Outlets", "Smart Switches", "Push Button Switches", "USB Wall Outlets", "Electrical Outlet Boxes"],
 
-        "Lighting Fixtures and Bulbs": ["LED Bulbs, Incandescent Bulbs", "Fluorescent Lights", "Pendant Lighting", "Recessed Lighting", "Emergency and Exit Lighting", "Floodlights and Spotlights", "Lamp Fixtures and Bases "],
+        "Lighting Fixtures and Bulbs": ["LED Bulbs, Incandescent Bulbs", "Fluorescent Lights", "Pendant Lighting", "Recessed Lighting", "Emergency and Exit Lighting", "Floodlights and Spotlights", "Lamp Fixtures and Bases"],
 
-        "Power Strips and Extension Cords": ["Surge Protector Power Strips, Heavy - Duty Extension Cords", "Wall - Mountable Power Strips", "Multi - Outlets", "Cordless Power Strips", "Power Cords for Appliances", "Extension Cord Reels "],
+        "Power Strips and Extension Cords": ["Surge Protector Power Strips, Heavy - Duty Extension Cords", "Wall - Mountable Power Strips", "Multi - Outlets", "Cordless Power Strips", "Power Cords for Appliances", "Extension Cord Reels"],
 
-        "Electric Motors and Transformers": ["Induction Motors, Synchronous Motors", "Step - Up / Step - Down Transformers", "Brushless Motors", "Electric Actuators", "DC Motors", "Servo Motors", "Motor Controllers "],
+        "Electric Motors and Transformers": ["Induction Motors, Synchronous Motors", "Step - Up / Step - Down Transformers", "Brushless Motors", "Electric Actuators", "DC Motors", "Servo Motors", "Motor Controllers"],
 
     },
 

@@ -13,9 +13,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import WatchLaterOutlinedIcon from "@mui/icons-material/WatchLaterOutlined";
 import { Button } from "@mui/material";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import YouTubeIcon from "@mui/icons-material/YouTube";
 import NewsletterImg from "../../images/banner-3 1.png";
 // newsletter
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";

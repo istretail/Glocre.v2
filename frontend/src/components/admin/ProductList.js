@@ -2,16 +2,16 @@ import { Fragment, useEffect, useState } from "react"
 import './productlist.css'
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import { getAdminProducts } from "../../actions/productActions"
+import { getAdminProducts, deleteProduct } from "../../actions/productActions"
 import { clearError, clearProductDeleted } from "../../slices/singleProductSlice"
 import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify'
 import Sidebar from "./Sidebar"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Button } from "react-bootstrap";
 import Pagination from 'react-js-pagination';
 
-import { faCartShopping,  faFilter, faPencil, faSearch,   faDashboard, faList,  faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 
 export default function ProductList() {
@@ -25,10 +25,10 @@ export default function ProductList() {
     // const [limit, setLimit] = useState(10);
 
     const dispatch = useDispatch();
-    // const deleteHandler = (e, id) => {
-    //     e.target.disabled = true;
-    //     dispatch(deleteProduct(id))
-    // }
+    const deleteHandler = (e, id) => {
+        e.target.disabled = true;
+        dispatch(deleteProduct(id))
+    }
 
     const setCurrentPageNo = (pageNo) => {
         setCurrentPage(pageNo);
@@ -251,6 +251,7 @@ export default function ProductList() {
                                                 <th style={{ minWidth: "200px" }}>DATE</th>
                                                 <th style={{ minWidth: "200px" }}>Product ID</th>
                                                 <th style={{ minWidth: "200px" }}>Update</th>
+                                                <th style={{ minWidth: "200px" }}>DELETE</th>
                                             </tr>
                                         </thead>
 
@@ -312,7 +313,11 @@ export default function ProductList() {
                                                                     </span>
                                                                 </Link>
                                                             </td>
-
+                                                            <td>
+                                                                <Button style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }} onClick={(e) => deleteHandler(e, product._id)} className="btn ms-2">
+                                                                    <FontAwesomeIcon icon={faTrash} />
+                                                                </Button>
+                                                            </td>
                                                         </tr>
                                                     </>
                                                 ))

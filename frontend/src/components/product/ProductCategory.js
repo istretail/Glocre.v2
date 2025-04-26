@@ -14,21 +14,23 @@ import Nav from "../layouts/nav";
 import "rc-slider/assets/index.css";
 import "rc-tooltip/assets/bootstrap.css";
 import "./ProductDetail.css";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown } from "react-bootstrap";
 import "react-range-slider-input/dist/style.css";
+import { faFilter, faSort, faStar } from "@fortawesome/free-solid-svg-icons";
 
 export default function ProductCategory() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { products =[], loading, error, productsCount, resPerPage } =useSelector((state) => state.productsState);
+  const { products = [], loading, error, productsCount, resPerPage } = useSelector((state) => state.productsState);
   const [currentPage, setCurrentPage] = useState(1);
   const [rating, setRating] = useState(null);
   const { keyword, maincategory, category, subcategory } = useParams();
   const [selectedMain, setSelectedMain] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [price, setPrice] = useState([1, 2000]);  
+  const [price, setPrice] = useState([0, 200000]);
 
   // 1. Toast error separately
   useEffect(() => {
@@ -104,179 +106,380 @@ export default function ProductCategory() {
       ) : (
         <>
           <MetaData title={"Results"} />
+
+          {/* Medium & Small screen filter/sort */}
+          <div className="d-block d-md-none px-3 mobileSticky">
+            <div className="d-flex w-100">
+              {/* CATEGORY Dropdown */}
+              <Dropdown className="w-50 text-center">
+                <Dropdown.Toggle
+                  as="div"
+                  className="mobileBtn-l py-2"
+                  style={{ cursor: "pointer" }}
+                >
+                  CATEGORIES
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="w-100 p-3 dropdo-menu-prodcat">
+
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h6>Categories</h6>
+                    {selectedCategory && (
+                      <button
+                        className="cancel-cat-but-glc"
+                        onClick={() => {
+                          setSelectedCategory(null);
+                          setSelectedSubCategory(null);
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="catList">
+                    {categories.map(cat => (
+                      <div
+                        key={cat}
+                        className="catItem d-flex align-items-center"
+                        onClick={() => handleCategoryChange(cat)}
+                      >
+                        <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
+                      </div>
+                    ))}
+                  </div>
+
+                  {selectedCategory && (
+                    <>
+                      <div className="d-flex justify-content-between align-items-center mt-4">
+                        <h6>Subcategories</h6>
+                        {selectedSubCategory && (
+                          <button
+                            className="cancel-cat-but-glc"
+                            onClick={() => setSelectedSubCategory(null)}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="catList">
+                        {subCategories.map(sub => (
+                          <div
+                            key={sub}
+                            className="catItem d-flex align-items-center"
+                            onClick={() => handleSubCategoryChange(sub)}
+                          >
+                            <h4 className="mb-0 ml-3 mr-3 text-capitalize">{sub}</h4>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                </Dropdown.Menu>
+              </Dropdown>
+
+              {/* PRICE FILTER Dropdown Placeholder */}
+              <Dropdown className="w-50 text-center">
+                <Dropdown.Toggle
+                  as="div"
+                  className="mobileBtn-r py-2"
+                  style={{ cursor: "pointer" }}
+                >
+                  {/* <FontAwesomeIcon icon={faSort} className="me-2" /> */}
+                  FILTER BY PRICE
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="w-100 p-3 dropdo-menu-prodcat">
+                  <div className="priceCard">
+                    <h5 className="mb-3" style={{ fontSize: "14px" }}>Filter by Price</h5>
+
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input custom-checkbox1"
+                        name="price"
+                        id="price1"
+                        onChange={() => setPrice([0, 1000])}
+                        checked={price[0] === 0 && price[1] === 1000}
+                        style={{
+                          outline: "1px solid #ffad63",
+                          border: "none",
+                          width: "20px",
+                          height: "20px",
+                          backgroundColor: price[0] === 0 && price[1] === 1000 ? "#ffad63" : "transparent",
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="price1">
+                        ₹0 – ₹1000
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        name="price"
+                        id="price2"
+                        onChange={() => setPrice([1000, 3000])}
+                        checked={price[0] === 1000 && price[1] === 3000}
+                        style={{
+                          outline: "1px solid #ffad63",
+                          width: "20px",
+                          border: "none",
+                          height: "20px",
+                          backgroundColor: price[0] === 1000 && price[1] === 3000 ? "#ffad63" : "transparent",
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="price2">
+                        ₹1000 – ₹3000
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        name="price"
+                        id="price3"
+                        onChange={() => setPrice([3000, 5000])}
+                        checked={price[0] === 3000 && price[1] === 5000}
+                        style={{
+                          outline: "1px solid #ffad63",
+                          border: "none",
+                          width: "20px",
+                          height: "20px",
+                          backgroundColor: price[0] === 3000 && price[1] === 5000 ? "#ffad63" : "transparent",
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="price3">
+                        ₹3000 – ₹5000
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        name="price"
+                        id="price4"
+                        onChange={() => setPrice([5000, 10000])}
+                        checked={price[0] === 5000 && price[1] === 10000}
+                        style={{
+                          outline: "1px solid #ffad63",
+                          border: "none",
+                          width: "20px",
+                          height: "20px",
+                          backgroundColor: price[0] === 5000 && price[1] === 10000 ? "#ffad63" : "transparent",
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="price4">
+                        ₹5000 – ₹10000
+                      </label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        name="price"
+                        id="price5"
+                        onChange={() => setPrice([10000, Infinity])}
+                        checked={price[0] === 10000 && price[1] === Infinity}
+                        style={{
+                          outline: "1px solid #ffad63",
+                          border: "none",
+                          width: "20px",
+                          height: "20px",
+                          backgroundColor: price[0] === 10000 && price[1] === Infinity ? "#ffad63" : "transparent",
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="price5">
+                        ₹10000 and above
+                      </label>
+                    </div>
+
+                  </div>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+
+          {/* Big screen */}
           <section className="listingPage">
             <div className="listingData">
               <div className="row">
                 <div className="col-md-2 sidebarWrapper pt-0">
                   <div className="sidebar">
-                      <div className="card border-0 shadow p-3">
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h3>Categories</h3>
-                          {selectedCategory && (
-                            <button
-                              className="btn-outline-secondary"
-                              onClick={() => {
-                                setSelectedCategory(null);
-                                setSelectedSubCategory(null);
-                              }}
-                            >
-                              ✕
-                            </button>
-                          )}
-                        </div>
-                        <div className="catList">
-                          {categories.map(cat => (
-                            <div
-                              key={cat}
-                              className="catItem d-flex align-items-center"
-                              onClick={() => handleCategoryChange(cat)}
-                            >
-                              <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
-                            </div>
-                          ))}
-                        </div>
-
+                    <div className="card border-0 shadow p-3">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h3>Categories</h3>
                         {selectedCategory && (
-                          <>
-                            <div className="d-flex justify-content-between align-items-center mt-4">
-                              <h3>Subcategories</h3>
-                              {selectedSubCategory && (
-                                <button
-                                  className="btn-outline-secondary"
-                                  onClick={() => setSelectedSubCategory(null)}
-                                >
-                                  ✕
-                                </button>
-                              )}
-                            </div>
-                            <div className="catList">
-                              {subCategories.map(sub => (
-                                <div
-                                  key={sub}
-                                  className="catItem d-flex align-items-center"
-                                  onClick={() => handleSubCategoryChange(sub)}
-                                >
-                                  <h4 className="mb-0 ml-3 mr-3 text-capitalize">{sub}</h4>
-                                </div>
-                              ))}
-                            </div>
-                          </>
+                          <button
+                            className="cancel-cat-but-glc"
+                            onClick={() => {
+                              setSelectedCategory(null);
+                              setSelectedSubCategory(null);
+                            }}
+                          >
+                            ✕
+                          </button>
                         )}
                       </div>
-                     <div className="card border-0 shadow priceCard">
-                        <h3 className="mb-4">Filter by Price</h3>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="price"
-                            id="price1"
-                            onChange={() => setPrice([0, 1000])}
-                            checked={price[0] === 0 && price[1] === 1000}
-                          />
-                          <label className="form-check-label" htmlFor="price1">
-                            ₹0 – ₹1000
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="price"
-                            id="price2"
-                            onChange={() => setPrice([1000, 3000])}
-                            checked={price[0] === 1000 && price[1] === 3000}
-                          />
-                          <label className="form-check-label" htmlFor="price2">
-                            ₹1000 – ₹3000
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="price"
-                            id="price3"
-                            onChange={() => setPrice([3000, 5000])}
-                            checked={price[0] === 3000 && price[1] === 5000}
-                          />
-                          <label className="form-check-label" htmlFor="price3">
-                            ₹3000 – ₹5000
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="price"
-                            id="price4"
-                            onChange={() => setPrice([5000, 10000])}
-                            checked={price[0] === 5000 && price[1] === 10000}
-                          />
-                          <label className="form-check-label" htmlFor="price4">
-                            ₹5000 – ₹10000
-                          </label>
-                        </div>
-
-                        <div className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="price"
-                            id="price5"
-                            onChange={() => setPrice([10000, Infinity])}
-                            checked={price[0] === 10000 && price[1] === Infinity}
-                          />
-                          <label className="form-check-label" htmlFor="price5">
-                            ₹10000 and above
-                          </label>
-                        </div>
-                      </div>
-                      <div className="card border-0 shadow">
-                        <h3>brand</h3>
-                        {/* <div className="catList">
-                        {categoryList.map((cat) => (
+                      <div className="catList">
+                        {categories.map(cat => (
                           <div
+                            key={cat}
                             className="catItem d-flex align-items-center"
-                            key={cat.name}
-                            onClick={() => handleCategoryClick(cat.name)}
+                            onClick={() => handleCategoryChange(cat)}
                           >
-                            <h4 className="mb-0 ml-3 mr-3 text-capitalize">
-                              {cat.name}
-                            </h4>
+                            <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
                           </div>
                         ))}
-                      </div> */}
                       </div>
 
-                      <div className="card border-0 shadow">
-                        <h3>Discount</h3>
-                        {/* <div className="catList">
-                        {categoryList.map((cat) => (
-                          <div
-                            className="catItem d-flex align-items-center"
-                            key={cat.name}
-                            onClick={() => handleCategoryClick(cat.name)}
-                          >
-                            <span className="img">
-                              <div width={30}>{cat.icon}</div>
-                            </span>
-                            <h4 className="mb-0 ml-3 mr-3 text-capitalize">
-                              {cat.name}
-                            </h4>
+                      {selectedCategory && (
+                        <>
+                          <div className="d-flex justify-content-between align-items-center mt-4">
+                            <h3>Subcategories</h3>
+                            {selectedSubCategory && (
+                              <button
+                                className="cancel-cat-but-glc"
+                                onClick={() => setSelectedSubCategory(null)}
+                              >
+                                ✕
+                              </button>
+                            )}
                           </div>
-                        ))}
-                      </div> */}
+                          <div className="catList">
+                            {subCategories.map(sub => (
+                              <div
+                                key={sub}
+                                className="catItem d-flex align-items-center"
+                                onClick={() => handleSubCategoryChange(sub)}
+                              >
+                                <h4 className="mb-0 ml-3 mr-3 text-capitalize">{sub}</h4>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <div className="card border-0 shadow priceCard">
+                      <h3 className="mb-4">Filter by Price</h3>
+
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input custom-checkbox1"
+                          name="price"
+                          id="price1"
+                          onChange={() => setPrice([0, 1000])}
+                          checked={price[0] === 0 && price[1] === 1000}
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 0 && price[1] === 1000 ? "#ffad63" : "transparent",
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor="price1">
+                          ₹0 – ₹1000
+                        </label>
                       </div>
+
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="price"
+                          id="price2"
+                          onChange={() => setPrice([1000, 3000])}
+                          checked={price[0] === 1000 && price[1] === 3000}
+                          style={{
+                            outline: "1px solid #ffad63",
+                            width: "20px",
+                            border: "none",
+                            height: "20px",
+                            backgroundColor: price[0] === 1000 && price[1] === 3000 ? "#ffad63" : "transparent",
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor="price2">
+                          ₹1000 – ₹3000
+                        </label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="price"
+                          id="price3"
+                          onChange={() => setPrice([3000, 5000])}
+                          checked={price[0] === 3000 && price[1] === 5000}
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 3000 && price[1] === 5000 ? "#ffad63" : "transparent",
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor="price3">
+                          ₹3000 – ₹5000
+                        </label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="price"
+                          id="price4"
+                          onChange={() => setPrice([5000, 10000])}
+                          checked={price[0] === 5000 && price[1] === 10000}
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 5000 && price[1] === 10000 ? "#ffad63" : "transparent",
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor="price4">
+                          ₹5000 – ₹10000
+                        </label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="price"
+                          id="price5"
+                          onChange={() => setPrice([10000, Infinity])}
+                          checked={price[0] === 10000 && price[1] === Infinity}
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 10000 && price[1] === Infinity ? "#ffad63" : "transparent",
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor="price5">
+                          ₹10000 and above
+                        </label>
+                      </div>
+
+                    </div>
                   </div>
                 </div>
 
                 <div className="col-md-10 rightContent homeProducts pt-0">
-                  <div className="productRow pl-4 pr-3">
+                  <div className="productRow  pl-4 pr-3">
                     {products && products.length > 0 ? (
                       products.map((product) => (
                         <div key={product._id} className="productCard p-1">
@@ -309,6 +512,7 @@ export default function ProductCategory() {
               </div>
             )}
           </section>
+
         </>
       )}
     </>

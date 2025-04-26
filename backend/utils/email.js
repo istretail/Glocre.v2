@@ -17,7 +17,12 @@ const sendEmail = async options => {
         from: `${process.env.SMTP_FROM_NAME} <${options.fromEmail}>`,
         to: options.email,
         subject: options.subject,
-        html: options.html
+        html: options.html,
+        headers: {
+            'X-Priority': '1',            // 1 (High), 3 (Normal), 5 (Low)
+            'X-MSMail-Priority': 'High',  // For Outlook
+            'Importance': 'high'          // For general clients like Gmail
+        }
     };
 
     await transporter.sendMail(message);

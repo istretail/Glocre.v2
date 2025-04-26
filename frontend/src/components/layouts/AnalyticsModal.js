@@ -8,7 +8,7 @@ const AnalyticsModal = ({ onAccept, onDecline }) => {
                 bottom: 0,
                 left: 0,
                 width: '100%',
-                backgroundColor: '#1b6763',
+                backgroundColor: '#ffad63',
                 color: '#fff',
                 padding: '20px',
                 boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.2)',
@@ -16,11 +16,12 @@ const AnalyticsModal = ({ onAccept, onDecline }) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 zIndex: 1000,
+                // flexDirection: 'wrap',
             }}
         >
             <div style={{ maxWidth: '80%' }}>
-                <h4 style={{ margin: 0, fontSize: '18px' }}>We use cookies</h4>
-                <p style={{ margin: '5px 0', fontSize: '14px' }}>
+                <h2 style={{ margin: 0, fontSize: '26px', color: "#343a40" }}>We use cookies</h2>
+                <p style={{ margin: '5px 0', fontSize: '18px', color:"#343a40" }}>
                     We use cookies to enhance your browsing experience and analyze site traffic. By clicking
                     "Accept", you consent to the use of cookies.
                 </p>

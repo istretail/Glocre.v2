@@ -608,7 +608,7 @@ export default function Shipping() {
                       </div>
 
                       <div className="mb-1">
-                        <div className="card-check-box-shipping d-flex align-items-center">
+                        <div className="card-check-box-shipping1 d-flex align-items-center">
                           <input
                             type="checkbox"
                             id="billingSameAsShipping"

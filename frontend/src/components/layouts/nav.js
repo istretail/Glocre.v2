@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import "../layouts/nav.css";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import GridViewIcon from "@mui/icons-material/GridView";
 import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
@@ -10,8 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../../actions/productActions";
 import { toast } from "react-toastify";
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
-export default function Nav() {
+export default function Nav1() {
   const dispatch = useDispatch();
   const { categories = [], error } = useSelector((state) => state.categoryState);
   const navigate = useNavigate();
@@ -32,17 +37,18 @@ export default function Nav() {
     navigate(`/maincategory/${category}`);
   };
   return (
-    <div className="nav d-flex align-items-center">
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-sm-2 part1 d-flex align-items-center">
-            <nav>
-              <li className="list-inline-item sec-nav-pro">
-                <Button className="bg-g text-white catTab res-hide">
-                  <GridViewIcon /> &nbsp;Browse All Availabe Categories{" "}
+    <>
+< nav className = "Mobile-second-nav respon-nav" >
+  <div class="nav-container">
+    <div class="logo me-5">
+       <ul class="menu">
+      <li className="list-inline-item sec-nav-pro">
+         <Button className="bg-g text-white catTab res-hide">
+                  <GridViewIcon /> &nbsp; Categories
                   <KeyboardArrowDownIcon />
                 </Button>
-                <div className="dropdown_menu">
+
+      <div className="dropdown_menu">
                   <ul className="mb-0 p-0">
                     {categories.map((main, i) => (
                       <li
@@ -54,13 +60,18 @@ export default function Nav() {
                     ))}
                   </ul>
                 </div>
-              </li>
-            </nav>
-          </div>
+      </li>
+    </ul>
+    </div>
 
-          <div className="col-sm-8 part2 position-static">
-            <nav>
-              <ul className="list list-inline mb-0">
+    <input type="checkbox" id="toggle" />
+    <label for="toggle" class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+
+    <ul className="list list-inline mb-0 menu">
                 {categories.flatMap((main) =>
                   main.categories?.map((cat) => ({
                     maincategory: main.maincategory,
@@ -90,23 +101,9 @@ export default function Nav() {
                 ))}
 
               </ul>
-            </nav>
-          </div>
-
-          {/* <div className="col-sm-2 part3 d-flex align-items-center">
-            <div className="phNo d-flex align-items-center ml-auto">
-              <span>
-                <HeadphonesOutlinedIcon />
-              </span>
-              <div className="info ml-3">
-                <Link to={"/support"}>
-                  <p className="mb-0">24/7 Support Center</p>
-                </Link>
-              </div>
-            </div>
-          </div> */}
-        </div>
-      </div>
-    </div>
+  </div>
+</nav>
+    </>
   );
 }
+

@@ -10,8 +10,12 @@ import prosellerimg7 from "../SELLERPAGE/SELLERPAGE--IMAGES/SELLERPAGEIMG7.png";
 import prosellerimg8 from "../SELLERPAGE/SELLERPAGE--IMAGES/SELLERPAGEIMG8.png";
 import { Link } from "react-router-dom";
 import MetaData from "../MetaData";
-
+import { useNavigate } from "react-router-dom";
 export default function ProcuregSeller() {
+  const navigate = useNavigate();
+  const registerHandler = () => {
+    navigate("/login?redirect=register/seller");
+  };
   return (
     <>
     <MetaData title={"Become a Seller"} />
@@ -30,7 +34,7 @@ export default function ProcuregSeller() {
                 organizations efficiently manage suppliers, negotiate better
                 deals, and optimize procurement workflows.
               </p>
-              <Link to="/register/seller" style={{ color: "white" }}> 
+              <Link onClick={registerHandler()} style={{ color: "white" }}> 
               <button className="col-lg-3 col-5 text-white">
                 {" "}
                 Register

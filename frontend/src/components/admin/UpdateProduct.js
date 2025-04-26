@@ -36,7 +36,7 @@ export default function UpdateProduct() {
         condition: "",
         brand: "",
         itemModelNum: "",
-        isRefundable: "false", // Add this line
+        isRefundable: "false", 
         manufacturer: "",
 
         sku: "",
@@ -57,8 +57,8 @@ export default function UpdateProduct() {
         shippingCostWest: "",
         shippingCostNe: "",
         unit: "",
-
-        clocreId: "", // Add this line
+        rejectionReason: "", 
+        clocreId: "", 
     });
 
     const dispatch = useDispatch();
@@ -195,7 +195,7 @@ export default function UpdateProduct() {
                     shippingCostWest: product.shippingCostWest,
                     shippingCostNe: product.shippingCostNe,
                     unit: product.unit,
-
+                    rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
 
 
                 });
@@ -1263,7 +1263,7 @@ export default function UpdateProduct() {
                                                         id="rejectionReason_field"
                                                         rows="4"
                                                         onChange={(e) => setRejectionReason(e.target.value)}
-                                                        value={rejectionReason}
+                                                        value={formData.rejectionReason}
                                                         name="rejectionReason"
                                                         style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}
                                                     ></textarea>
