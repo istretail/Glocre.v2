@@ -48,6 +48,7 @@ const NewProduct = () => {
         shippingCostlol: "",
         shippingCostNorth: "",
         shippingCostSouth: "",
+        shippingCostCentral: "",
         shippingCostEast: "",
         shippingCostWest: "",
         shippingCostNe: "",
@@ -560,9 +561,7 @@ const NewProduct = () => {
                                                             required
                                                         >
                                                             <option value="">Select Condition<span style={{ color: "red" }}> *
-                                                                <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
-                                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                                </LightTooltip></span></option>
+                                                                </span></option>
                                                             <option value="New">New</option>
                                                             <option value="Unboxed">Unboxed</option>
                                                             <option value="Refurbished">Refurbished</option>
@@ -754,7 +753,7 @@ const NewProduct = () => {
                                                                 </div>
                                                                 <div className="form-group">
                                                                     <label>Images:<span style={{ color: "red" }}> *
-                                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                                        <LightTooltip placement="top" title="Upload the images of the product." arrow>
                                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                                         </LightTooltip>
                                                                     </span></label>
@@ -866,7 +865,7 @@ const NewProduct = () => {
                                                     <div className="col-lg-6">
                                                         <div className="form-group">
                                                             <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                                <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
+                                                                <LightTooltip placement="top" title="Enter the discount price of the product(if any)." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
@@ -902,7 +901,7 @@ const NewProduct = () => {
                                                     <div className="col-lg-6">
                                                         <div className="form-group">
                                                             <label>Product Images:<span style={{ color: "red" }}> *
-                                                                <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                                <LightTooltip placement="top" title="Provide the images of the product" arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
@@ -1269,6 +1268,19 @@ const NewProduct = () => {
                                                         className="form-control"
                                                         name="shippingCostNe"
                                                         value={formData.shippingCostNe}
+                                                        onChange={handleChange}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Shipping Cost Central India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="shippingCostCentral"
+                                                        value={formData.shippingCostCentral}
                                                         onChange={handleChange}
                                                         required
                                                     />

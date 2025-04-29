@@ -514,7 +514,7 @@ export default function ProductSearch({ onFilterChange }) {
                 </div>
 
                 <div className="col-md-10 rightContent homeProducts pt-0">
-                  <div className="productRow pl-4 pr-3">
+                  <div className="productRow pl-3 pr-3">
                     {products && products.length > 0 ? (
                       products.map((product) => (
                         <div key={product._id} className="productCard p-1">

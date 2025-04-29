@@ -5,6 +5,7 @@ const APIFeatures = require("../utils/apiFeatures");
 const User = require("../models/userModel");
 const sendEmail = require("../utils/email");
 const categoryHierarchy = require("../config/categoryHierarchy");
+const s3 = require('../config/s3');
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 100;
@@ -787,3 +788,36 @@ exports.getAvailableCategories = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+
+exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
+  const { imageUrl } = req.body;
+  const productId = req.params.id;
+
+  console.log("Image URL:", imageUrl);
+
+  const product = await Product.findById(productId);
+  if (!product) {
+    return next(new ErrorHandler('Product not found', 404));
+  }
+
+  // Extract the image key from the URL (everything after .com/)
+  const imageKey = imageUrl.split('.com/')[1];
+  if (!imageKey) {
+    return next(new ErrorHandler('Invalid image URL', 400));
+  }
+
+  // Delete image from S3
+  await s3.deleteObject({
+    Bucket:'glocreawsimagebucket' ,
+    Key: imageKey
+  }).promise();
+
+  // Remove image URL from product images array
+  product.images = product.images.filter(img => img !== imageUrl);
+
+  await product.save();
+
+  res.status(200).json({ success: true, message: 'Image deleted successfully' });
+});

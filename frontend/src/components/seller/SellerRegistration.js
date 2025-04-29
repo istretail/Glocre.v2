@@ -11,12 +11,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, DropdownButton, Image } from "react-bootstrap";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-
-
+import { countries } from "countries-list";
+const fetchPostalCodeDetails = async (postalCode) => {
+  try {
+    const response = await fetch(
+      `https://api.postalpincode.in/pincode/${postalCode}`,
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching pin code details:", error);
+    throw error;
+  }
+};
 const SellerRegistration = () => {
   // Navbar
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
+
+  const countryList = Object.values(countries);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1000);
@@ -35,7 +48,7 @@ const SellerRegistration = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.authState);
 
-  const [formData, setFormData] = useState({
+  const [userData, setUserData] = useState({
     name: "",
     lastName: "",
     email: "",
@@ -43,16 +56,21 @@ const SellerRegistration = () => {
     businessName: "",
     businessEmail: "",
     businessContactNumber: "",
-    businessAddress: "",
+    address: "",
+    addressLine: "",
+    city: "",
+    country: "",
+    state: "",
+    postalCode: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [errors, setErrors] = useState({});
-
+  const [localities, setLocalities] = useState([]);
   useEffect(() => {
     if (user) {
-      setFormData({
+      setUserData({
         name: user.name,
         lastName: user.lastName,
         email: user.email,
@@ -60,7 +78,12 @@ const SellerRegistration = () => {
         businessName: "",
         businessEmail: "",
         businessContactNumber: "",
-        businessAddress: "",
+        address: "",
+        addressLine: "",
+        city: "",
+        country: "",
+        state: "",
+        postalCode: "",
       });
     }
   }, [user]);
@@ -68,13 +91,13 @@ const SellerRegistration = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (formData.gstNumber && !/^[0-9A-Z]{15}$/.test(formData.gstNumber)) {
+    if (userData.gstNumber && !/^[0-9A-Z]{15}$/.test(userData.gstNumber)) {
       newErrors.gstNumber = "Invalid GST Number (15 alphanumeric characters)";
     }
 
     if (
-      formData.businessContactNumber &&
-      !/^\d{10}$/.test(formData.businessContactNumber)
+      userData.businessContactNumber &&
+      !/^\d{10}$/.test(userData.businessContactNumber)
     ) {
       newErrors.businessContactNumber = "Invalid Contact Number (10 digits)";
     }
@@ -85,7 +108,7 @@ const SellerRegistration = () => {
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setUserData((prev) => ({ ...prev, [name]: value }));
   }, []);
 
   const handleSubmit = async (e) => {
@@ -95,17 +118,62 @@ const SellerRegistration = () => {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+
+    // Construct the full payload including businessAddress object
+    const payload = {
+      ...userData,
+      businessAddress: {
+        address: userData.address,
+        addressLine: userData.addressLine,
+        city: userData.city,
+        state: userData.state,
+        country: userData.country,
+        postalCode: userData.postalCode,
+      },
+    };
+
     try {
-      const response = await dispatch(updateProfile(formData));
+      const response = await dispatch(updateProfile(payload));
       const successMessage = response?.data?.message;
       toast.success(successMessage);
+      console.log(payload);
     } catch (error) {
-      // setSubmitError("Failed to update profile. Please try again.");
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Update failed");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+
+
+  const handlePincodeChange = async (e) => {
+    const postalCode = e.target.value;
+
+    setUserData(prev => ({ ...prev, postalCode }));
+
+    if (postalCode.length === 6) {
+      try {
+        const data = await fetchPostalCodeDetails(postalCode);
+        if (data && data[0]?.PostOffice?.length > 0) {
+          const offices = data[0].PostOffice;
+          setLocalities(offices.map((office) => office.Name));
+
+          setUserData(prev => ({
+            ...prev,
+            city: offices[0].Name,
+            state: offices[0].State,
+            country: offices[0].Country
+          }));
+        } else {
+          toast.error("Invalid pin code");
+        }
+      } catch (error) {
+        console.error("Error fetching pin code details:", error);
+        toast.error("Error fetching pin code details");
+      }
+    }
+  };
+
 
   if (user.role === "seller" && user.isSeller) {
     return <p>You are already a seller. Use the seller dashboard.</p>;
@@ -134,7 +202,7 @@ const SellerRegistration = () => {
                 <img src={require('../../images/procure-g-logo.png')} />
               </div>
             </Link>
-            
+
 
             <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
               SELLER REGISTRATION
@@ -157,7 +225,7 @@ const SellerRegistration = () => {
                       required
                       placeholder="Your name"
                       id="name"
-                      value={formData.name}
+                      value={userData.name}
                       readOnly
                     />
                   </div>
@@ -174,7 +242,7 @@ const SellerRegistration = () => {
                       required
                       placeholder="Your name"
                       id="name"
-                      value={formData.lastName}
+                      value={userData.lastName}
                       readOnly
                     />
                   </div>
@@ -193,7 +261,7 @@ const SellerRegistration = () => {
                       required
                       placeholder="Your name"
                       id="name"
-                      value={formData.email}
+                      value={userData.email}
                       readOnly
                     />
                   </div>
@@ -204,13 +272,13 @@ const SellerRegistration = () => {
                     <TextField
                       label="GST Number:"
                       variant="outlined"
+                      id="gstNumber_field"
                       className="w-100"
                       size="small"
-                      type="text"
                       required
-                      placeholder="Your name"
-                      id="name"
-                      value={formData.gstNumber}
+                      name="gstNumber"
+                      placeholder="GST Number"
+                      value={userData.gstNumber}
                       onChange={handleChange}
                     />
                     {errors.gstNumber && <p className="error">{errors.gstNumber}</p>}
@@ -226,11 +294,11 @@ const SellerRegistration = () => {
                       variant="outlined"
                       className="w-100"
                       size="small"
-                      type="text"
+                      name="businessName"
                       required
                       placeholder="Business Name"
-                      id="name"
-                      value={formData.businessName}
+                      id="businessName_field"
+                      value={userData.businessName}
                       onChange={handleChange}
                     />
                   </div>
@@ -245,9 +313,10 @@ const SellerRegistration = () => {
                       size="small"
                       type="email"
                       required
+                      name="businessEmail"
                       placeholder="Business Email"
-                      id="name"
-                      value={formData.businessEmail}
+                      id="businessEmail"
+                      value={userData.businessEmail}
                       onChange={handleChange}
                     />
                   </div>
@@ -262,11 +331,12 @@ const SellerRegistration = () => {
                       variant="outlined"
                       className="w-100"
                       size="small"
-                      type="text"
+                      type="number"
                       required
+                      name="businessContactNumber"
                       placeholder="Business Name"
-                      id="name"
-                      value={formData.businessContactNumber}
+                      id="businessContactNumber"
+                      value={userData.businessContactNumber}
                       onChange={handleChange}
                     />
                     {errors.businessContactNumber && (
@@ -274,7 +344,23 @@ const SellerRegistration = () => {
                     )}
                   </div>
                 </div>
+                
+                <div className="col-md-6">
+                  {/* pincode */}
+                  <div className="form-group">
+                    <TextField
+                      label="PIN Code"
+                      name="postalCode"
+                      value={userData.postalCode}
+                      onChange={(e) => {
+                        handleChange(e);
+                        handlePincodeChange(e);
+                      }}
+                      required
+                    />
 
+                  </div>
+                </div>
                 <div className="col-md-6">
                   <div className="form-group">
                     <TextField
@@ -282,14 +368,82 @@ const SellerRegistration = () => {
                       variant="outlined"
                       className="w-100"
                       size="small"
-                      type="email"
+                      type="text"
                       required
-                      placeholder="Business Email"
+                      placeholder="Flat/ building name and number"
                       id="name"
                       onChange={handleChange}
-                      name="businessAddress"
-                      value={formData.businessAddress}
+                      name="address"
+                      value={userData.address}
                     />
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <div className="custom-select-wrapper">
+                      <select
+                        name="addressLine"
+                        value={userData.addressLine}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select Locality *</option>
+                        {localities.map((locality, index) => (
+                          <option key={index} value={locality}>{locality}</option>
+                        ))}
+                      </select>
+
+                    </div>
+
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="City"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      name="City"
+                      value={userData.city}
+                      readOnly
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <TextField
+                      label="State"
+                      variant="outlined"
+                      className="w-100"
+                      size="small"
+                      name="state"
+                      value={userData.state}
+                      readOnly
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="form-group">
+                    <select
+                      label="Country *"
+                      variant="outlined"
+                      size="small"
+                      name="state"
+                      id="country_field"
+                      className="form-control"
+                      value={userData.country}
+                     
+                      required
+                    >
+                      {countryList.map((country, i) => (
+                        <option key={i} value={country.name}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>

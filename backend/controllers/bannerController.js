@@ -73,39 +73,40 @@ exports.deleteBannerImage = async (req, res) => {
     }
 };
 
-// exports.getAllImages = async (req, res) => {
-//     const bucketName = 'glocreawsimagebucket';
+exports.getAllImages = async (req, res) => {
+    const params = {
+        Bucket: 'glocreawsimagebucket',
+        Prefix: '', // can be used to filter by folder if needed
+    };
 
-//     const params = {
-//         Bucket: bucketName,
-//         // If you saved uploads inside a folder, add Prefix here
-//         // Prefix: "uploads/"
-//     };
+    try {
+        const data = await s3.listObjectsV2(params).promise();
 
-//     try {
-//         const data = await s3.listObjectsV2(params).promise();
+        const imageUrls = data.Contents.map(obj => {
+            return `https://${params.Bucket}.s3.eu-north-1.amazonaws.com/${obj.Key}`;
+        });
 
-//         // Filter only image files (jpg, png, etc.)
-//         const imageUrls = data.Contents
-//             .filter(item =>
-//                 item.Key.match(/\.(jpg|jpeg|png|webp|gif)$/i)
-//             )
-//             .map(item => ({
-//                 key: item.Key,
-//                 url: `https://${bucketName}.s3.eu-north-1.amazonaws.com/${item.Key}`,
-//             }));
+        res.status(200).json({ images: imageUrls });
+    } catch (err) {
+        console.error('Error listing S3 objects:', err);
+        res.status(500).json({ error: 'Failed to fetch images from S3' });
+    }
+};
 
-//         res.status(200).json({
-//             success: true,
-//             count: imageUrls.length,
-//             images: imageUrls,
-//         });
-//     } catch (error) {
-//         console.error('S3 List Error:', error);
-//         res.status(500).json({
-//             success: false,
-//             message: 'Unable to retrieve images',
-//             error: error.message,
-//         });
-//     }
-// };
+// Express route to delete object from S3
+exports.deleteImage = async (req, res) => {
+    const { key } = req.body;
+    console.log("key", key)
+    const params = {
+        Bucket: 'glocreawsimagebucket',
+        Key: key,
+    };
+
+    try {
+        await s3.deleteObject(params).promise();
+        res.status(200).json({ message: 'Image deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting image:', err);
+        res.status(500).json({ error: 'Failed to delete image' });
+    }
+};

@@ -19,14 +19,14 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
-import { faList,  faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faList, faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Drawer from '@mui/material/Drawer';  
+import Drawer from '@mui/material/Drawer';
 import { getCategories } from "../../actions/productActions";
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
-    const { categories = [], error } = useSelector((state) => state.categoryState);
+  const { categories = [], error } = useSelector((state) => state.categoryState);
   const { items } = useSelector((state) => state.cartState);
   const { wishlist } = useSelector((state) => state.wishlistState);
   const dispatch = useDispatch();
@@ -36,13 +36,13 @@ export default function Header() {
   const [showMobileInput, setShowMobileInput] = useState(false);
 
   const inputRef = useRef(null);
-    useEffect(() => {
-      if (error) {
-        toast.error(error);
-      }
-      dispatch(getCategories());
-    }, [dispatch, error]);
-  
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+    dispatch(getCategories());
+  }, [dispatch, error]);
+
   useEffect(() => {
     if (keyword.trim() !== "") {
       navigate(`/search/${keyword}`);
@@ -140,12 +140,12 @@ export default function Header() {
   };
 
 
-    const [openIndex, setOpenIndex] = useState(null);
+  const [openIndex, setOpenIndex] = useState(null);
 
-    const handleToggle = (index) => {
-      setOpenIndex(openIndex === index ? null : index);
-    };
-    
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <>
       <div className="headerWrapper">
@@ -181,7 +181,7 @@ export default function Header() {
               <div className="col-sm-5 d-flex align-items-center part3 res-hide">
                 <div className="ml-auto d-flex align-items-center">
 
-                  <ul className="list list-inline mb-0 headerTabs" style={{cursor: "pointer"}}>
+                  <ul className="list list-inline mb-0 headerTabs" style={{ cursor: "pointer" }}>
                     <li className="list-inline-item">
                       <Link to="/becomeseller">
                         <button
@@ -351,225 +351,225 @@ export default function Header() {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100%",          
+          width: "100%",
           zIndex: 1050,
           backgroundColor: "#fff",
           boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
         }}
       >
-         <div>
+        <div>
 
           <div className="d-flex justify-content- align-items-center">
-          <div className="me-auto">
-            <Link to="/">
-              <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "35px" }} />
-            </Link>
-          </div>
-
-          <Link to="/seller">
-            <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
-              <FontAwesomeIcon icon={faPlus} />
-            </div>
-          </Link>
-
-          <div className="dropdown me-2">
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{
-                backgroundColor: "#f5f5f5",
-                color: "#2f4d23",
-                height: "35px",
-                width: "35px",
-                borderRadius: "50%",
-                fontSize: "15px",
-                cursor: "pointer"
-              }}
-              id="dropdownMenuIconButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <FontAwesomeIcon icon={faUser} />
+            <div className="me-auto">
+              <Link to="/">
+                <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "35px" }} />
+              </Link>
             </div>
 
-            <ul
-              className="dropdown-menu dropdown-menu-end mt-2"
-              aria-labelledby="dropdownMenuIconButton"
-              style={{ cursor: "pointer" }}
-            >
-              {isAuthenticated ? (
-                <>
-                  {user?.role === 'admin' && (
-                    <li>
-                      <span
-                        className="dropdown-item"
-                        onClick={() => navigate('./admin/dashboard')}
-                      >
-                        <DashboardOutlinedIcon className="me-2" />
-                        Dashboard
-                      </span>
-                    </li>
-                  )}
-                  {user?.role === 'seller' && (
-                    <li>
-                      <span
-                        className="dropdown-item"
-                        onClick={() => navigate('./seller/dashboard')}
-                      >
-                        <DashboardOutlinedIcon className="me-2" />
-                        Seller Dashboard
-                      </span>
-                    </li>
-                  )}
-                  <li>
-                    <span
-                      className="dropdown-item"
-                      onClick={() => navigate('./myprofile')}
-                    >
-                      <AccountCircleOutlinedIcon className="me-2" />
-                      Profile
-                    </span>
-                  </li>
-                  <li>
-                    <span
-                      className="dropdown-item"
-                      onClick={() => navigate('./orders')}
-                    >
-                      <ShoppingCartOutlinedIcon className="me-2" />
-                      My Orders
-                    </span>
-                  </li>
-                  <li>
-                    <span className="dropdown-item text-danger" onClick={logoutHandler}>
-                      <LogoutOutlinedIcon className="me-2" />
-                      Log Out
-                    </span>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li >
-                    <span
-                      className="dropdown-item"
-                      onClick={() => navigate('./login')}
-                    >
-                      <i className="me-2 fas fa-sign-in-alt" /> Log In
-                    </span>
-                  </li>
-                  <li>
-                    <span
-                      className="dropdown-item"
-                      onClick={() => navigate('./register')}
-                    >
-                      <i className="me-2 fas fa-user-plus" /> Sign Up
-                    </span>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
-
-          <Link to="./cart">
-            <div
-              className="position-relative d-flex justify-content-center align-items-center me-2"
-              style={{
-                backgroundColor: "#f5f5f5",
-                color: "#2f4d23",
-                height: "35px",
-                width: "35px",
-                borderRadius: "50%",
-                fontSize: "15px",
-              }}
-            >
-              <FontAwesomeIcon icon={faShoppingCart} />
-              <span
-                className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                style={{ fontSize: "10px", backgroundColor: "#ffad63" }}
-              >
-                {items.length}
-              </span>
-            </div>
-          </Link>
-
-          <div className="d-flex justify-content-center align-items-center" style={{ backgroundColor: "#ffad63", color: "#fff", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }} onClick={toggleDrawer}>
-            <FontAwesomeIcon icon={faList} />
-          </div>
-
-          <Drawer open={isDrawerOpen} onClose={toggleDrawer} direction="right" className="drawer" style={{ width: "500px" }}>
-            <div className="drawer-header">
-              <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "50px" }} alt="glocre"/>
-            </div>
-           <div className="drawer-content">
-      <ul className="drawer-links">
-        {categories
-          .flatMap((main) =>
-            main.categories?.map((cat) => ({
-              maincategory: main.maincategory,
-              category: cat.category,
-              subcategories: cat.subcategories || [],
-            }))
-          )
-          .slice(0, 7)
-          .map((catItem, i) => (
-            <li className="" key={i}>
-<div
-  className="cursor-pointer font-semibold  flex justify-between items-center"
-  onClick={() => handleToggle(i)}
->
-  <span className="text-left">{catItem.category}</span>
-  <span className="text-gray-400 text-sm ms-2" style={{fontSize:"10px"}}>
-    {openIndex === i ? "▲" : "▼"}
-  </span>
-</div>
-
-
-              {openIndex === i && (
-                <ul className="dropdown_menu mt-2">
-                  {catItem.subcategories.map((sub, j) => (
-                    <li
-                      key={j}
-                      className="cursor-pointer drawer-sub-li"
-                      
-                      onClick={() =>
-                        navigate(`/maincategory/${catItem.maincategory}`, {
-                          state: {
-                            category: catItem.category,
-                            subcategory: sub,
-                          },
-                        })
-                      }
-                    >
-                      {sub}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-      </ul>
-    </div>
-          </Drawer>
-
- </div>
-
-<div className=" mt-2">
-                <div className="headerSearch  align-items-center">
-                  <div
-                    className="search d-flex align-items-center"
-                    ref={inputRef}
-                    onSubmit={searchHandler}
-                  >
-                    <input
-                      type="text"
-                      id="search_field"
-                      className=" desktop-search"
-                      placeholder="Lets us know What you are looking for ?"
-                      onChange={e => setKeyword(e.target.value)}
-                      value={keyword}
-                    />
-                    <SearchIcon className="searchIcon cursor ms-2" />
-                  </div>
-                </div>
+            <Link to="/seller">
+              <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
+                <FontAwesomeIcon icon={faPlus} />
               </div>
+            </Link>
+
+            <div className="dropdown me-2">
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  color: "#2f4d23",
+                  height: "35px",
+                  width: "35px",
+                  borderRadius: "50%",
+                  fontSize: "15px",
+                  cursor: "pointer"
+                }}
+                id="dropdownMenuIconButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <FontAwesomeIcon icon={faUser} />
+              </div>
+
+              <ul
+                className="dropdown-menu dropdown-menu-end mt-2"
+                aria-labelledby="dropdownMenuIconButton"
+                style={{ cursor: "pointer" }}
+              >
+                {isAuthenticated ? (
+                  <>
+                    {user?.role === 'admin' && (
+                      <li>
+                        <span
+                          className="dropdown-item"
+                          onClick={() => navigate('./admin/dashboard')}
+                        >
+                          <DashboardOutlinedIcon className="me-2" />
+                          Dashboard
+                        </span>
+                      </li>
+                    )}
+                    {user?.role === 'seller' && (
+                      <li>
+                        <span
+                          className="dropdown-item"
+                          onClick={() => navigate('./seller/dashboard')}
+                        >
+                          <DashboardOutlinedIcon className="me-2" />
+                          Seller Dashboard
+                        </span>
+                      </li>
+                    )}
+                    <li>
+                      <span
+                        className="dropdown-item"
+                        onClick={() => navigate('./myprofile')}
+                      >
+                        <AccountCircleOutlinedIcon className="me-2" />
+                        Profile
+                      </span>
+                    </li>
+                    <li>
+                      <span
+                        className="dropdown-item"
+                        onClick={() => navigate('./orders')}
+                      >
+                        <ShoppingCartOutlinedIcon className="me-2" />
+                        My Orders
+                      </span>
+                    </li>
+                    <li>
+                      <span className="dropdown-item text-danger" onClick={logoutHandler}>
+                        <LogoutOutlinedIcon className="me-2" />
+                        Log Out
+                      </span>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li >
+                      <span
+                        className="dropdown-item"
+                        onClick={() => navigate('./login')}
+                      >
+                        <i className="me-2 fas fa-sign-in-alt" /> Log In
+                      </span>
+                    </li>
+                    <li>
+                      <span
+                        className="dropdown-item"
+                        onClick={() => navigate('./register')}
+                      >
+                        <i className="me-2 fas fa-user-plus" /> Sign Up
+                      </span>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+
+            <Link to="./cart">
+              <div
+                className="position-relative d-flex justify-content-center align-items-center me-2"
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  color: "#2f4d23",
+                  height: "35px",
+                  width: "35px",
+                  borderRadius: "50%",
+                  fontSize: "15px",
+                }}
+              >
+                <FontAwesomeIcon icon={faShoppingCart} />
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                  style={{ fontSize: "10px", backgroundColor: "#ffad63" }}
+                >
+                  {items.length}
+                </span>
+              </div>
+            </Link>
+
+            <div className="d-flex justify-content-center align-items-center" style={{ backgroundColor: "#ffad63", color: "#fff", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }} onClick={toggleDrawer}>
+              <FontAwesomeIcon icon={faList} />
+            </div>
+
+            <Drawer open={isDrawerOpen} onClose={toggleDrawer} direction="right" className="drawer" style={{ width: "700px" }}>
+              <div className="drawer-header">
+                <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "50px" }} alt="glocre" />
+              </div>
+
+              <div className="drawer-content">
+                <ul className="drawer-links">
+                  {categories
+                    .flatMap((main) =>
+                      main.categories?.map((cat) => ({
+                        maincategory: main.maincategory,
+                        category: cat.category,
+                        subcategories: cat.subcategories || [],
+                      }))
+                    )
+                    .slice(0, 7)
+                    .map((catItem, i) => (
+                      <li className="" key={i}>
+                        <div
+                          className="cursor-pointer font-semibold flex justify-between items-center"
+                          onClick={() => handleToggle(i)}
+                        >
+                          <span className="text-left">{catItem.category}</span>
+                          <span className="text-gray-400 text-sm ms-2" style={{ fontSize: "10px", color: "#8c8c8c" }}>
+                            {openIndex === i ? "▲" : "▼"}
+                          </span>
+                        </div>
+
+                        {openIndex === i && (
+                          <ul className="dropdown_menu mt-2">
+                            {catItem.subcategories.map((sub, j) => (
+                              <li
+                                key={j}
+                                className="cursor-pointer drawer-sub-li mb-0 pb-0 pt-0"
+                                style={{ color: "#8c8c8c" }}
+                                onClick={() => {
+                                  navigate(`/maincategory/${catItem.maincategory}`, {
+                                    state: {
+                                      category: catItem.category,
+                                      subcategory: sub,
+                                    },
+                                  });
+                                  toggleDrawer(); // Close drawer after navigation
+                                }}
+                              >
+                                {sub}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </Drawer>
+          </div>
+
+          <div className="d-flex" style={{ alignItems: "center" }}>
+            <div className="col-md-10 col-lg-10 col-11 p-0">
+              <div className="search d-flex align-items-center">
+                <input
+                  type="text"
+                  id="search_field"
+                  className="mobile-search mt-2"
+                  width="100%"
+                  onChange={e => setKeyword(e.target.value)}
+                  value={keyword}
+                  style={{ borderRadius: "0px", border: "1px solid #ccc", padding: "5px", width: "98%", height: "35px", fontSize: "12px" }}
+                  placeholder="Lets us know What you are looking for ?"
+                />
+              </div>
+            </div>
+            <div className="col-md-2 col-lg-2 col-1 mt-2" style={{ backgroundColor: "#ffad63", color: "#fff", height: "35px", width: "35px", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center" }} >
+              <SearchIcon className="searchIcon cursor ms-1" />
+            </div>
+          </div>
 
         </div>
       </section>

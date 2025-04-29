@@ -2,18 +2,20 @@ import React, { Fragment, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdminProducts, updateProduct, getCategoryHierarchy } from "../../actions/productActions";
+import { getAdminProducts, updateProduct, getCategoryHierarchy, deleteProductImage } from "../../actions/productActions";
 import { clearError, clearProductUpdated } from "../../slices/singleProductSlice";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { faCartShopping,  faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
+import axios from 'axios';
 export default function UpdateProduct() {
 
     const { id: productId } = useParams();
@@ -36,7 +38,7 @@ export default function UpdateProduct() {
         condition: "",
         brand: "",
         itemModelNum: "",
-        isRefundable: "false", 
+        isRefundable: "false",
         manufacturer: "",
 
         sku: "",
@@ -57,8 +59,8 @@ export default function UpdateProduct() {
         shippingCostWest: "",
         shippingCostNe: "",
         unit: "",
-        rejectionReason: "", 
-        clocreId: "", 
+        rejectionReason: "",
+        clocreId: "",
     });
 
     const dispatch = useDispatch();
@@ -100,6 +102,18 @@ export default function UpdateProduct() {
         setImagesPreview([]);
     };
 
+    const handleDeleteImage = async (imageUrl) => {
+        try {
+            await dispatch(deleteProductImage(imageUrl, productId)); // pass product ID here if needed
+            // Remove the image from formData state to reflect UI update
+            setFormData((prev) => ({
+                ...prev,
+                images: prev.images.filter((img) => img !== imageUrl),
+            }));
+        } catch (error) {
+            console.error("Failed to delete image", error);
+        }
+    };
 
 
 
@@ -110,7 +124,7 @@ export default function UpdateProduct() {
                 onOpen: () => dispatch(clearProductUpdated())
             });
             setImages([]);
-            navigate('/admin/products');
+            // navigate('/admin/products');
             return;
         }
 
@@ -177,7 +191,7 @@ export default function UpdateProduct() {
                     itemModelNum: product.itemModelNum,
                     manufacturer: product.manufacturer,
                     status: product.status,
-
+                    countryofOrgin: product.countryofOrgin,
                     sku: product.sku,
                     upc: product.upc,
                     hsn: product.hsn,
@@ -247,50 +261,59 @@ export default function UpdateProduct() {
 
         const productData = new FormData();
 
-        // Append product fields
-        Object.keys(formData).forEach((key) => {
+        // Append general product fields
+        for (const [key, value] of Object.entries(formData)) {
             if (key === "images") {
-                imageFiles.forEach((file) => {
+                // Append new product images (if any)
+                imageFiles.forEach(file => {
                     productData.append("images", file);
                 });
+
+                // Append existing image URLs so they are retained
+                productData.append("existingImages", JSON.stringify(value));
             } else if (key === "keyPoints") {
-                formData[key].forEach((point) => {
+                value.forEach(point => {
                     productData.append("keyPoints", point);
                 });
             } else {
-                productData.append(key, formData[key]);
+                productData.append(key, value);
             }
-        });
+        }
 
-        // Ensure ALL variants (both updated & unchanged) are included
+        // Append variant data
         variantDetails.forEach((variant, index) => {
-            productData.append(`variants[${index}][id]`, variant.id); // Keep existing ID
-            productData.append(`variants[${index}][name]`, variant.name);
-            productData.append(`variants[${index}][price]`, variant.price);
-            productData.append(`variants[${index}][stock]`, variant.stock);
+            const prefix = `variants[${index}]`;
 
+            productData.append(`${prefix}[id]`, variant.id);
+            productData.append(`${prefix}[name]`, variant.name);
+            productData.append(`${prefix}[price]`, variant.price);
+            productData.append(`${prefix}[stock]`, variant.stock);
+
+            // Handle new variant images
             if (variant.images && variant.images.length > 0) {
-                variant.images.forEach((file, i) => {
-                    productData.append(`variants[${index}][images]`, file);
+                variant.images.forEach((file) => {
+                    productData.append(`${prefix}[images]`, file);
                 });
-            } else {
-                // Preserve existing images if no new ones are uploaded
-                productData.append(`variants[${index}][existingImages]`, JSON.stringify(variant.existingImages || []));
+            }
+
+            // Handle existing variant image URLs
+            if (variant.existingImages && variant.existingImages.length > 0) {
+                productData.append(`${prefix}[existingImages]`, JSON.stringify(variant.existingImages));
             }
         });
 
-        if (formData.status === 'rejected') {
-            productData.append('rejectionReason', rejectionReason);
+        // Append rejection reason if status is rejected
+        if (formData.status === "rejected") {
+            productData.append("rejectionReason", rejectionReason);
         }
 
         try {
             await dispatch(updateProduct(productId, productData));
         } catch (error) {
-            toast(error.message, {
-                type: 'error',
-            });
+            toast(error.message, { type: "error" });
         }
     };
+
 
 
     // console.log("Variant Details before submitting:", variantDetails);
@@ -298,6 +321,7 @@ export default function UpdateProduct() {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
+        setImageFiles(prev => [...prev, ...files]);
         const newImages = [];
         const errors = [];
 
@@ -781,27 +805,27 @@ export default function UpdateProduct() {
                                                             ))}
                                                         </div>
                                                     )}
-                                                    {formData.images.length > 0 && (
-                                                        <span
-                                                            className="mr-2"
-                                                            onClick={clearImagesHandler}
-                                                            style={{ cursor: "pointer" }}
-                                                        >
-                                                            <i className="fa fa-trash"></i>
-                                                        </span>
-                                                    )}
-                                                    {formData.images.map((image, index) => (
-                                                        <img
-                                                            className="mt-3 mr-2"
-                                                            key={index}
-                                                            src={image}
-                                                            alt={`Image Preview`}
-                                                            width="55"
-                                                            height="52"
-                                                            onClick={() => openModal(image)}
-                                                            style={{ cursor: "pointer" }}
-                                                        />
-                                                    ))}
+                                                    {
+                                                        formData.images.map((image, index) => (
+                                                            <div key={index} className="relative d-inline-block mr-2 mt-2">
+                                                                <img
+                                                                    src={image}
+                                                                    alt="Image Preview"
+                                                                    width="55"
+                                                                    height="52"
+                                                                    onClick={() => openModal(image)}
+                                                                    style={{ cursor: "pointer" }}
+                                                                />
+                                                                <button
+                                                                    onClick={() => handleDeleteImage(image)}
+                                                                    className="btn btn-sm btn-danger position-absolute "
+                                                                    style={{ fontSize:"1rem" }}
+                                                                >
+                                                                    ×
+                                                                </button>
+                                                            </div>
+                                                        ))
+                                                    }
                                                 </div>
                                             </>
                                         )}
@@ -1046,18 +1070,42 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="manufactureDetails_field">Manufacture Details:<span style={{ color: "red" }}> *
-                                                    <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
-                                                        <ErrorOutlineIcon className="errorout-icon" />
-                                                    </LightTooltip></span></label>
-                                                <input
-                                                    type="text"
-                                                    id="manufactureDetails_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.manufactureDetails}
-                                                    name="manufactureDetails"
-                                                />
+                                                <div className="custom-select-wrapper">
+                                                    <label>Country of Origin:<span style={{ color: "red" }}> *
+
+                                                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+
+                                                    </span></label>
+                                                    <select
+                                                        className="form-control custom-select"
+                                                        name="countryofOrgin"
+                                                        value={formData.countryofOrgin}
+                                                        onChange={handleChange}
+                                                        required
+                                                    >
+                                                        {[
+                                                            "India",
+                                                            "United States",
+                                                            "United Kingdom",
+                                                            "China",
+                                                            "Germany",
+                                                            "France",
+                                                            "Japan",
+                                                            "Australia",
+                                                            "Canada",
+                                                            "Brazil",
+                                                            "Italy",
+                                                            "South Korea",
+                                                            "Singapore",
+                                                            "UAE",
+                                                            "South Africa"
+                                                        ].map((country) => (
+                                                            <option key={country} value={country}>{country}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="col-lg-6">
@@ -1240,26 +1288,29 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="status_field">Status:<span style={{ color: "red" }}> *</span></label>
-                                                <select
-                                                    className="form-control"
-                                                    id="status_field"
-                                                    onChange={handleChange}
-                                                    value={formData.status}
-                                                    name="status"
-                                                >
-                                                    <option value="pending">Pending</option>
-                                                    <option value="approved">Approved</option>
-                                                    <option value="rejected">Rejected</option>
-                                                </select>
+                                                <div className="custom-select-wrapper">
+                                                    <label htmlFor="status_field">Status:<span style={{ color: "red" }}> *</span></label>
+                                                    <select
+                                                        className="form-control custom-select"
+                                                        id="status_field"
+                                                        onChange={handleChange}
+                                                        value={formData.status}
+                                                        name="status"
+                                                    >
+                                                        <option value="pending">Pending</option>
+                                                        <option value="approved">Approved</option>
+                                                        <option value="rejected">Rejected</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                         {formData.status === 'rejected' && (
                                             <div className="col-lg-6">
                                                 <div className="form-group">
+
                                                     <label htmlFor="rejectionReason_field">Rejection Reason:<span style={{ color: "red" }}> *</span></label>
                                                     <textarea
-                                                        className="from-control"
+                                                        className="from-control "
                                                         id="rejectionReason_field"
                                                         rows="4"
                                                         onChange={(e) => setRejectionReason(e.target.value)}
@@ -1267,6 +1318,8 @@ export default function UpdateProduct() {
                                                         name="rejectionReason"
                                                         style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}
                                                     ></textarea>
+
+
                                                 </div>
                                             </div>
                                         )
@@ -1297,9 +1350,15 @@ export default function UpdateProduct() {
                                                     &times;
                                                 </button>
                                             </div>
-                                            <div className="modal-body">
-                                                <img src={modalImage} alt="Preview" style={{ width: '100%', height: '100%' }} />
-                                            </div>
+
+                                            <Zoom>
+                                                <img
+                                                    src={modalImage}
+                                                    alt="Preview"
+                                                    style={{ width: '100%', height: '100%' }}
+                                                />
+                                            </Zoom>
+
                                         </div>
                                     </div>
                                 </div>

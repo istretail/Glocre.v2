@@ -55,7 +55,7 @@ import Support from "./components/layouts/support";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateAnalytics } from "./actions/analyticsActions";
-import {store} from "./store";
+import { store } from "./store";
 import { loadUser } from "./actions/userActions";
 import { ToastContainer } from "react-toastify";
 import SellerRegistration from "./components/seller/SellerRegistration";
@@ -70,6 +70,7 @@ import SellerArchiveProducts from './components/seller/SellerArciveProducts';
 import Faqs from "./components/layouts/faqs";
 import AnalyticsModal from './components/layouts/AnalyticsModal';
 import ResendVerification from "./components/user/ResendVerification";
+import S3ImageGallery from "./components/admin/AWSImages";
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isRestrictedRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/seller");
@@ -137,39 +138,40 @@ const App = () => {
           <Route path="/success" element={<Sucess />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
-          <Route path="/myprofile"  element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/myprofile/update"  element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
-          <Route path="/myprofile/update/password"  element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />
-          <Route path="/myprofile/saved-address"  element={<ProtectedRoute><SavedAddress /></ProtectedRoute>} />
-          <Route path="/myprofile/update-saved-address/:id"  element={<ProtectedRoute><UpdateSavedAddress /></ProtectedRoute>} />
+          <Route path="/myprofile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/myprofile/update" element={<ProtectedRoute><UpdateProfile /></ProtectedRoute>} />
+          <Route path="/myprofile/update/password" element={<ProtectedRoute><UpdatePassword /></ProtectedRoute>} />
+          <Route path="/myprofile/saved-address" element={<ProtectedRoute><SavedAddress /></ProtectedRoute>} />
+          <Route path="/myprofile/update-saved-address/:id" element={<ProtectedRoute><UpdateSavedAddress /></ProtectedRoute>} />
           <Route path="/password/forgot" element={<ForgotPassword />} />
           <Route path="/password/reset/:token" element={<ResetPassword />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/shipping"  element={<ProtectedRoute><Shipping /></ProtectedRoute>} />
-          <Route path="/order/confirm"  element={<ProtectedRoute><ConfirmOrder /></ProtectedRoute>} />
-          <Route path="/order/success"  element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
-          <Route path="/orders"  element={<ProtectedRoute><UserOrders /></ProtectedRoute>} />
-          <Route path="/order/:id"  element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
+          <Route path="/shipping" element={<ProtectedRoute><Shipping /></ProtectedRoute>} />
+          <Route path="/order/confirm" element={<ProtectedRoute><ConfirmOrder /></ProtectedRoute>} />
+          <Route path="/order/success" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><UserOrders /></ProtectedRoute>} />
+          <Route path="/order/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
 
           {/* Admin Routes (No Header & Footer) */}
-          <Route path="/admin/dashboard"  element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} />
-          <Route path="/admin/products"  element={<ProtectedRoute isAdmin={true}><ProductList /></ProtectedRoute>} />
-          <Route path="/admin/products/create"  element={<ProtectedRoute isAdmin={true}><NewProduct /></ProtectedRoute>} />
-          <Route path="/admin/products/:id"  element={<ProtectedRoute isAdmin={true}><UpdateProduct /></ProtectedRoute>} />
-          <Route path="/admin/orders"  element={<ProtectedRoute isAdmin={true}><OrderList /></ProtectedRoute>} />
-          <Route path="/admin/order/:id"  element={<ProtectedRoute isAdmin={true}><UpdateOrder /></ProtectedRoute>} />
-          <Route path="/admin/users"  element={<ProtectedRoute isAdmin={true}><UserList /></ProtectedRoute>} />
-          <Route path="/admin/user/:id"  element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
+          <Route path="/admin/dashboard" element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} />
+          <Route path="/admin/products" element={<ProtectedRoute isAdmin={true}><ProductList /></ProtectedRoute>} />
+          <Route path="/admin/products/create" element={<ProtectedRoute isAdmin={true}><NewProduct /></ProtectedRoute>} />
+          <Route path="/admin/products/:id" element={<ProtectedRoute isAdmin={true}><UpdateProduct /></ProtectedRoute>} />
+          <Route path="/admin/orders" element={<ProtectedRoute isAdmin={true}><OrderList /></ProtectedRoute>} />
+          <Route path="/admin/order/:id" element={<ProtectedRoute isAdmin={true}><UpdateOrder /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute isAdmin={true}><UserList /></ProtectedRoute>} />
+          <Route path="/admin/user/:id" element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
           <Route path="/admin/reviews" element={<ProtectedRoute isAdmin={true}><ReviewList /></ProtectedRoute>} />
           <Route path="/admin/edit-banner" element={<ProtectedRoute isAdmin={true}><AdminBannerPage /></ProtectedRoute>} />
+          <Route path="/admin/awsimages" element={<ProtectedRoute isAdmin={true}><S3ImageGallery /></ProtectedRoute>} />
 
           {/* Seller Routes */}
-          <Route path="/register/seller"  element={<ProtectedRoute><SellerRegistration /></ProtectedRoute>} />
-          <Route path="/seller/dashboard"  element={<ProtectedRoute isSeller={true}><SellerDashboard /></ProtectedRoute>} />
-          <Route path="/seller/products"  element={<ProtectedRoute isSeller={true}><SellerProducts /></ProtectedRoute>} />
-          <Route path="/seller/orders"  element={<ProtectedRoute isSeller={true}><SellerOrders /></ProtectedRoute>} />
-          <Route path="/seller/order/:id"  element={<ProtectedRoute isSeller={true}><SellerOrderDetail/></ProtectedRoute>} />
-          <Route path="/seller/products/create"  element={<ProtectedRoute isSeller={true}><SellerCreateProduct /></ProtectedRoute>} />
+          <Route path="/register/seller" element={<ProtectedRoute><SellerRegistration /></ProtectedRoute>} />
+          <Route path="/seller/dashboard" element={<ProtectedRoute isSeller={true}><SellerDashboard /></ProtectedRoute>} />
+          <Route path="/seller/products" element={<ProtectedRoute isSeller={true}><SellerProducts /></ProtectedRoute>} />
+          <Route path="/seller/orders" element={<ProtectedRoute isSeller={true}><SellerOrders /></ProtectedRoute>} />
+          <Route path="/seller/order/:id" element={<ProtectedRoute isSeller={true}><SellerOrderDetail /></ProtectedRoute>} />
+          <Route path="/seller/products/create" element={<ProtectedRoute isSeller={true}><SellerCreateProduct /></ProtectedRoute>} />
           <Route path="/seller/product/:id" element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} />
           <Route path='/seller/archive/product' element={<ProtectedRoute isSeller={true}><SellerArchiveProducts /></ProtectedRoute>} />
           {/* <Route path="/seller/product/:id" element={<ProtectedRoute isSeller={true}><SellerUpdateProduct /></ProtectedRoute>} /> */}

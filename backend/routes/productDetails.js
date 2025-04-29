@@ -19,6 +19,7 @@ const {
   getArchiveProducts,
   getCategoryHierarchy,
   getAvailableCategories,
+  deleteProductImage
 } = require("../controllers/productController");
 const router = express.Router();
 const {
@@ -94,6 +95,8 @@ router.route("/admin/product/:id").delete(isAuthenticatedUser, authorizeRoles("a
 router.route("/admin/product/:id").put(isAuthenticatedUser, authorizeRoles("admin"), upload, handleVariantUploads, updateProduct);
 router.route("/admin/reviews").get(isAuthenticatedUser, authorizeRoles("admin"), getReviews);
 router.route("/admin/review").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteReview);
+// routes/product.js
+router.route('/admin/product/:id/delete-image').delete(isAuthenticatedUser, authorizeRoles("admin"),deleteProductImage);
 
 // Seller Routes
 router.route("/seller/products").get(isAuthenticatedUser, authorizeRoles("seller"), getSellerProducts);

@@ -301,3 +301,48 @@
     font-size: 15px !important;
     margin-left: 7px;
 }
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .image-gallery {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .image-card {
+    position: relative;
+  }
+  
+  .image-card img {
+    width: 100%;
+    height: 12rem; /* Equivalent to h-48 */
+    object-fit: cover;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .delete-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: #dc2626;
+    color: white;
+    border-radius: 9999px;
+    width: 2rem;
+    height: 2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .delete-btn:hover {
+    background-color: #b91c1c;
+  }
+  

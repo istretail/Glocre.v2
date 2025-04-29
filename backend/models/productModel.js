@@ -76,7 +76,7 @@ const productSchema = new mongoose.Schema({
   isRefundable: { type: Boolean, default: false },
   itemModelNum: { type: String },
   sku: { type: String, required: true },
-  upc: { type: String, required: true },
+  upc: { type: String, },
   hsn: { type: String, required: true },
   countryofOrgin: { type: String, required: true },
   manufactureDetails: { type: String },

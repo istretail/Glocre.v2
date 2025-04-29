@@ -38,7 +38,7 @@ const SellerCreateProduct = () => {
     sku: "",
     upc: "",
     hsn: "",
-    countryofOrgin: "",
+    countryofOrgin: "India",
     manufactureDetails: "",
     productCertifications: "",
     itemLength: "",
@@ -606,12 +606,7 @@ const SellerCreateProduct = () => {
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Select Condition<span style={{ color: "red" }}> *
-
-                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
-                          <ErrorOutlineIcon className="errorout-icon" />
-                        </LightTooltip>
-
+                      <option value="">Select Condition<span style={{ color: "red" }}> 
                       </span></option>
                       <option value="New">New</option>
                       <option value="Unboxed">Unboxed</option>
@@ -830,7 +825,7 @@ const SellerCreateProduct = () => {
                           <div className="form-group">
                             <label>Images:<span style={{ color: "red" }}> *
 
-                              <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                              <LightTooltip placement="top" title="Provide the images of the product." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
 
@@ -948,7 +943,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
 
-                          <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                          <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
 
@@ -988,7 +983,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>Product Images:<span style={{ color: "red" }}> *
 
-                          <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                          <LightTooltip placement="top" title="Provide the images of the product." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
 
@@ -1024,7 +1019,7 @@ const SellerCreateProduct = () => {
                 <div className="col-lg-6">
                   <div className="form-group">
                     <label>Item Model Number:
-                      <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                      <LightTooltip placement="top" title="Provide the item’s model number, if available." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
                     </label>

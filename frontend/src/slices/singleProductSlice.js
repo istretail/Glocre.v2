@@ -348,6 +348,26 @@ const productSlice = createSlice({
         loading: false,
         error: action.payload
       }
+    }, 
+    deleteProductImageRequest(state, action) {
+      return {
+        ...state,
+        loading: true
+      }
+    },
+    deleteProductImageSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload
+      }
+    },
+    deleteProductImageFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
     },
     clearProductArchive(state, action) {
       return {
@@ -415,6 +435,9 @@ export const {
   removeArciveProductSuccess,
   removeArchiveProductFail,
   clearProductArchive,
+  deleteProductImageRequest,
+  deleteProductImageSuccess,
+  deleteProductImageFail
 } = actions;
 
 export default reducer;

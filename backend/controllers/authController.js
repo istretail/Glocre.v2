@@ -107,7 +107,7 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
 
 exports.resendVerificationEmail = catchAsyncError(async (req, res, next) => {
   const { email } = req.body;
-  console.log("Request body",req.body)
+  // console.log("Request body",req.body)
   if (!email) {
     return res.status(400).json({
       success: false,
@@ -368,7 +368,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
   };
-  // console.log(req.body)
+  // console.log("Request body",req.body)
   let avatar;
   let BASE_URL = process.env.BACKEND_URL;
 
@@ -399,45 +399,43 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
       gstNumber: req.body.gstNumber,
       businessName: req.body.businessName,
       businessEmail: req.body.businessEmail,
+      
       isSeller: req.body.isSeller === true ? true : false,
     };
 
     // Ensure businessAddress is correctly formatted
-    if (typeof req.body.businessAddress === "string") {
+    let addressObj = req.body.businessAddress;
+
+    // Handle stringified input
+    if (typeof addressObj === "string") {
       try {
-        req.body.businessAddress = JSON.parse(req.body.businessAddress);
+        addressObj = JSON.parse(addressObj);
+
+        // Guard against parsing "null"
+        if (!addressObj || typeof addressObj !== "object") {
+          return next(new ErrorHandler("Invalid business address data", 400));
+        }
+
       } catch (error) {
-        return next(new ErrorHandler("Invalid business address format", 400));
+        return next(new ErrorHandler("Invalid JSON format for business address", 400));
       }
     }
 
-    if (Array.isArray(req.body.businessAddress)) {
-      req.body.businessAddress = req.body.businessAddress[0]; // Take first object
+    // If it's an array, take the first object
+    if (Array.isArray(addressObj)) {
+      addressObj = addressObj[0];
     }
 
-    newUserData.businessAddress = req.body.businessAddress;
+    // Final check to ensure it's an object
+    if (!addressObj || typeof addressObj !== "object") {
+      return next(new ErrorHandler("Business address must be a valid object", 400));
+    }
 
-    // Twilio OTP Verification
-    // let otpCode;
-    // if (req.body.businessContactNumber) {
-    //   try {
-    //     otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-    //     const otpExpire = Date.now() + 10 * 60 * 1000;
+    newUserData.businessAddress = [addressObj];
 
-    //     await client.messages.create({
-    //       body: `Your OTP for business contact verification is: ${otpCode}`,
-    //       from: TWILIO_PHONE_NUMBER,
-    //       to: req.body.businessContactNumber,
-    //     });
 
-    //     newUserData.businessContactNumber = req.body.businessContactNumber;
-    //     newUserData.otpCode = otpCode;
-    //     newUserData.otpExpire = otpExpire;
-    //     newUserData.isPhoneVerified = false;
-    //   } catch (error) {
-    //     return next(new ErrorHandler("Failed to send OTP for business contact", 500));
-    //   }
-    // }
+
+
 
     // Prepare email content
     const adminEmail = process.env.ADMIN_EMAIL || "atpldesign04@outlook.com";
@@ -1118,7 +1116,7 @@ exports.sendContactEmail = catchAsyncError( async (req, res) => {
       pincode,
       requirements,
     } = req.body;
-    console.log(req.body)
+    // console.log(req.body)
   
     const adminHtmlMessage = `
       <h2>New Contact Form Submission</h2>

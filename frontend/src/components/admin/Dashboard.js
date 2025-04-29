@@ -207,7 +207,7 @@ export default function Dashboard() {
                                                         </div>
                                                         <div className="col-lg-9 col-sm-9">
                                                             <h6 className="card-title-1">Total Sales</h6>
-                                                            <p className="card-title-2">100 Orders</p>
+                                                            <p className="card-title-2">{adminOrders.length}</p>
                                                         </div>
                                                     </div>
                                                     <h3 className="card-title-3">₹ {Math.round(totalPrice)}</h3>

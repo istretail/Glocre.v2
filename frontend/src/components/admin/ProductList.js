@@ -289,7 +289,12 @@ export default function ProductList() {
 
                                                             <td>
                                                                 <span style={{ color: "#8c8c8c" }}>
-                                                                    {product.stock > 0 ? product.stock : 'Out of Stock'}
+                                                                    {product.variants && product.variants.length > 0
+                                                                        ? 'Available'
+                                                                        : product.stock > 0
+                                                                            ? product.stock
+                                                                            : 'Out of Stock'}
+
                                                                 </span>
                                                             </td>
 

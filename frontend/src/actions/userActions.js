@@ -161,14 +161,9 @@ export const logout = async (dispatch) => {
 
 export const updateProfile = (userData) => async (dispatch) => {
   try {
+    console.log(userData);
     dispatch(updateProfileRequest());
-    const config = {
-      headers: {
-        "Content-type": "multipart/form-data",
-      },
-    };
-
-    const { data } = await axios.put(`/api/v1/update`, userData, config);
+    const { data } = await axios.put(`/api/v1/update`, userData);
     dispatch(updateProfileSuccess(data));
   } catch (error) {
     dispatch(updateProfileFail(error.response.data.message));

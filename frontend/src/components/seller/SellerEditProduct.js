@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getSellerSingleProduct, updateSellerProduct, getCategoryHierarchy } from "../../actions/productActions";
 import { clearError, clearProductUpdated } from "../../slices/singleProductSlice";
 import { toast } from "react-toastify"; import Loader from "../layouts/Loader";
-import { faCartShopping,  faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 import { Dropdown, DropdownButton, Image } from "react-bootstrap";
 import { Link } from "react-router-dom"
@@ -13,7 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 export default function SellerUpdateProduct() {
   const { id: productId } = useParams();
   const { loading, error, categories = {} } = useSelector(state => state.productsState);
@@ -51,7 +52,7 @@ export default function SellerUpdateProduct() {
     shippingCostNorth: "",
     shippingCostSouth: "",
     shippingCostEast: "",
-    shippingCostCentral:"",
+    shippingCostCentral: "",
     shippingCostWest: "",
     shippingCostNe: "",
     unit: "",
@@ -145,7 +146,7 @@ export default function SellerUpdateProduct() {
         offPrice: product.offPrice,
         tax: product.tax,
         price: product.price,
-        keyPoints: product.keyPoints,
+        keyPoints: product.keyPoints && product.keyPoints.length > 0 ? product.keyPoints: ["", "", "", "", ""],
         description: product.description,
         images: product.images,
         maincategory: product.maincategory,
@@ -584,7 +585,7 @@ export default function SellerUpdateProduct() {
                         <LightTooltip placement="top" title="Highlight key features or selling points of the product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip></span></label>
-                      {formData.keyPoints.map((point, index) => (
+                      {formData.keyPoints?.map((point, index) => (
 
                         <div key={index} className="d-flex mb-2">
 
@@ -596,7 +597,7 @@ export default function SellerUpdateProduct() {
                             maxLength={80}
                             required
                           />
-                          {formData.keyPoints.length > 3 && (
+                          {formData.keyPoints?.length > 3 && (
                             <button
                               type="button"
                               className="btn btn-danger"
@@ -608,7 +609,7 @@ export default function SellerUpdateProduct() {
                         </div>
                       ))}
 
-                      {formData.keyPoints.length < 5 && (
+                      {formData.keyPoints?.length < 5 && (
                         <button
                           type="button"
                           className="btn"
@@ -790,7 +791,7 @@ export default function SellerUpdateProduct() {
                         <div className="form-group">
                           <label htmlFor="offPrice_field">
                             Offer Price (in '₹')
-                            <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </label>
@@ -827,7 +828,7 @@ export default function SellerUpdateProduct() {
                       <div className="col-lg-6">
                         <div className="form-group">
                           <label>Product Images:<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                            <LightTooltip placement="top" title="Upload the images of the product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
                           <div className="custom-file">
@@ -1037,7 +1038,7 @@ export default function SellerUpdateProduct() {
                         </div>
                         <div className="form-group">
                           <label>Images:<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                            <LightTooltip placement="top" title="Provide the images of the product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
                           <input
@@ -1090,7 +1091,7 @@ export default function SellerUpdateProduct() {
                     <div className="form-group">
                       <label htmlFor="itemModelNum_field">
                         Item Model Number
-                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                        <LightTooltip placement="top" title="Provide the item’s model number, if available." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
                       </label>
@@ -1167,19 +1168,42 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="countryofOrgin_field">Country of Orgin
-                        <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
-                          <ErrorOutlineIcon className="errorout-icon" />
-                        </LightTooltip>
-                      </label>
-                      <input
-                        type="text"
-                        id="countryofOrgin_field"
-                        className="form-control"
-                        onChange={handleChange}
-                        value={formData.countryofOrgin}
-                        name="countryofOrgin"
-                      />
+                      <div className="custom-select-wrapper">
+                        <label>Country of Origin:<span style={{ color: "red" }}> *
+
+                          <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+
+                        </span></label>
+                        <select
+                          className="form-control custom-select"
+                          name="countryofOrgin"
+                          value={formData.countryofOrgin}
+                          onChange={handleChange}
+                          required
+                        >
+                          {[
+                            "India",
+                            "United States",
+                            "United Kingdom",
+                            "China",
+                            "Germany",
+                            "France",
+                            "Japan",
+                            "Australia",
+                            "Canada",
+                            "Brazil",
+                            "Italy",
+                            "South Korea",
+                            "Singapore",
+                            "UAE",
+                            "South Africa"
+                          ].map((country) => (
+                            <option key={country} value={country}>{country}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
 
@@ -1386,14 +1410,14 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in '₹')</label>
+                      <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in '₹')</label>
                       <input
                         type="number"
-                          id="shippingCostCentral_field"
+                        id="shippingCostCentral_field"
                         className="form-control"
                         onChange={handleChange}
-                          value={formData.shippingCostCentral}
-                          name="shippingCostCentral"
+                        value={formData.shippingCostCentral}
+                        name="shippingCostCentral"
                       />
                     </div>
                   </div>
@@ -1442,13 +1466,14 @@ export default function SellerUpdateProduct() {
                           &times;
                         </button>
                       </div>
-                      <div className="modal-body">
+
+                      <Zoom>
                         <img
                           src={modalImage}
                           alt="Preview"
                           style={{ width: '100%', height: '100%' }}
                         />
-                      </div>
+                      </Zoom>
                     </div>
                   </div>
                 </div>

@@ -380,6 +380,17 @@ const categoryHierarchy = {
         "Kids' Clothing and Babywear": ["Baby Onesies", "Kids’ T-Shirts", "Toddler Shoes", "Baby Hats", "Baby Blankets", "Baby Jackets", "Boys' and Girls' Outerwear"]
 
     },
+    "Toys and Games": {
+        "Educational Toys": ["STEM Kits", "Puzzle Games", "Building Blocks", "Flash Cards", "Science Kits"],
+        "Action Figures and Dolls": ["Superhero Action Figures", "Fashion Dolls", "Anime Figures", "Collectible Figures"],
+        "Outdoor and Sports Toys": ["Bicycles and Scooters", "Frisbees", "Water Guns", "Kites", "Balls"],
+        "Electronic and Remote Control Toys": ["Remote Control Cars", "Drones for Kids", "Robotic Toys", "Talking Toys"],
+        "Creative and Art Toys": ["Crayons and Drawing Kits", "Craft Kits", "Coloring Books", "Clay and Play Dough"],
+        "Board Games and Card Games": ["Strategy Board Games", "Family Card Games", "Party Games", "Educational Games"],
+        "Infant and Toddler Toys": ["Rattles", "Teething Toys", "Soft Toys", "Musical Toys for Toddlers"],
+        "Plush and Soft Toys": ["Stuffed Animals", "Plush Dolls", "Cuddly Toys"],
+        "Building and Construction Toys": ["LEGO Sets", "Magnetic Tiles", "Wooden Blocks"]
+    },
 
 };
 

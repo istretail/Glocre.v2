@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const uploadBanner = require("../middlewares/uploadBanner")
-const { uploadBannerImage, deleteBannerImage, getAllBannerImages, getAllImages } = require("../controllers/bannerController");
+const { uploadBannerImage, deleteBannerImage, getAllBannerImages, getAllImages, deleteImage } = require("../controllers/bannerController");
 const {
   isAuthenticatedUser,
   authorizeRoles,
@@ -22,5 +22,6 @@ router.delete(
     deleteBannerImage
 );
 
-// router.route("/get-images").get(isAuthenticatedUser,authorizeRoles("admin"),getAllImages)
+router.route("/get-images").get(isAuthenticatedUser, authorizeRoles("admin"), getAllImages)
+router.route("/deleteawsimages").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteImage)
 module.exports = router;

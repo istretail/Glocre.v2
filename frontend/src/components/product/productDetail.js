@@ -280,7 +280,7 @@ export default function ProductDetail() {
                                 <div className="description pt-2">
  
                                     <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                                        <h1>{product._id}</h1>
+                                        
                                         {product.brand && (
                                             <tr>
                                                 <th style={{fontSize:"17px"}}>Brand :&nbsp;</th>

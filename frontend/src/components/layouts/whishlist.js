@@ -135,10 +135,10 @@ export default function Wishlist() {
                                 <span>{item.brand}</span>
                               </td>
                               <td width="10%">
-                                <span>Rs: ₹{item.offPrice}.00/-</span>
+                                <span>Rs: ₹{item?.offPrice || item?.variants?.[0]?.offPrice || item?.variants?.[1]?.offPrice }.00/-</span>
                               </td>
                               <td width="10%">
-                                <span>Rs: ₹{item.price}.00/-</span>
+                                <span>Rs: ₹{item?.price || item?.variants?.[0]?.price || item?.variants?.[1]?.price}.00/-</span>
                               </td>
                               <td width="10%">
                                 <span className="cursor">

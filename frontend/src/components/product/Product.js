@@ -91,6 +91,7 @@ const openProductDetailPage = () => {
                       "/images/default.jpg"
                     }
                     className="w-100"
+                    style={{ height: "230px", objectFit: "cover" }}
                     alt={product.name}
                   />
                 </div>

@@ -58,7 +58,7 @@ const Footer = () => {
                 <br />
                 <p>
                   <LocationOnOutlinedIcon />
-                  &nbsp; <strong>We are Locate us :</strong>
+                  &nbsp; <strong>We are Located at :</strong>
                   <br /> 2 A, Meenakshi Gardens G.N Mills,
                   <br /> Coimbatore,
                   Tamil Nadu 641029, India

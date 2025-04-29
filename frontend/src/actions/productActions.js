@@ -47,7 +47,10 @@ import {
   getSellerSingleProductRequest,
   getSellerSingleProductSuccess,
   getSellerSingleProductFail,
-  cloneProductRequest, cloneProductSuccess, cloneProductFail, addArchiveProductRequest, addArchiveProductSuccess, addArchiveProductFail, removeArchiveProductRequest, removeArciveProductSuccess, removeArchiveProductFail
+  cloneProductRequest, cloneProductSuccess, cloneProductFail, addArchiveProductRequest, addArchiveProductSuccess, addArchiveProductFail, removeArchiveProductRequest, removeArciveProductSuccess, removeArchiveProductFail,
+  deleteProductImageRequest,
+  deleteProductImageSuccess,
+  deleteProductImageFail,
 } from "../slices/singleProductSlice";
 import {
   relatedProductsRequest,
@@ -324,3 +327,26 @@ export const getArchiveProducts = () => async (dispatch) => {
     dispatch(getArchiveProductsFail(error.response.data.message))
   }
 }
+export const deleteProductImage = (imageUrl, id) => async (dispatch) => {
+  try {
+    dispatch(deleteProductImageRequest());
+    const { data } = await axios.delete(`/api/v1/admin/product/${id}/delete-image`, {
+      data: { imageUrl }
+    });
+
+    dispatch(deleteProductImageSuccess(data));
+  } catch (error) {
+    dispatch(deleteProductImageFail(error.response?.data?.message || "Error deleting image"));
+  }
+};
+
+
+// export const deleteProductImage = () => async (imageUrl, id) => {
+//   try{
+//     dispatch(deleteProductImageRequest())
+//     const { data } = await axios.delete(`api/v1/admin/product/${id}/delete-image`, imageUrl)
+//     dispatch(deleteProductImageSuccess(data))
+//   } catch(error){
+//     dispatch(deleteProductImageFail(error.response.data.message))
+//   }
+// }
