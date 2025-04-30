@@ -61,7 +61,7 @@ const NewProduct = () => {
     const [variantCount, setVariantCount] = useState(0);
     const [variantDetails, setVariantDetails] = useState([]);
     const [imageErrors, setImageErrors] = useState([]);
-    const [productImages, setProductImages] = useState([]);
+    const [productImages, setProductImages] = useState([null, null, null]);
     const [selectedMainCategory, setSelectedMainCategory] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     const navigate = useNavigate();
@@ -89,6 +89,16 @@ const NewProduct = () => {
             newVariants[index] = { ...newVariants[index], [name]: value };
             return newVariants;
         });
+    };
+    const handleSingleProductImageChange = (index, e) => {
+        const file = e.target.files[0];
+        if (file && file.size <= 1024 * 1024) {
+            const updatedImages = [...productImages];
+            updatedImages[index] = file;
+            setProductImages(updatedImages);
+        } else {
+            setImageErrors([`${file.name} is larger than 1MB`]);
+        }
     };
 
     // Handle image upload
@@ -141,6 +151,19 @@ const NewProduct = () => {
             return { ...prev, keyPoints: updated };
         });
     };
+    const handleSingleVariantImageChange = (variantIndex, imageIndex, e) => {
+        const file = e.target.files[0];
+        if (file && file.size <= 1024 * 1024) {
+            setVariantDetails((prev) => {
+                const updated = [...prev];
+                if (!updated[variantIndex].images) updated[variantIndex].images = [null, null, null];
+                updated[variantIndex].images[imageIndex] = file;
+                return updated;
+            });
+        } else {
+            setImageErrors([`${file.name} is larger than 1MB`]);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -184,12 +207,13 @@ const NewProduct = () => {
 
         // Append variant images
         variantDetails.forEach((variant, variantIndex) => {
-            if (variant.images) {
-                variant.images.forEach((imageFile) => {
+            variant.images.forEach((imageFile) => {
+                if (imageFile) {
                     productData.append(`variants[${variantIndex}][images]`, imageFile);
-                });
-            }
+                }
+            });
         });
+
         // Append product images if no variants
         if (!hasVariants) {
             productImages.forEach((imageFile) => {
@@ -665,7 +689,7 @@ const NewProduct = () => {
                                                                             price: '',
                                                                             offPrice: '',
                                                                             stock: '',
-                                                                            images: [],
+                                                                            images: [null, null, null],
                                                                         }))
                                                                     );
                                                                 }}
@@ -757,20 +781,31 @@ const NewProduct = () => {
                                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                                         </LightTooltip>
                                                                     </span></label>
-                                                                    <input
-                                                                        type="file"
-                                                                        className="form-control"
-                                                                        multiple
-                                                                        accept="image/*"
-                                                                        onChange={e => handleImageChange(index, e)}
-                                                                    />
-                                                                    {imageErrors.length > 0 && (
-                                                                        <div className="alert alert-danger mt-2">
-                                                                            {imageErrors.map((error, index) => (
-                                                                                <p key={index}>{error}</p>
-                                                                            ))}
+                                                                    {[0, 1, 2].map((imgIndex) => (
+                                                                        <div key={imgIndex} className="mb-2">
+                                                                            <label>Variant Image {imgIndex + 1}</label>
+                                                                            <input
+                                                                                type="file"
+                                                                                className="form-control"
+                                                                                accept="image/*"
+                                                                                onChange={(e) => handleSingleVariantImageChange(index, imgIndex, e)}
+                                                                            />
+                                                                            {variant.images[imgIndex] && (
+                                                                                <img
+                                                                                    src={
+                                                                                        variant.images[imgIndex] instanceof File
+                                                                                            ? URL.createObjectURL(variant.images[imgIndex])
+                                                                                            : variant.images[imgIndex]
+                                                                                    }
+
+                                                                                    className="img-thumbnail mt-1"
+                                                                                    width="100"
+                                                                                    alt={`Variant ${index} Preview ${imgIndex + 1}`}
+                                                                                />
+                                                                            )}
                                                                         </div>
-                                                                    )}
+                                                                    ))}
+
                                                                     <div className="mt-2">
                                                                         {variant.images.map((image, imageIndex) => (
                                                                             <div
@@ -778,7 +813,12 @@ const NewProduct = () => {
                                                                                 className="d-inline-block position-relative mr-2"
                                                                             >
                                                                                 <img
-                                                                                    src={URL.createObjectURL(image)}
+                                                                                    src={
+                                                                                        image instanceof File
+                                                                                            ? URL.createObjectURL(image)
+                                                                                            : image
+                                                                                    }
+
                                                                                     alt={`Preview ${imageIndex}`}
                                                                                     className="img-thumbnail"
                                                                                     width="100"
@@ -905,29 +945,25 @@ const NewProduct = () => {
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
                                                             </span></label>
-                                                            <input
-                                                                type="file"
-                                                                className="form-control"
-                                                                multiple
-                                                                accept="image/*"
-                                                                onChange={handleProductImageChange}
-                                                            // required
-                                                            />
-                                                            <div className="mt-2">
-                                                                {productImages.map((image, index) => (
-                                                                    <div
-                                                                        key={index}
-                                                                        className="d-inline-block position-relative mr-2"
-                                                                    >
+                                                            {[0, 1, 2].map((imgIndex) => (
+                                                                <div key={imgIndex} className="mb-2">
+                                                                    <label>Product Image {imgIndex + 1}</label>
+                                                                    <input
+                                                                        type="file"
+                                                                        className="form-control"
+                                                                        accept="image/*"
+                                                                        onChange={(e) => handleSingleProductImageChange(imgIndex, e)}
+                                                                    />
+                                                                    {productImages[imgIndex] && (
                                                                         <img
-                                                                            src={URL.createObjectURL(image)}
-                                                                            alt={`Preview ${index}`}
-                                                                            className="img-thumbnail"
+                                                                            src={URL.createObjectURL(productImages[imgIndex])}
+                                                                            className="img-thumbnail mt-1"
                                                                             width="100"
+                                                                            alt={`Product Preview ${imgIndex + 1}`}
                                                                         />
-                                                                    </div>
-                                                                ))}
-                                                            </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 </>

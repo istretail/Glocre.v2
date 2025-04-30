@@ -15,7 +15,6 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
-import axios from 'axios';
 export default function UpdateProduct() {
 
     const { id: productId } = useParams();
@@ -757,7 +756,7 @@ export default function UpdateProduct() {
 
                                                 <div className="form-group">
                                                     <label htmlFor="offPrice_field">Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                        <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip></span></label>
                                                     <input
@@ -937,7 +936,7 @@ export default function UpdateProduct() {
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                            <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
+                                                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
 

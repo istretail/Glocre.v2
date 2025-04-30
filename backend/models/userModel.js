@@ -81,9 +81,9 @@ const cartItemSchema = new mongoose.Schema({
 
 const savedAddressSchema = new mongoose.Schema({
   name: { type: String },
-  address: { type: String, required: true },
-  addressLine: { type: String, required: true },
-  city: { type: String, required: true },
+  address: { type: String, required: true, message: 'House number and street name' },
+  addressLine: { type: String, required: true, message: 'select locality' },
+  city: { type: String, required: true, message: 'select city' },
   phoneNo: {
     type: String,
     required: [true, 'Please Enter Mobile Number'],
@@ -106,20 +106,21 @@ const savedAddressSchema = new mongoose.Schema({
       message: 'Please Enter Valid Postal Code'
     }
   },
-  country: { type: String, required: true },
-  state: { type: String, required: true }
+  country: { type: String, required: true, message: 'select country' },
+  state: { type: String, required: true, message: 'select state'}
 });
   const businessAddressSchema = new mongoose.Schema({
-    address: { type: String },
-    addressLine: { type: String },
-    city: { type: String },
+    address: { type: String, message: 'House number and street name' },
+    addressLine: { type: String, message: 'select locality' },
+    city: { type: String, message: 'select city' },
 
     isPhoneVerified: { type: Boolean, default: false },
     postalCode: {
       type: String,
+      required: [true, 'Please Enter Postal Code'],
     },
-    country: { type: String },
-    state: { type: String }
+    country: { type: String, message: 'select country' },
+    state: { type: String, message: 'select state' },
   });
 
 

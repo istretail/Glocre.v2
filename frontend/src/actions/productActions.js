@@ -340,13 +340,3 @@ export const deleteProductImage = (imageUrl, id) => async (dispatch) => {
   }
 };
 
-
-// export const deleteProductImage = () => async (imageUrl, id) => {
-//   try{
-//     dispatch(deleteProductImageRequest())
-//     const { data } = await axios.delete(`api/v1/admin/product/${id}/delete-image`, imageUrl)
-//     dispatch(deleteProductImageSuccess(data))
-//   } catch(error){
-//     dispatch(deleteProductImageFail(error.response.data.message))
-//   }
-// }

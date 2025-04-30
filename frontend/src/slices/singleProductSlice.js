@@ -10,6 +10,7 @@ const productSlice = createSlice({
     isProductDeleted: false,
     isProductUpdated: false,
     isReviewDeleted: false,
+    isImageDeleted: false,
     reviews: [],
   },
   reducers: {
@@ -359,7 +360,8 @@ const productSlice = createSlice({
       return {
         ...state,
         loading: false,
-        message: action.payload
+        message: action.payload,
+        isImageDeleted: true
       }
     },
     deleteProductImageFail(state, action) {

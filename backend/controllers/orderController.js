@@ -523,7 +523,7 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
             "Odisha",
             "Jharkhand",
             "West Bengal"
-            // You could also include "Andaman and Nicobar Islands" here if following east grouping
+           
         ];
         const westStates = [
             "Rajasthan",
@@ -546,8 +546,7 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
             "Arunachal Pradesh",
             "Sikkim"
         ];
-
-
+        
         state = state.trim(); // Normalize spacing
 
         if (northStates.includes(state)) return "North";

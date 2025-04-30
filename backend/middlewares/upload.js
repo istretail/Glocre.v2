@@ -13,26 +13,26 @@ const fileFilter = (req, file, cb) => {
     cb(null, true);
 };
 
+const variantFields = Array.from({ length: 5 }, (_, i) => ({
+    name: `variants[${i}][images]`,
+    maxCount: 3
+}));
+
 const upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'glocreawsimagebucket', // replace with actual bucket name
-        // acl: 'public-read', 
+        bucket: 'glocreawsimagebucket',
         contentType: multerS3.AUTO_CONTENT_TYPE,
         key: (req, file, cb) => {
             const filename = `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
             cb(null, filename);
         }
     }),
-    limits: { fileSize: 1024 * 1024 * 5 }, // 5MB limit
+    limits: { fileSize: 1024 * 1024 * 5 },
     fileFilter: fileFilter
 }).fields([
     { name: 'images', maxCount: 3 },
-    { name: 'variants[0][images]', maxCount: 3 },
-    { name: 'variants[1][images]', maxCount: 3 },
-    { name: 'variants[2][images]', maxCount: 3 },
-    { name: 'variants[3][images]', maxCount: 3 },
-    { name: 'variants[4][images]', maxCount: 3 },
+    ...variantFields
 ]);
 
 

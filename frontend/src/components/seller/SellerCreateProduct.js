@@ -62,10 +62,9 @@ const SellerCreateProduct = () => {
   const [variantCount, setVariantCount] = useState(0);
   const [variantDetails, setVariantDetails] = useState([]);
   const [imageErrors, setImageErrors] = useState([]);
-  const [productImages, setProductImages] = useState([]);
+  const [productImages, setProductImages] = useState([null, null, null]);
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  // const [variantType, setVariantType] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -92,7 +91,16 @@ const SellerCreateProduct = () => {
       return newVariants;
     });
   };
-
+  const handleSingleProductImageChange = (index, e) => {
+    const file = e.target.files[0];
+    if (file && file.size <= 1024 * 1024) {
+      const updatedImages = [...productImages];
+      updatedImages[index] = file;
+      setProductImages(updatedImages);
+    } else {
+      setImageErrors([`${file.name} is larger than 1MB`]);
+    }
+  };
   // Handle image upload
   const handleImageChange = (index, e) => {
     const files = Array.from(e.target.files);
@@ -143,52 +151,83 @@ const SellerCreateProduct = () => {
     });
   };
   // Submit the form
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleSingleVariantImageChange = (variantIndex, imageIndex, e) => {
+        const file = e.target.files[0];
+        if (file && file.size <= 1024 * 1024) {
+            setVariantDetails((prev) => {
+                const updated = [...prev];
+                if (!updated[variantIndex].images) updated[variantIndex].images = [null, null, null];
+                updated[variantIndex].images[imageIndex] = file;
+                return updated;
+            });
+        } else {
+            setImageErrors([`${file.name} is larger than 1MB`]);
+        }
+    };
 
-    if (imageErrors.length > 0) {
-      alert("Please fix the image errors before submitting.");
-      return;
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-    const productData = new FormData();
+        if (imageErrors.length > 0) {
+            alert("Please fix the image errors before submitting.");
+            return;
+        }
 
-    // Append non-array fields
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "variants" && key !== "keyPoints" && value) {
-        productData.append(key, value);
-      }
-    });
+        const filledPoints = formData.keyPoints.filter(point => point.trim() !== "");
 
-    // Append key points
-    formData.keyPoints.forEach((point, index) => {
-      if (point) {
-        productData.append(`keyPoints[${index}]`, point);
-      }
-    });
+        if (filledPoints.length < 3) {
+            console.log(filledPoints.length);
+            toast.error("Please provide at least 3 key points.");
+            return;
+        }
 
-    // Append variants as a JSON string
-    productData.append('variants', JSON.stringify(variantDetails));
+        // Proceed with form submission
+        console.log("Form submitted with:", filledPoints);
 
-    // Append variant images
-    variantDetails.forEach((variant, variantIndex) => {
-      if (variant.images) {
-        variant.images.forEach((imageFile) => {
-          productData.append(`variants[${variantIndex}][images]`, imageFile);
+        const productData = new FormData();
+
+        // Append non-array fields
+        Object.entries(formData).forEach(([key, value]) => {
+            if (key !== "variants" && key !== "keyPoints" && value) {
+                productData.append(key, value);
+            }
         });
-      }
-    });
 
-    // Append product images if no variants
-    if (!hasVariants) {
-      productImages.forEach((imageFile) => {
-        productData.append('images', imageFile);
-      });
-    }
+        // Append key points
+        formData.keyPoints.forEach((point, index) => {
+            if (point) {
+                productData.append(`keyPoints[${index}]`, point);
+            }
+        });
 
-    // Dispatch action to add product
-    dispatch(addSellerNewProduct(productData));
-  };
+
+
+        // Append variants as a JSON string
+        productData.append('variants', JSON.stringify(variantDetails));
+
+        // Append variant images
+        variantDetails.forEach((variant, variantIndex) => {
+            variant.images.forEach((imageFile) => {
+                if (imageFile) {
+                    productData.append(`variants[${variantIndex}][images]`, imageFile);
+                }
+            });
+        });
+
+        // Append product images if no variants
+        if (!hasVariants) {
+            productImages.forEach((imageFile) => {
+                productData.append('images', imageFile);
+            });
+        }
+        // Log the FormData entries
+        for (let pair of productData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
+        // Dispatch action to add product
+      dispatch(addSellerNewProduct(productData));
+    };
   useEffect(() => {
     if (isProductCreated) {
       toast('Product Created Successfully!', {
@@ -683,12 +722,9 @@ const SellerCreateProduct = () => {
                     <>
                       <div className="form-group">
                         <label>What is the variant type?<span style={{ color: "red" }}> *
-
                           <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-
-                        </span></label>
+                          </LightTooltip></span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -700,41 +736,30 @@ const SellerCreateProduct = () => {
                       </div>
                       <div className="form-group">
                         <label>How many variants?<span style={{ color: "red" }}> *
-
                           <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-
-                        </span></label>
+                          </LightTooltip></span></label>
                         <input
                           type="number"
                           className="form-control"
-                          min="2"
                           value={variantCount}
                           onChange={e => {
-                            const count = Number(e.target.value);
-
-                            // Guard clause: only proceed if count is 2 or more
-                            if (count >= 2) {
-                              setVariantCount(count);
-                              setVariantDetails(
-                                Array.from({ length: count }, () => ({
-                                  variantType: variantType,
-                                  variantName: '',
-                                  price: '',
-                                  offPrice: '',
-                                  stock: '',
-                                  images: [],
-                                }))
-                              );
-                            } else {
-                              setVariantCount(2); // fallback value if user tries to go below 2
-                            }
+                            const count = Number(e.target.value); // Ensure it's a number
+                            setVariantCount(count);
+                            setVariantDetails(
+                              Array.from({ length: count }, () => ({
+                                variantType: variantType,
+                                variantName: '',
+                                price: '',
+                                offPrice: '',
+                                stock: '',
+                                images: [null, null, null],
+                              }))
+                            );
                           }}
                           required
                         />
                       </div>
-
                       {variantDetails.map((variant, index) => (
                         <div key={index} className="variant-section">
                           <h4>Variant {index + 1}</h4>
@@ -759,11 +784,7 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
-                              <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip>
-                            </span></label>
+                            <label>Price:<span style={{ color: "red" }}> *</span></label>
                             <input
                               type="number"
                               className="form-control"
@@ -779,12 +800,10 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-
+                            <label>Offer Price:<span style={{ color: "red" }}> *
                               <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
-
                             </span></label>
                             <input
                               type="number"
@@ -802,11 +821,9 @@ const SellerCreateProduct = () => {
                           </div>
                           <div className="form-group">
                             <label>Stock:<span style={{ color: "red" }}> *
-
                               <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
-
                             </span></label>
                             <input
                               type="number"
@@ -824,26 +841,35 @@ const SellerCreateProduct = () => {
                           </div>
                           <div className="form-group">
                             <label>Images:<span style={{ color: "red" }}> *
-
-                              <LightTooltip placement="top" title="Provide the images of the product." arrow>
+                              <LightTooltip placement="top" title="Upload the images of the product." arrow>
                                 <ErrorOutlineIcon className="errorout-icon" />
                               </LightTooltip>
-
                             </span></label>
-                            <input
-                              type="file"
-                              className="form-control"
-                              multiple
-                              accept="image/*"
-                              onChange={e => handleImageChange(index, e)}
-                            />
-                            {imageErrors.length > 0 && (
-                              <div className="alert alert-danger mt-2">
-                                {imageErrors.map((error, index) => (
-                                  <p key={index}>{error}</p>
-                                ))}
+                            {[0, 1, 2].map((imgIndex) => (
+                              <div key={imgIndex} className="mb-2">
+                                <label>Variant Image {imgIndex + 1}</label>
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  accept="image/*"
+                                  onChange={(e) => handleSingleVariantImageChange(index, imgIndex, e)}
+                                />
+                                {variant.images[imgIndex] && (
+                                  <img
+                                    src={
+                                      variant.images[imgIndex] instanceof File
+                                        ? URL.createObjectURL(variant.images[imgIndex])
+                                        : variant.images[imgIndex]
+                                    }
+
+                                    className="img-thumbnail mt-1"
+                                    width="100"
+                                    alt={`Variant ${index} Preview ${imgIndex + 1}`}
+                                  />
+                                )}
                               </div>
-                            )}
+                            ))}
+
                             <div className="mt-2">
                               {variant.images.map((image, imageIndex) => (
                                 <div
@@ -851,7 +877,12 @@ const SellerCreateProduct = () => {
                                   className="d-inline-block position-relative mr-2"
                                 >
                                   <img
-                                    src={URL.createObjectURL(image)}
+                                    src={
+                                      image instanceof File
+                                        ? URL.createObjectURL(image)
+                                        : image
+                                    }
+
                                     alt={`Preview ${imageIndex}`}
                                     className="img-thumbnail"
                                     width="100"
@@ -982,35 +1013,29 @@ const SellerCreateProduct = () => {
                     <div className="col-lg-6">
                       <div className="form-group">
                         <label>Product Images:<span style={{ color: "red" }}> *
-
-                          <LightTooltip placement="top" title="Provide the images of the product." arrow>
+                          <LightTooltip placement="top" title="Provide the images of the product" arrow>
                             <ErrorOutlineIcon className="errorout-icon" />
                           </LightTooltip>
-
                         </span></label>
-                        <input
-                          type="file"
-                          className="form-control"
-                          multiple
-                          accept="image/*"
-                          onChange={handleProductImageChange}
-                        // required
-                        />
-                        <div className="mt-2">
-                          {productImages.map((image, index) => (
-                            <div
-                              key={index}
-                              className="d-inline-block position-relative mr-2"
-                            >
+                        {[0, 1, 2].map((imgIndex) => (
+                          <div key={imgIndex} className="mb-2">
+                            <label>Product Image {imgIndex + 1}</label>
+                            <input
+                              type="file"
+                              className="form-control"
+                              accept="image/*"
+                              onChange={(e) => handleSingleProductImageChange(imgIndex, e)}
+                            />
+                            {productImages[imgIndex] && (
                               <img
-                                src={URL.createObjectURL(image)}
-                                alt={`Preview ${index}`}
-                                className="img-thumbnail"
+                                src={URL.createObjectURL(productImages[imgIndex])}
+                                className="img-thumbnail mt-1"
                                 width="100"
+                                alt={`Product Preview ${imgIndex + 1}`}
                               />
-                            </div>
-                          ))}
-                        </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </>
