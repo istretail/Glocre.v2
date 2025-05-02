@@ -19,7 +19,7 @@ export default function UpdateProduct() {
 
     const { id: productId } = useParams();
     const { loading, error, products, categories = {} } = useSelector(state => state.productsState);
-    const { isProductUpdated, } = useSelector(state => state.productState);
+    const { isProductUpdated, isImageDeleted } = useSelector(state => state.productState);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -60,6 +60,7 @@ export default function UpdateProduct() {
         unit: "",
         rejectionReason: "",
         clocreId: "",
+        variants: [],
     });
 
     const dispatch = useDispatch();
@@ -72,7 +73,7 @@ export default function UpdateProduct() {
     const [modalImage, setModalImage] = useState("");
     const [rejectionReason, setRejectionReason] = useState('');
     const [variantDetails, setVariantDetails] = useState([]);
-    const [hasVariants, setHasVariants] = useState(false);
+    const [hasVariants, setHasVariants] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -100,72 +101,12 @@ export default function UpdateProduct() {
         setImageFiles([]);
         setImagesPreview([]);
     };
-
-    const handleDeleteImage = async (imageUrl) => {
-        try {
-            await dispatch(deleteProductImage(imageUrl, productId)); // pass product ID here if needed
-            // Remove the image from formData state to reflect UI update
-            setFormData((prev) => ({
-                ...prev,
-                images: prev.images.filter((img) => img !== imageUrl),
-            }));
-        } catch (error) {
-            console.error("Failed to delete image", error);
-        }
-    };
-
-
-
     useEffect(() => {
-        if (isProductUpdated) {
-            toast('Product Updated Successfully!', {
-                type: 'success',
-                onOpen: () => dispatch(clearProductUpdated())
-            });
-            setImages([]);
-            // navigate('/admin/products');
-            return;
+        if (products) {
+            // Once product is fetched, then get categories
+            dispatch(getCategoryHierarchy());
         }
-
-        if (error) {
-            toast(error, {
-                type: 'error',
-                onOpen: () => { dispatch(updateProduct(error.message)) }
-            });
-            return;
-        }
-
-        dispatch(getAdminProducts(productId));
-    }, [isProductUpdated, error, dispatch, navigate,]);
-
-    const handleVariantChange = (index, name, value) => {
-        setVariantDetails((prevVariants) => {
-            const newVariants = [...prevVariants];
-            newVariants[index] = { ...newVariants[index], [name]: value };
-            return newVariants;
-        });
-    };
-
-    const handleVariantImageChange = (index, e) => {
-        const files = Array.from(e.target.files);
-        setVariantDetails((prevVariants) => {
-            const newVariants = [...prevVariants];
-            const existingImages = newVariants[index].images || [];
-            const newImages = [...existingImages, ...files].slice(0, 3); // Ensure only 3 images are allowed
-            newVariants[index] = { ...newVariants[index], images: newImages };
-            return newVariants;
-        });
-    };
-    const handleRemoveVariantImage = (variantIndex, imageIndex) => {
-        setVariantDetails((prevVariants) => {
-            const newVariants = [...prevVariants];
-            newVariants[variantIndex] = {
-                ...newVariants[variantIndex],
-                images: newVariants[variantIndex].images.filter((_, i) => i !== imageIndex)
-            };
-            return newVariants;
-        });
-    };
+    }, [products, dispatch]);
     useEffect(() => {
         if (products && products.length > 0) {
             const product = products.find(p => p._id === productId);
@@ -209,7 +150,7 @@ export default function UpdateProduct() {
                     shippingCostNe: product.shippingCostNe,
                     unit: product.unit,
                     rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
-
+                    variants: product.variants
 
                 });
                 setVariantDetails(product.variants);
@@ -218,12 +159,52 @@ export default function UpdateProduct() {
             }
         }
     }, [products, productId]);
+
+
     useEffect(() => {
-        if (products) {
-            // Once product is fetched, then get categories
-            dispatch(getCategoryHierarchy());
+        if (isProductUpdated) {
+            toast('Product Updated Successfully!', {
+                type: 'success',
+                onOpen: () => dispatch(clearProductUpdated())
+            });
+            // setImages([]);
+            navigate('/admin/products');
+            return;
         }
-    }, [products, dispatch]);
+
+        if (error) {
+            toast(error, {
+                type: 'error',
+                onOpen: () => { dispatch(updateProduct(error.message)) }
+            });
+            return;
+        }
+
+        dispatch(getAdminProducts(productId));
+    }, [isProductUpdated, error, dispatch, navigate,]);
+
+
+
+    const handleVariantChange = (index, name, value) => {
+        setVariantDetails((prevVariants) => {
+            const newVariants = [...prevVariants];
+            newVariants[index] = { ...newVariants[index], [name]: value };
+            return newVariants;
+        });
+    };
+
+    const handleVariantImageChange = (index, e) => {
+        const files = Array.from(e.target.files);
+        setVariantDetails((prevVariants) => {
+            const newVariants = [...prevVariants];
+            const existingImages = newVariants[index].images || []; // Ensure images is always an array
+            const newImages = [...existingImages, ...files].slice(0, 3); // Limit to 3 images
+            newVariants[index] = { ...newVariants[index], images: newImages };
+            return newVariants;
+        });
+    };
+   
+
     const openModal = (image) => {
         setModalImage(image);
         setShowModal(true);
@@ -249,7 +230,6 @@ export default function UpdateProduct() {
         });
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -260,76 +240,128 @@ export default function UpdateProduct() {
 
         const productData = new FormData();
 
-        // Append general product fields
-        for (const [key, value] of Object.entries(formData)) {
+        // Append product fields
+        Object.keys(formData).forEach((key) => {
             if (key === "images") {
-                // Append new product images (if any)
-                imageFiles.forEach(file => {
+                formData.images.forEach((image) => {
+                    if (typeof image === "string" && image.startsWith("http")) {
+                        // Add only valid URLs to existingImages
+                        productData.append("existingImages", image);
+                    }
+                });
+                imageFiles.forEach((file) => {
+                    // Add only File objects to images
                     productData.append("images", file);
                 });
-
-                // Append existing image URLs so they are retained
-                productData.append("existingImages", JSON.stringify(value));
             } else if (key === "keyPoints") {
-                value.forEach(point => {
+                formData[key].forEach((point) => {
                     productData.append("keyPoints", point);
                 });
             } else {
-                productData.append(key, value);
-            }
-        }
-
-        // Append variant data
-        variantDetails.forEach((variant, index) => {
-            const prefix = `variants[${index}]`;
-
-            productData.append(`${prefix}[id]`, variant.id);
-            productData.append(`${prefix}[name]`, variant.name);
-            productData.append(`${prefix}[price]`, variant.price);
-            productData.append(`${prefix}[stock]`, variant.stock);
-
-            // Handle new variant images
-            if (variant.images && variant.images.length > 0) {
-                variant.images.forEach((file) => {
-                    productData.append(`${prefix}[images]`, file);
-                });
-            }
-
-            // Handle existing variant image URLs
-            if (variant.existingImages && variant.existingImages.length > 0) {
-                productData.append(`${prefix}[existingImages]`, JSON.stringify(variant.existingImages));
+                productData.append(key, formData[key]);
             }
         });
 
-        // Append rejection reason if status is rejected
-        if (formData.status === "rejected") {
-            productData.append("rejectionReason", rejectionReason);
+        // Ensure ALL variants (both updated & unchanged) are included
+        variantDetails.forEach((variant, index) => {
+            productData.append(`variants[${index}][id]`, variant.id); // Keep existing ID
+            productData.append(`variants[${index}][name]`, variant.name);
+            productData.append(`variants[${index}][price]`, variant.price);
+            productData.append(`variants[${index}][stock]`, variant.stock);
+
+            if (variant.images && variant.images.length > 0) {
+                variant.images.forEach((file) => {
+                    if (typeof file === "string" && file.startsWith("http")) {
+                        // Add only valid URLs to existingImages
+                        productData.append(`variants[${index}][existingImages]`, file);
+                    } else {
+                        // Add only File objects to images
+                        productData.append(`variants[${index}][images]`, file);
+                    }
+                });
+            } else {
+                // Ensure existingImages is sent even if no new images are added
+                productData.append(`variants[${index}][existingImages]`, []);
+            }
+        });
+
+        if (formData.status === 'rejected') {
+            productData.append('rejectionReason', rejectionReason);
+        }
+
+        // Debugging: Log FormData
+        for (let pair of productData.entries()) {
+            console.log(pair[0], pair[1]);
         }
 
         try {
             await dispatch(updateProduct(productId, productData));
+            // toast("Product updated successfully!", { type: "success" });
         } catch (error) {
             toast(error.message, { type: "error" });
         }
     };
 
 
+    const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
+        if (window.confirm("Are you sure you want to delete this image?")) {
+            try {
+                await dispatch(deleteProductImage(imageUrl, productId, variantId));
+
+                if (variantId) {
+                    // Handle variant image deletion
+                    setFormData((prev) => ({
+                        ...prev,
+                        variants: prev.variants.map((variant) =>
+                            variant._id === variantId
+                                ? {
+                                    ...variant,
+                                    images: (variant.images || []).filter((image) => image !== imageUrl), // Ensure images is always an array
+                                }
+                                : variant
+                        ),
+                    }));
+                } else {
+                    // Handle main product image deletion
+                    setFormData((prev) => ({
+                        ...prev,
+                        images: (prev.images || []).filter((image) => image !== imageUrl),
+                    }));
+                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); // ✅ fix
+                }
+
+
+                
+            } catch (error) {
+                toast.error("Failed to delete image.");
+            }
+        }
+    };
+
 
     // console.log("Variant Details before submitting:", variantDetails);
     // console.log("Final Variant Data:", variantDetails);
+    useEffect(() => {
+        if (isImageDeleted) {
+            toast('Image Delete Successfully!', {
+                type: 'success',
+                onOpen: () => dispatch(clearProductUpdated())
+            });
 
+            navigate('/admin/products');
+            return;
+        }
+    }, [isImageDeleted]);
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        setImageFiles(prev => [...prev, ...files]);
         const newImages = [];
         const errors = [];
 
         files.forEach((file) => {
             if (file.size > 1024 * 1024) {
                 errors.push(`${file.name} is larger than 1MB`);
-            }
-            if (formData.images.length + files.length > 3) {
-                errors.push(["You can upload a maximum of 3 images."]);
+            } else if (formData.images.length + newImages.length >= 3) {
+                errors.push("You can upload a maximum of 3 images.");
             } else {
                 newImages.push(file);
             }
@@ -337,15 +369,16 @@ export default function UpdateProduct() {
 
         setImageErrors(errors);
         if (errors.length === 0) {
-            setImageFiles(newImages);
-            setFormData({
-                ...formData,
-                images: newImages.map((file) => URL.createObjectURL(file)),
-            });
-            setImagesPreview(newImages.map((file) => URL.createObjectURL(file)));
+            setFormData((prev) => ({
+                ...prev,
+                images: [
+                    ...prev.images,
+                    ...newImages.map((file) => URL.createObjectURL(file)),
+                ],
+            }));
+            setImageFiles((prev) => [...prev, ...newImages]);
         }
     };
-
 
     // Drawer
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -756,7 +789,7 @@ export default function UpdateProduct() {
 
                                                 <div className="form-group">
                                                     <label htmlFor="offPrice_field">Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip></span></label>
                                                     <input
@@ -783,17 +816,40 @@ export default function UpdateProduct() {
 
                                                 <div className="form-group">
                                                     <label>Images:<span style={{ color: "red" }}> *</span></label>
-                                                    <div className='custom-file'>
+                                                    <div className="existing-images">
+                                                        {formData.images.map((image, index) => (
+                                                            <div key={index} className="image-container">
+                                                                <img
+                                                                    className="mt-3 mr-2"
+                                                                    src={image}
+                                                                    alt={`Image Preview ${index}`}
+                                                                    width="55"
+                                                                    height="52"
+                                                                    style={{ cursor: "pointer" }}
+                                                                />
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-danger btn-sm"
+                                                                    onClick={() => handleDeleteImage(image, productId)}
+                                                                >
+                                                                    Delete
+                                                                </button>
+
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <div className="custom-file mt-3">
                                                         <input
-                                                            type='file'
-                                                            name='product_images'
-                                                            className='custom-file-input'
-                                                            id='customFile'
+                                                            type="file"
+                                                            name="product_images"
+                                                            className="custom-file-input"
+                                                            id="customFile"
                                                             accept="image/*"
                                                             multiple
                                                             onChange={handleImageChange}
+                                                           
                                                         />
-                                                        <label className='custom-file-label' htmlFor='customFile'>
+                                                        <label className="custom-file-label" htmlFor="customFile">
                                                             Choose Images
                                                         </label>
                                                     </div>
@@ -804,27 +860,6 @@ export default function UpdateProduct() {
                                                             ))}
                                                         </div>
                                                     )}
-                                                    {
-                                                        formData.images.map((image, index) => (
-                                                            <div key={index} className="relative d-inline-block mr-2 mt-2">
-                                                                <img
-                                                                    src={image}
-                                                                    alt="Image Preview"
-                                                                    width="55"
-                                                                    height="52"
-                                                                    onClick={() => openModal(image)}
-                                                                    style={{ cursor: "pointer" }}
-                                                                />
-                                                                <button
-                                                                    onClick={() => handleDeleteImage(image)}
-                                                                    className="btn btn-sm btn-danger position-absolute "
-                                                                    style={{ fontSize:"1rem" }}
-                                                                >
-                                                                    ×
-                                                                </button>
-                                                            </div>
-                                                        ))
-                                                    }
                                                 </div>
                                             </>
                                         )}
@@ -936,7 +971,7 @@ export default function UpdateProduct() {
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
-                                                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                                                            <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
 
@@ -989,12 +1024,12 @@ export default function UpdateProduct() {
                                                                     />
                                                                     <button
                                                                         type="button"
-                                                                        className="btn btn-danger btn-sm position-absolute"
-                                                                        style={{ backgroundColor: "#2f4d2a", color: "#fff", outline: "none", border: "none" }}
-                                                                        onClick={() => handleRemoveVariantImage(index, imageIndex)}
+                                                                        className="btn btn-danger btn-sm"
+                                                                        onClick={() => handleDeleteImage(image, productId, variant._id)}
                                                                     >
-                                                                        <FontAwesomeIcon icon={faTrash} />
+                                                                        Delete
                                                                     </button>
+
                                                                 </div>
                                                             ))}
                                                         </div>

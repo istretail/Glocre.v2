@@ -179,6 +179,7 @@ export const updateProduct = (id, productData) => async (dispatch) => {
       productData,
       config,
     );
+    console.log(productData);
     dispatch(updateProductSuccess(data));
   } catch (error) {
     //handle error
@@ -327,11 +328,14 @@ export const getArchiveProducts = () => async (dispatch) => {
     dispatch(getArchiveProductsFail(error.response.data.message))
   }
 }
-export const deleteProductImage = (imageUrl, id) => async (dispatch) => {
+export const deleteProductImage = (imageUrl, productId, variantId = null) => async (dispatch) => {
   try {
     dispatch(deleteProductImageRequest());
-    const { data } = await axios.delete(`/api/v1/admin/product/${id}/delete-image`, {
-      data: { imageUrl }
+
+    const requestBody = variantId ? { imageUrl, variantId } : { imageUrl };
+
+    const { data } = await axios.delete(`/api/v1/admin/product/${productId}/delete-image`, {
+      data: requestBody
     });
 
     dispatch(deleteProductImageSuccess(data));
@@ -339,4 +343,5 @@ export const deleteProductImage = (imageUrl, id) => async (dispatch) => {
     dispatch(deleteProductImageFail(error.response?.data?.message || "Error deleting image"));
   }
 };
+
 

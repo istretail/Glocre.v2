@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import SellerSidebar from "./SellerSidebar";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from "react-router-dom";
-import { getSellerSingleProduct, updateSellerProduct, getCategoryHierarchy } from "../../actions/productActions";
+import { getSellerSingleProduct, updateSellerProduct, getCategoryHierarchy, deleteProductImage } from "../../actions/productActions";
 import { clearError, clearProductUpdated } from "../../slices/singleProductSlice";
 import { toast } from "react-toastify"; import Loader from "../layouts/Loader";
 import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +18,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 export default function SellerUpdateProduct() {
   const { id: productId } = useParams();
   const { loading, error, categories = {} } = useSelector(state => state.productsState);
-  const { isProductUpdated, product } = useSelector(state => state.productState);
+  const { isProductUpdated, product, isImageDeleted } = useSelector(state => state.productState);
   const [formData, setFormData] = useState({
     name: "",
     offPrice: "",
@@ -56,7 +56,7 @@ export default function SellerUpdateProduct() {
     shippingCostWest: "",
     shippingCostNe: "",
     unit: "",
-
+    variants: [],
     clocreId: "", // Add this line
   });
 
@@ -123,22 +123,22 @@ export default function SellerUpdateProduct() {
     const files = Array.from(e.target.files);
     setVariantDetails((prevVariants) => {
       const newVariants = [...prevVariants];
-      const existingImages = newVariants[index].images || [];
-      const newImages = [...existingImages, ...files].slice(0, 3); // Ensure only 3 images are allowed
+      const existingImages = newVariants[index].images || []; // Ensure images is always an array
+      const newImages = [...existingImages, ...files].slice(0, 3); // Limit to 3 images
       newVariants[index] = { ...newVariants[index], images: newImages };
       return newVariants;
     });
   };
-  const handleRemoveVariantImage = (variantIndex, imageIndex) => {
-    setVariantDetails((prevVariants) => {
-      const newVariants = [...prevVariants];
-      newVariants[variantIndex] = {
-        ...newVariants[variantIndex],
-        images: newVariants[variantIndex].images.filter((_, i) => i !== imageIndex)
-      };
-      return newVariants;
-    });
-  };
+  // const handleRemoveVariantImage = (variantIndex, imageIndex) => {
+  //   setVariantDetails((prevVariants) => {
+  //     const newVariants = [...prevVariants];
+  //     newVariants[variantIndex] = {
+  //       ...newVariants[variantIndex],
+  //       images: newVariants[variantIndex].images.filter((_, i) => i !== imageIndex)
+  //     };
+  //     return newVariants;
+  //   });
+  // };
   useEffect(() => {
     if (product) {
       setFormData({
@@ -179,7 +179,7 @@ export default function SellerUpdateProduct() {
         shippingCostWest: product.shippingCostWest,
         shippingCostNe: product.shippingCostNe,
         unit: product.unit,
-
+        variants: product.variants,
         clocreId: product.clocreId,
       });
       setVariantDetails(product?.variants?.map(variant => ({
@@ -203,26 +203,26 @@ export default function SellerUpdateProduct() {
     const newImages = [];
     const errors = [];
 
-    if (files?.length > 3) {
-      errors.push("You can only upload a maximum of 3 images.");
-    } else {
-      files.forEach((file) => {
-        if (file.size > 1024 * 1024) {
-          errors.push(`${file.name} is larger than 1MB`);
-        } else {
-          newImages.push(file);
-        }
-      });
-    }
+    files.forEach((file) => {
+      if (file.size > 1024 * 1024) {
+        errors.push(`${file.name} is larger than 1MB`);
+      } else if (formData.images.length + newImages.length >= 3) {
+        errors.push("You can upload a maximum of 3 images.");
+      } else {
+        newImages.push(file);
+      }
+    });
 
     setImageErrors(errors);
-    if (errors?.length === 0) {
-      setImageFiles(newImages);
-      setFormData({
-        ...formData,
-        images: newImages?.map((file) => URL.createObjectURL(file)),
-      });
-      setImagesPreview(newImages?.map((file) => URL.createObjectURL(file)));
+    if (errors.length === 0) {
+      setFormData((prev) => ({
+        ...prev,
+        images: [
+          ...prev.images,
+          ...newImages.map((file) => URL.createObjectURL(file)),
+        ],
+      }));
+      setImageFiles((prev) => [...prev, ...newImages]);
     }
   };
   const handleAddKeyPoint = () => {
@@ -239,58 +239,121 @@ export default function SellerUpdateProduct() {
       return { ...prev, keyPoints: updated };
     });
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      useEffect(() => {
+          if (isImageDeleted) {
+              toast('Image Delete Successfully!', {
+                  type: 'success',
+                  onOpen: () => dispatch(clearProductUpdated())
+              });
+  
+              navigate('/seller/products');
+              return;
+          }
+      }, [isImageDeleted]);
+const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    if (imageErrors?.length > 0) {
-      toast("Please fix the image errors before submitting.");
-      return;
-    }
+        if (imageErrors.length > 0) {
+            toast("Please fix the image errors before submitting.");
+            return;
+        }
 
-    const productData = new FormData();
+        const productData = new FormData();
 
-    // Append product fields
-    Object.keys(formData).forEach((key) => {
-      if (key === "images") {
-        imageFiles.forEach((file) => {
-          productData.append("images", file);
+        // Append product fields
+        Object.keys(formData).forEach((key) => {
+            if (key === "images") {
+                formData.images.forEach((image) => {
+                    if (typeof image === "string" && image.startsWith("http")) {
+                        // Add only valid URLs to existingImages
+                        productData.append("existingImages", image);
+                    }
+                });
+                imageFiles.forEach((file) => {
+                    // Add only File objects to images
+                    productData.append("images", file);
+                });
+            } else if (key === "keyPoints") {
+                formData[key].forEach((point) => {
+                    productData.append("keyPoints", point);
+                });
+            } else {
+                productData.append(key, formData[key]);
+            }
         });
-      } else if (key === "keyPoints") {
-        formData[key].forEach((point) => {
-          productData.append("keyPoints", point);
-        });
-      } else {
-        productData.append(key, formData[key]);
-      }
-    });
 
-    // Ensure ALL variants (both updated & unchanged) are included
-    variantDetails.forEach((variant, index) => {
-      productData.append(`variants[${index}][id]`, variant.id); // Keep existing ID
-      productData.append(`variants[${index}][name]`, variant.name);
-      productData.append(`variants[${index}][price]`, variant.price);
-      productData.append(`variants[${index}][stock]`, variant.stock);
+        // Ensure ALL variants (both updated & unchanged) are included
+        variantDetails.forEach((variant, index) => {
+            productData.append(`variants[${index}][id]`, variant.id); // Keep existing ID
+            productData.append(`variants[${index}][name]`, variant.name);
+            productData.append(`variants[${index}][price]`, variant.price);
+            productData.append(`variants[${index}][stock]`, variant.stock);
 
-      if (variant.images && variant?.images?.length > 0) {
-        variant.images.forEach((file, i) => {
-          productData.append(`variants[${index}][images]`, file);
+            if (variant.images && variant.images.length > 0) {
+                variant.images.forEach((file) => {
+                    if (typeof file === "string" && file.startsWith("http")) {
+                        // Add only valid URLs to existingImages
+                        productData.append(`variants[${index}][existingImages]`, file);
+                    } else {
+                        // Add only File objects to images
+                        productData.append(`variants[${index}][images]`, file);
+                    }
+                });
+            } else {
+                // Ensure existingImages is sent even if no new images are added
+                productData.append(`variants[${index}][existingImages]`, []);
+            }
         });
-      } else {
-        // Preserve existing images if no new ones are uploaded
-        productData.append(`variants[${index}][existingImages]`, JSON.stringify(variant.existingImages || []));
-      }
-    });
-    try {
-      await dispatch(updateSellerProduct(productId, productData));
-      console.log(productData)
-    } catch (error) {
-      toast(error.message, {
-        type: 'error',
-      });
-    }
-  };
+
+      
+
+        // Debugging: Log FormData
+        for (let pair of productData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+
+        try {
+          await dispatch(updateSellerProduct(productId, productData));
+            // toast("Product updated successfully!", { type: "success" });
+        } catch (error) {
+            toast(error.message, { type: "error" });
+        }
+    };
   // Removed duplicate handleSubmit function
+    const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
+        if (window.confirm("Are you sure you want to delete this image?")) {
+            try {
+                await dispatch(deleteProductImage(imageUrl, productId, variantId));
 
+                if (variantId) {
+                    // Handle variant image deletion
+                    setFormData((prev) => ({
+                        ...prev,
+                        variants: prev.variants.map((variant) =>
+                            variant._id === variantId
+                                ? {
+                                    ...variant,
+                                    images: (variant.images || []).filter((image) => image !== imageUrl), // Ensure images is always an array
+                                }
+                                : variant
+                        ),
+                    }));
+                } else {
+                    // Handle main product image deletion
+                    setFormData((prev) => ({
+                        ...prev,
+                        images: (prev.images || []).filter((image) => image !== imageUrl),
+                    }));
+                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); // ✅ fix
+                }
+
+
+                
+            } catch (error) {
+                toast.error("Failed to delete image.");
+            }
+        }
+    };
   const openModal = (image) => {
     setModalImage(image);
     setShowModal(true);
@@ -826,58 +889,53 @@ export default function SellerUpdateProduct() {
                       </div>
 
                       <div className="col-lg-6">
-                        <div className="form-group">
-                          <label>Product Images:<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Upload the images of the product." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip></span></label>
-                          <div className="custom-file">
-                            <input
-                              type="file"
-                              name="product_images"
-                              className="custom-file-input"
-                              id="customFile"
-                              accept="image/*"
-                              multiple
-                              onChange={handleImageChange}
-                              required={formData.images.length === 0}
-                            />
-                            <label
-                              className="custom-file-label"
-                              htmlFor="customFile"
-                            >
-                              Choose Images
-                            </label>
-                          </div>
-                          {imageErrors?.length > 0 && (
-                            <div className="alert alert-danger mt-2">
-                              {imageErrors?.map((error, index) => (
-                                <p key={index}>{error}</p>
+                          <div className="form-group">
+                            <label>Images:<span style={{ color: "red" }}> *</span></label>
+                            <div className="existing-images">
+                              {formData.images.map((image, index) => (
+                                <div key={index} className="image-container">
+                                  <img
+                                    className="mt-3 mr-2"
+                                    src={image}
+                                    alt={`Image Preview ${index}`}
+                                    width="55"
+                                    height="52"
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => handleDeleteImage(image, productId)}
+                                  >
+                                    Delete
+                                  </button>
+
+                                </div>
                               ))}
                             </div>
-                          )}
-                          {formData?.images?.length > 0 && (
-                            <span
-                              className="mr-2"
-                              onClick={clearImagesHandler}
-                              style={{ color: '#2f4d2a' }}
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </span>
-                          )}
-                          {formData?.images?.map((image, index) => (
-                            <img
-                              className="mt-3 mr-2"
-                              key={index}
-                              src={image}
-                              alt={`Image Preview`}
-                              width="55"
-                              height="52"
-                              onClick={() => openModal(image)}
-                              style={{ cursor: 'pointer' }}
-                            />
-                          ))}
-                        </div>
+                            <div className="custom-file mt-3">
+                              <input
+                                type="file"
+                                name="product_images"
+                                className="custom-file-input"
+                                id="customFile"
+                                accept="image/*"
+                                multiple
+                                onChange={handleImageChange}
+
+                              />
+                              <label className="custom-file-label" htmlFor="customFile">
+                                Choose Images
+                              </label>
+                            </div>
+                            {imageErrors.length > 0 && (
+                              <div className="alert alert-danger mt-2">
+                                {imageErrors.map((error, index) => (
+                                  <p key={index}>{error}</p>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                       </div>
                     </>
                   )}
@@ -1050,35 +1108,23 @@ export default function SellerUpdateProduct() {
                           />
                           <div className="mt-2">
                             {variant?.images?.map((image, imageIndex) => (
-                              <div
-                                key={imageIndex}
-                                className="d-inline-block position-relative mr-2"
-                              >
+                              <div key={imageIndex} className="d-inline-block position-relative mr-2">
                                 <img
-                                  src={
-                                    image instanceof File
-                                      ? URL.createObjectURL(image)
-                                      : image
-                                  }
+                                  src={image instanceof File ? URL.createObjectURL(image) : image}
                                   alt={`Preview ${imageIndex}`}
                                   className="img-thumbnail"
                                   width="100"
                                   onClick={() => openModal(image)}
-                                  style={{ cursor: 'pointer' }}
+                                  style={{ cursor: "pointer" }}
                                 />
                                 <button
                                   type="button"
-                                  className="btn btn-danger btn-sm position-absolute"
-                                  style={{ top: 0, right: 0 }}
-                                  onClick={() =>
-                                    handleRemoveVariantImage(
-                                      index,
-                                      imageIndex
-                                    )
-                                  }
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleDeleteImage(image, productId, variant._id)}
                                 >
-                                  <i className="fa fa-trash"></i>
+                                  Delete
                                 </button>
+
                               </div>
                             ))}
                           </div>

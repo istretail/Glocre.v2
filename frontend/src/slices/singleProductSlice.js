@@ -150,6 +150,7 @@ const productSlice = createSlice({
       return {
         ...state,
         isProductUpdated: false,
+        isImageDeleted: false,
       };
     },
     reviewsRequest(state, action) {

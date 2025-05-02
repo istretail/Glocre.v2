@@ -48,13 +48,17 @@ const handleVariantUploads = (req, res, next) => {
 
     if (req.files["variantsImages"]) {
       req.body.variants.forEach((variant, index) => {
-        variant.images = req.files["variantsImages"].splice(0, 3).map((file) => ({
-          image: file.location,
-        }));
+        // Preserve existing images and add new ones
+        const existingImages = variant.images || [];
+        const newImages = req.files["variantsImages"]
+          .slice(index * 3, index * 3 + 3) // Get up to 3 images for this variant
+          .map((file) => ({
+            image: file.location,
+          }));
+
+        variant.images = [...existingImages, ...newImages]; // Merge existing and new images
       });
     }
-
-    // console.log(req.files);
   }
 
   next();
@@ -96,7 +100,7 @@ router.route("/admin/product/:id").put(isAuthenticatedUser, authorizeRoles("admi
 router.route("/admin/reviews").get(isAuthenticatedUser, authorizeRoles("admin"), getReviews);
 router.route("/admin/review").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteReview);
 // routes/product.js
-router.route('/admin/product/:id/delete-image').delete(isAuthenticatedUser, authorizeRoles("admin"),deleteProductImage);
+router.route('/admin/product/:id/delete-image').delete(isAuthenticatedUser,deleteProductImage);
 
 // Seller Routes
 router.route("/seller/products").get(isAuthenticatedUser, authorizeRoles("seller"), getSellerProducts);

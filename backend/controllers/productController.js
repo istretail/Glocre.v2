@@ -18,9 +18,10 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
 
   let buildQuery = () => {
     return new APIFeatures(
-      Product.find({ $and: [{ status: "approved" }, 
-        // { isArchived: false} 
-      ] 
+      Product.find({
+        $and: [{ status: "approved" },
+          // { isArchived: false} 
+        ]
       }),
       req.query
     )
@@ -103,7 +104,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
     unit: req.body.unit,
-    
+
 
   });
   // console.log(req.body)
@@ -130,23 +131,35 @@ exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
 //Update Product - api/v1/product/:id 
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
   let product = await Product.findById(req.params.id).populate("createdBy");
-
   if (!product) {
     return res.status(404).json({
       success: false,
       message: "Product not found",
     });
   }
-  // console.log(req.body)
+
   const creatorInfo = {
     email: product.createdBy.email,
     name: product.createdBy.name,
   };
 
   // Handle main product images (S3)
-  if (req.files && req.files.images) {
-    req.body.images = req.files.images.map(file => file.location);
+  if (req.body.existingImages) {
+    if (!Array.isArray(req.body.existingImages)) {
+      req.body.existingImages = [req.body.existingImages];
+    }
+  } else {
+    req.body.existingImages = [];
   }
+
+  if (req.files && req.files.images) {
+    req.body.images = req.files.images.map((file) => file.location);
+  } else {
+    req.body.images = [];
+  }
+
+  // Merge existing and new images
+  req.body.images = [...req.body.existingImages, ...req.body.images];
 
   // Prepare variant updates
   let updatedVariants = product.variants ? [...product.variants] : [];
@@ -177,7 +190,11 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
         if (!req.body.variants[variantIndex]) {
           req.body.variants[variantIndex] = product.variants[variantIndex] || {};
         }
-        req.body.variants[variantIndex].images = req.files[key].map(file => file.location);
+
+        // Merge existing images with new images
+        const existingImages = req.body.variants[variantIndex].images || product.variants[variantIndex]?.images || [];
+        const newImages = req.files[key].map((file) => file.location);
+        req.body.variants[variantIndex].images = [...existingImages, ...newImages];
       }
     });
   }
@@ -188,7 +205,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
   const updatedData = { ...product.toObject() };
 
   Object.keys(req.body).forEach((key) => {
-    if (req.body[key] !== "undefined") {  // Prevent "undefined" strings from being stored
+    if (req.body[key] !== "undefined") {
       updatedData[key] = req.body[key];
     }
   });
@@ -216,11 +233,11 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       `;
 
       if (req.body.status === "rejected" && req.body.rejectionReason) {
-        emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`; //rejectedReason: req.body.rejectedReason,
+        emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`;
       }
 
       await sendEmail({
-        fromEmail: "glocre@glocre.com", 
+        fromEmail: "glocre@glocre.com",
         email: creatorInfo.email,
         subject: `Product ${statusMessage}`,
         html: emailContent,
@@ -387,9 +404,10 @@ exports.getSellerProducts = catchAsyncError(async (req, res, next) => {
 exports.getArchiveProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 10;
   const apiFeatures = new APIFeatures(
-    Product.find({ createdBy: req.user.id,
+    Product.find({
+      createdBy: req.user.id,
       isArchived: true
-     }),
+    }),
     req.query
   )
     .search() // Handles search (e.g., by product name or ID)
@@ -469,9 +487,9 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     unit: req.body.unit,
   });
 
-  res.status(201).json({ 
-    success: true, 
-    product 
+  res.status(201).json({
+    success: true,
+    product
   });
   try {
     const adminEmail = process.env.ADMIN_EMAIL; // Ensure you have the admin email in your environment variables
@@ -526,9 +544,22 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
   };
 
   // Handle main product images (S3)
-  if (req.files && req.files.images) {
-    req.body.images = req.files.images.map(file => file.location);
+  if (req.body.existingImages) {
+    if (!Array.isArray(req.body.existingImages)) {
+      req.body.existingImages = [req.body.existingImages];
+    }
+  } else {
+    req.body.existingImages = [];
   }
+
+  if (req.files && req.files.images) {
+    req.body.images = req.files.images.map((file) => file.location);
+  } else {
+    req.body.images = [];
+  }
+
+  // Merge existing and new images
+  req.body.images = [...req.body.existingImages, ...req.body.images];
 
   // Prepare variant updates
   let updatedVariants = product.variants ? [...product.variants] : [];
@@ -559,7 +590,11 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
         if (!req.body.variants[variantIndex]) {
           req.body.variants[variantIndex] = product.variants[variantIndex] || {};
         }
-        req.body.variants[variantIndex].images = req.files[key].map(file => file.location);
+
+        // Merge existing images with new images
+        const existingImages = req.body.variants[variantIndex].images || product.variants[variantIndex]?.images || [];
+        const newImages = req.files[key].map((file) => file.location);
+        req.body.variants[variantIndex].images = [...existingImages, ...newImages];
       }
     });
   }
@@ -637,7 +672,7 @@ exports.getSellerSingleProduct = catchAsyncError(async (req, res, next) => {
 exports.cloneProduct = catchAsyncError(async (req, res, next) => {
   // Find the product to be cloned
   const productToClone = await Product.findById(req.params.id);
-  
+
   if (!productToClone) {
     return res.status(404).json({
       success: false,
@@ -792,7 +827,7 @@ exports.getAvailableCategories = async (req, res) => {
 
 
 exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
-  const { imageUrl } = req.body;
+  const { imageUrl, variantId } = req.body;
   const productId = req.params.id;
 
   console.log("Image URL:", imageUrl);
@@ -810,12 +845,22 @@ exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
 
   // Delete image from S3
   await s3.deleteObject({
-    Bucket:'glocreawsimagebucket' ,
+    Bucket: 'glocreawsimagebucket',
     Key: imageKey
   }).promise();
 
-  // Remove image URL from product images array
-  product.images = product.images.filter(img => img !== imageUrl);
+  if (variantId) {
+    // Delete image from variant
+    const variant = product.variants.id(variantId);
+    if (!variant) {
+      return next(new ErrorHandler('Variant not found', 404));
+    }
+
+    variant.images = variant.images.filter(img => img !== imageUrl);
+  } else {
+    // Delete image from main product images
+    product.images = product.images.filter(img => img !== imageUrl);
+  }
 
   await product.save();
 
