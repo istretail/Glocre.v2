@@ -321,7 +321,7 @@ const handleSubmit = async (e) => {
     };
   // Removed duplicate handleSubmit function
     const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
-        if (window.confirm("Are you sure you want to delete this image?")) {
+      if (window.confirm("Are you sure you want to delete this image? it won't be recovered")) {
             try {
                 await dispatch(deleteProductImage(imageUrl, productId, variantId));
 

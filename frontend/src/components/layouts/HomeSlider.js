@@ -33,7 +33,7 @@ export default function Slideshow() {
   return (
     <>
       <section className="homeSlider">
-        <div className="container position-relative">
+        <div className="container-fluid position-relative">
           <Slider {...settings} className="home_slider_Main">
             {banners.map((banner, index) => (
               <div className="item" key={index}>

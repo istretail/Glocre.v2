@@ -79,7 +79,7 @@ export default function Nav1() {
                 category: cat.category,
                 subcategories: cat.subcategories || []
               }))
-            ).slice(0, 7).map((catItem, i) => (
+            ).slice(0, 5).map((catItem, i) => (
               <li className="list-inline-item sec-nav-pro dropdown-hover" key={i}>
                 {catItem.category}
                 <ul className="dropdown_menu mt-1" style={{ border: "1px solid #ccc" }}>

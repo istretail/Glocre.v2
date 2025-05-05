@@ -71,7 +71,7 @@ export default function UpdateProduct() {
     const [imagesPreview, setImagesPreview] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [modalImage, setModalImage] = useState("");
-    const [rejectionReason, setRejectionReason] = useState('');
+    // const [rejectionReason, setRejectionReason] = useState('');
     const [variantDetails, setVariantDetails] = useState([]);
     const [hasVariants, setHasVariants] = useState([]);
 
@@ -153,6 +153,7 @@ export default function UpdateProduct() {
                     variants: product.variants
 
                 });
+                
                 setVariantDetails(product.variants);
                 setHasVariants(product.variants.length > 0);
                 setImagesPreview(product.images);
@@ -285,9 +286,9 @@ export default function UpdateProduct() {
             }
         });
 
-        if (formData.status === 'rejected') {
-            productData.append('rejectionReason', rejectionReason);
-        }
+        // if (formData.status === 'rejected') {
+        //     productData.append('rejectionReason', rejectionReason);
+        // }
 
         // Debugging: Log FormData
         for (let pair of productData.entries()) {
@@ -304,7 +305,7 @@ export default function UpdateProduct() {
 
 
     const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
-        if (window.confirm("Are you sure you want to delete this image?")) {
+        if (window.confirm("Are you sure you want to delete this image? it won't be recovered")) {
             try {
                 await dispatch(deleteProductImage(imageUrl, productId, variantId));
 
@@ -826,6 +827,7 @@ export default function UpdateProduct() {
                                                                     width="55"
                                                                     height="52"
                                                                     style={{ cursor: "pointer" }}
+                                                                    onClick={() => openModal(image)}
                                                                 />
                                                                 <button
                                                                     type="button"
@@ -1347,7 +1349,7 @@ export default function UpdateProduct() {
                                                         className="from-control "
                                                         id="rejectionReason_field"
                                                         rows="4"
-                                                        onChange={(e) => setRejectionReason(e.target.value)}
+                                                        onChange={(e) => setFormData({ ...formData, rejectionReason: e.target.value })}
                                                         value={formData.rejectionReason}
                                                         name="rejectionReason"
                                                         style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}

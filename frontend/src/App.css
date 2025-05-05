@@ -18277,7 +18277,7 @@ footer .lastStrip .part3 ul li a:hover {
   display: inline-block;
   width: 100%;
 }
-
+ 
 .custom-select {
   appearance: none;
   -webkit-appearance: none;
@@ -18288,6 +18288,6 @@ footer .lastStrip .part3 ul li a:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   background: white url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 0.75rem center;
-  background-size: 1rem;
+  background-size: 1.75rem;
   cursor: pointer;
 }

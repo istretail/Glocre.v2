@@ -102,7 +102,7 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: false, default: 0 },
   offPrice: { type: Number, required: false, default: 0 },
   stock: { type: Number, required: false, default: 0 },
-  rejectionReason: { type: String},
+  rejectionReason: {type: String},
 }, { timestamps: true });
 
 productSchema.pre('save', async function (next) {
