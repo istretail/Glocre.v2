@@ -102,7 +102,7 @@ export default function ProductDetail() {
     const cartItem = {
       product: product._id,
       name: product.name,
-      price: selectedVariant ? selectedVariant.price : product.price,
+        price: selectedVariant ? selectedVariant.offPrice : product.offPrice,
       image: selectedVariant ? selectedVariant.images[0] : product.images[0],
       stock: selectedVariant ? selectedVariant.stock : product.stock,
       quantity,
@@ -336,9 +336,12 @@ export default function ProductDetail() {
                                     <p style={{ fontWeight: "bold" }}>Item #: {product.clocreProductId}</p>
                                 </div>
  
-                                <div className="">
-                                    <span style={{ fontSize: "27px", fontWeight: "bold", color: "#2f4d2a" }}>
-                                        INR {selectedVariant ? selectedVariant.price : product.price}
+                                <div className="d-flex align-items-center w-100">
+                                    <span className="price text-g font-weight-bold" style={{ fontSize: "25px" }}>
+                                        ₹{product?.offPrice || product?.variants?.[0]?.offPrice || product?.variants?.[1]?.offPrice || 0}.00/-
+                                    </span>
+                                    <span className="oldPrice ml-2">
+                                        ₹{product?.price || product?.variants?.[0]?.price || product?.variants?.[1]?.price || 0}.00/-
                                     </span>
                                 </div>
  

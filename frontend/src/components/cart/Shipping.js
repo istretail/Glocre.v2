@@ -40,6 +40,17 @@ const isValidPostalCode = (postalCode) => {
   const postalCodeRegex = /^\d{6}$/;
   return postalCodeRegex.test(postalCode);
 };
+const checkPostalCodeExists = async (postalCode) => {
+  if (!isValidPostalCode(postalCode)) return false;
+
+  try {
+    const data = await fetchPostalCodeDetails(postalCode);
+    return Array.isArray(data) && data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0;
+  } catch (error) {
+    console.error("Error checking postal code existence:", error);
+    return false;
+  }
+};
 
 export const validateShipping = (shippingInfo, navigate) => {
   const { address, addressLine, city, state, country, phoneNo, postalCode } =
@@ -105,8 +116,27 @@ export default function Shipping() {
       e.preventDefault();
       setLoading(true);
 
-      // Check if billing address is not same, and validate postal code
+      // Validate shipping address
+      const isShippingPostalValid = await checkPostalCodeExists(postalCode);
+      if (
+        !name ||
+        !address ||
+        !addressLine ||
+        !city ||
+        !phoneNo ||
+        !postalCode ||
+        !country ||
+        !state ||
+        !isShippingPostalValid
+      ) {
+        toast.error("Please fill all required shipping information correctly");
+        setLoading(false);
+        return;
+      }
+
+      // Validate billing address if not same as shipping
       if (!billingSameAsShipping) {
+        const isBillingPostalValid = await checkPostalCodeExists(billingPostalCode);
         if (
           !billingName ||
           !billingAddress ||
@@ -116,7 +146,7 @@ export default function Shipping() {
           !billingPostalCode ||
           !billingCountry ||
           !billingState ||
-          !isValidPostalCode(billingPostalCode)
+          !isBillingPostalValid
         ) {
           toast.error("Please fill all required billing information correctly");
           setLoading(false);
@@ -124,6 +154,7 @@ export default function Shipping() {
         }
       }
 
+      // Save shipping info
       dispatch(
         saveShippingInfo({
           name,
@@ -137,7 +168,9 @@ export default function Shipping() {
         })
       );
 
+      // Save billing info
       if (billingSameAsShipping) {
+
         dispatch(
           saveBillingInfo({
             name,
@@ -167,6 +200,7 @@ export default function Shipping() {
         );
       }
 
+      // Create address and navigate
       try {
         const addressData = await dispatch(
           createSavedAddress({
@@ -217,6 +251,7 @@ export default function Shipping() {
       organizationName,
     ]
   );
+
 
 
   const handleOtpSubmit = async () => {

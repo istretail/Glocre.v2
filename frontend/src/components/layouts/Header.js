@@ -23,7 +23,8 @@ import { faList, faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Drawer from '@mui/material/Drawer';
 import { getCategories } from "../../actions/productActions";
-
+import { Modal, Box, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
   const { categories = [], error } = useSelector((state) => state.categoryState);
@@ -87,49 +88,9 @@ export default function Header() {
     dispatch(fetchWishlist());
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", () => {
-  //     let position = window.pageYOffset;
-  //     if (position > 100) {
-  //       headerRef.current.classList.add("fixed");
-  //     } else {
-  //       headerRef.current.classList.remove("fixed");
-  //     }
-  //   });
 
-  //   getCountry("https://countriesnow.space/api/v0.1/countries/");
-  // }, []);
 
-  const headerRef = useRef();
-  const [countryData, setCountryData] = useState([]);
-  const countryList = [];
-  const getCountry = async (url) => {
-    try {
-      await axios.get(url).then((res) => {
-        if (res !== null) {
-          //console.log(res.data.data);
-          res.data.data.map((item, index) => {
-            countryList.push(item);
-            //console.log(item.country)
-          });
 
-          //console.log(countryList)
-          setCountryData(countryList);
-        }
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const selectedSelectBoxItem = (name, id) => {
-    if (name === "Your Location") {
-      localStorage.setItem("location", "All");
-    } else {
-      localStorage.setItem("location", name);
-    }
-    window.location.href = "/";
-  };
 
 
   // Drawer
@@ -145,6 +106,19 @@ export default function Header() {
   const handleToggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  // 
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+
+  const confirmLogout = () => {
+    logoutHandler(); // Your existing logout function
+    setLogoutModalOpen(false);
+  };
+
+  const cancelLogout = () => {
+    setLogoutModalOpen(false);
+  };
+
 
   return (
     <>
@@ -280,11 +254,59 @@ export default function Header() {
                                 </span>
                               </Link>
                             </li>
-                            <li onClick={logoutHandler}>
+                            {/* <li onClick={logoutHandler}>
+                              <span className="drop-text">
+                                <LogoutOutlinedIcon className="me-2" /> Log Out
+                              </span>
+                            </li> */}
+
+                            <li onClick={() => setLogoutModalOpen(true)}>
                               <span className="drop-text">
                                 <LogoutOutlinedIcon className="me-2" /> Log Out
                               </span>
                             </li>
+
+                            <Modal open={logoutModalOpen} onClose={cancelLogout}>
+                              <Box
+                                sx={{
+                                  position: "absolute",
+                                  top: "50%",
+                                  left: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  bgcolor: "background.paper",
+                                  p: 4,
+                                  borderRadius: 2,
+                                  width: 300,
+                                  border: "none",
+                                  outline: "none",
+                                }}
+                              >
+                                <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                  Are you sure you want to log out?
+                                </Typography>
+                                <Box display="flex" justifyContent="space-between">
+                                  <Button
+                                    onClick={confirmLogout}
+                                    className="left-but"
+                                    sx={{
+                                      margin: "3px"
+                                    }}
+                                  >
+                                    Yes
+                                  </Button>
+                                  <Button
+                                    onClick={cancelLogout}
+                                    className="right-but"
+                                    sx={{
+                                      margin: "3px"
+                                    }}
+                                  >
+                                    No
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </Modal>
+
                           </ul>
                         </div>
                       ) : (
@@ -438,12 +460,59 @@ export default function Header() {
                         My Orders
                       </span>
                     </li>
-                    <li>
+                    {/* <li>
                       <span className="dropdown-item text-danger" onClick={logoutHandler}>
                         <LogoutOutlinedIcon className="me-2" />
                         Log Out
                       </span>
+                    </li> */}
+                    <li onClick={() => setLogoutModalOpen(true)}>
+                      <span className="dropdown-item text-danger">
+                        <LogoutOutlinedIcon className="me-2" /> Log Out
+                      </span>
                     </li>
+
+                    <Modal open={logoutModalOpen} onClose={cancelLogout}>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          bgcolor: "background.paper",
+                          p: 4,
+                          borderRadius: 2,
+                          width: 300,
+                          border: "none",
+                          outline: "none",
+                        }}
+                      >
+                        <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                          Are you sure you want to log out?
+                        </Typography>
+                        <Box display="flex" justifyContent="space-between">
+                          <Button
+                            onClick={confirmLogout}
+                            className="left-but"
+                            sx={{
+                              margin: "3px"
+                            }}
+                          >
+                            Yes
+                          </Button>
+                          <Button
+                            onClick={cancelLogout}
+                            className="right-but"
+                            sx={{
+                              margin: "3px"
+                            }}
+                          >
+                            No
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Modal>
+
                   </>
                 ) : (
                   <>

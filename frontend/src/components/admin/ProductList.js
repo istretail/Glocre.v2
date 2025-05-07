@@ -10,10 +10,9 @@ import Sidebar from "./Sidebar"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Dropdown, Button } from "react-bootstrap";
 import Pagination from 'react-js-pagination';
-
 import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
-
+import { Modal, Box, Typography } from "@mui/material";
 export default function ProductList() {
     const { products = [], loading = true, productsCount, resPerPage, error } = useSelector(state => state.productsState)
     const { isProductDeleted, error: productError } = useSelector(state => state.productState)
@@ -90,6 +89,26 @@ export default function ProductList() {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    const confirmProductDelete = () => {
+        deleteHandler(null, productToDelete); // pass null for event if not used
+        setDeleteModalOpen(false);
+        setProductToDelete(null);
+    };
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
+
+    const handleDeleteClick = (id) => {
+        setProductToDelete(id);
+        setDeleteModalOpen(true);
+    };
+
+    const cancelProductDelete = () => {
+        setDeleteModalOpen(false);
+        setProductToDelete(null);
+    };
+
     return (
         <>
             <section className="prodlist-section">
@@ -172,7 +191,7 @@ export default function ProductList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                             
+
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
@@ -212,7 +231,7 @@ export default function ProductList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                
+
                                 </div>
                             )}
                             {/* Drawer Component */}
@@ -261,18 +280,18 @@ export default function ProductList() {
                                             ) : products.length === 0 ? (
                                                 <div className="text-center py-5">
                                                     <p style={{ color: "#8c8c8c", fontSize: "18px" }}>You have no products. Please create one.</p>
-                                                        <Link to="/admin/products/create">
-                                                            <button 
+                                                    <Link to="/admin/products/create">
+                                                        <button
                                                             className="btn mt-3"
                                                             style={{ backgroundColor: '#ffad63', color: '#fff' }}>
                                                             Create Product
                                                         </button>
                                                     </Link>
                                                 </div>
-                                            ):(
+                                            ) : (
                                                 products.map((product) => (
                                                     <>
-                                                        <tr  key={product._id}>
+                                                        <tr key={product._id}>
                                                             <td >
                                                                 <div className="d-flex align-items-center">
                                                                     <span style={{ color: "#8c8c8c" }}>
@@ -318,11 +337,65 @@ export default function ProductList() {
                                                                     </span>
                                                                 </Link>
                                                             </td>
-                                                            <td>
+
+                                                            {/* <td>
                                                                 <Button style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }} onClick={(e) => deleteHandler(e, product._id)} className="btn ms-2">
                                                                     <FontAwesomeIcon icon={faTrash} />
                                                                 </Button>
+                                                            </td> */}
+
+                                                            <td>
+                                                                <Button
+                                                                    style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }}
+                                                                    onClick={() => handleDeleteClick(product._id)}
+                                                                    className="btn ms-2"
+                                                                >
+                                                                    <FontAwesomeIcon icon={faTrash} />
+                                                                </Button>
                                                             </td>
+
+                                                            <Modal open={deleteModalOpen} onClose={cancelProductDelete}>
+                                                                <Box
+                                                                    sx={{
+                                                                        position: "absolute",
+                                                                        top: "50%",
+                                                                        left: "50%",
+                                                                        transform: "translate(-50%, -50%)",
+                                                                        bgcolor: "background.paper",
+                                                                        p: 4,
+                                                                        borderRadius: 2,
+                                                                        width: 300,
+                                                                        border: "none",
+                                                                        outline: "none",
+                                                                    }}
+                                                                >
+                                                                    <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                                                        Are you sure want to delete this product?(It wont be recovered)
+                                                                    </Typography>
+                                                                    <Box display="flex" justifyContent="space-between">
+                                                                        <Button
+                                                                            onClick={confirmProductDelete}
+                                                                            className="left-but"
+                                                                            sx={{
+                                                                                margin: "3px"
+                                                                            }}
+                                                                        >
+                                                                            Yes
+                                                                        </Button>
+                                                                        <Button
+                                                                            onClick={cancelProductDelete}
+                                                                            className="right-but"
+                                                                            sx={{
+                                                                                margin: "3px"
+                                                                            }}
+                                                                        >
+                                                                            No
+                                                                        </Button>
+                                                                    </Box>
+                                                                </Box>
+                                                            </Modal>
+
+
                                                         </tr>
                                                     </>
                                                 ))
@@ -333,26 +406,26 @@ export default function ProductList() {
 
                             </div>
                             <br />
-
+                            {productsCount > 0 && productsCount > resPerPage ? (
+                                <div className="d-flex justify-content-center mt-5 tab-slider">
+                                    <Pagination
+                                        activePage={currentPage}
+                                        onChange={setCurrentPageNo}
+                                        totalItemsCount={productsCount}
+                                        itemsCountPerPage={resPerPage}
+                                        nextPageText={"Next"}
+                                        firstPageText={"First"}
+                                        lastPageText={"Last"}
+                                        itemClass={"page-item"}
+                                        linkClass={"page-link"}
+                                    />
+                                </div>
+                            ) : null}
                         </div>
 
 
                     </div>
-                    {productsCount > 0 && productsCount > resPerPage ? (
-                        <div className="d-flex justify-content-center mt-5 tab-slider">
-                            <Pagination
-                                activePage={currentPage}
-                                onChange={setCurrentPageNo}
-                                totalItemsCount={productsCount}
-                                itemsCountPerPage={resPerPage}
-                                nextPageText={"Next"}
-                                firstPageText={"First"}
-                                lastPageText={"Last"}
-                                itemClass={"page-item"}
-                                linkClass={"page-link"}
-                            />
-                        </div>
-                    ) : null}
+
                 </div>
             </section>
         </>

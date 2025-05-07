@@ -46,16 +46,32 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
     const adminEmail = process.env.ADMIN_EMAIL;
 
     const emailContent = `
-    <h2>Order Summary</h2>
-    <p><strong>Customer:</strong> ${userName}</p>
-    <p><strong>Email:</strong> ${userEmail}</p>
-    <p><strong>Total:</strong> ₹${totalPrice}</p>
-    <p><strong>Estimated Delivery:</strong> ${estimatedDelivery.toDateString()}</p>
-    <h3>Items:</h3>
-    <ul>
-      ${orderItems.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
-    </ul>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+      <div style="text-align: center;">
+        <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+      </div>
+  
+      <h2 style="color: #2f4d2a;">Order Summary</h2>
+  
+      <p style="color: #8c8c8c;"><strong>Customer:</strong> ${userName}</p>
+      <p style="color: #8c8c8c;"><strong>Email:</strong> ${userEmail}</p>
+      <p style="color: #8c8c8c;"><strong>Total Amount:</strong> ₹${totalPrice}</p>
+      <p style="color: #8c8c8c;"><strong>Estimated Delivery:</strong> ${estimatedDelivery.toDateString()}</p>
+  
+      <h3 style="color: #2f4d2a;">Items Ordered</h3>
+      <ul style="color: #8c8c8c; padding-left: 20px;">
+        ${orderItems.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+      </ul>
+  
+      <p style="color: #8c8c8c;">Thank you for shopping with <strong>GLOCRE</strong>!</p>
+  
+      <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+      <p style="font-size: 12px; color: #8c8c8c;">
+        <em>This is an auto-generated email. Please do not reply. For help, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+      </p>
+    </div>
   `;
+  
 
     try {
         // 1. Send to user
@@ -432,12 +448,30 @@ exports.updateOrder = catchAsyncError(async (req, res, next) => {
 
         emailSubject = `Your order #${order.clocreOrderId} has been shipped`;
         emailBody = `
-      <p>Hi ${order.user.name},</p>
-      <p>Your order has been <strong>shipped</strong>.</p>
-      <p><strong>Tracking Number:</strong> ${req.body.trackingNumber}</p>
-      <p><strong>Courier:</strong> ${req.body.courierSlug}</p>
-      <p>Track your order on the courier's website using the tracking number.</p>
-    `;
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+          <div style="text-align: center;">
+            <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+          </div>
+          <h2 style="color: #2f4d2a;">Your Order Has Been Shipped!</h2>
+          <p style="color: #8c8c8c;">Hi ${order.user.name},</p>
+          <p style="color: #8c8c8c;">
+            We're excited to let you know that your order has been <strong>shipped</strong>.
+          </p>
+          <p style="color: #8c8c8c;">
+            <strong>Tracking Number:</strong> ${req.body.trackingNumber}<br/>
+            <strong>Courier:</strong> ${req.body.courierSlug}
+          </p>
+          <p style="color: #8c8c8c;">
+            You can track your shipment using the tracking number on the courier's website.
+          </p>
+          <p style="color: #8c8c8c;">Thank you for choosing <strong>GLOCRE</strong>!</p>
+          <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+          <p style="font-size: 12px; color: #8c8c8c;">
+            <em>This is an auto-generated email. Please do not reply. For assistance, contact us at <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+          </p>
+        </div>
+      `;
+      
     }
 
     order.orderStatus = req.body.orderStatus;

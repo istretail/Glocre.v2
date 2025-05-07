@@ -273,16 +273,28 @@ export default function OrderDetail() {
                       <div className="card box-contents-glc">
                         <div className="">
                           <h5>Status</h5>
-                          <p>{orderStatus}</p>
+                            <p>{orderStatus }</p>
                         </div>
                       </div>
                     </div>
                     <div className="col-lg-3">
                       <div className="card box-contents-glc">
-                        <div className="">
-                          <h5>Tracking # :</h5>
-                          <p>BD4696366266</p>
-                        </div>
+                          <div>
+                            {orderStatus === "Processing" ? (
+                              <p style={{ fontStyle: 'italic', color: '#888' }}>
+                                Tracking information will be available after the order is shipped.
+                              </p>
+                            ) : (
+                              <>
+                                <h5>Tracking Number:</h5>
+                                <p>{orderDetail?.trackingInfo?.trackingNumber || "N/A"}</p>
+
+                                <h5>Courier Slug:</h5>
+                                <p>{orderDetail?.trackingInfo?.courierSlug || "N/A"}</p>
+                              </>
+                            )}
+                          </div>
+
                       </div>
                     </div>
                   </div>

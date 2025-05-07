@@ -10,7 +10,7 @@ import Loader from "../layouts/Loader";
 import { logEvent } from "../../actions/analyticsActions";
 import empty from "../../images/wishlist.png";
 import Nav from "./nav";
-
+import { Modal, Box, Typography } from "@mui/material";
 export default function Wishlist() {
   const { wishlist: items = [], loading } = useSelector(
     (state) => state.wishlistState,
@@ -43,6 +43,28 @@ export default function Wishlist() {
       });
     };
   }, []);
+
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
+  const handleDeleteClick = (id) => {
+    setItemToDelete(id);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    removeItemHandler(itemToDelete);
+    setDeleteModalOpen(false);
+    setItemToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setDeleteModalOpen(false);
+    setItemToDelete(null);
+  };
+
+
 
   return (
     <>
@@ -135,19 +157,75 @@ export default function Wishlist() {
                                 <span>{item.brand}</span>
                               </td>
                               <td width="10%">
-                                <span>Rs: ₹{item?.offPrice || item?.variants?.[0]?.offPrice || item?.variants?.[1]?.offPrice }.00/-</span>
+                                <span>Rs: ₹{item?.offPrice || item?.variants?.[0]?.offPrice || item?.variants?.[1]?.offPrice}.00/-</span>
                               </td>
                               <td width="10%">
                                 <span>Rs: ₹{item?.price || item?.variants?.[0]?.price || item?.variants?.[1]?.price}.00/-</span>
                               </td>
-                              <td width="10%">
+
+
+                              {/* <td width="10%">
                                 <span className="cursor">
                                   <DeleteOutlineOutlinedIcon
                                     onClick={() => removeItemHandler(item._id)}
                                     style={{ color: "red", cursor: "pointer" }}
                                   />
                                 </span>
+                              </td> */}
+
+                              <td width="10%">
+                                <span className="cursor">
+                                  <DeleteOutlineOutlinedIcon
+                                    onClick={() => handleDeleteClick(item._id)}
+                                    style={{ color: "red", cursor: "pointer" }}
+                                  />
+                                </span>
                               </td>
+
+
+                              <Modal open={deleteModalOpen} onClose={cancelDelete}>
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    bgcolor: "background.paper",
+                                    p: 4,
+                                    borderRadius: 2,
+                                    width: 300,
+                                    border: "none",
+                                    outline: "none",
+                                  }}
+                                >
+                                  <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                    Are you sure want to remove this item?
+                                  </Typography>
+                                  <Box display="flex" justifyContent="space-between">
+                                    <Button
+                                      onClick={confirmDelete}
+                                      className="left-but"
+                                      sx={{
+                                        margin: "3px"
+                                      }}
+                                    >
+                                      Yes
+                                    </Button>
+                                    <Button
+                                      onClick={cancelDelete}
+                                      className="right-but"
+                                      sx={{
+                                        margin: "3px"
+                                      }}
+                                    >
+                                      No
+                                    </Button>
+                                  </Box>
+                                </Box>
+                              </Modal>
+
+
+
                             </tr>
                           ))}
                         </tbody>

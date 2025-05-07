@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import MetaData from "../layouts/MetaData";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Nav from "../layouts/nav";
 import { logEvent } from '../../actions/analyticsActions';
+import { Modal, Box, Typography } from "@mui/material";
 export default function Cart() {
   const { items } = useSelector((state) => state.cartState);
   const { user } = useSelector((state) => state.authState);
@@ -104,6 +105,28 @@ export default function Cart() {
       logEvent({ event: 'page_view', pageUrl: window.location.pathname, timeSpent });
     };
   }, []);
+
+
+  const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleOpen = (item) => {
+    setSelectedItem(item);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedItem(null);
+  };
+
+  const handleConfirm = () => {
+    if (selectedItem) {
+      removeItemHandler(selectedItem.product, selectedItem.variant?._id);
+    }
+    handleClose();
+  };
+
   return (
     <>
       <MetaData title={"Cart"} />
@@ -211,16 +234,54 @@ export default function Cart() {
                                   Rs:{(item.price * item.quantity).toFixed(2)}
                                 </span>
                               </td>
-
+                              {/* Remove Item Button */}
                               <td align="center">
                                 <span className="cursor">
-                                  <DeleteOutlineOutlinedIcon
-                                    onClick={() =>
-                                      removeItemHandler(removeItemHandler(item.product, item.variant?._id))
-                                    }
-                                  />
+                                  <DeleteOutlineOutlinedIcon onClick={() => handleOpen(item)} />
                                 </span>
                               </td>
+
+                              <Modal open={open} onClose={handleClose}>
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                    bgcolor: "background.paper",
+                                    p: 4,
+                                    borderRadius: 2,
+                                    width: 300,
+                                    border: "none",
+                                    outline: "none",
+                                  }}
+                                >
+                                  <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                    Are you sure want to remove this item?
+                                  </Typography>
+                                  <Box display="flex" justifyContent="space-between">
+                                    <Button onClick={handleConfirm}
+                                      className="left-but"
+                                      sx={{
+                                        margin: "3px"
+                                      }}>
+                                      Yes
+                                    </Button>
+                                    <Button onClick={handleClose}
+                                      className="right-but"
+                                      sx={{
+                                        margin: "3px"
+                                      }}
+                                    >
+                                      No
+                                    </Button>
+                                  </Box>
+
+                                </Box>
+                              </Modal>
+
+
+
                             </tr>
                           </tbody>
                         ))}
@@ -249,7 +310,7 @@ export default function Cart() {
                         </span>
                       </h3>
                     </div>
-                   
+
                     <div className="d-flex align-items-center mb-4">
                       <h5 className="mb-0 text-light">items</h5>
                       <h3 className="ml-auto mb-0 font-weight-bold">

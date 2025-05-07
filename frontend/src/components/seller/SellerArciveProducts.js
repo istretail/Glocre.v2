@@ -6,12 +6,13 @@ import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify'
 import { clearError, clearProductArchive, } from "../../slices/singleProductSlice"
 import SellerSidebar from "./SellerSidebar"
-import { Link } from "react-router-dom"
 import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 import { Dropdown, } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Pagination from 'react-js-pagination';
+import { Link, useNavigate } from "react-router-dom";
+import { Modal, Box, Typography, Button } from "@mui/material";
 export default function SellerArchiveProducts() {
   // const { loading = true, productsCount } = useSelector(state => state.productsState)
   const { loading = true, products = [], sellerProductCount, isProductDeleted, resPerPage, error } = useSelector(state => state.productsState)
@@ -65,6 +66,50 @@ export default function SellerArchiveProducts() {
   const setCurrentPageNo = (pageNo) => {
     setCurrentPage(pageNo);
   };
+
+
+  // 
+    const [navModalOpen, setNavModalOpen] = useState(false);
+    const [selectedProductId, setSelectedProductId] = useState(null);
+    const navigate = useNavigate();
+  
+    const handleEditClick = (id) => {
+      setSelectedProductId(id);
+      setNavModalOpen(true);
+    };
+  
+    const handleNavConfirm = () => {
+      navigate(`/seller/product/${selectedProductId}`);
+    };
+  
+    const handleNavClose = () => {
+      setNavModalOpen(false);
+      setSelectedProductId(null);
+    };
+
+  const [unarchiveModalOpen, setUnarchiveModalOpen] = useState(false);
+  const [productToUnarchive, setProductToUnarchive] = useState(null);
+  const [unarchiveEvent, setUnarchiveEvent] = useState(null);
+  const handleUnarchiveClick = (e, id) => {
+    setUnarchiveEvent(e);
+    setProductToUnarchive(id);
+    setUnarchiveModalOpen(true);
+  };
+
+  const confirmUnarchive = () => {
+    unarchiveHandler(unarchiveEvent, productToUnarchive);
+    setUnarchiveModalOpen(false);
+    setProductToUnarchive(null);
+    setUnarchiveEvent(null);
+  };
+
+  const cancelUnarchive = () => {
+    setUnarchiveModalOpen(false);
+    setProductToUnarchive(null);
+    setUnarchiveEvent(null);
+  };
+
+
   return (
     <>
       <section className="seller-product-list-section ">
@@ -304,7 +349,7 @@ export default function SellerArchiveProducts() {
             </div>
 
             <h3 style={{ color: '#ffad63', marginTop: '40px' }}>
-              PRODUCT LIST
+              Archived Products List
             </h3>
             <p>Glocre</p>
 
@@ -318,7 +363,6 @@ export default function SellerArchiveProducts() {
                       <th style={{ minWidth: '180px' }}>Date</th>
                       <th style={{ minWidth: '300px' }}>ID</th>
                       <th style={{ minWidth: '150px' }}>Update Product</th>
-
                       <th style={{ minWidth: '150px' }}>Action</th>
                     </tr>
                   </thead>
@@ -369,7 +413,7 @@ export default function SellerArchiveProducts() {
                               {product.clocreProductId}
                             </span>
                           </td>
-                          <td>
+                          {/* <td>
                             <Link
                               to={`/seller/product/${product._id}`}
                               className="btn"
@@ -380,11 +424,131 @@ export default function SellerArchiveProducts() {
                             >
                               <FontAwesomeIcon icon={faPencil} />
                             </Link>
-                          </td>
+                          </td> */}
 
                           <td>
-                            <button className="m-3" onClick={e => unarchiveHandler(e, product._id)}>unarchive</button>
+                            <button
+                              className="btn"
+                              onClick={() => handleEditClick(product._id)}
+                              style={{
+                                backgroundColor: '#ffad63',
+                                color: '#fff',
+                                border: "none",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faPencil} />
+                            </button>
                           </td>
+
+                          <Modal open={navModalOpen} onClose={handleNavClose}>
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                bgcolor: "background.paper",
+                                p: 4,
+                                borderRadius: 2,
+                                width: 300,
+                                border: "none",
+                                outline: "none",
+                              }}
+                            >
+                              <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                Are you sure want to update this product?(Item will be moved to pending state)
+                              </Typography>
+                              <Box display="flex" justifyContent="space-between">
+                                <Button
+                                  onClick={handleNavConfirm}
+                                  className="left-but"
+                                  sx={{ margin: "3px" }}
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  onClick={handleNavClose}
+                                  sx={{
+                                    backgroundColor: '#2f4d2a',
+                                    color: '#fff',
+                                    '&:hover': {
+                                      backgroundColor: '#2f4d2a50',
+                                    },
+                                    width: "100%",
+                                    margin: "3px"
+                                  }}
+                                >
+                                  No
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Modal> 
+
+                          {/* <td>
+                            <button className="m-3" onClick={e => unarchiveHandler(e, product._id)}
+                              style={{ backgroundColor: "#2f4d2a", color: "#fff", fontSize: "15px", padding: "5px", borderRadius: "7px" }}
+                            >Unarchive</button>
+                          </td> */}
+
+                          <td>
+                            <button
+                              className="m-3"
+                              onClick={(e) => handleUnarchiveClick(e, product._id)}
+                              style={{
+                                backgroundColor: "#2f4d2a",
+                                color: "#fff",
+                                fontSize: "15px",
+                                padding: "5px",
+                                borderRadius: "7px",
+                              }}
+                            >
+                              Unarchive
+                            </button>
+                          </td>
+
+                          <Modal open={unarchiveModalOpen} onClose={cancelUnarchive}>
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                bgcolor: "background.paper",
+                                p: 4,
+                                borderRadius: 2,
+                                width: 300,
+                                border: "none",
+                                outline: "none",
+                              }}
+                            >
+                              <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                Do you want to unarchive this product?
+                              </Typography>
+                              <Box display="flex" justifyContent="space-between">
+                                <Button
+                                  onClick={confirmUnarchive}
+                                  className="left-but"
+                                  sx={{
+                                    margin: "3px"
+                                  }}
+                                >
+                                  Yes
+                                </Button>
+                                <Button
+                                  onClick={cancelUnarchive}
+                                  className="right-but"
+                                  sx={{
+                                    margin: "3px"
+                                  }}
+                                >
+                                  No
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Modal>
+
+
                         </tr>
                       ))
                     )}

@@ -18291,3 +18291,20 @@ footer .lastStrip .part3 ul li a:hover {
   background-size: 1.75rem;
   cursor: pointer;
 }
+.left-but{
+  background-color: #ffad63 !important;
+  color: #fff !important;
+  width: 100%;
+  margin: 3px;
+  border: none !important;
+  outline: none !important;
+}
+ 
+.right-but{
+  background-color: #2f4d2a !important;
+  color: #fff !important;
+  width: 100%;
+  margin: 3px;
+  border: none !important;
+  outline: none !important;
+}

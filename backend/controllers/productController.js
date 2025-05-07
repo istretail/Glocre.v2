@@ -142,6 +142,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     email: product.createdBy.email,
     name: product.createdBy.name,
   };
+  // console.log(creatorInfo.email, creatorInfo.name)
 
   // Handle main product images (S3)
   if (req.body.existingImages) {
@@ -210,27 +211,33 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     }
   });
 
-  // Update product
-  product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
-    new: true,
-    runValidators: true,
-  });
 
-  res.status(200).json({
-    success: true,
-    product,
-  });
 
   // Send email notification if the status changed
   if (req.body.status && req.body.status !== product.status) {
     try {
       const statusMessage = req.body.status === "approved" ? "approved" : "rejected";
       let emailContent = `
-        <h2>Your Product Update</h2>
-        <p>Dear ${creatorInfo.name},</p>
-        <p>Your product "${product.name}" has been ${statusMessage}.</p>
-        <p>Thank you for using our platform!</p>
-      `;
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+    <div style="text-align: center;">
+      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+    </div>
+
+    <h2 style="color: #2f4d2a;">Product Status Update</h2>
+
+    <p style="color: #8c8c8c;">Dear ${creatorInfo.name},</p>
+    <p style="color: #8c8c8c;">
+      Your product <strong>"${product.name}"</strong> has been <strong>${statusMessage}</strong>.
+    </p>
+    <p style="color: #8c8c8c;">Thank you for using <strong>GLOCRE</strong> to showcase your product!</p>
+
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email. Please do not reply. For queries, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+    </p>
+  </div>
+`;
+
 
       if (req.body.status === "rejected" && req.body.rejectionReason) {
         emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`;
@@ -242,10 +249,23 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
         subject: `Product ${statusMessage}`,
         html: emailContent,
       });
+      console.log("Email sent to user:", creatorInfo.email);
+      console.log("Email :", statusMessage);
     } catch (emailError) {
       console.error("Failed to send email:", emailError);
     }
   }
+
+  // Update product
+  product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
 });
 
 //Delete product - api/v1/product/:id
@@ -378,7 +398,7 @@ exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
 
 // seller Controller
 exports.getSellerProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 10;
+  const resPerPage = 100;
 
   const apiFeatures = new APIFeatures(
     Product.find({
@@ -498,11 +518,26 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
       name: req.user.name,
     };
     const emailContent = `
-      <h2>New Product Added</h2>
-      <p>Dear ${creatorInfo.name},</p>
-      <p>Your product "${product.name}" has been added and is now pending approval.</p>
-      <p>Thank you for using our platform!</p>
-    `;
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+      <div style="text-align: center;">
+        <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Banner" style="width: 100%; max-width: 600px; margin-bottom: 20px;" />
+      </div>
+  
+      <h2 style="color: #2f4d2a;">New Product Added</h2>
+  
+      <p style="color: #8c8c8c;">Dear ${creatorInfo.name},</p>
+      <p style="color: #8c8c8c;">
+        Your product <strong>"${product.name}"</strong> has been successfully added and is currently <strong>pending approval</strong>.
+      </p>
+      <p style="color: #8c8c8c;">Thank you for contributing to the <strong>GLOCRE</strong> platform!</p>
+  
+      <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+      <p style="font-size: 12px; color: #8c8c8c;">
+        <em>This is an auto-generated email. Please do not reply. For any queries, contact us at <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+      </p>
+    </div>
+  `;
+
 
     // Send email to user
     await sendEmail({
@@ -518,10 +553,27 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
       email: adminEmail,
       subject: "New Product Added",
       html: `
-        <h2>New Product Added</h2>
-        <p>Dear Admin,</p>
-        <p>The product "${product.name}" has been added by ${creatorInfo.name} and is now pending approval.</p>
-      `,
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+    <div style="text-align: center;">
+      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Admin Alert" style="width: 100%; max-width: 600px; margin-bottom: 20px;" />
+    </div>
+
+    <h2 style="color: #2f4d2a;">New Product Submitted for Approval</h2>
+
+    <p style="color: #8c8c8c;">Dear Admin,</p>
+    <p style="color: #8c8c8c;">
+      A new product titled <strong>"${product.name}"</strong> has been added by <strong>${creatorInfo.name}</strong> and is currently <strong>pending</strong> please wait for <strong>Approval</strong>.
+    </p>
+
+    <p style="color: #8c8c8c;">Please review and approve the product in the admin dashboard.</p>
+
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email from <strong>GLOCRE</strong>. Please do not reply.</em>
+    </p>
+  </div>
+`,
+
     });
   } catch (emailError) {
     console.error("Failed to send email:", emailError);
@@ -623,10 +675,27 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
   try {
     const adminEmail = process.env.ADMIN_EMAIL;
     const emailContent = `
-      <h2>Product Update Notification</h2>
-      <p>Dear ${creatorInfo.name},</p>
-      <p>Your product "${product.name}" has been updated and is now pending approval.</p>
-    `;
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+    <div style="text-align: center;">
+      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Product Update" style="width: 100%; max-width: 600px; margin-bottom: 20px;" />
+    </div>
+
+    <h2 style="color: #2f4d2a;">Product Update Notification</h2>
+
+    <p style="color: #8c8c8c;">Dear ${creatorInfo.name},</p>
+    <p style="color: #8c8c8c;">
+      Your product <strong>"${product.name}"</strong> has been updated and is now <strong>pending approval</strong>.
+    </p>
+
+    <p style="color: #8c8c8c;">Thank you for being a valued part of <strong>GLOCRE</strong>.</p>
+
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email. Please do not reply. For queries, contact us at <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+    </p>
+  </div>
+`;
+
 
     await sendEmail({
       fromEmail: "donotreply@glocre.com",
@@ -640,10 +709,27 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
       email: adminEmail,
       subject: "Product Update Notification",
       html: `
-        <h2>Product Update Notification</h2>
-        <p>Dear Admin,</p>
-        <p>The product "${product.name}" has been updated by ${creatorInfo.name} and is now pending approval.</p>
-      `,
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+    <div style="text-align: center;">
+      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Admin Notification" style="width: 100%; max-width: 600px; margin-bottom: 20px;" />
+    </div>
+
+    <h2 style="color: #2f4d2a;">Product Update Notification</h2>
+
+    <p style="color: #8c8c8c;">Dear Admin,</p>
+    <p style="color: #8c8c8c;">
+      The product <strong>"${product.name}"</strong> has been updated by <strong>${creatorInfo.name}</strong> and is currently <strong>pending approval</strong>.
+    </p>
+
+    <p style="color: #8c8c8c;">Please review the updated product in the admin dashboard.</p>
+
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email from <strong>GLOCRE</strong>. Please do not reply.</em>
+    </p>
+  </div>
+`,
+
     });
   } catch (emailError) {
     console.error("Failed to send email:", emailError);

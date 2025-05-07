@@ -286,8 +286,25 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   //Create reset url
   const resetUrl = `${BASE_URL}/password/reset/${resetToken}`;
 
-  const message = `<p>Your password reset url is as follows:
-    </p> <a href="${resetUrl}">${resetUrl} </a><p>If you have not requested this email, then ignore it.</p>`;
+  const message = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff;">
+    <h2 style="color: #2f4d2a;">Password Reset Request</h2>
+    <p style="color: #8c8c8c;">
+      Your password reset link is below:
+    </p>
+    <p>
+      <a href="${resetUrl}" style="color: #ffaf63; word-break: break-all;">${resetUrl}</a>
+    </p>
+    <p style="color: #8c8c8c;">
+      If you did not request this change, you can safely ignore this email.
+    </p>
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email. Please do not reply. For help, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+    </p>
+  </div>
+`;
+
 
   try {
     sendEmail({
@@ -445,31 +462,51 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
       : "Not Provided";
 
     const adminBody = `
-  <p>A user has applied to become a seller. Here are the details:</p>
-  <ul>
-    <li><strong>Name:</strong> ${req.body.name}</li>
-    <li><strong>Last Name:</strong> ${req.body.lastName}</li>
-    <li><strong>Email:</strong> ${req.body.email}</li>
-    <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
-    <li><strong>Business Name:</strong> ${req.body.businessName}</li>
-    <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
-    <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
-    <li><strong>Business Address:</strong> ${businessAddressString}</li>
-  </ul>
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff;">
+    <h2 style="color: #2f4d2a;">New Seller Application</h2>
+    <p style="color: #8c8c8c;">A user has submitted a request to become a seller. Below are the submitted details:</p>
+    <ul style="color: #8c8c8c; padding-left: 20px;">
+      <li><strong>Name:</strong> ${req.body.name}</li>
+      <li><strong>Last Name:</strong> ${req.body.lastName}</li>
+      <li><strong>Email:</strong> ${req.body.email}</li>
+      <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
+      <li><strong>Business Name:</strong> ${req.body.businessName}</li>
+      <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
+      <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
+      <li><strong>Business Address:</strong> ${businessAddressString}</li>
+    </ul>
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated notification for internal use only.</em>
+    </p>
+  </div>
 `;
 
+
+
     const userBody = `
-  <p>Dear ${req.body.name} ${req.body.lastName},</p>
-  <p>Thank you for applying to become a supplier. We have received your application and will review it shortly. Here are the details you provided:</p>
-  <ul>
-    <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
-    <li><strong>Business Name:</strong> ${req.body.businessName}</li>
-    <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
-    <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
-  </ul>
-  <p>We will notify you once your application has been reviewed.</p>
-  <p>Best regards,<br>Team Glocre</p>
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+    <h2 style="color: #2f4d2a;">Seller Application Received</h2>
+    <p style="color: #8c8c8c;">Dear ${req.body.name} ${req.body.lastName},</p>
+    <p style="color: #8c8c8c;">
+      Thank you for applying to become a supplier on <strong>GLOCRE</strong>. We have received your application and will review it shortly. Below are the details you submitted:
+    </p>
+    <ul style="color: #8c8c8c; padding-left: 20px;">
+      <li><strong>GST Number:</strong> ${req.body.gstNumber}</li>
+      <li><strong>Business Name:</strong> ${req.body.businessName}</li>
+      <li><strong>Business Email:</strong> ${req.body.businessEmail}</li>
+      <li><strong>Contact Number:</strong> ${req.body.businessContactNumber}</li>
+    </ul>
+    <p style="color: #8c8c8c;">We will notify you once your application has been reviewed.</p>
+    <p style="color: #8c8c8c;">Best regards,</p>
+    <p style="font-weight: bold; color: #2f4d2a;">The GLOCRE Team</p>
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email. Please do not reply. For assistance, contact us at <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+    </p>
+  </div>
 `;
+
 
     try {
       await sendEmail({
@@ -1119,15 +1156,25 @@ exports.sendContactEmail = catchAsyncError( async (req, res) => {
     // console.log(req.body)
   
     const adminHtmlMessage = `
-      <h2>New Contact Form Submission</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Organization:</strong> ${organization}</p>
-      <p><strong>Function:</strong> ${userFunction}</p>
-      <p><strong>Mobile:</strong> ${mobile}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Pincode:</strong> ${pincode}</p>
-      <p><strong>Requirements:</strong> ${requirements}</p>
-    `;
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 24px; background-color: #ffffff;">
+    <div style="text-align: center;">
+      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+    </div>
+    <h2 style="color: #2f4d2a;">New Contact Form Submission</h2>
+    <p style="color: #8c8c8c;"><strong>Name:</strong> ${name}</p>
+    <p style="color: #8c8c8c;"><strong>Organization:</strong> ${organization}</p>
+    <p style="color: #8c8c8c;"><strong>Function:</strong> ${userFunction}</p>
+    <p style="color: #8c8c8c;"><strong>Mobile:</strong> ${mobile}</p>
+    <p style="color: #8c8c8c;"><strong>Email:</strong> ${email}</p>
+    <p style="color: #8c8c8c;"><strong>Pincode:</strong> ${pincode}</p>
+    <p style="color: #8c8c8c;"><strong>Message/Requirements:</strong> ${requirements}</p>
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated notification for internal use.</em>
+    </p>
+  </div>
+`;
+
 
     await sendEmail({
       fromEmail: "donotreply@glocre.com",
@@ -1138,19 +1185,33 @@ exports.sendContactEmail = catchAsyncError( async (req, res) => {
 
     // 2️⃣ Confirmation Email to User
     const userHtmlMessage = `
-      <h2>Thank you for contacting GLOCRe</h2>
-      <p>Hi ${name},</p>
-      <p>We have received your message and our team will reach out to you shortly.</p>
-      <p>In the meantime, feel free to explore our website or reply to this email if you have additional queries.</p>
-      <br/>
-      <p>Best regards,</p>
-      <p><strong>GLOCRe Support Team</strong></p>
-    `;
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 24px; background-color: #fff7f0;">
+    <div style="text-align: center;">
+      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+    </div>
+    <h2 style="color: #2f4d2a;">Thank You for Contacting GLOCRE</h2>
+    <p style="color: #8c8c8c;">Dear ${name},</p>
+    <p style="color: #8c8c8c;">
+      We appreciate you reaching out to <strong>GLOCRE</strong>. Your message has been received, and a member of our team will get in touch with you shortly.
+    </p>
+    <p style="color: #8c8c8c;">
+      In the meantime, feel free to browse our website or contact us directly with any additional questions.
+    </p>
+    <br/>
+    <p style="color: #8c8c8c;">Best regards,</p>
+    <p style="font-weight: bold; color: #2f4d2a;">The GLOCRE Support Team</p>
+    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+    <p style="font-size: 12px; color: #8c8c8c;">
+      <em>This is an auto-generated email. Please do not reply. For queries, contact us at <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+    </p>
+  </div>
+`;
+
 
     await sendEmail({
       fromEmail: "donotreply@glocre.com",
       email: email,
-      subject: "We’ve received your message – GLOCRe",
+      subject: "We’ve received your message – GLOCRE",
       html: userHtmlMessage,
     });
 
