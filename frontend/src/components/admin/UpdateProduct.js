@@ -706,7 +706,7 @@ export default function UpdateProduct() {
                                                         type="text"
                                                         className="form-control"
                                                         name="fssai"
-                                                        value={formData.fssai.toLocaleUpperCase()}
+                                                        value={formData?.fssai?.toLocaleUpperCase()}
                                                         onChange={handleChange}
                                                         maxLength={14}
                                                         required
@@ -1049,7 +1049,7 @@ export default function UpdateProduct() {
                                                     id="itemModelNum_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.itemModelNum.toLocaleUpperCase()}
+                                                    value={formData.itemModelNum?.toLocaleUpperCase()}
                                                     maxLength={15}
                                                     name="itemModelNum"
                                                 />
@@ -1063,7 +1063,7 @@ export default function UpdateProduct() {
                                                     id="sku_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.sku.toLocaleUpperCase()}
+                                                    value={formData.sku?.toLocaleUpperCase()}
                                                     maxLength={15}
                                                     name="sku"
                                                 />
@@ -1082,7 +1082,7 @@ export default function UpdateProduct() {
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     maxLength={15}
-                                                    value={formData.upc.toLocaleUpperCase()}
+                                                    value={formData.upc?.toLocaleUpperCase()}
                                                     name="upc"
                                                 />
                                             </div>
@@ -1099,7 +1099,7 @@ export default function UpdateProduct() {
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     maxLength={10}
-                                                    value={formData.hsn.toLocaleUpperCase()}
+                                                    value={formData.hsn?.toLocaleUpperCase()}
                                                     name="hsn"
                                                 />
                                             </div>
@@ -1317,7 +1317,7 @@ export default function UpdateProduct() {
                                                     id="unit_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.unit.toLocaleUpperCase()}
+                                                    value={formData.unit?.toLocaleUpperCase()}
                                                     name="unit"
                                                 />
                                             </div>

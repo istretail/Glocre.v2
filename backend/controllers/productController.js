@@ -8,7 +8,7 @@ const categoryHierarchy = require("../config/categoryHierarchy");
 const s3 = require('../config/s3');
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 100;
+  const resPerPage = 30;
 
   // Validate and sanitize limit
   let limit = parseInt(req.query.limit);

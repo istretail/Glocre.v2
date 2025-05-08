@@ -539,6 +539,7 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
             "Chandigarh",
             "Himachal Pradesh",
             "Jammu and Kashmir",
+            "Jammu & Kashmir",
             "Ladakh",
             "Uttarakhand"
         ];
@@ -549,8 +550,10 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
             "Kerala",
             "Tamil Nadu",
             "Puducherry",
+            "Pondicherry",
             "Lakshadweep",
-            "Andaman and Nicobar Islands"
+            "Andaman and Nicobar Islands",
+            "Andaman & Nicobar",
         ];
         const eastStates = [
             "Bihar",
@@ -564,7 +567,10 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
             "Gujarat",
             "Maharashtra",
             "Goa",
-            "Dadra and Nagar Haveli and Daman and Diu"
+            "Dadra and Nagar Haveli and Daman and Diu",
+            "Dadra & Nagar Haveli",
+            "Daman & Diu",
+            
         ];
         const centralStates = [
             "Madhya Pradesh",

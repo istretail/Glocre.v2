@@ -146,100 +146,76 @@ export default function Profile() {
           </div>
 
           <div className="col-md-8">
-                <div class="info-box">
-                  <p>
-                    <b className="info-box-p-b">Full Name</b>
-                    <b className="info-box-p-b2">:</b>
-                    <span className="info-box-p-span">{user.name}</span>
-                  </p>
-                  <p>
-                    <b className="info-box-p-b">Email Address</b>
-                    <b className="info-box-p-b2">:</b>
-                    <span className="info-box-p-span">{user.email}</span>
-                  </p>
+            <div class="info-box">
+              <p>
+                <b className="info-box-p-b">Full Name</b>
+                <b className="info-box-p-b2">:</b>
+                <span className="info-box-p-span">{user.name}</span>
+              </p>
+              <p>
+                <b className="info-box-p-b">Email Address</b>
+                <b className="info-box-p-b2">:</b>
+                <span className="info-box-p-span">{user.email}</span>
+              </p>
 
+              <p>
+                <b className="info-box-p-b">Joined</b>
+                <b className="info-box-p-b2">:</b>
+                <span className="info-box-p-span">
+                  {String(user.createdAt).substring(0, 10)}
+                </span>
+              </p>
+
+              {user.role === 'seller' && (
+                <>
                   <p>
-                    <b className="info-box-p-b">Joined</b>
+                    <b className="info-box-p-b">Business Address</b>
                     <b className="info-box-p-b2">:</b>
                     <span className="info-box-p-span">
-                      {String(user.createdAt).substring(0, 10)}
+                      {user.businessAddress &&
+                        `${user.businessAddress[0].address}, ${user.businessAddress[0].addressLine}, ${user.businessAddress[0].city}, ${user.businessAddress[0].state} - ${user.businessAddress[0].postalCode}, ${user.businessAddress[0].country}`}
                     </span>
                   </p>
+               
+                </>
+               
 
-                  {user.role === 'seller' && (
-                    <>
-                      <p>
-                        <b className="info-box-p-b">Business Email</b>
-                        <b className="info-box-p-b2">:</b>
-                        <span className="info-box-p-span">
-                          {user.businessEmail}
-                        </span>
-                      </p>
-                      <p>
-                        <b className="info-box-p-b">Business Name</b>
-                        <b className="info-box-p-b2">:</b>
-                        <span className="info-box-p-span">
-                          {user.businessName}
-                        </span>
-                      </p>
-                      <p>
-                        <b className="info-box-p-b">Business Contact Number</b>
-                        <b className="info-box-p-b2">:</b>
-                        <span className="info-box-p-span">
-                          {user.businessContactNumber}
-                        </span>
-                      </p>
-                      <p>
-                        <b className="info-box-p-b">Business Address</b>
-                        <b className="info-box-p-b2">:</b>
-                        <span className="info-box-p-span">
-                          {user.businessAddress}
-                        </span>
-                      </p>
-                      <p>
-                        <b className="info-box-p-b">GST Number</b>
-                        <b className="info-box-p-b2">:</b>
-                        <span className="info-box-p-span">
-                          {user.gstNumber}
-                        </span>
-                      </p>
-                    </>
-                  )}
-                </div>
+              )}
+            </div>
 
-                <div className="row mt-4">
-                  <div className="use-link mt-3 ">
-                    <Link
-                      to="/myprofile/update"
-                      className="btn btn-g col-lg-2  me-2 mb-3"
-                    >
-                      update profile
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="btn btn-g col-lg-2  me-2 mb-3"
-                    >
-                      My Orders
-                    </Link>
-                    <Link
-                      to="/myprofile/update/password"
-                      id="edit_profile"
-                      className="btn btn-g col-lg-2   me-2 mb-3"
-                    >
-                      Change Password
-                    </Link>
-                    <Link
-                      to="/myprofile/saved-address"
-                      id="edit_profile"
-                      className="btn col-lg-2  btn-g mb-3"
-                    >
-                      Saved Address
-                    </Link>
-                  </div>
-                </div>
+            <div className="row mt-4">
+              <div className="use-link mt-3 ">
+                <Link
+                  to="/myprofile/update"
+                  className="btn btn-g col-lg-2  me-2 mb-3"
+                >
+                  update profile
+                </Link>
+                <Link
+                  to="/orders"
+                  className="btn btn-g col-lg-2  me-2 mb-3"
+                >
+                  My Orders
+                </Link>
+                <Link
+                  to="/myprofile/update/password"
+                  id="edit_profile"
+                  className="btn btn-g col-lg-2   me-2 mb-3"
+                >
+                  Change Password
+                </Link>
+                <Link
+                  to="/myprofile/saved-address"
+                  id="edit_profile"
+                  className="btn col-lg-2  btn-g mb-3"
+                >
+                  Saved Address
+                </Link>
               </div>
             </div>
           </div>
+        </div>
+      </div>
     </>
   );
 }

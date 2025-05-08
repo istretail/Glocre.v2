@@ -15,6 +15,7 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
+import { Modal, Box, Typography, Button } from "@mui/material";
 export default function SellerUpdateProduct() {
   const { id: productId } = useParams();
   const { loading, error, categories = {} } = useSelector(state => state.productsState);
@@ -72,6 +73,9 @@ export default function SellerUpdateProduct() {
   const [modalImage, setModalImage] = useState("");
   const [variantDetails, setVariantDetails] = useState([]);
   const [hasVariants, setHasVariants] = useState(false);
+  const [navModalOpen, setNavModalOpen] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -146,7 +150,7 @@ export default function SellerUpdateProduct() {
         offPrice: product.offPrice,
         tax: product.tax,
         price: product.price,
-        keyPoints: product.keyPoints && product.keyPoints.length > 0 ? product.keyPoints: ["", "", "", "", ""],
+        keyPoints: product.keyPoints && product.keyPoints.length > 0 ? product.keyPoints : ["", "", "", "", ""],
         description: product.description,
         images: product.images,
         maincategory: product.maincategory,
@@ -239,121 +243,116 @@ export default function SellerUpdateProduct() {
       return { ...prev, keyPoints: updated };
     });
   };
-      useEffect(() => {
-          if (isImageDeleted) {
-              toast('Image Delete Successfully!', {
-                  type: 'success',
-                  onOpen: () => dispatch(clearProductUpdated())
-              });
-  
-              navigate('/seller/products');
-              return;
+  useEffect(() => {
+    if (isImageDeleted) {
+      toast('Image Delete Successfully!', {
+        type: 'success',
+        onOpen: () => dispatch(clearProductUpdated())
+      });
+
+      navigate('/seller/products');
+      return;
+    }
+  }, [isImageDeleted]);
+
+  const handleNavConfirm = async () => {
+    setNavModalOpen(false);
+    if (!pendingSubmit) return;
+
+    if (imageErrors.length > 0) {
+      toast("Please fix the image errors before submitting.");
+      return;
+    }
+
+    const productData = new FormData();
+
+    Object.keys(formData).forEach((key) => {
+      if (key === "images") {
+        formData.images.forEach((image) => {
+          if (typeof image === "string" && image.startsWith("http")) {
+            productData.append("existingImages", image);
           }
-      }, [isImageDeleted]);
-const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (imageErrors.length > 0) {
-            toast("Please fix the image errors before submitting.");
-            return;
-        }
-
-        const productData = new FormData();
-
-        // Append product fields
-        Object.keys(formData).forEach((key) => {
-            if (key === "images") {
-                formData.images.forEach((image) => {
-                    if (typeof image === "string" && image.startsWith("http")) {
-                        // Add only valid URLs to existingImages
-                        productData.append("existingImages", image);
-                    }
-                });
-                imageFiles.forEach((file) => {
-                    // Add only File objects to images
-                    productData.append("images", file);
-                });
-            } else if (key === "keyPoints") {
-                formData[key].forEach((point) => {
-                    productData.append("keyPoints", point);
-                });
-            } else {
-                productData.append(key, formData[key]);
-            }
         });
-
-        // Ensure ALL variants (both updated & unchanged) are included
-        variantDetails.forEach((variant, index) => {
-            productData.append(`variants[${index}][id]`, variant.id); // Keep existing ID
-            productData.append(`variants[${index}][name]`, variant.name);
-            productData.append(`variants[${index}][price]`, variant.price);
-            productData.append(`variants[${index}][stock]`, variant.stock);
-
-            if (variant.images && variant.images.length > 0) {
-                variant.images.forEach((file) => {
-                    if (typeof file === "string" && file.startsWith("http")) {
-                        // Add only valid URLs to existingImages
-                        productData.append(`variants[${index}][existingImages]`, file);
-                    } else {
-                        // Add only File objects to images
-                        productData.append(`variants[${index}][images]`, file);
-                    }
-                });
-            } else {
-                // Ensure existingImages is sent even if no new images are added
-                productData.append(`variants[${index}][existingImages]`, []);
-            }
+        imageFiles.forEach((file) => {
+          productData.append("images", file);
         });
+      } else if (key === "keyPoints") {
+        formData[key].forEach((point) => {
+          productData.append("keyPoints", point);
+        });
+      } else {
+        productData.append(key, formData[key]);
+      }
+    });
 
-      
+    variantDetails.forEach((variant, index) => {
+      productData.append(`variants[${index}][id]`, variant.id);
+      productData.append(`variants[${index}][name]`, variant.name);
+      productData.append(`variants[${index}][price]`, variant.price);
+      productData.append(`variants[${index}][stock]`, variant.stock);
 
-        // Debugging: Log FormData
-        for (let pair of productData.entries()) {
-            console.log(pair[0], pair[1]);
-        }
+      if (variant.images && variant.images.length > 0) {
+        variant.images.forEach((file) => {
+          if (typeof file === "string" && file.startsWith("http")) {
+            productData.append(`variants[${index}][existingImages]`, file);
+          } else {
+            productData.append(`variants[${index}][images]`, file);
+          }
+        });
+      } else {
+        productData.append(`variants[${index}][existingImages]`, []);
+      }
+    });
 
-        try {
-          await dispatch(updateSellerProduct(productId, productData));
-            // toast("Product updated successfully!", { type: "success" });
-        } catch (error) {
-            toast(error.message, { type: "error" });
-        }
-    };
+    for (let pair of productData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    try {
+      await dispatch(updateSellerProduct(productId, productData));
+    } catch (error) {
+      toast(error.message, { type: "error" });
+    }
+
+    setPendingSubmit(false); // reset flag
+  };
+
+
   // Removed duplicate handleSubmit function
-    const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
-      if (window.confirm("Are you sure you want to delete this image? it won't be recovered")) {
-            try {
-                await dispatch(deleteProductImage(imageUrl, productId, variantId));
+  const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
+    if (window.confirm("Are you sure you want to delete this image? it won't be recovered")) {
+      try {
+        await dispatch(deleteProductImage(imageUrl, productId, variantId));
 
-                if (variantId) {
-                    // Handle variant image deletion
-                    setFormData((prev) => ({
-                        ...prev,
-                        variants: prev.variants.map((variant) =>
-                            variant._id === variantId
-                                ? {
-                                    ...variant,
-                                    images: (variant.images || []).filter((image) => image !== imageUrl), // Ensure images is always an array
-                                }
-                                : variant
-                        ),
-                    }));
-                } else {
-                    // Handle main product image deletion
-                    setFormData((prev) => ({
-                        ...prev,
-                        images: (prev.images || []).filter((image) => image !== imageUrl),
-                    }));
-                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); // ✅ fix
+        if (variantId) {
+          // Handle variant image deletion
+          setFormData((prev) => ({
+            ...prev,
+            variants: prev.variants.map((variant) =>
+              variant._id === variantId
+                ? {
+                  ...variant,
+                  images: (variant.images || []).filter((image) => image !== imageUrl), // Ensure images is always an array
                 }
-
-
-                
-            } catch (error) {
-                toast.error("Failed to delete image.");
-            }
+                : variant
+            ),
+          }));
+        } else {
+          // Handle main product image deletion
+          setFormData((prev) => ({
+            ...prev,
+            images: (prev.images || []).filter((image) => image !== imageUrl),
+          }));
+          setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); // ✅ fix
         }
-    };
+
+
+
+      } catch (error) {
+        toast.error("Failed to delete image.");
+      }
+    }
+  };
   const openModal = (image) => {
     setModalImage(image);
     setShowModal(true);
@@ -364,6 +363,9 @@ const handleSubmit = async (e) => {
     setModalImage("");
   };
 
+  const handleNavClose = () => {
+    setNavModalOpen(false);
+  };
 
 
   // console.log("Variant Details before submitting:", variantDetails);
@@ -604,11 +606,15 @@ const handleSubmit = async (e) => {
               </h3>
 
 
-              <form
-                onSubmit={handleSubmit}
-                className=""
-                encType="multipart/form-data"
-              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setPendingSubmit(true); // flag we want to submit
+                    setNavModalOpen(true);  // open confirmation modal
+                  }}
+                  className=""
+                  encType="multipart/form-data"
+                >
                 <div className="row">
                   <div className="col-lg-6">
                     <div className="form-group">
@@ -803,7 +809,7 @@ const handleSubmit = async (e) => {
                           type="text"
                           className="form-control"
                           name="fssai"
-                          value={formData.fssai.toLocaleUpperCase()}
+                          value={formData.fssai?.toLocaleUpperCase()}
                           onChange={handleChange}
                           maxLength={14}
                           required
@@ -889,53 +895,53 @@ const handleSubmit = async (e) => {
                       </div>
 
                       <div className="col-lg-6">
-                          <div className="form-group">
-                            <label>Images:<span style={{ color: "red" }}> *</span></label>
-                            <div className="existing-images">
-                              {formData.images.map((image, index) => (
-                                <div key={index} className="image-container">
-                                  <img
-                                    className="mt-3 mr-2"
-                                    src={image}
-                                    alt={`Image Preview ${index}`}
-                                    width="55"
-                                    height="52"
-                                    style={{ cursor: "pointer" }}
-                                  />
-                                  <button
-                                    type="button"
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() => handleDeleteImage(image, productId)}
-                                  >
-                                    Delete
-                                  </button>
+                        <div className="form-group">
+                          <label>Images:<span style={{ color: "red" }}> *</span></label>
+                          <div className="existing-images">
+                            {formData.images?.map((image, index) => (
+                              <div key={index} className="image-container">
+                                <img
+                                  className="mt-3 mr-2"
+                                  src={image}
+                                  alt={`Image Preview ${index}`}
+                                  width="55"
+                                  height="52"
+                                  style={{ cursor: "pointer" }}
+                                />
+                                <button
+                                  type="button"
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => handleDeleteImage(image, productId)}
+                                >
+                                  Delete
+                                </button>
 
-                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="custom-file mt-3">
+                            <input
+                              type="file"
+                              name="product_images"
+                              className="custom-file-input"
+                              id="customFile"
+                              accept="image/*"
+                              multiple
+                              onChange={handleImageChange}
+
+                            />
+                            <label className="custom-file-label" htmlFor="customFile">
+                              Choose Images
+                            </label>
+                          </div>
+                          {imageErrors.length > 0 && (
+                            <div className="alert alert-danger mt-2">
+                              {imageErrors.map((error, index) => (
+                                <p key={index}>{error}</p>
                               ))}
                             </div>
-                            <div className="custom-file mt-3">
-                              <input
-                                type="file"
-                                name="product_images"
-                                className="custom-file-input"
-                                id="customFile"
-                                accept="image/*"
-                                multiple
-                                onChange={handleImageChange}
-
-                              />
-                              <label className="custom-file-label" htmlFor="customFile">
-                                Choose Images
-                              </label>
-                            </div>
-                            {imageErrors.length > 0 && (
-                              <div className="alert alert-danger mt-2">
-                                {imageErrors.map((error, index) => (
-                                  <p key={index}>{error}</p>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                          )}
+                        </div>
                       </div>
                     </>
                   )}
@@ -1147,7 +1153,7 @@ const handleSubmit = async (e) => {
                         className="form-control"
                         onChange={handleChange}
                         maxLength={15}
-                        value={formData.itemModelNum.toLocaleUpperCase()}
+                        value={formData.itemModelNum?.toLocaleUpperCase()}
                         name="itemModelNum"
                       />
                     </div>
@@ -1165,7 +1171,7 @@ const handleSubmit = async (e) => {
                         id="sku_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.sku.toLocaleUpperCase()}
+                        value={formData.sku?.toLocaleUpperCase()}
                         maxLength={15}
                         name="sku"
                       />
@@ -1186,7 +1192,7 @@ const handleSubmit = async (e) => {
                         className="form-control"
                         onChange={handleChange}
                         maxLength={15}
-                        value={formData.upc.toLocaleUpperCase()}
+                        value={formData.upc?.toLocaleUpperCase()}
                         name="upc"
                       />
                     </div>
@@ -1206,7 +1212,7 @@ const handleSubmit = async (e) => {
                         className="form-control"
                         onChange={handleChange}
                         maxLength={10}
-                        value={formData.hsn.toLocaleUpperCase()}
+                        value={formData.hsn?.toLocaleUpperCase()}
                         name="hsn"
                       />
                     </div>
@@ -1479,7 +1485,7 @@ const handleSubmit = async (e) => {
                         id="unit_field"
                         className="form-control"
                         onChange={handleChange}
-                        value={formData.unit.toLocaleUpperCase()}
+                        value={formData.unit?.toLocaleUpperCase()}
                         name="unit"
                       />
                     </div>
@@ -1496,6 +1502,50 @@ const handleSubmit = async (e) => {
                       Update Product
                     </button>
                   </div>
+
+                   <Modal open={navModalOpen} onClose={handleNavClose}>
+                                              <Box
+                                                sx={{
+                                                  position: "absolute",
+                                                  top: "50%",
+                                                  left: "50%",
+                                                  transform: "translate(-50%, -50%)",
+                                                  bgcolor: "background.paper",
+                                                  p: 4,
+                                                  borderRadius: 2,
+                                                  width: 300,
+                                                  border: "none",
+                                                  outline: "none",
+                                                }}
+                                              >
+                                                <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                                  Are you sure want to update this product?(Item will be moved to pending state)
+                                                </Typography>
+                                                <Box display="flex" justifyContent="space-between">
+                                                  <Button
+                                                    onClick={handleNavConfirm}
+                                                    className="left-but"
+                                                    sx={{ margin: "3px" }}
+                                                  >
+                                                    Yes
+                                                  </Button>
+                                                  <Button
+                                                    onClick={handleNavClose}
+                                                    sx={{
+                                                      backgroundColor: '#2f4d2a',
+                                                      color: '#fff',
+                                                      '&:hover': {
+                                                        backgroundColor: '#2f4d2a50',
+                                                      },
+                                                      width: "100%",
+                                                      margin: "3px"
+                                                    }}
+                                                  >
+                                                    No
+                                                  </Button>
+                                                </Box>
+                                              </Box>
+                                            </Modal> 
                 </div>
               </form>
 

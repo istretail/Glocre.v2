@@ -385,7 +385,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
   };
-  // console.log("Request body",req.body)
+  console.log("Request body",req.body)
   let avatar;
   let BASE_URL = process.env.BACKEND_URL;
 

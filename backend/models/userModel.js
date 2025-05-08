@@ -149,12 +149,12 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please enter password"],
-    minlength: [8, "Password must be at least 8 characters"],
-    maxlength: [16, "Password cannot exceed 16 characters"],
-    match: [
-      /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/,
-      "Password must contain at least one uppercase letter and one special character"
-    ],
+    // minlength: [8, "Password must be at least 8 characters"],
+    // maxlength: [16, "Password cannot exceed 16 characters"],
+    // match: [
+    //   /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/,
+    //   "Password must contain at least one uppercase letter and one special character"
+    // ],
     select: false,
   },
   avatar: {
