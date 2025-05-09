@@ -18308,3 +18308,8 @@ footer .lastStrip .part3 ul li a:hover {
   border: none !important;
   outline: none !important;
 }
+@media (min-width: 768px) {
+  .restricted-margin {
+    margin-top: 0;
+  }
+}

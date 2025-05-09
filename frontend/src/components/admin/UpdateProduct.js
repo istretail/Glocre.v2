@@ -583,6 +583,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.description}
                                                     name="description"
+                                                    maxLength={200}
                                                 ></textarea>
                                             </div>
                                         </div>
@@ -777,7 +778,7 @@ export default function UpdateProduct() {
                                         {!hasVariants && (
                                             <>
                                                 <div className="form-group">
-                                                    <label htmlFor="price_field">Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label htmlFor="price_field">Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         id="price_field"
@@ -785,11 +786,18 @@ export default function UpdateProduct() {
                                                         onChange={handleChange}
                                                         value={formData.price}
                                                         name="price"
+                                                        min="0"
+                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                e.preventDefault(); // disables arrow key changes
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="offPrice_field">Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                                                    <label htmlFor="offPrice_field">Offer Price (in ₹):<span style={{ color: "red" }}> *
                                                         <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
                                                         </LightTooltip></span></label>
@@ -800,6 +808,13 @@ export default function UpdateProduct() {
                                                         onChange={handleChange}
                                                         value={formData.offPrice}
                                                         name="offPrice"
+                                                        min="0"
+                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                e.preventDefault(); // disables arrow key changes
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
 
@@ -807,11 +822,24 @@ export default function UpdateProduct() {
                                                     <label htmlFor="stock_field">Stock:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
-                                                        id="stock_field"
                                                         className="form-control"
-                                                        onChange={handleChange}
-                                                        value={formData.stock}
                                                         name="stock"
+                                                        value={formData.stock}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
+                                                                handleChange(e); // only update if within range
+                                                            }
+                                                        }}
+                                                        required
+                                                        min="0"
+                                                        max="9999"
+                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                e.preventDefault(); // disables arrow key changes
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
 
@@ -916,6 +944,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.brand}
                                                     name="brand"
+                                                    maxLength={30}
                                                 />
                                             </div>
                                         </div>
@@ -956,7 +985,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                                                        <label>Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *
                                                             <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
@@ -972,7 +1001,7 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                                                        <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
                                                             <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
@@ -998,8 +1027,22 @@ export default function UpdateProduct() {
                                                             type="number"
                                                             className="form-control"
                                                             value={variant.stock}
-                                                            onChange={(e) => handleVariantChange(index, "stock", e.target.value)}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                // Allow empty input (for deletion) and only numbers between 0–9999
+                                                                if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                                                    handleVariantChange(index, 'stock', value);
+                                                                }
+                                                            }}
                                                             required
+                                                            maxLength={4}
+                                                            min="0"
+                                                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                    e.preventDefault(); // disables arrow key changes
+                                                                }
+                                                            }}
                                                         />
                                                     </div>
                                                 </div>
@@ -1158,6 +1201,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.productCertifications}
                                                     name="productCertifications"
+                                                    maxLength={50}
                                                 />
                                             </div>
                                         </div>

@@ -250,7 +250,7 @@ export default function UserList() {
 
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>USER LIST</h3>
-                        <p>Glocre</p>
+                     
 
 
                         {loading ? (

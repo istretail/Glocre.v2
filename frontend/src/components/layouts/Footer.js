@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./Footer.css";
 import Icon1 from "../../images/payment  (1).png";
 import Icon3 from "../../images/payment  (2).png";
@@ -19,6 +20,7 @@ import NewsletterImg from "../../images/banner-3 1.png";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 
 const Footer = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.authState);
   const currentYear = new Date().getFullYear();
   return (
     <>
@@ -140,8 +142,11 @@ const Footer = () => {
                         <Link to="/support">Advertise Your Products</Link>
                       </li>
                       <li>
-                        <Link to="/becomeseller">Track Your Sales</Link>
+                        <Link to={user?.role === 'seller' ? '/seller/dashboard' : '/becomeseller'}>
+                          Track Your Sales
+                        </Link>
                       </li>
+
                     </ul>
                   </div>
 

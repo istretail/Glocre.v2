@@ -15,8 +15,8 @@ export default function ProductReview({ reviews }) {
                 style={{ width: `${(review.rating / 5) * 100}%` }}
               ></div>
             </div>
-            {/* <p className="review_user">by {review.user.name}</p> */}
-            <p className="review_comment">{review.comment}</p>
+            <p className="review_user">by {review?.user?.name || "Anonymous"}</p>
+            <p className="review_comment">{review?.comment || "(no command given)"}</p>
 
             <hr />
           </div>

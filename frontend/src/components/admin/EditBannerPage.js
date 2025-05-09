@@ -56,7 +56,7 @@ const AdminBannerPage = () => {
                                 {loading ? <Spinner size="sm" /> : "Upload"}
                             </Button>
                         </form>
-
+                        <span>need image size in </span><h3>width = 1660 px ||  height = 400px </h3>
                         {error && <p className="text-danger">{error}</p>}
 
                         <div className="row">

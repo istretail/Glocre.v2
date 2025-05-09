@@ -223,9 +223,7 @@ export default function SellerOrders() {
                         </div>
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>ORDERS LIST</h3>
-                        <p>Glocre</p>
-
-
+                   
                         <section className="orderlist-section-procureg cartWrapper mt-2">
                             <div className="table-responsive" style={{ overflowX: "auto" }}>
                                 <table className="table">

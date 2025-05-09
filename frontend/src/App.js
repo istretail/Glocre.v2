@@ -76,11 +76,14 @@ const AppLayout = ({ children }) => {
   const isRestrictedRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/seller");
 
   return (
-    <HelmetProvider>
-      {!isRestrictedRoute && <Header />}
-      {children}
-      {!isRestrictedRoute && <Footer />}
-    </HelmetProvider>
+    <div className={isRestrictedRoute ? 'restricted-margin' : ''}>
+      <HelmetProvider>
+        {!isRestrictedRoute && <Header />}
+        {children}
+        {!isRestrictedRoute && <Footer />}
+      </HelmetProvider>
+    </div>
+
   );
 };
 

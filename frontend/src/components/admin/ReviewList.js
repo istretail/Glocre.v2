@@ -200,7 +200,7 @@ export default function ReviewList() {
                         </div>
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>REVIEW LIST</h3>
-                        <p>Glocre</p>
+                      
 
 
                         <section className=" mt-2">

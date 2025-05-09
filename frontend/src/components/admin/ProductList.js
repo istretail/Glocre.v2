@@ -90,16 +90,18 @@ export default function ProductList() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const confirmProductDelete = () => {
-        deleteHandler(null, productToDelete); // pass null for event if not used
-        setDeleteModalOpen(false);
-        setProductToDelete(null);
-    };
+
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
 
+    const confirmProductDelete = (e) => {
+        deleteHandler(e, productToDelete); 
+        setDeleteModalOpen(false);
+        setProductToDelete(null);
+    };
     const handleDeleteClick = (id) => {
+        console.log(id);
         setProductToDelete(id);
         setDeleteModalOpen(true);
     };
@@ -255,8 +257,7 @@ export default function ProductList() {
                         </div>
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>PRODUCT LIST</h3>
-                        <p>Glocre</p>
-
+                      
 
                         <div className="">
                             <div className="cartWrapper pr-3 mt-4">

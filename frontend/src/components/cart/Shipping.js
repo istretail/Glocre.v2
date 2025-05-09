@@ -743,8 +743,8 @@ export default function Shipping() {
                           variant="outlined"
                           className="w-100"
                           size="small"
-                          name="pincode"
-                          placeholder="Pincodfdiszjfiushdiue"
+                          name="pincode"  
+                          placeholder="Pincode"
                           value={billingPostalCode}
                           onChange={(e) =>
                             handlePincodeChange(

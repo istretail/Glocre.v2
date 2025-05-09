@@ -407,7 +407,7 @@ export default function SellerProducts() {
             <h3 style={{ color: '#ffad63', marginTop: '40px' }}>
               PRODUCT LIST
             </h3>
-            <p>Glocre</p>
+        
 
             <section className="cartWrapper">
               <div className="table-responsive" style={{ overflowX: 'auto' }}>

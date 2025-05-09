@@ -20,8 +20,8 @@ const AnalyticsModal = ({ onAccept, onDecline }) => {
             }}
         >
             <div style={{ maxWidth: '80%' }}>
-                <h2 style={{ margin: 0, fontSize: '26px', color: "#343a40" }}>We use cookies</h2>
-                <p style={{ margin: '5px 0', fontSize: '18px', color:"#343a40" }}>
+                <h2 style={{ margin: 0, fontSize: '20px', color: "#343a40" }}>We use cookies</h2>
+                <p style={{ margin: '5px 0', fontSize: '14px', color:"#343a40" }}>
                     We use cookies to enhance your browsing experience and analyze site traffic. By clicking
                     "Accept", you consent to the use of cookies.
                 </p>

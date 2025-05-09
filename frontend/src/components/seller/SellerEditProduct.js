@@ -644,6 +644,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.description}
                         name="description"
+                          maxLength={200}
                       ></textarea>
                     </div>
                   </div>
@@ -839,7 +840,7 @@ export default function SellerUpdateProduct() {
                     <>
                       <div className="col-lg-6">
                         <div className="form-group">
-                          <label htmlFor="price_field">Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                          <label htmlFor="price_field">Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *
                             <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
@@ -859,7 +860,7 @@ export default function SellerUpdateProduct() {
                       <div className="col-lg-6">
                         <div className="form-group">
                           <label htmlFor="offPrice_field">
-                            Offer Price (in '₹')
+                            Offer Price (in ₹)
                             <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
@@ -872,6 +873,13 @@ export default function SellerUpdateProduct() {
                             value={formData.offPrice}
                             name="offPrice"
                             required
+                              min="0"
+                              onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                              onKeyDown={(e) => {
+                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                  e.preventDefault(); // disables arrow key changes
+                                }
+                              }}
                           />
                         </div>
                       </div>
@@ -890,6 +898,14 @@ export default function SellerUpdateProduct() {
                             value={formData.stock}
                             name="stock"
                             required
+                              maxLength={4}
+                              min="0"
+                              onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                              onKeyDown={(e) => {
+                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                  e.preventDefault(); // disables arrow key changes
+                                }
+                              }}
                           />
                         </div>
                       </div>
@@ -1003,6 +1019,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.brand}
                         name="brand"
+                          maxLength={30}
                       />
                     </div>
                   </div>
@@ -1044,7 +1061,7 @@ export default function SellerUpdateProduct() {
                           />
                         </div>
                         <div className="form-group">
-                          <label>Maximum Retail price (in '₹'):<span style={{ color: "red" }}> *
+                          <label>Maximum Retail price (in ₹):<span style={{ color: "red" }}> *
                             <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
@@ -1063,7 +1080,7 @@ export default function SellerUpdateProduct() {
                           />
                         </div>
                         <div className="form-group">
-                          <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                          <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
                             <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip></span></label>
@@ -1079,6 +1096,13 @@ export default function SellerUpdateProduct() {
                               )
                             }
                             required
+                            min="0"
+                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                            onKeyDown={(e) => {
+                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                e.preventDefault(); // disables arrow key changes
+                              }
+                            }}
                           />
                         </div>
                         <div className="form-group">
@@ -1098,6 +1122,14 @@ export default function SellerUpdateProduct() {
                               )
                             }
                             required
+                            maxLength={4}
+                            min="0"
+                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                            onKeyDown={(e) => {
+                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                e.preventDefault(); // disables arrow key changes
+                              }
+                            }}
                           />
                         </div>
                         <div className="form-group">
@@ -1274,6 +1306,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.productCertifications}
                         name="productCertifications"
+                          maxLength={50}
                       />
                     </div>
                   </div>
@@ -1374,7 +1407,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostlol_field">Shipping Cost local (in '₹') (Based on seller pincode)</label>
+                      <label htmlFor="shippingCostlol_field">Shipping Cost local (in ₹) (Based on seller pincode)</label>
                       <input
                         type="number"
                         id="shippingCostlol_field"
@@ -1389,7 +1422,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="shippingCostNorth_field">
-                        Shipping Cost North India (in '₹')
+                        Shipping Cost North India (in ₹)
                       </label>
                       <input
                         type="number"
@@ -1405,7 +1438,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="shippingCostSouth_field">
-                        Shipping Cost South India (in '₹')
+                        Shipping Cost South India (in ₹)
                       </label>
                       <input
                         type="number"
@@ -1422,7 +1455,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostEast_field">Shipping Cost East India (in '₹')</label>
+                      <label htmlFor="shippingCostEast_field">Shipping Cost East India (in ₹)</label>
                       <input
                         type="number"
                         id="shippingCostEast_field"
@@ -1436,7 +1469,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostWest_field">Shipping Cost West India (in '₹')</label>
+                      <label htmlFor="shippingCostWest_field">Shipping Cost West India (in ₹)</label>
                       <input
                         type="number"
                         id="shippingCostWest_field"
@@ -1449,7 +1482,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostNe_field">shipping Cost Northeast India (in '₹')</label>
+                      <label htmlFor="shippingCostNe_field">shipping Cost Northeast India (in ₹)</label>
                       <input
                         type="number"
                         id="shippingCostNe_field"
@@ -1462,7 +1495,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in '₹')</label>
+                      <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in ₹)</label>
                       <input
                         type="number"
                         id="shippingCostCentral_field"

@@ -419,6 +419,7 @@ const NewProduct = () => {
                                                         value={formData.description}
                                                         onChange={handleChange}
                                                         required
+                                                        maxLength={200}
                                                     />
                                                 </div>
                                             </div>
@@ -541,7 +542,7 @@ const NewProduct = () => {
                                                         value={formData.brand}
                                                         onChange={handleChange}
                                                         required
-
+                                                        maxLength={30}
                                                     />
                                                 </div>
                                             </div>
@@ -586,6 +587,7 @@ const NewProduct = () => {
                                                                 value={point}
                                                                 onChange={(e) => handleKeyPointsChange(index, e.target.value)}
                                                                 required
+                                                                maxLength={80}
                                                             />
                                                             {formData.keyPoints.length > 3 && (
                                                                 <button
@@ -741,15 +743,23 @@ const NewProduct = () => {
                                                                         type="number"
                                                                         className="form-control"
                                                                         value={variant.stock}
-                                                                        onChange={e =>
-                                                                            handleVariantChange(
-                                                                                index,
-                                                                                'stock',
-                                                                                e.target.value
-                                                                            )
-                                                                        }
+                                                                        onChange={(e) => {
+                                                                            const value = e.target.value;
+                                                                            if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
+                                                                                handleChange(e); // only update if within range
+                                                                            }
+                                                                        }}
                                                                         required
+                                                                        min="0"
+                                                                        max="9999"
+                                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                                        onKeyDown={(e) => {
+                                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                                e.preventDefault(); // disables arrow key changes
+                                                                            }
+                                                                        }}
                                                                     />
+
                                                                 </div>
                                                                 <div className="form-group">
                                                                     <label>Images:<span style={{ color: "red" }}> *
@@ -816,6 +826,7 @@ const NewProduct = () => {
                                                         value={formData.tax}
                                                         onChange={handleChange}
                                                         required
+                                                        maxLength={2}
                                                     />
                                                 </div>
                                             </div>
@@ -846,7 +857,7 @@ const NewProduct = () => {
                                                 <>
                                                     <div className="col-lg-6">
                                                         <div className="form-group">
-                                                            <label>Maximum Retail Price (in '₹'):<span style={{ color: "red" }}> *
+                                                            <label>Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *
                                                                 <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
@@ -858,13 +869,20 @@ const NewProduct = () => {
                                                                 value={formData.price}
                                                                 onChange={handleChange}
                                                                 required
+                                                                min="0"
+                                                                onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                        e.preventDefault(); // disables arrow key changes
+                                                                    }
+                                                                }}
                                                             />
                                                         </div>
                                                     </div>
 
                                                     <div className="col-lg-6">
                                                         <div className="form-group">
-                                                            <label>Offer Price (in '₹'):<span style={{ color: "red" }}> *
+                                                            <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
                                                                 <LightTooltip placement="top" title="Enter the discount price of the product(if any)." arrow>
                                                                     <ErrorOutlineIcon className="errorout-icon" />
                                                                 </LightTooltip>
@@ -876,7 +894,15 @@ const NewProduct = () => {
                                                                 value={formData.offPrice}
                                                                 onChange={handleChange}
                                                                 required
+                                                                min="0"
+                                                                onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                        e.preventDefault(); // disables arrow key changes
+                                                                    }
+                                                                }}
                                                             />
+
                                                         </div>
                                                     </div>
 
@@ -892,9 +918,23 @@ const NewProduct = () => {
                                                                 className="form-control"
                                                                 name="stock"
                                                                 value={formData.stock}
-                                                                onChange={handleChange}
+                                                                onChange={(e) => {
+                                                                    const value = e.target.value;
+                                                                    if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
+                                                                        handleChange(e); // only update if within range
+                                                                    }
+                                                                }}
                                                                 required
+                                                                min="0"
+                                                                max="9999"
+                                                                onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                        e.preventDefault(); // disables arrow key changes
+                                                                    }
+                                                                }}
                                                             />
+
                                                         </div>
                                                     </div>
 
@@ -940,8 +980,10 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="itemModelNum"
-                                                        value={formData.itemModelNum}
+                                                      
                                                         onChange={handleChange}
+                                                        value={formData.itemModelNum.toLocaleUpperCase()}
+                                                        maxLength={15}
                                                     />
                                                 </div>
                                             </div>
@@ -1100,6 +1142,7 @@ const NewProduct = () => {
                                                         name="manufactureDetails"
                                                         value={formData.manufactureDetails}
                                                         onChange={handleChange}
+                                                        maxLength={50}
                                                     />
                                                 </div>
                                             </div>
@@ -1117,6 +1160,7 @@ const NewProduct = () => {
                                                         name="productCertifications"
                                                         value={formData.productCertifications}
                                                         onChange={handleChange}
+                                                        maxLength={50}
                                                     />
                                                 </div>
                                             </div>
@@ -1197,7 +1241,7 @@ const NewProduct = () => {
 
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost local (in '₹')(based on seller pincode):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost local (in ₹)(based on seller pincode):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
@@ -1210,7 +1254,7 @@ const NewProduct = () => {
                                             </div>
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost North India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost North India (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
@@ -1223,7 +1267,7 @@ const NewProduct = () => {
                                             </div>
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost South India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost South India (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
@@ -1236,7 +1280,7 @@ const NewProduct = () => {
                                             </div>
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost East India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost East India (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
@@ -1249,7 +1293,7 @@ const NewProduct = () => {
                                             </div>
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost West India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost West India (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
@@ -1262,7 +1306,7 @@ const NewProduct = () => {
                                             </div>
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost North east India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost North east India (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"
@@ -1275,7 +1319,7 @@ const NewProduct = () => {
                                             </div>
                                             <div className="col-lg-4">
                                                 <div className="form-group">
-                                                    <label>Shipping Cost Central India (in '₹'):<span style={{ color: "red" }}> *</span></label>
+                                                    <label>Shipping Cost Central India (in ₹):<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
                                                         className="form-control"

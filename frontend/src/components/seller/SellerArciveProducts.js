@@ -351,7 +351,7 @@ export default function SellerArchiveProducts() {
             <h3 style={{ color: '#ffad63', marginTop: '40px' }}>
               Archived Products List
             </h3>
-            <p>Glocre</p>
+      
 
             <section className="cartWrapper">
               <div className="table-responsive" style={{ overflowX: 'auto' }}>

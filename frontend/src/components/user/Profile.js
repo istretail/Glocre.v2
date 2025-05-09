@@ -172,7 +172,7 @@ export default function Profile() {
                     <b className="info-box-p-b">Business Address</b>
                     <b className="info-box-p-b2">:</b>
                     <span className="info-box-p-span">
-                      {user.businessAddress &&
+                      {user?.businessAddress &&
                         `${user.businessAddress[0].address}, ${user.businessAddress[0].addressLine}, ${user.businessAddress[0].city}, ${user.businessAddress[0].state} - ${user.businessAddress[0].postalCode}, ${user.businessAddress[0].country}`}
                     </span>
                   </p>

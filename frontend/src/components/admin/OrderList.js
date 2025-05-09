@@ -54,13 +54,6 @@ export default function OrderList() {
     };
 
     useEffect(() => {
-        if (error) {
-            toast(error, {
-                type: 'error',
-                onOpen: () => { dispatch(clearError()) }
-            })
-            return
-        }
         if (isOrderDeleted) {
             toast('Order Deleted Succesfully!', {
                 type: 'success',
@@ -68,9 +61,17 @@ export default function OrderList() {
             })
             return;
         }
+        if (error) {
+            toast(error, {
+                type: 'error',
+                onOpen: () => { dispatch(clearError()) }
+            })
+            return
+        }
+      
 
         dispatch(adminOrdersAction(searchKeyword, statusFilter, currentPage));
-    }, [dispatch, searchKeyword, statusFilter, currentPage]);
+    }, [dispatch, searchKeyword, statusFilter, currentPage, isOrderDeleted]);
 
 
     // Drawer
@@ -231,9 +232,7 @@ export default function OrderList() {
                         </div>
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>ORDERS LIST</h3>
-                        <p>Glocre</p>
-
-
+                       
                         <div className="cartWrapper pr-3 mt-4">
                             <div className="table-responsive" style={{ overflowX: "auto" }}>
                                 <table className="table">

@@ -284,6 +284,7 @@ const SellerRegistration = () => {
                     {errors.gstNumber && <p className="error">{errors.gstNumber}</p>}
                   </div>
                 </div>
+
               </div>
 
               <div className="row mt-3 mb-4">
@@ -344,13 +345,16 @@ const SellerRegistration = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="col-md-6">
                   {/* pincode */}
                   <div className="form-group">
                     <TextField
                       label="PIN Code"
+                      className="w-100"
                       name="postalCode"
+                      size="small"
+                      type="number"
                       value={userData.postalCode}
                       onChange={(e) => {
                         handleChange(e);
@@ -361,6 +365,8 @@ const SellerRegistration = () => {
 
                   </div>
                 </div>
+              </div>
+              <div className="row mt-3 mb-4">
                 <div className="col-md-6">
                   <div className="form-group">
                     <TextField
@@ -383,6 +389,7 @@ const SellerRegistration = () => {
                     <div className="custom-select-wrapper">
                       <select
                         name="addressLine"
+                        className="form-control custom-select"
                         value={userData.addressLine}
                         onChange={handleChange}
                         required
@@ -397,6 +404,8 @@ const SellerRegistration = () => {
 
                   </div>
                 </div>
+              </div>
+              <div className="row mt-3 mb-4">
                 <div className="col-md-6">
                   <div className="form-group">
                     <TextField
@@ -425,6 +434,8 @@ const SellerRegistration = () => {
                     />
                   </div>
                 </div>
+              </div>
+              <div className="row mt-3 mb-4">
                 <div className="col-md-6">
                   <div className="form-group">
                     <select
@@ -435,7 +446,7 @@ const SellerRegistration = () => {
                       id="country_field"
                       className="form-control"
                       value={userData.country}
-                     
+
                       required
                     >
                       {countryList.map((country, i) => (

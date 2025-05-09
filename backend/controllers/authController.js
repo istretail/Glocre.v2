@@ -591,9 +591,12 @@ exports.updateUser = catchAsyncError(async (req, res, next) => {
     role: req.body.role,
   };
 
-  // If the role is changed to 'seller', set isSeller to true
+  let sendSellerEmail = false;  
+
+  // If the role is changed to 'seller', set isSeller to true and flag email notification
   if (req.body.role === "seller") {
     newUserData.isSeller = true;
+    sendSellerEmail = true;
   }
 
   const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
@@ -601,11 +604,48 @@ exports.updateUser = catchAsyncError(async (req, res, next) => {
     runValidators: true,
   });
 
+  // Send congratulatory email if promoted to seller
+  if (sendSellerEmail) {
+    const message = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+        <div style="text-align: center;">
+          <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Seller" style="width: 100%; max-width: 600px; margin-bottom: 20px;" />
+        </div>
+
+        <h2 style="color: #2f4d2a;">Welcome to GLOCRE Seller Community</h2>
+
+        <p style="color: #8c8c8c;">Hi ${newUserData.name},</p>
+
+        <p style="color: #8c8c8c;">
+          Congratulations! Your profile has been verified and you are now officially a <strong>GLOCRE Seller</strong>.
+        </p>
+        <p style="color: #8c8c8c;">
+          You now have access to the <strong>Seller Dashboard</strong> where you can add your products, manage listings, and start earning with us.
+        </p>
+        <p style="color: #8c8c8c;">We’re excited to have you on board. Let’s grow together!</p>
+
+        <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+        <p style="font-size: 12px; color: #8c8c8c;">
+          <em>This is an auto-generated email. Please do not reply. For queries, contact us at 
+          <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+        </p>
+      </div>
+    `;
+
+    await sendEmail({
+      fromEmail: "donotreply@glocre.com",
+      email: user.email,
+      subject: "Welcome to GLOCRE Seller Platform",
+      html: message,
+    });
+  }
+
   res.status(200).json({
     success: true,
     user,
   });
 });
+
 
 //Admin: Delete User - api/v1/admin/user/:id
 exports.deleteUser = catchAsyncError(async (req, res, next) => {

@@ -1,67 +1,83 @@
 class APIFeatures {
-    constructor(query, queryStr) {
-      this.query = query;
-      this.queryStr = queryStr;
-      this.filterQuery = {};
+  constructor(query, queryStr) {
+    this.query = query;
+    this.queryStr = queryStr;
+    this.filterQuery = {};
+  }
+
+  search() {
+    if (this.queryStr.keyword) {
+      const keyword = this.queryStr.keyword.trim();
+      const isObjectId = /^[a-f\d]{24}$/i.test(keyword);
+
+      const searchCriteria = isObjectId
+        ? { _id: keyword }
+        : {
+          $or: [
+            { name: { $regex: keyword, $options: 'i' } },
+            { maincategory: { $regex: keyword, $options: 'i' } },
+            { category: { $regex: keyword, $options: 'i' } },
+            { subcategory: { $regex: keyword, $options: 'i' } },
+            { sku: { $regex: keyword, $options: 'i' } },
+            { itemModelNum: { $regex: keyword, $options: 'i' } },
+          ],
+        };
+
+      this.filterQuery = { ...this.filterQuery, ...searchCriteria };
+
+      // console.log("🔍 Search Criteria:", JSON.stringify(searchCriteria, null, 2));
     }
-  
-    search() {
-      if (this.queryStr.keyword) {
-        const keyword = this.queryStr.keyword.trim();
-        const isObjectId = /^[a-f\d]{24}$/i.test(keyword); // Check for ObjectId format
-        const searchCriteria = isObjectId
-            ? { _id: keyword }
-            : { name: { $regex: keyword, $options: 'i' } };
-    
-        this.query = this.query.find(searchCriteria);
-    }
-      return this;
-    }
-  
+    return this;
+  }
+
   filter() {
     const queryCopy = { ...this.queryStr };
 
-    // Remove fields from queryString
     const removeFields = ["keyword", "page", "limit"];
     removeFields.forEach((el) => delete queryCopy[el]);
 
-    // Advanced filtering
     let queryStr = JSON.stringify(queryCopy);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
-
     const filters = JSON.parse(queryStr);
 
-    // Handle price filtering including variants
+    // console.log("🧮 Filters Before Price Handling:", JSON.stringify(filters, null, 2));
+
+    // Price handling
     if (filters.price) {
       const priceFilter = {};
       if (filters.price.$gte) priceFilter.$gte = filters.price.$gte;
       if (filters.price.$lte) priceFilter.$lte = filters.price.$lte;
 
-      this.query = this.query.find({
-        $or: [
-          { price: priceFilter }, // Check product's main price
-          { "variants.price": priceFilter }, // Check variant prices
-        ],
-      });
+      const andConditions = [{ $or: [{ price: priceFilter }, { "variants.price": priceFilter }] }];
+      if (Object.keys(this.filterQuery).length > 0) {
+        andConditions.push(this.filterQuery);
+      }
+      this.filterQuery = { $and: andConditions };
 
-      delete filters.price; // Remove price filter from default processing
+      // console.log("Price Filter Applied:", JSON.stringify(priceFilter, null, 2));
+
+      delete filters.price;
     }
 
-    this.query = this.query.find(filters);
+    // Merge other filters
+    this.filterQuery = { ...this.filterQuery, ...filters };
 
+    // console.log("🔗 Final Combined FilterQuery:", JSON.stringify(this.filterQuery, null, 2));
+
+    this.query = this.query.find(this.filterQuery);
     return this;
   }
 
-  
-    paginate(resPerPage) {
-      const currentPage = Number(this.queryStr.page) || 1;
-      const limit = this.queryStr.limit ? parseInt(this.queryStr.limit) : resPerPage;
-      const skip = resPerPage * (currentPage - 1);
-  
-      this.query = this.query.limit(limit).skip(skip);
-      return this;
-    }
+  paginate(resPerPage) {
+    const currentPage = Number(this.queryStr.page) || 1;
+    const limit = this.queryStr.limit ? parseInt(this.queryStr.limit) : resPerPage;
+    const skip = resPerPage * (currentPage - 1);
+
+    this.query = this.query.limit(limit).skip(skip);
+
+    // console.log(`📄 Pagination - Page: ${currentPage}, Limit: ${limit}, Skip: ${skip}`);
+    return this;
   }
-  
-  module.exports = APIFeatures;
-  
+}
+
+module.exports = APIFeatures;

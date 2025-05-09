@@ -238,7 +238,7 @@ export default function SellerDashboard() {
               </div>
 
               <h3 style={{ color: '#ffad63', marginTop: '40px' }}>DASHBOARD</h3>
-              <p>Glocre</p>
+          
 
               <div className="row">
                 <section className="seller-dashboard-section-procureg">

@@ -26,31 +26,31 @@ const categoryHierarchy = {
 
         "Cutting Tools": ["Cutting Torches", "Band Saws", "CNC Milling Machines", "Hole Saw Kits", "Hacksaws", "Scissors and Shears", "Metal Cutters "],
 
-        "Lifting and Rigging Equipment": ["Hoists", "Chain Slings and Shackles", "Lifting Straps", "Winches", "Overhead Cranes", "Forklifts and Pallet Jacks", "Pulley Systems"],
+        "Lifting and Rigging Equipment": ["Hoists", "Chain Slings and Shackles", "Lifting Straps", "Winches", "Overhead Cranes", "Forklifts and Pallet Jacks", "Pulley Systems "],
 
-        "Welding and Soldering Tools": ["MIG Welders, TIG Welders", "Welding Torches and Accessories", "Soldering Irons", "Welding Helmets and Masks", "Plasma Cutters", "Welding Rods and Electrodes"],
+        "Welding and Soldering Tools": ["MIG Welders, TIG Welders", "Welding Torches and Accessories", "Soldering Irons", "Welding Helmets and Masks", "Plasma Cutters", "Welding Rods and Electrodes "],
 
-        "Fastening Tools": ["Pneumatic Nail Guns, Staple Guns", "Rivet Guns", "Screw Guns", "Torque Wrenches", "Pneumatic Fasteners", "Power Staplers"],
+        "Fastening Tools": ["Pneumatic Nail Guns, Staple Guns", "Rivet Guns", "Screw Guns", "Torque Wrenches", "Pneumatic Fasteners", "Power Staplers "],
 
-        "Heavy Machinery": ["Mini Excavators", "Bulldozers", "Skid Steer Loaders", "Backhoe Loaders", "Track Loaders", "Cranes", "Excavator Attachments"],
+        "Heavy Machinery": ["Mini Excavators", "Bulldozers", "Skid Steer Loaders", "Backhoe Loaders", "Track Loaders", "Cranes", "Excavator Attachments "],
 
     },
 
-    "Electrical Instruments and Appliances": {
+    "Electrical Instruments and Appliances ": {
 
-        "Circuit Breakers and Fuses": ["Miniature Circuit Breakers, Molded Case Circuit Breakers", "Fuse Holders and Bases", "Cartridge Fuses", "Thermal Circuit Breakers", "Resettable Fuses", "Surge Protection Devices"],
+        "Circuit Breakers and Fuses": ["Miniature Circuit Breakers, Molded Case Circuit Breakers", "Fuse Holders and Bases", "Cartridge Fuses", "Thermal Circuit Breakers", "Resettable Fuses", "Surge Protection Devices "],
 
-        "Cable and Wiring": ["Electrical Cables, Extension Cords", "Coaxial Cables", "Ethernet Cables", "Power Cords and Plugs", "PVC Insulated Wires", "Armored Cables"],
+        "Cable and Wiring": ["Electrical Cables, Extension Cords", "Coaxial Cables", "Ethernet Cables", "Power Cords and Plugs", "PVC Insulated Wires", "Armored Cables "],
 
-        "Electrical Testers and Meters": ["Multimeters, Clamp Meters", "Circuit Testers", "Voltage Detectors", "Insulation Resistance Testers", "Power Analyzers", "Earth Ground Resistance Meters"],
+        "Electrical Testers and Meters": ["Multimeters, Clamp Meters", "Circuit Testers", "Voltage Detectors", "Insulation Resistance Testers", "Power Analyzers", "Earth Ground Resistance Meters "],
 
-        "Switches and Sockets": ["Light Switches, Dimmer Switches", "Electrical Outlets", "GFCI Outlets", "Smart Switches", "Push Button Switches", "USB Wall Outlets", "Electrical Outlet Boxes"],
+        "Switches and Sockets": ["Light Switches, Dimmer Switches", "Electrical Outlets", "GFCI Outlets", "Smart Switches", "Push Button Switches", "USB Wall Outlets", "Electrical Outlet Boxes "],
 
-        "Lighting Fixtures and Bulbs": ["LED Bulbs, Incandescent Bulbs", "Fluorescent Lights", "Pendant Lighting", "Recessed Lighting", "Emergency and Exit Lighting", "Floodlights and Spotlights", "Lamp Fixtures and Bases"],
+        "Lighting Fixtures and Bulbs": ["LED Bulbs, Incandescent Bulbs", "Fluorescent Lights", "Pendant Lighting", "Recessed Lighting", "Emergency and Exit Lighting", "Floodlights and Spotlights", "Lamp Fixtures and Bases "],
 
-        "Power Strips and Extension Cords": ["Surge Protector Power Strips, Heavy - Duty Extension Cords", "Wall - Mountable Power Strips", "Multi - Outlets", "Cordless Power Strips", "Power Cords for Appliances", "Extension Cord Reels"],
+        "Power Strips and Extension Cords": ["Surge Protector Power Strips, Heavy - Duty Extension Cords", "Wall - Mountable Power Strips", "Multi - Outlets", "Cordless Power Strips", "Power Cords for Appliances", "Extension Cord Reels "],
 
-        "Electric Motors and Transformers": ["Induction Motors, Synchronous Motors", "Step - Up / Step - Down Transformers", "Brushless Motors", "Electric Actuators", "DC Motors", "Servo Motors", "Motor Controllers"],
+        "Electric Motors and Transformers": ["Induction Motors, Synchronous Motors", "Step - Up / Step - Down Transformers", "Brushless Motors", "Electric Actuators", "DC Motors", "Servo Motors", "Motor Controllers "],
 
     },
 
@@ -380,6 +380,7 @@ const categoryHierarchy = {
         "Kids' Clothing and Babywear": ["Baby Onesies", "Kids’ T-Shirts", "Toddler Shoes", "Baby Hats", "Baby Blankets", "Baby Jackets", "Boys' and Girls' Outerwear"]
 
     },
+
     "Toys and Games": {
         "Educational Toys": ["STEM Kits", "Puzzle Games", "Building Blocks", "Flash Cards", "Science Kits"],
         "Action Figures and Dolls": ["Superhero Action Figures", "Fashion Dolls", "Anime Figures", "Collectible Figures"],
@@ -391,7 +392,142 @@ const categoryHierarchy = {
         "Plush and Soft Toys": ["Stuffed Animals", "Plush Dolls", "Cuddly Toys"],
         "Building and Construction Toys": ["LEGO Sets", "Magnetic Tiles", "Wooden Blocks"]
     },
+    "Electric Switchgear and Accessories": {
 
+        "Circuit Breakers and Fuses": ["Miniature Circuit Breakers (MCB)", "Molded Case Circuit Breakers (MCCB)", "Residual Current Circuit Breakers (RCCB)", "Air Circuit Breakers (ACB)", "Fuses and Fuse Holders", "Earth Leakage Circuit Breakers (ELCB)", "High Rupturing Capacity (HRC) Fuses"],
+        "Switches and Isolators": ["Main Switches", "Rotary Isolators", "Changeover Switches", "Load Break Switches", "Push Button Switches", "Cam Operated Switches", "Toggle and Rocker Switches"],
+        "Distribution Boards and Panels": ["Consumer Units", "Power Distribution Boards", "DB Boxes", "Feeder Pillars", "Control Panels", "Modular Distribution Boards", "Panel Enclosures"],
+        "Contactors and Relays": ["Electromagnetic Contactors", "Thermal Overload Relays", "Auxiliary Relays", "Solid-State Relays", "Time Delay Relays", "Motor Protection Relays", "Voltage Monitoring Relays"],
+        "Motor Starters and Drives": ["DOL Starters", "Star Delta Starters", "Soft Starters", "Variable Frequency Drives (VFD)", "Motor Control Centers", "Manual Motor Starters", "AC/DC Drives"],
+        "Busbar and Cabling Accessories": ["Busbar Chambers", "Busbar Supports", "Cable Lugs and Glands", "Cable Trays", "Flexible Copper Conductors", "PVC Insulated Wires", "Terminal Blocks"],
+        "Meters and Monitoring Devices": ["Digital Energy Meters", "Ammeter and Voltmeter", "Multifunction Meters", "Power Factor Meters", "Phase Sequence Indicators", "Data Loggers", "Panel Mounting Meters"],
+        "Protection Devices and Accessories": ["Surge Protection Devices", "Lightning Arresters", "Earth Fault Relays", "Protection Relays", "Insulation Monitoring Devices", "Arc Fault Detectors", "Grounding Accessories"],
+
+    },
+    "Electric Panel Bleeding – Causes, Safety Measures, and Tools": {
+
+        "Causes of Panel Bleeding": [
+            "Current Leakage to Ground",
+            "Moisture or Water Ingress",
+            "Overheating of Cables or Terminals",
+            "Loose or Corroded Connections",
+            "Damaged Insulation",
+            "Improper Load Distribution",
+            "Aging Components and Panels"
+        ],
+
+        "Detection and Diagnostic Tools": [
+            "Insulation Resistance Testers (Megger)",
+            "Thermal Imaging Cameras",
+            "Earth Leakage Detectors",
+            "Digital Multimeters",
+            "Clamp Meters with Leakage Function",
+            "Voltage Test Pens",
+            "Circuit Analyzers"
+        ],
+
+        "Preventive Measures and Maintenance": [
+            "Regular Thermal Scanning",
+            "Moisture-Proof Enclosures (IP Rated)",
+            "Scheduled Panel Inspections",
+            "Tightening Terminal Connections",
+            "Cleaning Dust and Debris",
+            "Proper Cable Management",
+            "Use of Surge Protection Devices"
+        ],
+
+        "Emergency Response Gear": [
+            "Insulated Gloves and Mats",
+            "Lockout Tagout (LOTO) Kits",
+            "Arc Flash Suits",
+            "Voltage Detectors",
+            "First Aid Kits",
+            "Fire Extinguishers (Class C for Electrical Fires)",
+            "Warning Signage and Barricades"
+        ],
+
+        "Corrective Components and Accessories": [
+            "Residual Current Devices (RCD)",
+            "Miniature Circuit Breakers (MCB)",
+            "Busbar Insulation Shrouds",
+            "Heat Shrink Tubing",
+            "Cable Insulation Tape",
+            "Thermal Sensors and Relays",
+            "Panel Cooling Fans and Louvers"
+        ]
+    },
+    "Clean Room Components and Equipment": {
+
+        "Air Filtration Systems": [
+            "HEPA Filters (High Efficiency Particulate Air)",
+            "ULPA Filters (Ultra-Low Penetration Air)",
+            "Pre-Filters",
+            "Fan Filter Units (FFUs)",
+            "Air Showers",
+            "Laminar Flow Units",
+            "Air Curtains"
+        ],
+
+        "Clean Room Garments": [
+            "Coveralls and Bunny Suits",
+            "Cleanroom Hoods",
+            "Boot Covers and Shoe Covers",
+            "Face Masks and Beard Covers",
+            "Sleeve Protectors",
+            "Anti-Static Clothing",
+            "Disposable Cleanroom Apparel"
+        ],
+
+        "Clean Room Equipment": [
+            "Stainless Steel Work Tables",
+            "Cleanroom Chairs and Stools",
+            "Pass-Through Chambers",
+            "Garment Cabinets",
+            "Storage Racks and Shelves",
+            "Cleanroom Trolleys and Carts",
+            "Weighing and Sampling Booths"
+        ],
+
+        "Contamination Control Supplies": [
+            "Sticky Mats and Tacky Rollers",
+            "Cleanroom Wipers and Mops",
+            "Disinfectant Sprays and Solutions",
+            "Vacuum Cleaners for Cleanrooms",
+            "Surface Particle Counters",
+            "Waste Disposal Bins",
+            "Lint-Free Cleaning Cloths"
+        ],
+
+        "Environmental Monitoring Devices": [
+            "Particle Counters",
+            "Temperature and Humidity Sensors",
+            "Differential Pressure Gauges",
+            "Microbial Air Samplers",
+            "Air Velocity Meters",
+            "CO2 and VOC Monitors",
+            "Real-Time Monitoring Systems"
+        ],
+
+        "Electrical and Lighting Fixtures": [
+            "Cleanroom Light Panels",
+            "Sealed LED Fixtures",
+            "EMI/RFI Shielded Outlets",
+            "Flush-Mounted Switches and Sockets",
+            "Static Dissipative Flooring",
+            "Emergency Lighting Systems",
+            "Power Supply Panels for Cleanroom Use"
+        ],
+
+        "Clean Room Construction Materials": [
+            "Modular Wall Panels",
+            "Walkable and Non-Walkable Ceilings",
+            "Epoxy and Vinyl Flooring",
+            "Flush-Mounted Doors and Windows",
+            "Coving and Coved Base Systems",
+            "Sealed Ceiling Grids",
+            "Antimicrobial Coatings and Sealants"
+        ]
+    }
 };
 
 module.exports = categoryHierarchy;

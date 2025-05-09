@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Button } from "react-bootstrap";
-import { faCartShopping,faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus,} from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 
@@ -18,7 +18,7 @@ export default function UpdateOrder() {
 
 
     const { loading, isOrderUpdated, error, orderDetail } = useSelector(state => state.orderState)
-    const { user = [null], orderItems = [], shippingInfo = {}, billingInfo={}, totalPrice = 0, paymentInfo = {} } = orderDetail;
+    const { user = [null], orderItems = [], shippingInfo = {}, billingInfo = {}, totalPrice = 0, paymentInfo = {} } = orderDetail;
     const isPaid = paymentInfo.status === 'paid' ? true : false;
     const [orderStatus, setOrderStatus] = useState("Processing");
     const { id: orderId } = useParams();
@@ -99,7 +99,7 @@ export default function UpdateOrder() {
     return (
 
         <>
-           <section className="updateorder-section">
+            <section className="updateorder-section">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">
                         <Sidebar />
@@ -355,20 +355,24 @@ export default function UpdateOrder() {
                                                     value={trackingNumber}
                                                     onChange={(e) => setTrackingNumber(e.target.value)}
                                                 />
+                                                <div className="custom-select-wrapper mt-2 mb-2">
+                                                    <select
+                                                        className="custom-select"
+                                                        value={courierSlug}
+                                                        onChange={(e) => setCourierSlug(e.target.value)}
+                                                    >
+                                                        <option value="">Select Courier</option>
+                                                        <option value="dhl">DHL</option>
+                                                        <option value="fedex">FedEx</option>
+                                                        <option value="ups">UPS</option>
+                                                        <option value="bluedart">BlueDart</option>
+                                                        <option value="indiapost">IndiaPost</option>
+                                                        <option value="proffesionalCourier">Proffesional Courier</option>
+                                                        <option value="dtdc">DTDC</option>
+                                                        <option value="stCourier">ST Courier</option>
+                                                    </select>
 
-                                                <select
-                                                    className="form-control"
-                                                    value={courierSlug}
-                                                    onChange={(e) => setCourierSlug(e.target.value)}
-                                                >
-                                                    <option value="">Select Courier</option>
-                                                    <option value="dhl">DHL</option>
-                                                    <option value="fedex">FedEx</option>
-                                                    <option value="ups">UPS</option>
-                                                    <option value="bluedart">BlueDart</option>
-                                                    <option value="indiapost">IndiaPost</option>
-                                                </select>
-
+                                                </div>
                                             </div>
                                         )}
                                         <Button className=""

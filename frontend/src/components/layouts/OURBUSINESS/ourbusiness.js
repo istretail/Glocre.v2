@@ -1,7 +1,7 @@
 import React from "react";
 import "./ourbus.css";
 import ourbusineeg1 from "../OURBUSINESS/OURBUSINESS--IMAGES/OURBUSINESSG1.png";
-
+import { Link } from "react-router-dom";
 import Nav from "../nav";
 
 export default function Ourbusiness() {
@@ -30,7 +30,10 @@ export default function Ourbusiness() {
                       consumers to expand their reach and ensure seamless,
                       high-quality experiences.
                     </p>
+                    <Link to="/becomeseller">
                     <button className="mt-3">Get started</button>
+                    </Link>
+                    
                   </div>
                 </div>
               </div>
