@@ -101,7 +101,7 @@ export default function ProductList() {
         setProductToDelete(null);
     };
     const handleDeleteClick = (id) => {
-        console.log(id);
+        // console.log(id);
         setProductToDelete(id);
         setDeleteModalOpen(true);
     };

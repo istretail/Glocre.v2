@@ -19,7 +19,7 @@ export default function UpdateProduct() {
 
     const { id: productId } = useParams();
     const { loading, error, products, categories = {} } = useSelector(state => state.productsState);
-    const { isProductUpdated, isImageDeleted } = useSelector(state => state.productState);
+    const { isProductUpdated, isImageDeleted, error: productError } = useSelector(state => state.productState);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -265,9 +265,11 @@ export default function UpdateProduct() {
 
         // Ensure ALL variants (both updated & unchanged) are included
         variantDetails.forEach((variant, index) => {
-            productData.append(`variants[${index}][id]`, variant.id); // Keep existing ID
-            productData.append(`variants[${index}][name]`, variant.name);
+            productData.append(`variants[${index}][id]`, variant._id); // Keep existing ID
+            productData.append(`variants[${index}][type]`, variant.variantType);
+            productData.append(`variants[${index}][name]`, variant.variantName);
             productData.append(`variants[${index}][price]`, variant.price);
+            productData.append(`variants[${index}][offPrice]`, variant.offPrice);
             productData.append(`variants[${index}][stock]`, variant.stock);
 
             if (variant.images && variant.images.length > 0) {
@@ -291,10 +293,10 @@ export default function UpdateProduct() {
         // }
 
         // Debugging: Log FormData
-        for (let pair of productData.entries()) {
-            console.log(pair[0], pair[1]);
-        }
-
+        // for (let pair of productData.entries()) {
+        //     console.log(pair[0], pair[1]);
+        // }
+        // console.log("FormData before submission:", formData);
         try {
             await dispatch(updateProduct(productId, productData));
             // toast("Product updated successfully!", { type: "success" });
@@ -328,7 +330,7 @@ export default function UpdateProduct() {
                         ...prev,
                         images: (prev.images || []).filter((image) => image !== imageUrl),
                     }));
-                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); // ✅ fix
+                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); 
                 }
 
 
@@ -343,16 +345,23 @@ export default function UpdateProduct() {
     // console.log("Variant Details before submitting:", variantDetails);
     // console.log("Final Variant Data:", variantDetails);
     useEffect(() => {
+        if (error || productError) {
+                    toast(error || productError, {
+                        type: 'error',
+                        onOpen: () => { dispatch(clearError()) }
+                    })
+                    return
+                }
         if (isImageDeleted) {
             toast('Image Delete Successfully!', {
                 type: 'success',
                 onOpen: () => dispatch(clearProductUpdated())
             });
-
-            navigate('/admin/products');
+            dispatch(getAdminProducts(productId))
+            // navigate('/admin/products');
             return;
         }
-    }, [isImageDeleted]);
+    }, [dispatch, isImageDeleted]);
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
         const newImages = [];
@@ -771,6 +780,8 @@ export default function UpdateProduct() {
                                                     maxLength={2}
                                                     value={formData.tax}
                                                     name="tax"
+                                                    min="0"
+                                                    max="99"
                                                 />
                                             </div>
                                         </div>
@@ -787,6 +798,7 @@ export default function UpdateProduct() {
                                                         value={formData.price}
                                                         name="price"
                                                         min="0"
+                                                        max="99999"
                                                         onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                                                         onKeyDown={(e) => {
                                                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -809,6 +821,7 @@ export default function UpdateProduct() {
                                                         value={formData.offPrice}
                                                         name="offPrice"
                                                         min="0"
+                                                        max="99999"
                                                         onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                                                         onKeyDown={(e) => {
                                                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -996,6 +1009,8 @@ export default function UpdateProduct() {
                                                             value={variant.price}
                                                             onChange={(e) => handleVariantChange(index, "price", e.target.value)}
                                                             required
+                                                            min="0"
+                                                            max="99999"
                                                         />
                                                     </div>
                                                 </div>
@@ -1013,6 +1028,8 @@ export default function UpdateProduct() {
                                                             value={variant.offPrice}
                                                             onChange={(e) => handleVariantChange(index, "offPrice", e.target.value)}
                                                             required
+                                                            min="0"
+                                                            max="99999"
                                                         />
                                                     </div>
                                                 </div>
@@ -1035,8 +1052,9 @@ export default function UpdateProduct() {
                                                                 }
                                                             }}
                                                             required
-                                                            maxLength={4}
+                                                            
                                                             min="0"
+                                                            max="9999"
                                                             onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                                                             onKeyDown={(e) => {
                                                                 if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -1202,6 +1220,7 @@ export default function UpdateProduct() {
                                                     value={formData.productCertifications}
                                                     name="productCertifications"
                                                     maxLength={50}
+                                                    
                                                 />
                                             </div>
                                         </div>
@@ -1209,12 +1228,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="batteries_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemLength_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.itemLength}
                                                     name="itemLength"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1222,12 +1244,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="itemHeight_field">Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemHeight_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.itemHeight}
                                                     name="itemHeight"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1235,12 +1260,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="portDescription_field">Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemWeight_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.itemWeight}
                                                     name="itemWeight"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1248,12 +1276,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="itemWidth_field">Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="itemWidth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.itemWidth}
                                                     name="itemWidth"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1261,38 +1292,32 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostlol_field">Shipping Cost lolcal(Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostlol_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.shippingCostlol}
                                                     name="shippingCostlol"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-lg-6">
-                                            <div className="form-group">
-                                                <label htmlFor="powerSource_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>
-                                                <input
-                                                    type="text"
-                                                    id="shippingCostNorth_field"
-                                                    className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.shippingCostNorth}
-                                                    name="shippingCostNorth"
-                                                />
-                                            </div>
-                                        </div>
+                                        
                                         <div className="col-lg-6">
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostNorth_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostNorth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.shippingCostNorth}
                                                     name="shippingCostNorth"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1300,12 +1325,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostSouth_field">Shipping Cost South India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostSouth_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.shippingCostSouth}
                                                     name="shippingCostSouth"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1313,12 +1341,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostEast_field">Shipping Cost East India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostEast_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.shippingCostEast}
                                                     name="shippingCostEast"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1327,12 +1358,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostWest_field">Shipping Cost West India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostWest_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.shippingCostWest}
                                                     name="shippingCostWest"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1340,12 +1374,15 @@ export default function UpdateProduct() {
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostNe_field">Shipping Cost NorthEast India:<span style={{ color: "red" }}> *</span></label>
                                                 <input
-                                                    type="text"
+                                                    type="number"
                                                     id="shippingCostNe_field"
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     value={formData.shippingCostNe}
                                                     name="shippingCostNe"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1363,6 +1400,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.unit?.toLocaleUpperCase()}
                                                     name="unit"
+                                                    required
                                                 />
                                             </div>
                                         </div>

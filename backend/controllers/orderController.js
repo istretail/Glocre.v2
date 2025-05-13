@@ -647,7 +647,7 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
         totalShippingCost,
         breakdown: results,
     });
-    console.log("Result", results);
-    console.log("Total Shipping cost", totalShippingCost);
+    // console.log("Result", results);
+    // console.log("Total Shipping cost", totalShippingCost);
 });
 

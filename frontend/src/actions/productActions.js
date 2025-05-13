@@ -156,16 +156,7 @@ export const createNewProduct = (productData) => async (dispatch) => {
     dispatch(newProductFail(error.response.data.message));
   }
 };
-export const deleteProduct = (id) => async (dispatch) => {
-  try {
-    dispatch(deleteProductRequest());
-    await axios.delete(`/api/v1/admin/product/${id}`);
-    dispatch(deleteproductSuccess());
-  } catch (error) {
-    //handle error
-    dispatch(deleteProductFail(error.response.data.message));
-  }
-};
+
 export const updateProduct = (id, productData) => async (dispatch) => {
   try {
     dispatch(updateProductRequest());
@@ -179,7 +170,7 @@ export const updateProduct = (id, productData) => async (dispatch) => {
       productData,
       config,
     );
-    console.log(productData);
+    // console.log(productData);
     dispatch(updateProductSuccess(data));
   } catch (error) {
     //handle error
@@ -197,6 +188,16 @@ export const getReviews = (id) => async (dispatch) => {
   } catch (error) {
     //handle error
     dispatch(reviewsFail(error.response.data.message));
+  }
+};
+export const deleteProduct = (id) => async (dispatch) => {
+  try {
+    dispatch(deleteProductRequest());
+    await axios.delete(`/api/v1/admin/product/${id}`);
+    dispatch(deleteproductSuccess());
+  } catch (error) {
+    //handle error
+    dispatch(deleteProductFail(error.response.data.message));
   }
 };
 export const deleteReview = (productId, id) => async (dispatch) => {

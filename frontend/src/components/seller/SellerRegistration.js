@@ -136,7 +136,7 @@ const SellerRegistration = () => {
       const response = await dispatch(updateProfile(payload));
       const successMessage = response?.data?.message;
       toast.success(successMessage);
-      console.log(payload);
+      // console.log(payload);
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
     } finally {

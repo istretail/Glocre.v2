@@ -143,52 +143,92 @@ const SellerCreateProduct = () => {
     });
   };
   // Submit the form
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    if (imageErrors.length > 0) {
-      alert("Please fix the image errors before submitting.");
-      return;
-    }
+        if (imageErrors.length > 0) {
+            alert("Please fix the image errors before submitting.");
+            return;
+        }
 
-    const productData = new FormData();
+        const filledPoints = formData.keyPoints.filter(point => point.trim() !== "");
 
-    // Append non-array fields
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "variants" && key !== "keyPoints" && value) {
-        productData.append(key, value);
-      }
-    });
+        // if (filledPoints.length < 3) {
+        //     console.log(filledPoints.length);
+        //     toast.error("Please provide at least 3 key points.");
+        //     return;
+        // }
 
-    // Append key points
-    formData.keyPoints.forEach((point, index) => {
-      if (point) {
-        productData.append(`keyPoints[${index}]`, point);
-      }
-    });
+        // Proceed with form submission
+        // console.log("Form submitted with:", filledPoints);
 
-    // Append variants as a JSON string
-    productData.append('variants', JSON.stringify(variantDetails));
+        const productData = new FormData();
 
-    // Append variant images
-    variantDetails.forEach((variant, variantIndex) => {
-      if (variant.images) {
-        variant.images.forEach((imageFile) => {
-          productData.append(`variants[${variantIndex}][images]`, imageFile);
+        // Append non-array fields
+        Object.entries(formData).forEach(([key, value]) => {
+            if (key !== "variants" && key !== "keyPoints" && value) {
+                productData.append(key, value);
+            }
         });
-      }
-    });
 
-    // Append product images if no variants
-    if (!hasVariants) {
-      productImages.forEach((imageFile) => {
-        productData.append('images', imageFile);
-      });
-    }
+        // Append key points
+        formData.keyPoints.forEach((point, index) => {
+            if (point) {
+                productData.append(`keyPoints[${index}]`, point);
+            }
+        });
 
-    // Dispatch action to add product
-    dispatch(addSellerNewProduct(productData));
-  };
+
+
+        // Append variants as a JSON string
+        variantDetails.forEach((variant, i) => {
+            productData.append(`variants[${i}][variantType]`, variant.variantType);
+            productData.append(`variants[${i}][variantName]`, variant.variantName);
+            productData.append(`variants[${i}][price]`, variant.price);
+            productData.append(`variants[${i}][offPrice]`, variant.offPrice);
+            productData.append(`variants[${i}][stock]`, variant.stock);
+
+           
+        });
+          
+
+        // Append variant images
+        variantDetails.forEach((variant, variantIndex) => {
+            if (variant.images && Array.isArray(variant.images)) {
+                variant.images.forEach((imageFile) => {
+                    if (imageFile && typeof imageFile === 'object' && imageFile.name && imageFile.type) {
+                        productData.append(`variants[${variantIndex}][images]`, imageFile);
+                    }
+                });
+            }
+        });
+        
+        // Append product images if no variants
+        if (!hasVariants) {
+            productImages.forEach((imageFile) => {
+                productData.append('images', imageFile);
+            });
+        }
+        // Log the FormData entries
+        // for (let [key, value] of productData.entries()) {
+        //     if (value instanceof File) {
+        //         console.log(`${key}: ${value.name}`);
+        //     } else {
+        //         console.log(`${key}: ${value}`);
+        //     }
+        // }
+          
+
+        // Dispatch action to add product
+        // console.log("FormData before submission:", formData);
+
+        try {
+          await dispatch(addSellerNewProduct(productData));
+            // toast("Product updated successfully!", { type: "success" });
+        } catch (error) {
+            toast(error.message, { type: "error" });
+        }
+    };
   useEffect(() => {
     if (isProductCreated) {
       toast('Product Created Successfully!', {
@@ -776,6 +816,8 @@ const SellerCreateProduct = () => {
                                 )
                               }
                               required
+                              min="0"
+                              max="99999"
                             />
                           </div>
                           <div className="form-group">
@@ -798,6 +840,8 @@ const SellerCreateProduct = () => {
                                 )
                               }
                               required
+                              min="0"
+                              max="99999"
                             />
                           </div>
                           <div className="form-group">
@@ -821,6 +865,7 @@ const SellerCreateProduct = () => {
                               }}
                               required
                               min="0"
+                              max="9999"
                               onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                               onKeyDown={(e) => {
                                 if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -900,6 +945,8 @@ const SellerCreateProduct = () => {
                       maxLength={2}
                       onChange={handleChange}
                       required
+                      min="0"
+                      max="99"
                     />
                   </div>
                 </div>
@@ -944,6 +991,7 @@ const SellerCreateProduct = () => {
                           onChange={handleChange}
                           required
                           min="0"
+                          max="99999"
                           onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -971,6 +1019,7 @@ const SellerCreateProduct = () => {
                           onChange={handleChange}
                           required
                           min="0"
+                          max="99999"
                           onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -995,7 +1044,8 @@ const SellerCreateProduct = () => {
                           className="form-control"
                           name="stock"
                           value={formData.stock}
-                          maxLength={4}
+                          min="0"
+                          max="9999"
                           onChange={(e) => {
                             const value = e.target.value;
                             if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
@@ -1003,7 +1053,7 @@ const SellerCreateProduct = () => {
                             }
                           }}
                           required
-                          min="0"
+                        
                           onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -1223,6 +1273,8 @@ const SellerCreateProduct = () => {
                       value={formData.itemLength}
                       onChange={handleChange}
                       required
+                      min="0"
+                      max="9999"
                     />
                   </div>
                 </div>
@@ -1237,6 +1289,8 @@ const SellerCreateProduct = () => {
                       name="itemHeight"
                       value={formData.itemHeight}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1252,6 +1306,8 @@ const SellerCreateProduct = () => {
                       name="itemWeight"
                       value={formData.itemWeight}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1267,6 +1323,8 @@ const SellerCreateProduct = () => {
                       name="itemWidth"
                       value={formData.itemWidth}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1287,6 +1345,8 @@ const SellerCreateProduct = () => {
                       name="moq"
                       value={formData.moq}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1302,6 +1362,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostlol"
                       value={formData.shippingCostlol}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1315,6 +1377,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostNorth"
                       value={formData.shippingCostNorth}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1328,6 +1392,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostSouth"
                       value={formData.shippingCostSouth}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1341,6 +1407,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostEast"
                       value={formData.shippingCostEast}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1354,6 +1422,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostWest"
                       value={formData.shippingCostWest}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1367,6 +1437,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostNe"
                       value={formData.shippingCostNe}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>
@@ -1380,6 +1452,8 @@ const SellerCreateProduct = () => {
                       name="shippingCostCentral"
                       value={formData.shippingCostCentral}
                       onChange={handleChange}
+                      min="0"
+                      max="9999"
                       required
                     />
                   </div>

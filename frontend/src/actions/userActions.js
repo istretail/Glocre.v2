@@ -96,7 +96,7 @@ export const login = (email, password) => async (dispatch) => {
     dispatch(loginSuccess(data));
   } catch (error) {
     dispatch(loginFail(error.response.data.message));
-    toast(error.response.data.message);
+    toast.error(error.response.data.message);
   }
 };
 export const clearAuthError = () => {
@@ -161,7 +161,7 @@ export const logout = async (dispatch) => {
 
 export const updateProfile = (userData) => async (dispatch) => {
   try {
-    console.log(userData);
+    // console.log(userData);
     dispatch(updateProfileRequest());
     const { data } = await axios.put(`/api/v1/update`, userData);
     dispatch(updateProfileSuccess(data));
@@ -395,7 +395,7 @@ export const fetchWishlist = () => async (dispatch) => {
     dispatch(getWishlistSuccess(data.wishlist));
   } catch (error) {
     dispatch(getWishlistFail(error.response.data.message));
-    console.log(error.response.data.message);
+    // console.log(error.response.data.message);
   }
 };
 export const uploadBanner = (formData) => async (dispatch) => {
@@ -411,7 +411,7 @@ export const uploadBanner = (formData) => async (dispatch) => {
     dispatch(uploadBannerSuccess(data));
   } catch (error) {
     dispatch(uploadBannerFail(error.response.data.message));
-    console.log(error.response.data.message);
+    // console.log(error.response.data.message);
   }
 };
 // Get all banner images

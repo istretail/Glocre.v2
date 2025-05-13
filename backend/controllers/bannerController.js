@@ -96,7 +96,7 @@ exports.getAllImages = async (req, res) => {
 // Express route to delete object from S3
 exports.deleteImage = async (req, res) => {
     const { key } = req.body;
-    console.log("key", key)
+    // console.log("key", key)
     const params = {
         Bucket: 'glocreawsimagebucket',
         Key: key,

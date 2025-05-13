@@ -19,7 +19,7 @@ import { Modal, Box, Typography, Button } from "@mui/material";
 export default function SellerUpdateProduct() {
   const { id: productId } = useParams();
   const { loading, error, categories = {} } = useSelector(state => state.productsState);
-  const { isProductUpdated, product, isImageDeleted } = useSelector(state => state.productState);
+  const { isProductUpdated, product, isImageDeleted, error:productError } = useSelector(state => state.productState);
   const [formData, setFormData] = useState({
     name: "",
     offPrice: "",
@@ -244,16 +244,23 @@ export default function SellerUpdateProduct() {
     });
   };
   useEffect(() => {
+    if (error || productError) {
+      toast(error || productError, {
+        type: 'error',
+        onOpen: () => { dispatch(clearError()) }
+      })
+      return
+    }
     if (isImageDeleted) {
       toast('Image Delete Successfully!', {
         type: 'success',
         onOpen: () => dispatch(clearProductUpdated())
       });
+      dispatch(getSellerSingleProduct(productId))
 
-      navigate('/seller/products');
       return;
     }
-  }, [isImageDeleted]);
+  }, [dispatch, isImageDeleted]);
 
   const handleNavConfirm = async () => {
     setNavModalOpen(false);
@@ -304,9 +311,9 @@ export default function SellerUpdateProduct() {
       }
     });
 
-    for (let pair of productData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // for (let pair of productData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
 
     try {
       await dispatch(updateSellerProduct(productId, productData));
@@ -606,15 +613,15 @@ export default function SellerUpdateProduct() {
               </h3>
 
 
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setPendingSubmit(true); // flag we want to submit
-                    setNavModalOpen(true);  // open confirmation modal
-                  }}
-                  className=""
-                  encType="multipart/form-data"
-                >
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setPendingSubmit(true); // flag we want to submit
+                  setNavModalOpen(true);  // open confirmation modal
+                }}
+                className=""
+                encType="multipart/form-data"
+              >
                 <div className="row">
                   <div className="col-lg-6">
                     <div className="form-group">
@@ -644,7 +651,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.description}
                         name="description"
-                          maxLength={200}
+                        maxLength={200}
                       ></textarea>
                     </div>
                   </div>
@@ -832,6 +839,8 @@ export default function SellerUpdateProduct() {
                         maxLength={2}
                         value={formData.tax}
                         name="tax"
+                        min="0"
+                        max="99"
                       />
                     </div>
                   </div>
@@ -853,6 +862,8 @@ export default function SellerUpdateProduct() {
                             value={formData.price}
                             name="price"
                             required
+                            min="0"
+                            max="99999"
                           />
                         </div>
                       </div>
@@ -873,13 +884,14 @@ export default function SellerUpdateProduct() {
                             value={formData.offPrice}
                             name="offPrice"
                             required
-                              min="0"
-                              onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
-                              onKeyDown={(e) => {
-                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                  e.preventDefault(); // disables arrow key changes
-                                }
-                              }}
+                            min="0"
+                            max="99999"
+                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                            onKeyDown={(e) => {
+                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                e.preventDefault(); // disables arrow key changes
+                              }
+                            }}
                           />
                         </div>
                       </div>
@@ -898,14 +910,15 @@ export default function SellerUpdateProduct() {
                             value={formData.stock}
                             name="stock"
                             required
-                              maxLength={4}
-                              min="0"
-                              onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
-                              onKeyDown={(e) => {
-                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                  e.preventDefault(); // disables arrow key changes
-                                }
-                              }}
+                            maxLength={4}
+                            min="0"
+                            max="9999"
+                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                            onKeyDown={(e) => {
+                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                e.preventDefault(); // disables arrow key changes
+                              }
+                            }}
                           />
                         </div>
                       </div>
@@ -1019,7 +1032,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.brand}
                         name="brand"
-                          maxLength={30}
+                        maxLength={30}
                       />
                     </div>
                   </div>
@@ -1077,6 +1090,8 @@ export default function SellerUpdateProduct() {
                               )
                             }
                             required
+                            min="0"
+                            max="99999"
                           />
                         </div>
                         <div className="form-group">
@@ -1097,6 +1112,7 @@ export default function SellerUpdateProduct() {
                             }
                             required
                             min="0"
+                            max="99999"
                             onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                             onKeyDown={(e) => {
                               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -1124,6 +1140,7 @@ export default function SellerUpdateProduct() {
                             required
                             maxLength={4}
                             min="0"
+                            max="9999"
                             onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                             onKeyDown={(e) => {
                               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -1306,7 +1323,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.productCertifications}
                         name="productCertifications"
-                          maxLength={50}
+                        maxLength={50}
                       />
                     </div>
                   </div>
@@ -1337,6 +1354,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemLength}
                         name="itemLength"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1353,6 +1373,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemHeight}
                         name="itemHeight"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1369,6 +1392,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemWeight}
                         name="itemWeight"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1385,6 +1411,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemWidth}
                         name="itemWidth"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1401,6 +1430,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.moq}
                         name="moq"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1415,6 +1447,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostlol}
                         name="shippingCostlol"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1431,6 +1466,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostNorth}
                         name="shippingCostNorth"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1447,6 +1485,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostSouth}
                         name="shippingCostSouth"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1463,6 +1504,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostEast}
                         name="shippingCostEast"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1477,6 +1521,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostWest}
                         name="shippingCostWest"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1490,6 +1537,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostNe}
                         name="shippingCostNe"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1503,6 +1553,9 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostCentral}
                         name="shippingCostCentral"
+                        min="0"
+                        max="9999"
+                        required
                       />
                     </div>
                   </div>
@@ -1536,49 +1589,49 @@ export default function SellerUpdateProduct() {
                     </button>
                   </div>
 
-                   <Modal open={navModalOpen} onClose={handleNavClose}>
-                                              <Box
-                                                sx={{
-                                                  position: "absolute",
-                                                  top: "50%",
-                                                  left: "50%",
-                                                  transform: "translate(-50%, -50%)",
-                                                  bgcolor: "background.paper",
-                                                  p: 4,
-                                                  borderRadius: 2,
-                                                  width: 300,
-                                                  border: "none",
-                                                  outline: "none",
-                                                }}
-                                              >
-                                                <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
-                                                  Are you sure want to update this product?(Item will be moved to pending state)
-                                                </Typography>
-                                                <Box display="flex" justifyContent="space-between">
-                                                  <Button
-                                                    onClick={handleNavConfirm}
-                                                    className="left-but"
-                                                    sx={{ margin: "3px" }}
-                                                  >
-                                                    Yes
-                                                  </Button>
-                                                  <Button
-                                                    onClick={handleNavClose}
-                                                    sx={{
-                                                      backgroundColor: '#2f4d2a',
-                                                      color: '#fff',
-                                                      '&:hover': {
-                                                        backgroundColor: '#2f4d2a50',
-                                                      },
-                                                      width: "100%",
-                                                      margin: "3px"
-                                                    }}
-                                                  >
-                                                    No
-                                                  </Button>
-                                                </Box>
-                                              </Box>
-                                            </Modal> 
+                  <Modal open={navModalOpen} onClose={handleNavClose}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        bgcolor: "background.paper",
+                        p: 4,
+                        borderRadius: 2,
+                        width: 300,
+                        border: "none",
+                        outline: "none",
+                      }}
+                    >
+                      <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                        Are you sure want to update this product?(Item will be moved to pending state)
+                      </Typography>
+                      <Box display="flex" justifyContent="space-between">
+                        <Button
+                          onClick={handleNavConfirm}
+                          className="left-but"
+                          sx={{ margin: "3px" }}
+                        >
+                          Yes
+                        </Button>
+                        <Button
+                          onClick={handleNavClose}
+                          sx={{
+                            backgroundColor: '#2f4d2a',
+                            color: '#fff',
+                            '&:hover': {
+                              backgroundColor: '#2f4d2a50',
+                            },
+                            width: "100%",
+                            margin: "3px"
+                          }}
+                        >
+                          No
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Modal>
                 </div>
               </form>
 

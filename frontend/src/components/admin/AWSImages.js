@@ -12,7 +12,7 @@ const S3ImageGallery = () => {
     const fetchImages = async () => {
         try {
             const res = await axios.get('/api/v1/get-images');
-            console.log('Fetched S3 image data:', res.data); // <--- ADD THIS
+            // console.log('Fetched S3 image data:', res.data); 
             setImages(res.data.images);
             // Make sure this is an array
         } catch (error) {

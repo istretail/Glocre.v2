@@ -19,7 +19,7 @@ export default function UpdateProfile() {
 
   const onChangeAvatar = e => {
     const reader = new FileReader();
-    console.log('file selected');
+    // console.log('file selected');
     reader.onload = () => {
       if (reader.readyState === 2) {
         setAvatarPreview(reader.result);

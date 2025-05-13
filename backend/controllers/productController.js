@@ -8,7 +8,7 @@ const categoryHierarchy = require("../config/categoryHierarchy");
 const s3 = require('../config/s3');
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 30;
+  const resPerPage = 100;
 
   // Validate and sanitize limit
   let limit = parseInt(req.query.limit);
@@ -54,6 +54,7 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
 
 //Create Product - /api/v1/products/new
 exports.newProduct = catchAsyncError(async (req, res, next) => {
+  // console.log("received variant body:", req.body);
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
@@ -130,6 +131,8 @@ exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
 
 //Update Product - api/v1/product/:id 
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
+  // console.log("received variant body:", req.body.variants);
+
   let product = await Product.findById(req.params.id).populate("createdBy");
   if (!product) {
     return res.status(404).json({
@@ -142,7 +145,6 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     email: product.createdBy.email,
     name: product.createdBy.name,
   };
-  // console.log(creatorInfo.email, creatorInfo.name)
 
   // Handle main product images (S3)
   if (req.body.existingImages) {
@@ -159,48 +161,103 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     req.body.images = [];
   }
 
-  // Merge existing and new images
+  // Merge existing and new images for the main product
   req.body.images = [...req.body.existingImages, ...req.body.images];
 
   // Prepare variant updates
-  let updatedVariants = product.variants ? [...product.variants] : [];
+  // let updatedVariants = [];
 
-  if (req.body.variants) {
-    if (!Array.isArray(req.body.variants)) {
-      req.body.variants = [req.body.variants];
-    }
+  if (
+    req.body.variants &&
+    typeof req.body.variants === "object" &&
+    !Array.isArray(req.body.variants)
+  ) {
+    // Convert object with numeric keys like '0', '1' to array
+    const variantArray = Object.keys(req.body.variants)
+      .filter((key) => !isNaN(key)) // only process numeric keys
+      .sort((a, b) => Number(a) - Number(b))
+      .map((key) => req.body.variants[key])
+      .filter((v) => typeof v === "object" && v !== null); // ensure valid objects
 
+    req.body.variants = variantArray;
+  }
+
+
+  if (Array.isArray(req.body.variants)) {
     req.body.variants.forEach((variant, index) => {
+      const existingImages = Array.isArray(variant.existingImages)
+        ? variant.existingImages
+        : [variant.existingImages].filter(Boolean);
+      const currentImages = Array.isArray(variant.images)
+        ? variant.images
+        : [variant.images].filter(Boolean);
+
+      req.body.variants[index].images = [...new Set([...existingImages, ...currentImages])];
+      delete req.body.variants[index].existingImages;
+    });
+  }
+
+  // ✅ Now safe to calculate updatedVariants:
+  let updatedVariants = [];
+
+  if (Array.isArray(req.body.variants)) {
+    updatedVariants = req.body.variants.map((variant, index) => {
       if (product.variants[index]) {
-        updatedVariants[index] = { ...product.variants[index], ...variant };
+        return { ...product.variants[index]._doc, ...variant };
       } else {
-        updatedVariants[index] = variant;
+        return variant;
       }
     });
   }
 
   // Handle variant images (S3)
-  if (req.files) {
+  if (req.files && Array.isArray(req.body.variants)) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
       if (match) {
         const variantIndex = parseInt(match[1], 10);
-        if (!Array.isArray(req.body.variants)) {
-          req.body.variants = product.variants || [];
-        }
+
+        // Ensure the variant object exists
         if (!req.body.variants[variantIndex]) {
-          req.body.variants[variantIndex] = product.variants[variantIndex] || {};
+          req.body.variants[variantIndex] = {};
         }
 
         // Merge existing images with new images
-        const existingImages = req.body.variants[variantIndex].images || product.variants[variantIndex]?.images || [];
+        const existingImages =
+          req.body.variants[variantIndex].existingImages ||
+          product.variants?.[variantIndex]?.images ||
+          [];
         const newImages = req.files[key].map((file) => file.location);
+
+        // Combine existing and new images into the `images` array
         req.body.variants[variantIndex].images = [...existingImages, ...newImages];
       }
     });
   }
 
+  // Ensure `images` contains both existing and new images for all variants
+  req.body.variants.forEach((variant, index) => {
+    // Convert to array if existingImages is a string
+    let existingImages = variant.existingImages || [];
+    if (typeof existingImages === "string") {
+      existingImages = [existingImages];
+    }
+
+    // Ensure images is always an array
+    let currentImages = variant.images || [];
+    if (typeof currentImages === "string") {
+      currentImages = [currentImages];
+    }
+
+    // Merge and deduplicate
+    req.body.variants[index].images = [...new Set([...existingImages, ...currentImages])];
+  });
+  
+  
+
   req.body.variants = updatedVariants;
+
+  // console.log("updated variants:", req.body.variants);
 
   // Merge req.body with existing product data
   const updatedData = { ...product.toObject() };
@@ -210,51 +267,6 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       updatedData[key] = req.body[key];
     }
   });
-
-
-
-  // Send email notification if the status changed
-  if (req.body.status && req.body.status !== product.status) {
-    try {
-      const statusMessage = req.body.status === "approved" ? "approved" : "rejected";
-      let emailContent = `
-  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
-    <div style="text-align: center;">
-      <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
-    </div>
-
-    <h2 style="color: #2f4d2a;">Product Status Update</h2>
-
-    <p style="color: #8c8c8c;">Dear ${creatorInfo.name},</p>
-    <p style="color: #8c8c8c;">
-      Your product <strong>"${product.name}"</strong> has been <strong>${statusMessage}</strong>.
-    </p>
-    <p style="color: #8c8c8c;">Thank you for using <strong>GLOCRE</strong> to showcase your product!</p>
-
-    <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
-    <p style="font-size: 12px; color: #8c8c8c;">
-      <em>This is an auto-generated email. Please do not reply. For queries, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
-    </p>
-  </div>
-`;
-
-
-      if (req.body.status === "rejected" && req.body.rejectionReason) {
-        emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`;
-      }
-
-      await sendEmail({
-        fromEmail: "glocre@glocre.com",
-        email: creatorInfo.email,
-        subject: `Product ${statusMessage}`,
-        html: emailContent,
-      });
-      console.log("Email sent to user:", creatorInfo.email);
-      console.log("Email :", statusMessage);
-    } catch (emailError) {
-      console.error("Failed to send email:", emailError);
-    }
-  }
 
   // Update product
   product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
@@ -266,6 +278,46 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     success: true,
     product,
   });
+
+  // Send email notification if the status changed
+  if (req.body.status && req.body.status !== product.status) {
+    try {
+      const statusMessage = req.body.status === "approved" ? "approved" : "rejected";
+      let emailContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+          <div style="text-align: center;">
+            <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+          </div>
+
+          <h2 style="color: #2f4d2a;">Product Status Update</h2>
+
+          <p style="color: #8c8c8c;">Dear ${creatorInfo.name},</p>
+          <p style="color: #8c8c8c;">
+            Your product <strong>"${product.name}"</strong> has been <strong>${statusMessage}</strong>.
+          </p>
+          <p style="color: #8c8c8c;">Thank you for using <strong>GLOCRE</strong> to showcase your product!</p>
+
+          <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+          <p style="font-size: 12px; color: #8c8c8c;">
+            <em>This is an auto-generated email. Please do not reply. For queries, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+          </p>
+        </div>
+      `;
+
+      if (req.body.status === "rejected" && req.body.rejectionReason) {
+        emailContent += `<p>Reason for rejection: ${req.body.rejectionReason}</p>`;
+      }
+
+      await sendEmail({
+        fromEmail: "glocre@glocre.com",
+        email: creatorInfo.email,
+        subject: `Product ${statusMessage}`,
+        html: emailContent,
+      });
+    } catch (emailError) {
+      console.error("Failed to send email:", emailError);
+    }
+  }
 });
 
 //Delete product - api/v1/product/:id
@@ -378,12 +430,12 @@ exports.deleteReview = catchAsyncError(async (req, res, next) => {
 
 // get admin products  - api/v1/admin/products
 exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 10; // Adjust results per page as needed
+  const resPerPage = 15; // Adjust results per page as needed
 
   const apiFeatures = new APIFeatures(Product.find(), req.query)
-    .search() // Handles search (e.g., by product name or ID)
-    .filter() // Handles filtering (e.g., by category, price range)
-    .paginate(resPerPage); // Paginates the results
+    .search() 
+    .filter() 
+    .paginate(resPerPage); 
 
   const products = await apiFeatures.query;
   const totalProductsCount = await Product.countDocuments();
@@ -398,28 +450,52 @@ exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
 
 // seller Controller
 exports.getSellerProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 100;
+  const resPerPage = 10;
 
+  // 1. Total products created by seller (excluding archived)
+  const totalProductsCount = await Product.countDocuments({
+    createdBy: req.user.id,
+    isArchived: false,
+  });
+
+  // 2. Apply search and filters, but not pagination yet
+  const apiFeaturesForCount = new APIFeatures(
+    Product.find({
+      createdBy: req.user.id,
+      isArchived: false,
+    }).lean(),
+    req.query
+  )
+    .search()
+    .filter();
+
+  const filteredProducts = await apiFeaturesForCount.query;
+  const filteredProductsCount = filteredProducts.length;
+
+  // 3. Apply pagination
   const apiFeatures = new APIFeatures(
     Product.find({
       createdBy: req.user.id,
       isArchived: false,
-    }).lean(), // Improves performance by returning plain objects
+    }).lean(),
     req.query
   )
-    .search()   // Handles search (e.g., by product name or ID)
-    .filter()   // Handles filtering (e.g., by category, price range)
-    .paginate(resPerPage); // Apply pagination
+    .search()
+    .filter()
+    .paginate(resPerPage);
 
   const products = await apiFeatures.query;
 
   res.status(200).json({
     success: true,
-    count: products.length,
+    totalProductsCount,
+    // filteredProductsCount,
     resPerPage,
+    count: filteredProductsCount,
     products,
   });
 });
+
 
 exports.getArchiveProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 10;
@@ -562,7 +638,7 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
 
     <p style="color: #8c8c8c;">Dear Admin,</p>
     <p style="color: #8c8c8c;">
-      A new product titled <strong>"${product.name}"</strong> has been added by <strong>${creatorInfo.name}</strong> and is currently <strong>pending</strong> please wait for <strong>Approval</strong>.
+      A new product titled <strong>"${product.name}"</strong> has been added by <strong>${creatorInfo.name}</strong> and is currently <strong>pending approval</strong>.
     </p>
 
     <p style="color: #8c8c8c;">Please review and approve the product in the admin dashboard.</p>
@@ -595,7 +671,6 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     name: product.createdBy.name,
   };
 
-  // Handle main product images (S3)
   if (req.body.existingImages) {
     if (!Array.isArray(req.body.existingImages)) {
       req.body.existingImages = [req.body.existingImages];
@@ -610,48 +685,102 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
     req.body.images = [];
   }
 
-  // Merge existing and new images
+  // Merge existing and new images for the main product
   req.body.images = [...req.body.existingImages, ...req.body.images];
 
   // Prepare variant updates
-  let updatedVariants = product.variants ? [...product.variants] : [];
+  // let updatedVariants = [];
 
-  if (req.body.variants) {
-    if (!Array.isArray(req.body.variants)) {
-      req.body.variants = [req.body.variants];
-    }
+  if (
+    req.body.variants &&
+    typeof req.body.variants === "object" &&
+    !Array.isArray(req.body.variants)
+  ) {
+    // Convert object with numeric keys like '0', '1' to array
+    const variantArray = Object.keys(req.body.variants)
+      .filter((key) => !isNaN(key)) // only process numeric keys
+      .sort((a, b) => Number(a) - Number(b))
+      .map((key) => req.body.variants[key])
+      .filter((v) => typeof v === "object" && v !== null); // ensure valid objects
 
+    req.body.variants = variantArray;
+  }
+
+
+  if (Array.isArray(req.body.variants)) {
     req.body.variants.forEach((variant, index) => {
+      const existingImages = Array.isArray(variant.existingImages)
+        ? variant.existingImages
+        : [variant.existingImages].filter(Boolean);
+      const currentImages = Array.isArray(variant.images)
+        ? variant.images
+        : [variant.images].filter(Boolean);
+
+      req.body.variants[index].images = [...new Set([...existingImages, ...currentImages])];
+      delete req.body.variants[index].existingImages;
+    });
+  }
+
+  // ✅ Now safe to calculate updatedVariants:
+  let updatedVariants = [];
+
+  if (Array.isArray(req.body.variants)) {
+    updatedVariants = req.body.variants.map((variant, index) => {
       if (product.variants[index]) {
-        updatedVariants[index] = { ...product.variants[index], ...variant };
+        return { ...product.variants[index]._doc, ...variant };
       } else {
-        updatedVariants[index] = variant;
+        return variant;
       }
     });
   }
 
   // Handle variant images (S3)
-  if (req.files) {
+  if (req.files && Array.isArray(req.body.variants)) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
       if (match) {
         const variantIndex = parseInt(match[1], 10);
-        if (!Array.isArray(req.body.variants)) {
-          req.body.variants = product.variants || [];
-        }
+
+        // Ensure the variant object exists
         if (!req.body.variants[variantIndex]) {
-          req.body.variants[variantIndex] = product.variants[variantIndex] || {};
+          req.body.variants[variantIndex] = {};
         }
 
         // Merge existing images with new images
-        const existingImages = req.body.variants[variantIndex].images || product.variants[variantIndex]?.images || [];
+        const existingImages =
+          req.body.variants[variantIndex].existingImages ||
+          product.variants?.[variantIndex]?.images ||
+          [];
         const newImages = req.files[key].map((file) => file.location);
+
+        // Combine existing and new images into the `images` array
         req.body.variants[variantIndex].images = [...existingImages, ...newImages];
       }
     });
   }
 
+  // Ensure `images` contains both existing and new images for all variants
+  req.body.variants.forEach((variant, index) => {
+    // Convert to array if existingImages is a string
+    let existingImages = variant.existingImages || [];
+    if (typeof existingImages === "string") {
+      existingImages = [existingImages];
+    }
+
+    // Ensure images is always an array
+    let currentImages = variant.images || [];
+    if (typeof currentImages === "string") {
+      currentImages = [currentImages];
+    }
+
+    // Merge and deduplicate
+    req.body.variants[index].images = [...new Set([...existingImages, ...currentImages])];
+  });
+
+
+
   req.body.variants = updatedVariants;
+
 
   // Merge existing with updated data
   const updatedData = {
@@ -916,7 +1045,7 @@ exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
   const { imageUrl, variantId } = req.body;
   const productId = req.params.id;
 
-  console.log("Image URL:", imageUrl);
+  // console.log("Image URL:", imageUrl);
 
   const product = await Product.findById(productId);
   if (!product) {

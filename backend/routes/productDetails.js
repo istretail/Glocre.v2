@@ -29,38 +29,40 @@ const {
 const upload = require("../middlewares/upload");
 
 const handleVariantUploads = (req, res, next) => {
+
+
   if (req.body.variants && typeof req.body.variants === "string") {
     try {
       req.body.variants = JSON.parse(req.body.variants);
     } catch (error) {
       return res.status(400).json({ success: false, message: "Invalid variants JSON format" });
     }
-  } else {
+  } else if (!req.body.variants) {
     req.body.variants = [];
   }
 
   if (req.files) {
     if (req.files["images"]) {
-      req.body.images = req.files["images"].map((file) => ({
-        image: file.location,
-      }));
+      req.body.images = req.files["images"].map((file) => file.location);
     }
 
-    if (req.files["variantsImages"]) {
-      req.body.variants.forEach((variant, index) => {
-        // Preserve existing images and add new ones
-        const existingImages = variant.images || [];
-        const newImages = req.files["variantsImages"]
-          .slice(index * 3, index * 3 + 3) // Get up to 3 images for this variant
-          .map((file) => ({
-            image: file.location,
-          }));
+    Object.keys(req.files).forEach((key) => {
+      const match = key.match(/variants\[(\d+)\]\[images\]/);
+      if (match) {
+        const variantIndex = parseInt(match[1], 10);
+        const existingImages = req.body.variants[variantIndex]?.images || [];
+        const newImages = req.files[key].map((file) => file.location);
 
-        variant.images = [...existingImages, ...newImages]; // Merge existing and new images
-      });
-    }
+        // Merge existing and new images
+        req.body.variants[variantIndex] = {
+          ...req.body.variants[variantIndex],
+          images: [...existingImages, ...newImages]
+        };
+      }
+    });
   }
 
+  // console.log("req.body after processing:", req.body);
   next();
 };
 

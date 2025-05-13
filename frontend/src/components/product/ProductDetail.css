@@ -1454,7 +1454,7 @@ ul.actions li:last-child a {
 }
 
 .prod-img-down-glc {
-  height: auto;
+  height: 150px;
   width: 150px;
   border-radius: 10px !important;
   margin-top: 7px;

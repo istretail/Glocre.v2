@@ -168,6 +168,7 @@ const orderSlice = createSlice({
         orderCount: action.payload.ordersCount,
         totalPrice: action.payload.totalSales,
         sellerOrders: action.payload.orders,
+        resPerPage: action.payload.resPerPage,
       };
     },
     getSellerOrderFail(state, action) {

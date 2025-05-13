@@ -15,7 +15,7 @@ const ResendVerification = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         // Add logic to handle email submission
-        console.log('Email submitted:', email);
+        // console.log('Email submitted:', email);
         dispatch(resendVerification(email))
         setEmail('')
     };

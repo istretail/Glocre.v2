@@ -142,7 +142,7 @@ const NewProduct = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (imageErrors.length > 0) {
@@ -152,14 +152,14 @@ const NewProduct = () => {
 
         const filledPoints = formData.keyPoints.filter(point => point.trim() !== "");
 
-        if (filledPoints.length < 3) {
-            console.log(filledPoints.length);
-            toast.error("Please provide at least 3 key points.");
-            return;
-        }
+        // if (filledPoints.length < 3) {
+        //     console.log(filledPoints.length);
+        //     toast.error("Please provide at least 3 key points.");
+        //     return;
+        // }
 
         // Proceed with form submission
-        console.log("Form submitted with:", filledPoints);
+        // console.log("Form submitted with:", filledPoints);
 
         const productData = new FormData();
 
@@ -180,16 +180,28 @@ const NewProduct = () => {
 
 
         // Append variants as a JSON string
-        productData.append('variants', JSON.stringify(variantDetails));
+        variantDetails.forEach((variant, i) => {
+            productData.append(`variants[${i}][variantType]`, variant.variantType);
+            productData.append(`variants[${i}][variantName]`, variant.variantName);
+            productData.append(`variants[${i}][price]`, variant.price);
+            productData.append(`variants[${i}][offPrice]`, variant.offPrice);
+            productData.append(`variants[${i}][stock]`, variant.stock);
+
+           
+        });
+          
 
         // Append variant images
         variantDetails.forEach((variant, variantIndex) => {
-            if (variant.images) {
+            if (variant.images && Array.isArray(variant.images)) {
                 variant.images.forEach((imageFile) => {
-                    productData.append(`variants[${variantIndex}][images]`, imageFile);
+                    if (imageFile && typeof imageFile === 'object' && imageFile.name && imageFile.type) {
+                        productData.append(`variants[${variantIndex}][images]`, imageFile);
+                    }
                 });
             }
         });
+        
         // Append product images if no variants
         if (!hasVariants) {
             productImages.forEach((imageFile) => {
@@ -197,13 +209,27 @@ const NewProduct = () => {
             });
         }
         // Log the FormData entries
-        for (let pair of productData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
+        // for (let [key, value] of productData.entries()) {
+        //     if (value instanceof File) {
+        //         console.log(`${key}: ${value.name}`);
+        //     } else {
+        //         console.log(`${key}: ${value}`);
+        //     }
+        // }
+          
 
         // Dispatch action to add product
-        dispatch(createNewProduct(productData));
+        // console.log("FormData before submission:", formData);
+
+        try {
+            await dispatch(createNewProduct(productData));
+            // toast("Product updated successfully!", { type: "success" });
+        } catch (error) {
+            toast(error.message, { type: "error" });
+        }
     };
+
+
     useEffect(() => {
         if (isProductCreated) {
             toast('Product Created Successfully!', {
@@ -261,7 +287,7 @@ const NewProduct = () => {
 
     return (
         <>
-            
+
             <section className="newprod-section">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">
@@ -562,7 +588,7 @@ const NewProduct = () => {
                                                             required
                                                         >
                                                             <option value="">Select Condition<span style={{ color: "red" }}> *
-                                                                </span></option>
+                                                            </span></option>
                                                             <option value="New">New</option>
                                                             <option value="Unboxed">Unboxed</option>
                                                             <option value="Refurbished">Refurbished</option>
@@ -657,6 +683,7 @@ const NewProduct = () => {
                                                                 type="number"
                                                                 className="form-control"
                                                                 value={variantCount}
+                                                                
                                                                 onChange={e => {
                                                                     const count = Number(e.target.value); // Ensure it's a number
                                                                     setVariantCount(count);
@@ -745,8 +772,9 @@ const NewProduct = () => {
                                                                         value={variant.stock}
                                                                         onChange={(e) => {
                                                                             const value = e.target.value;
-                                                                            if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
-                                                                                handleChange(e); // only update if within range
+                                                                            // Allow empty input (for deletion) and only numbers between 0–9999
+                                                                            if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                                                                handleVariantChange(index, 'stock', value);
                                                                             }
                                                                         }}
                                                                         required
@@ -827,6 +855,8 @@ const NewProduct = () => {
                                                         onChange={handleChange}
                                                         required
                                                         maxLength={2}
+                                                        min="0"
+                                                        max="99"
                                                     />
                                                 </div>
                                             </div>
@@ -870,6 +900,7 @@ const NewProduct = () => {
                                                                 onChange={handleChange}
                                                                 required
                                                                 min="0"
+                                                                max="99999"
                                                                 onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -895,6 +926,7 @@ const NewProduct = () => {
                                                                 onChange={handleChange}
                                                                 required
                                                                 min="0"
+                                                                max="99999"
                                                                 onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -980,7 +1012,7 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="itemModelNum"
-                                                      
+
                                                         onChange={handleChange}
                                                         value={formData.itemModelNum.toLocaleUpperCase()}
                                                         maxLength={15}
@@ -1174,6 +1206,8 @@ const NewProduct = () => {
                                                         name="itemLength"
                                                         value={formData.itemLength}
                                                         onChange={handleChange}
+                                                        min="0"
+                                                        max="9999"
                                                         required
                                                     />
                                                 </div>
@@ -1189,6 +1223,8 @@ const NewProduct = () => {
                                                         value={formData.itemHeight}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1203,6 +1239,8 @@ const NewProduct = () => {
                                                         value={formData.itemWeight}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1217,6 +1255,8 @@ const NewProduct = () => {
                                                         value={formData.itemWidth}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1235,6 +1275,8 @@ const NewProduct = () => {
                                                         value={formData.moq}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1249,6 +1291,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostlol}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1262,6 +1306,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostNorth}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1275,6 +1321,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostSouth}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1288,6 +1336,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostEast}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1301,6 +1351,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostWest}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1314,6 +1366,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostNe}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1327,6 +1381,8 @@ const NewProduct = () => {
                                                         value={formData.shippingCostCentral}
                                                         onChange={handleChange}
                                                         required
+                                                        min="0"
+                                                        max="9999"
                                                     />
                                                 </div>
                                             </div>
@@ -1344,6 +1400,8 @@ const NewProduct = () => {
                                                         value={formData.unit}
                                                         onChange={handleChange}
                                                         required
+                                                        maxLength={10}
+
                                                     />
                                                 </div>
                                             </div>

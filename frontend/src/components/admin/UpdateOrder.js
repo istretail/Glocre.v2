@@ -42,7 +42,7 @@ export default function UpdateOrder() {
         }
 
         dispatch(updateOrder(orderId, orderData));
-        console.log(orderData);
+        // console.log(orderData);
     };
 
     useEffect(() => {

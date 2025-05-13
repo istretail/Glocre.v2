@@ -210,6 +210,8 @@ const productSlice = createSlice({
         loading: false,
         sellerProductCount: action.payload.count,
         products: action.payload.products,
+        resPerPage: action.payload.resPerPage,
+        count: action.payload.count,
       };
     },
     sellerProductFail(state, action) {
@@ -253,6 +255,7 @@ const productSlice = createSlice({
         loading: false,
         product: action.payload.product,
         isProductUpdated: true,
+
       };
     },
     updateSellerProductFail(state, action) {
