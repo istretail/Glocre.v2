@@ -147,6 +147,7 @@ export default function UpdateProduct() {
                     shippingCostSouth: product.shippingCostSouth,
                     shippingCostEast: product.shippingCostEast,
                     shippingCostWest: product.shippingCostWest,
+                    shippingCostCentral: product.shippingCostCentral,
                     shippingCostNe: product.shippingCostNe,
                     unit: product.unit,
                     rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
@@ -1290,7 +1291,7 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="shippingCostlol_field">Shipping Cost lolcal(Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>
+                                                <label htmlFor="shippingCostlol_field">Shipping Cost local (Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>
                                                 <input
                                                     type="number"
                                                     id="shippingCostlol_field"
@@ -1347,6 +1348,22 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.shippingCostEast}
                                                     name="shippingCostEast"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="shippingCostCentral_field">Shipping Cost Central India:<span style={{ color: "red" }}> *</span></label>
+                                                <input
+                                                    type="number"
+                                                    id="shippingCostCentral_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.shippingCostCentral}
+                                                    name="shippingCostCentral"
                                                     min="0"
                                                     max="9999"
                                                     required
