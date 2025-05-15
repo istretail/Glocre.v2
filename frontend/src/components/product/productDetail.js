@@ -114,9 +114,11 @@ export default function ProductDetail() {
             toast.error("Quantity exceeds available stock");
             return;
         }
+
+        const variantLabel = selectedVariant ? ` (${selectedVariant.variantName})` : "";
         const cartItem = {
             product: product._id,
-            name: product.name,
+            name: product.name + variantLabel, // ← append variant name if exists
             price: selectedVariant ? selectedVariant.offPrice : product.offPrice,
             image: selectedVariant ? selectedVariant.images[0] : product.images[0],
             stock: selectedVariant ? selectedVariant.stock : product.stock,
@@ -138,18 +140,17 @@ export default function ProductDetail() {
                 offPrice: selectedVariant.offPrice,
                 stock: selectedVariant.stock,
                 images: selectedVariant.images,
-
             } : null
         };
 
         if (user) {
             dispatch(addCartItemToCart(cartItem));
         } else {
-            dispatch(addCartItem(cartItem)); // Update Redux state
+            dispatch(addCartItem(cartItem));
             toast.success("Item added to cart successfully");
         }
-
     };
+    
     useEffect(() => {
         if (product.variants && product.variants.length > 0) {
             setSelectedVariant(product.variants[0]);

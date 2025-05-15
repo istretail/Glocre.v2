@@ -11,11 +11,11 @@ const order = require('./routes/order')
 const payment = require('./routes/payment')
 const analyticsRoutes = require('./routes/analyticsRoutes')
 const bannerRoutes = require('./routes/bannerRoute')
-
+const catchAsyncError = require("./middlewares/catchAsyncError");
 app.use('/uploads', express.static(path.join(__dirname,'uploads')))
 app.use(express.json());
 app.use(cookieParser())
-
+// app.use(catchAsyncError())
 
 app.use('/api/v1/',products);
 app.use('/api/v1/',auth);

@@ -52,6 +52,11 @@ const SavedAddress = () => {
 
                 <div class="info-box">
                   <p>
+                    <b className="info-box-p-b">Name</b>
+                    <b className="info-box-p-b2">:</b>
+                    <span className="info-box-p-span">{address?.name || "not given"}</span>
+                  </p>
+                  <p>
                     <b className="info-box-p-b">Phone</b>
                     <b className="info-box-p-b2">:</b>
                     <span className="info-box-p-span">{address.phoneNo}</span>

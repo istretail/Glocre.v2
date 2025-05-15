@@ -13,6 +13,9 @@ import {
   updateProfileRequest,
   updateProfileSuccess,
   updateProfileFail,
+  updateUserProfileRequest,
+  updateUserProfileSuccess,
+  updateUserProfileFail,
   updatePasswordRequest,
   updatePasswordSuccess,
   updatePasswordFail,
@@ -101,7 +104,7 @@ export const login = (email, password) => async (dispatch) => {
 };
 export const clearAuthError = () => {
   return (dispatch) => {
-    dispatch({ type: 'clearError' });
+    dispatch(clearError());
   };
 };
 
@@ -124,6 +127,7 @@ export const register = (userData) => async (dispatch) => {
     return response; // Return the entire response object
   } catch (error) {
     dispatch(registerFail(error.response.data.message));
+    toast.error(error.response.data.message)
     throw error; // Re-throw the error to handle it in the component
   }
 };
@@ -161,12 +165,27 @@ export const logout = async (dispatch) => {
 
 export const updateProfile = (userData) => async (dispatch) => {
   try {
-    // console.log(userData);
+    // console.log("User data",userData);
     dispatch(updateProfileRequest());
-    const { data } = await axios.put(`/api/v1/update`, userData);
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    const { data } = await axios.put('/api/v1/update', userData, config);
     dispatch(updateProfileSuccess(data));
   } catch (error) {
     dispatch(updateProfileFail(error.response.data.message));
+  }
+};
+export const updateUserProfile = (userData) => async (dispatch) => {
+  try {
+    // console.log("User data",userData);
+    dispatch(updateUserProfileRequest());
+    const { data } = await axios.put(`/api/v1/me/update`, userData);
+    dispatch(updateUserProfileSuccess(data));
+  } catch (error) {
+    dispatch(updateUserProfileFail(error.response.data.message));
   }
 };
 
@@ -182,6 +201,8 @@ export const updatePassword = (formData) => async (dispatch) => {
     dispatch(updatePasswordSuccess());
   } catch (error) {
     dispatch(updatePasswordFail(error.response.data.message));
+    toast.error(error.response.data.message)
+    // console.log(error.response.data.message)
   }
 };
 
@@ -271,6 +292,7 @@ export const updateUser = (id, formData) => async (dispatch) => {
     dispatch(updateUserFail(error.response.data.message));
   }
 };
+
 export const verifyEmail = (token) => async (dispatch) => {
   try {
     dispatch(verifyEmailRequest());
@@ -457,5 +479,6 @@ export const resendVerification = (email) => async (dispatch) => {
     toast.success(response.data.message);
   } catch (error) {
     dispatch(resendVerificationFail(error.response.data.message));
+    toast.error(error.response.data.message)
   }
 };

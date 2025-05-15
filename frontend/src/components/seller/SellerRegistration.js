@@ -97,7 +97,7 @@ const SellerRegistration = () => {
 
     if (
       userData.businessContactNumber &&
-      !/^\d{10}$/.test(userData.businessContactNumber)
+      !/^\+91\d{10}$/.test(userData.businessContactNumber)
     ) {
       newErrors.businessContactNumber = "Invalid Contact Number (10 digits)";
     }
@@ -190,290 +190,360 @@ const SellerRegistration = () => {
 
   return (
     <>
-      <section className="seller-create-product-glc">
-        <div className="row container-fluid">
-          <div className="col-12 col-md-2">
-            {/* <SellerSidebar /> */}
-          </div>
-
-          <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
-            <Link to="/">
-              <div className="mobile-logo">
-                <img src={require('../../images/procure-g-logo.png')} />
-              </div>
-            </Link>
-
-
-            <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
-              SELLER REGISTRATION
-            </h3>
+      <section className="seller-create-product-glc container">
 
 
 
-            {isSubmitting && <Loader />}
-            <form onSubmit={handleSubmit}>
+        <div className="col-12 newprod-right-glc  pt-3 pb-3">
 
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Name :"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      type="text"
-                      required
-                      placeholder="Your name"
-                      id="name"
-                      value={userData.name}
-                      readOnly
-                    />
-                  </div>
-                </div>
+          <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
+            SELLER REGISTRATION
+          </h3>
 
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Last Name:"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      type="text"
-                      required
-                      placeholder="Your name"
-                      id="name"
-                      value={userData.lastName}
-                      readOnly
-                    />
-                  </div>
+
+
+          {isSubmitting && <Loader />}
+          <form onSubmit={handleSubmit}>
+
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Name :"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    type="text"
+                    required
+                    placeholder="Your name"
+                    id="name"
+                    value={userData.name}
+                    readOnly
+                  />
                 </div>
               </div>
 
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Email:"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      type="text"
-                      required
-                      placeholder="Your name"
-                      id="name"
-                      value={userData.email}
-                      readOnly
-                    />
-                  </div>
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Last Name:"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    type="text"
+                    required
+                    placeholder="Your name"
+                    id="name"
+                    value={userData.lastName}
+                    readOnly
+                  />
                 </div>
-
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="GST Number:"
-                      variant="outlined"
-                      id="gstNumber_field"
-                      className="w-100"
-                      size="small"
-                      required
-                      name="gstNumber"
-                      placeholder="GST Number"
-                      value={userData.gstNumber}
-                      onChange={handleChange}
-                    />
-                    {errors.gstNumber && <p className="error">{errors.gstNumber}</p>}
-                  </div>
-                </div>
-
               </div>
+            </div>
 
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Business Name:"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      name="businessName"
-                      required
-                      placeholder="Business Name"
-                      id="businessName_field"
-                      value={userData.businessName}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Business Email:"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      type="email"
-                      required
-                      name="businessEmail"
-                      placeholder="Business Email"
-                      id="businessEmail"
-                      value={userData.businessEmail}
-                      onChange={handleChange}
-                    />
-                  </div>
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Email:"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    type="text"
+                    required
+                    placeholder="Your name"
+                    id="name"
+                    value={userData.email}
+                    readOnly
+                  />
                 </div>
               </div>
 
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Business Contact Number:"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      type="number"
-                      required
-                      name="businessContactNumber"
-                      placeholder="Business Name"
-                      id="businessContactNumber"
-                      value={userData.businessContactNumber}
-                      onChange={handleChange}
-                    />
-                    {errors.businessContactNumber && (
-                      <p className="error">{errors.businessContactNumber}</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="col-md-6">
-                  {/* pincode */}
-                  <div className="form-group">
-                    <TextField
-                      label="PIN Code"
-                      className="w-100"
-                      name="postalCode"
-                      size="small"
-                      type="number"
-                      value={userData.postalCode}
-                      onChange={(e) => {
-                        handleChange(e);
-                        handlePincodeChange(e);
-                      }}
-                      required
-                    />
-
-                  </div>
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="GST Number:"
+                    variant="outlined"
+                    id="gstNumber_field"
+                    className="w-100"
+                    size="small"
+                    required
+                    name="gstNumber"
+                    placeholder="GST Number"
+                    value={userData.gstNumber}
+                    onChange={handleChange}
+                    onKeyDown={(e) => {
+                      // Prevent space from being typed
+                      if (e.key === ' ') {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+                  {errors.gstNumber && <p className="error text-danger">{errors.gstNumber}</p>}
                 </div>
               </div>
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="Business Address:"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      type="text"
-                      required
-                      placeholder="Flat/ building name and number"
-                      id="name"
-                      onChange={handleChange}
-                      name="address"
-                      value={userData.address}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <div className="custom-select-wrapper">
-                      <select
-                        name="addressLine"
-                        className="form-control custom-select"
-                        value={userData.addressLine}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Locality *</option>
-                        {localities.map((locality, index) => (
-                          <option key={index} value={locality}>{locality}</option>
-                        ))}
-                      </select>
 
-                    </div>
+            </div>
 
-                  </div>
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Business Name:"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    name="businessName"
+                    required
+                    placeholder="Business Name"
+                    id="businessName_field"
+                    value={userData.businessName}
+                    onChange={handleChange}
+                    onKeyDown={(e) => {
+                      const key = e.key;
+                      const isLetter = /^[a-zA-Z]$/.test(key);
+                      const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
+
+                      if (!isLetter && !isAllowedKey) {
+                        e.preventDefault(); // Block non-letters and non-control keys
+                      }
+
+                      // Prevent space at the start
+                      if (key === ' ' && e.target.selectionStart === 0) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </div>
               </div>
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="City"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      name="City"
-                      value={userData.city}
-                      readOnly
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <TextField
-                      label="State"
-                      variant="outlined"
-                      className="w-100"
-                      size="small"
-                      name="state"
-                      value={userData.state}
-                      readOnly
-                      required
-                    />
-                  </div>
+
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Business Email:"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    type="email"
+                    required
+                    name="businessEmail"
+                    placeholder="Business Email"
+                    id="businessEmail"
+                    value={userData.businessEmail}
+                    onChange={(e) => {
+                      // Remove any spaces from the input
+                      const cleanedValue = e.target.value.replace(/\s/g, '');
+                      handleChange({ target: { name: 'businessEmail', value: cleanedValue } });
+                    }}
+                    onKeyDown={(e) => {
+                      // Prevent space from being typed
+                      if (e.key === ' ') {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+
                 </div>
               </div>
-              <div className="row mt-3 mb-4">
-                <div className="col-md-6">
-                  <div className="form-group">
+            </div>
+
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Business Contact Number:"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    type="text"
+                    required
+                    name="businessContactNumber"
+                    placeholder="Eg: +919876543210"
+                    id="businessContactNumber"
+                    value={userData.businessContactNumber}
+                    inputProps={{ maxLength: 13 }} // +91 + 10 digits = 13
+                    onChange={(e) => {
+                      let value = e.target.value;
+
+                      // Ensure it always starts with +91
+                      if (!value.startsWith("+91")) {
+                        value = "+91" + value.replace(/\D/g, ""); // remove non-digits
+                      }
+
+                      // Get only digits after +91
+                      const digits = value.replace("+91", "").replace(/\D/g, "");
+
+                      // Limit to 10 digits
+                      if (digits.length > 10) {
+                        value = "+91" + digits.substring(0, 10);
+                      } else {
+                        value = "+91" + digits;
+                      }
+
+                      handleChange({ target: { name: "businessContactNumber", value } });
+                    }}
+                    onKeyDown={(e) => {
+                      // Prevent space or deletion of +91
+                      if (e.key === ' ') e.preventDefault();
+
+                      if (
+                        (e.target.selectionStart <= 3 && ['Backspace', 'Delete'].includes(e.key)) ||
+                        (e.ctrlKey && ['x', 'X'].includes(e.key)) // Prevent cutting +91
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+
+                  {errors.businessContactNumber && (
+                    <p className="error">{errors.businessContactNumber}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                {/* pincode */}
+                <div className="form-group">
+                  <TextField
+                    label="PIN Code"
+                    className="w-100"
+                    name="postalCode"
+                    size="small"
+                    type="text" // Change this
+                    value={userData.postalCode}
+                    required
+                    inputProps={{ maxLength: 6 }}
+                    onChange={(e) => {
+                      // Remove non-digit characters
+                      let value = e.target.value.replace(/\D/g, '');
+
+                      // Limit to 6 digits
+                      if (value.length > 6) {
+                        value = value.slice(0, 6);
+                      }
+
+                      handleChange({ target: { name: "postalCode", value } });
+                      handlePincodeChange({ target: { name: "postalCode", value } });
+                    }}
+                  />
+
+
+                </div>
+              </div>
+            </div>
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="Business Address:"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    type="text"
+                    required
+                    placeholder="Flat/ building name and number"
+                    id="name"
+                    name="address"
+                    value={userData.address}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const sanitizedValue = value.replace(/^\s+/, ''); // Remove leading spaces only
+                      handleChange({ target: { name: 'address', value: sanitizedValue } });
+                    }}
+                  />
+
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="form-group">
+                  <div className="custom-select-wrapper">
                     <select
-                      label="Country *"
-                      variant="outlined"
-                      size="small"
-                      name="state"
-                      id="country_field"
-                      className="form-control"
-                      value={userData.country}
-
+                      name="addressLine"
+                      className="form-control custom-select"
+                      value={userData.addressLine}
+                      onChange={handleChange}
                       required
                     >
-                      {countryList.map((country, i) => (
-                        <option key={i} value={country.name}>
-                          {country.name}
-                        </option>
+                      <option value="">Select Locality *</option>
+                      {localities.map((locality, index) => (
+                        <option key={index} value={locality}>{locality}</option>
                       ))}
                     </select>
+
                   </div>
+
                 </div>
               </div>
-
-              <div class="">
-                <Button
-                  disabled={isSubmitting}
-                  type="submit"
-                  className="btn-g btn-lg w-20 mb-5"
-                  id="shipping_btn"
-                >
-                  SAVE & CONTINUE
-                </Button>
+            </div>
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="City/Town"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    name="City"
+                    value={userData.city}
+                    readOnly
+                    required
+                  />
+                </div>
               </div>
-              {submitError && <p className="error">{submitError}</p>}
+              <div className="col-md-6">
+                <div className="form-group">
+                  <TextField
+                    label="State"
+                    variant="outlined"
+                    className="w-100"
+                    size="small"
+                    name="state"
+                    value={userData.state}
+                    readOnly
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="row mt-3 mb-4">
+              <div className="col-md-6">
+                <div className="form-group">
+                  <select
+                    label="Country *"
+                    variant="outlined"
+                    size="small"
+                    name="state"
+                    id="country_field"
+                    className="form-control"
+                    value={userData.country}
 
-            </form>
-          </div>
+                    required
+                  >
+                    {countryList.map((country, i) => (
+                      <option key={i} value={country.name}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="">
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                className="btn-g btn-lg w-20 mb-5"
+                id="shipping_btn"
+              >
+                SAVE & CONTINUE
+              </Button>
+            </div>
+            {submitError && <p className="error">{submitError}</p>}
+
+          </form>
         </div>
+
       </section>
     </>
   );

@@ -89,20 +89,29 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
         "Verification email sent. Please verify your email to complete registration.",
     });
   } catch (error) {
-    const existingUser = await User.findOne({ email });
+    // Check if it's a Mongoose validation error
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages[0], // return only the first message
+      });
+    }
 
-    if (existingUser) {
+    // Handle duplicate email
+    if (error.code === 11000 && error.keyPattern?.email) {
       return res.status(400).json({
         success: false,
         message: "Email already exists.",
       });
-    } else {
-      res.status(401).json({
-        success: false,
-        message: error.message,
-      });
     }
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
+  
 });
 
 exports.resendVerificationEmail = catchAsyncError(async (req, res, next) => {
@@ -365,17 +374,34 @@ exports.getUserProfile = catchAsyncError(async (req, res, next) => {
 
 //Change Password  - api/v1/password/change
 exports.changePassword = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.user.id).select("+password");
-  //check old password
-  if (!(await user.isValidPassword(req.body.oldPassword))) {
-    return next(new ErrorHandler("Old password is incorrect", 401));
+  try {
+    const user = await User.findById(req.user.id).select("+password");
+
+    // Check old password
+    if (!(await user.isValidPassword(req.body.oldPassword))) {
+      return next(new ErrorHandler("Old password is incorrect", 401));
+    }
+
+    // Assign new password
+    user.password = req.body.password;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages[0], // return only the first message
+      });
+    }
+
+    // For all other errors, pass to global error handler
+    return next(error);
   }
-  //assigning new password
-  user.password = req.body.password;
-  await user.save();
-  res.status(200).json({
-    success: true,
-  });
 });
 
 //Update Profile - /api/v1/update
@@ -532,6 +558,32 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     message: "otp sent to you number"
   });
 });
+// User: Update Profile - PUT /api/v1/me/update
+exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
+  const { name, lastName } = req.body;
+console.log("request body:", req.body)
+  const newUserData = { name, lastName };
+
+  // If avatar is being uploaded, handle file processing
+
+
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!user) {
+    return next(new ErrorHandler('User not found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Profile updated successfully',
+    user,
+  });
+});
+
+
 
 exports.verifySellerOtp = catchAsyncError(async (req, res, next) => {
   const { otpCode } = req.body;
@@ -756,6 +808,7 @@ exports.verifyAddressOtp = catchAsyncError(async (req, res, next) => {
 
 //    PUT /api/v1/users/savedAddresses/:id
 exports.updateSavedAddress = catchAsyncError(async (req, res, next) => {
+  // console.log(req.body)
   const userId = req.user.id;
   const user = await User.findById(userId);
 
@@ -772,6 +825,7 @@ exports.updateSavedAddress = catchAsyncError(async (req, res, next) => {
 
   // Validate and sanitize the data from the request body before updating the saved address
   const updatedAddressData = {
+    name:req.body.name,
     address: req.body.address,
     addressLine: req.body.addressLine,
     city: req.body.city,

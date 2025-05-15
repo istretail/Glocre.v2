@@ -9,6 +9,12 @@ const sendEmail = require('../utils/email');
 const pincodes = require("../config/pincodes")
 //Create New Order - api/v1/order/new
 
+async function updateStock(productId, quantity) {
+    const product = await Product.findById(productId);
+    product.stock = product.stock - quantity;
+    await product.save({ validateBeforeSave: false });
+}
+  
 
 exports.newOrder = catchAsyncError(async (req, res, next) => {
     const {
@@ -46,32 +52,31 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
     const adminEmail = process.env.ADMIN_EMAIL;
 
     const emailContent = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
-      <div style="text-align: center;">
-        <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+        <div style="text-align: center;">
+          <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+        </div>
+  
+        <h2 style="color: #2f4d2a;">Order Summary</h2>
+  
+        <p style="color: #8c8c8c;"><strong>Customer:</strong> ${userName}</p>
+        <p style="color: #8c8c8c;"><strong>Email:</strong> ${userEmail}</p>
+        <p style="color: #8c8c8c;"><strong>Total Amount:</strong> ₹${totalPrice}</p>
+        <p style="color: #8c8c8c;"><strong>Estimated Delivery:</strong> ${estimatedDelivery.toDateString()}</p>
+  
+        <h3 style="color: #2f4d2a;">Items Ordered</h3>
+        <ul style="color: #8c8c8c; padding-left: 20px;">
+          ${orderItems.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+        </ul>
+  
+        <p style="color: #8c8c8c;">Thank you for shopping with <strong>GLOCRE</strong>!</p>
+  
+        <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+        <p style="font-size: 12px; color: #8c8c8c;">
+          <em>This is an auto-generated email. Please do not reply. For help, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
+        </p>
       </div>
-  
-      <h2 style="color: #2f4d2a;">Order Summary</h2>
-  
-      <p style="color: #8c8c8c;"><strong>Customer:</strong> ${userName}</p>
-      <p style="color: #8c8c8c;"><strong>Email:</strong> ${userEmail}</p>
-      <p style="color: #8c8c8c;"><strong>Total Amount:</strong> ₹${totalPrice}</p>
-      <p style="color: #8c8c8c;"><strong>Estimated Delivery:</strong> ${estimatedDelivery.toDateString()}</p>
-  
-      <h3 style="color: #2f4d2a;">Items Ordered</h3>
-      <ul style="color: #8c8c8c; padding-left: 20px;">
-        ${orderItems.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
-      </ul>
-  
-      <p style="color: #8c8c8c;">Thank you for shopping with <strong>GLOCRE</strong>!</p>
-  
-      <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
-      <p style="font-size: 12px; color: #8c8c8c;">
-        <em>This is an auto-generated email. Please do not reply. For help, contact <a href="mailto:support@glocre.com" style="color: #2f4d2a;">support@glocre.com</a>.</em>
-      </p>
-    </div>
-  `;
-  
+    `;
 
     try {
         // 1. Send to user
@@ -90,24 +95,63 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
             html: `<p>A new order has been placed:</p>` + emailContent,
         });
 
-        // 3. Find all unique seller emails
-        const sellerIds = new Set();
+        // 3. Update stock and prepare seller-specific emails
+        const sellerProductMap = {}; // sellerId => [items]
 
         for (const item of orderItems) {
-            const product = await Product.findById(item.product); // assuming item.product is product ID
-            if (product && product.createdBy) {
-                sellerIds.add(product.createdBy.toString());
+            const product = await Product.findById(item.product);
+
+            if (product) {
+                // Update stock
+                await updateStock(product._id, item.quantity);
+
+                // Group items by seller
+                const sellerId = product.createdBy?.toString();
+                if (sellerId) {
+                    if (!sellerProductMap[sellerId]) sellerProductMap[sellerId] = [];
+                    sellerProductMap[sellerId].push({
+                        name: item.name,
+                        quantity: item.quantity,
+                    });
+                }
             }
         }
 
-        const sellerUsers = await User.find({ _id: { $in: [...sellerIds] } });
+        const sellerIds = Object.keys(sellerProductMap);
+        const sellers = await User.find({ _id: { $in: sellerIds } });
 
-        for (const seller of sellerUsers) {
+        for (const seller of sellers) {
+            const items = sellerProductMap[seller._id.toString()];
+
+            const sellerItemHtml = items
+                .map(i => `<li>${i.name} (x${i.quantity})</li>`)
+                .join('');
+
+            const sellerEmailContent = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff7f0;">
+            <div style="text-align: center;">
+              <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+            </div>
+  
+            <h2 style="color: #2f4d2a;">You Have a New Order</h2>
+            <p style="color: #8c8c8c;"><strong>Customer:</strong> ${userName}</p>
+            <p style="color: #8c8c8c;"><strong>Email:</strong> ${userEmail}</p>
+            <p style="color: #8c8c8c;"><strong>Estimated Delivery:</strong> ${estimatedDelivery.toDateString()}</p>
+  
+            <h3 style="color: #2f4d2a;">Items Ordered</h3>
+            <ul style="color: #8c8c8c; padding-left: 20px;">
+              ${sellerItemHtml}
+            </ul>
+  
+            <p style="color: #8c8c8c;">Please process the order as soon as possible.</p>
+          </div>
+        `;
+
             await sendEmail({
                 fromEmail: "donotreply@glocre.com",
                 email: seller.email,
                 subject: "New Order for Your Product - Glocre",
-                html: `<p>You have a new order for your product(s):</p>` + emailContent,
+                html: sellerEmailContent,
             });
         }
 
@@ -117,6 +161,7 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
 
     res.status(200).json({ success: true, order });
 });
+  
 
 
 //Admin: Update Order / Order Status - api/v1/order/:id
@@ -231,11 +276,7 @@ exports.getSingleOrder = catchAsyncError(async (req, res, next) => {
 });
 
 
-async function updateStock (productId, quantity){
-    const product = await Product.findById(productId);
-    product.stock = product.stock - quantity;
-    product.save({validateBeforeSave: false})
-}
+
 
 //Admin: Delete Order - api/v1/order/:id
 exports.deleteOrder = catchAsyncError(async (req, res, next) => {
@@ -426,9 +467,9 @@ exports.updateOrder = catchAsyncError(async (req, res, next) => {
 
     // If status is "Delivered", update stock and set delivery time
     if (req.body.orderStatus === 'Delivered') {
-        order.orderItems.forEach(async (orderItem) => {
-            await updateStock(orderItem.product, orderItem.quantity);
-        });
+        // order.orderItems.forEach(async (orderItem) => {
+        //     await updateStock(orderItem.product, orderItem.quantity);
+        // });
         order.deliveredAt = Date.now();
 
         emailSubject = `Your order #${order._id} has been delivered`;

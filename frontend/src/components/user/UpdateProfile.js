@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { updateProfile, clearAuthError } from '../../actions/userActions';
+import { updateProfile, clearAuthError, updateUserProfile } from '../../actions/userActions';
 import { clearUpdateProfile } from '../../slices/authSlice';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -13,38 +13,25 @@ export default function UpdateProfile() {
   const { error, user, isUpdated } = useSelector(state => state.authState);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [avatarPreview, setAvatarPreview] = useState('/images/1.jpg');
+  const [lastName, setLastName] = useState('');
+
   const dispatch = useDispatch();
 
-  const onChangeAvatar = e => {
-    const reader = new FileReader();
-    // console.log('file selected');
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setAvatarPreview(reader.result);
-        setAvatar(e.target.files[0]);
-      }
-    };
-    reader.readAsDataURL(e.target.files[0]);
-  };
+
 
   const submitHandler = e => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('avatar', avatar);
-    dispatch(updateProfile(formData));
+    
+    // Instead of FormData
+    dispatch(updateUserProfile({ name, lastName }));
   };
 
   useEffect(() => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
-      if (user.avatar) {
-        setAvatarPreview(user.avatar);
-      }
+      setLastName(user.lastName);
+      
     }
 
     if (isUpdated) {
@@ -105,10 +92,23 @@ export default function UpdateProfile() {
                   id="name_field"
                   type="name"
                   size="small"
-                  name="Password"
+                  name="name"
                   className="w-100 form-control"
                   value={name}
                   onChange={e => setName(e.target.value)}
+                />
+              </div>
+              <div className="form-group mb-5 w-100">
+                <TextField
+                  label="Last Name"
+                  variant="outlined"
+                  id="name_field"
+                  type="name"
+                  size="small"
+                  name="lastName"
+                  className="w-100 form-control"
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
                 />
               </div>
 
@@ -120,11 +120,11 @@ export default function UpdateProfile() {
                   label="email"
                   className="w-100 form-control"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  // onChange={e => setEmail(e.target.value)}
                 />
 
               </div>
-
+    <p className='text-warning'>You can not update e-mail</p>
               <div className="form-group mt-5 mb-4 w-100">
                 <Button type="submit" className="btn btn-g btn-lg w-100">
                   {' '}

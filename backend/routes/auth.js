@@ -42,7 +42,8 @@ const {
    sendOTP,
    verifyOTP,
    sendContactEmail,
-   resendVerificationEmail
+   resendVerificationEmail,
+   updateUserProfile
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
@@ -57,6 +58,7 @@ router.route('/password/reset/:token').post(resetPassword);
 router.route('/myprofile').get(isAuthenticatedUser, getUserProfile);
 router.route('/password/change').put(isAuthenticatedUser, changePassword);
 router.route('/update').put(isAuthenticatedUser, updateProfile);
+router.route('/me/update').put(isAuthenticatedUser, updateUserProfile);
 router.route('/users/address').post(isAuthenticatedUser,createSavedAddress)
 router.route('/users/address/verify-otp').post(isAuthenticatedUser,verifyAddressOtp )
 router.route('/users/savedAddresses/:id').put(isAuthenticatedUser, updateSavedAddress)

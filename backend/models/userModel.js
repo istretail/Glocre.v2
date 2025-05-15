@@ -131,15 +131,17 @@ const userSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: [true, "Please First name"],
+    required: [true, "Please Enter First name"],
+    match: [/^[A-Za-z][A-Za-z\s]*$/, "Name should not start with a space and must contain only letters"],
   },
   lastName: {
     type: String,
-    required: [true, "Please Last name"],
-  },
+    required: [true, "Please Enter Last name"],
+    match: [/^[A-Za-z][A-Za-z\s]*$/, "Last name should not start with a space and must contain only letters"],
+  },  
   email: {
     type: String,
-    required: [true, "Please enter email"],
+    required: [true, "Please Enter enter email"],
     unique: true,
     validate: {
       validator: isEmail,
@@ -149,12 +151,12 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please enter password"],
-    // minlength: [8, "Password must be at least 8 characters"],
-    // maxlength: [16, "Password cannot exceed 16 characters"],
-    // match: [
-    //   /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/,
-    //   "Password must contain at least one uppercase letter and one special character"
-    // ],
+    minlength: [8, "Password must be at least 8 characters"],
+    maxlength: [16, "Password cannot exceed 16 characters"],
+    match: [
+      /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/,
+      "Password must contain at least one uppercase letter and one special character"
+    ],
     select: false,
   },
   avatar: {

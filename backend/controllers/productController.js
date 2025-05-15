@@ -10,17 +10,22 @@ const s3 = require('../config/s3');
 exports.getProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 100;
 
-  // Validate and sanitize limit
   let limit = parseInt(req.query.limit);
   if (isNaN(limit) || limit <= 0) {
-    limit = resPerPage; // Fallback to default
+    limit = resPerPage;
   }
 
   let buildQuery = () => {
     return new APIFeatures(
       Product.find({
-        $and: [{ status: "approved" },
-          // { isArchived: false} 
+        $and: [
+          { status: "approved" },
+          {
+            $or: [
+              { isArchived: { $exists: false } },
+              { isArchived: false }
+            ]
+          }
         ]
       }),
       req.query
@@ -29,12 +34,19 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
       .filter();
   };
 
-
   const filteredProductsCount = await buildQuery().query.countDocuments({});
   const totalProductsCount = await Product.countDocuments({
-    status: "approved",
-    // isArchived: false,
+    $and: [
+      { status: "approved" },
+      {
+        $or: [
+          { isArchived: { $exists: false } },
+          { isArchived: false }
+        ]
+      }
+    ]
   });
+
   const productsCount =
     filteredProductsCount !== totalProductsCount
       ? filteredProductsCount
@@ -42,15 +54,14 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
 
   const products = await buildQuery().paginate(limit).query.sort("-createdAt");
 
-
   res.status(200).json({
     success: true,
     count: productsCount,
-
     resPerPage: limit,
     products,
   });
 });
+
 
 //Create Product - /api/v1/products/new
 exports.newProduct = catchAsyncError(async (req, res, next) => {

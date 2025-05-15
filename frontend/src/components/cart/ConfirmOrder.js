@@ -163,9 +163,8 @@ export default function ConfirmOrder() {
                   <b className="info-box-p-b">Address</b>{" "}
                   <b className="info-box-p-b2">:</b>{" "}
                   <span className="info-box-p-span">
-                    {shippingInfo.address}, {shippingInfo.addressLine},{" "}
-                    {shippingInfo.city}, {shippingInfo.postalCode},{" "}
-                    {shippingInfo.state}, {shippingInfo.country}
+                    {shippingInfo.address},{shippingInfo.addressLine},{shippingInfo.city},{shippingInfo.postalCode},
+                    {shippingInfo.state},{shippingInfo.country}
                   </span>
                 </p>
               </div>

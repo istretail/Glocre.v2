@@ -80,7 +80,7 @@ export default function Shipping() {
   const { savedAddresses = [] } = useSelector((state) => state.userState);
   const { user } = useSelector((state) => state.authState);
   const [address, setAddress] = useState(shippingInfo.address || "");
-  const [addressLine, setAddressLine] = useState(shippingInfo.addressLine || "",);
+  const [addressLine, setAddressLine] = useState(shippingInfo.addressLine || "");
   const [city, setCity] = useState(shippingInfo.city || "");
   const [name, setName] = useState(user.name || "");
   const [phoneNo, setPhoneNo] = useState(shippingInfo.phoneNo || "");
@@ -93,29 +93,55 @@ export default function Shipping() {
   const [gstNumber, setGstNumber] = useState("");
   const [organizationName, setOrganizationName] = useState("");
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
-  const [billingAddress, setBillingAddress] = useState(billingInfo.address || "",);
-  const [billingAddressLine, setBillingAddressLine] = useState(billingInfo.addressLine || "",);
+  const [billingAddress, setBillingAddress] = useState(billingInfo.address || "");
+  const [billingAddressLine, setBillingAddressLine] = useState(billingInfo.addressLine || "");
   const [billingCity, setBillingCity] = useState(billingInfo.city || "");
-  const [billingPhoneNo, setBillingPhoneNo] = useState(billingInfo.phoneNo || "",);
-  const [billingCountry, setBillingCountry] = useState(billingInfo.country || "",);
+  const [billingPhoneNo, setBillingPhoneNo] = useState(billingInfo.phoneNo || "");
+  const [billingCountry, setBillingCountry] = useState(billingInfo.country || "");
   const [billingState, setBillingState] = useState(billingInfo.state || "");
-  const [billingPostalCode, setBillingPostalCode] = useState(billingInfo.postalCode || "",);
+  const [billingPostalCode, setBillingPostalCode] = useState(billingInfo.postalCode || "");
   const [billingLocalities, setBillingLocalities] = useState([]);
   const [inputotpCode, setInputOtpCode] = useState(""); // State for OTP
   // const [addressId, setAddressId] = useState(null);
   const [showOtpModal, setShowOtpModal] = useState(false);
+  const [gstError, setGstError] = useState(false);
+  const [gstHelperText, setGstHelperText] = useState('');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const countryList = Object.values(countries);
+
+  
   useEffect(() => {
     dispatch(getAllSavedAddresses());
+    fetchPostalCodeDetails(shippingInfo.postalCode)
   }, [dispatch]);
+
+  const validateGst = (value) => {
+    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    if (value === '') {
+      setGstError(false);
+      setGstHelperText('');
+    } else if (!gstRegex.test(value.toUpperCase())) {
+      setGstError(true);
+      setGstHelperText('Invalid GST format');
+    } else {
+      setGstError(false);
+      setGstHelperText('');
+    }
+  };
+
+  const handleGstChange = (e) => {
+    const value = e.target.value.toUpperCase();
+    setGstNumber(value);
+    validateGst(value);
+  };
 
   const submitHandler = useCallback(
     async (e) => {
       e.preventDefault();
       setLoading(true);
-
+      
       // Validate shipping address
       const isShippingPostalValid = await checkPostalCodeExists(postalCode);
       if (
@@ -149,6 +175,12 @@ export default function Shipping() {
           !isBillingPostalValid
         ) {
           toast.error("Please fill all required billing information correctly");
+          setLoading(false);
+          return;
+        }
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        if (gstNumber && !gstRegex.test(gstNumber.toUpperCase())) {
+          toast.error("Invalid GST number format");
           setLoading(false);
           return;
         }
@@ -252,8 +284,6 @@ export default function Shipping() {
     ]
   );
 
-
-
   const handleOtpSubmit = async () => {
     if (inputotpCode.length !== 6) {
       toast.error("OTP must be 6 digits");
@@ -281,39 +311,46 @@ export default function Shipping() {
   };
 
   const handlePincodeChange = useCallback(
-    async (e, setPostalCode, setLocalities, setCity, setState, setCountry) => {
+    async (e, setPostalCode, setLocalities, setCity, setState, setCountry, setAddressLine) => {
       const postalCode = e.target.value;
       setPostalCode(postalCode);
+
       if (postalCode.length === 6) {
         try {
           const data = await fetchPostalCodeDetails(postalCode);
           if (data && data[0]?.PostOffice?.length > 0) {
             const offices = data[0].PostOffice;
-            setLocalities(offices.map((office) => office.Name));
+            const localityNames = offices.map((office) => office.Name);
+            setLocalities(localityNames);
             setCity(offices[0].Name);
             setState(offices[0].State);
             setCountry(offices[0].Country);
+            setAddressLine(localityNames[0]); 
           } else {
             toast.error("Invalid pin code");
           }
         } catch (error) {
           console.error("Error fetching pin code details:", error);
-          toast.error("Error fetching pin code details");
+          // toast.error("Error fetching pin code details");
         }
       }
     },
-    [],
+    []
   );
+  
   const handleAddressSelect = useCallback(
     (selectedAddressId) => {
       setSelectedAddress(selectedAddressId);
       const selected = savedAddresses.find(
         (addr) => addr._id === selectedAddressId,
       );
+
+      // console.log("Selected address:", selected); 
+
       if (selected) {
         setName(selected.name);
         setAddress(selected.address);
-        setAddressLine(selected.addressLine);
+        setAddressLine(selected.addressLine || ""); // default to "" if undefined
         setCity(selected.city);
         setPhoneNo(selected.phoneNo);
         setPostalCode(selected.postalCode);
@@ -323,6 +360,15 @@ export default function Shipping() {
     },
     [savedAddresses],
   );
+  useEffect(() => {
+    if (addressLine && !localities.includes(addressLine)) {
+      setLocalities((prev) => [...prev, addressLine]);
+    }
+    if (billingAddressLine && !localities.includes(billingAddressLine)) {
+      setBillingLocalities((prev) => [...prev, billingAddressLine]);
+    }
+  }, [addressLine]);
+  
   useEffect(() => {
     const startTime = Date.now();
     return () => {
@@ -487,7 +533,23 @@ export default function Shipping() {
                               required
                               placeholder="Your name"
                               id="name"
+                              inputProps={{ maxLength: 25 }}
                               onChange={(e) => setName(e.target.value)}
+
+                              onKeyDown={(e) => {
+                                const key = e.key;
+                                const isLetter = /^[a-zA-Z]$/.test(key);
+                                const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
+
+                                if (!isLetter && !isAllowedKey) {
+                                  e.preventDefault(); // Block non-letters and non-control keys
+                                }
+
+                                // Prevent space at the start
+                                if (key === ' ' && e.target.selectionStart === 0) {
+                                  e.preventDefault();
+                                }
+                              }}
                             />
                           </div>
                         </div>
@@ -506,11 +568,41 @@ export default function Shipping() {
                               type="text"
                               value={phoneNo}
                               required
-                              placeholder="Eg:+91987654321"
+                              placeholder="Eg: +919876543210"
                               id="phone_field"
-                              onChange={(e) => setPhoneNo(e.target.value)}
-                              maxLength={13}
+                              inputProps={{ maxLength: 13 }} // +91 + 10 digits = 13 characters total
+                              onChange={(e) => {
+                                let value = e.target.value;
+
+                                // Ensure it always starts with +91
+                                if (!value.startsWith("+91")) {
+                                  value = "+91" + value.replace(/\D/g, ''); // Remove non-digits
+                                }
+
+                                // Remove +91 for counting only the 10-digit number
+                                const digitsOnly = value.replace("+91", "").replace(/\D/g, "");
+
+                                // Limit to 10 digits after +91
+                                if (digitsOnly.length > 10) {
+                                  value = "+91" + digitsOnly.substring(0, 10);
+                                } else {
+                                  value = "+91" + digitsOnly;
+                                }
+
+                                setPhoneNo(value);
+                              }}
+                              onKeyDown={(e) => {
+                                // Prevent space or deletion of +91
+                                if (e.key === ' ') e.preventDefault();
+                                if (
+                                  (e.target.selectionStart <= 3 && ['Backspace', 'Delete'].includes(e.key)) ||
+                                  (e.ctrlKey && ['x', 'X'].includes(e.key)) // Prevent Ctrl+X from cutting +91
+                                ) {
+                                  e.preventDefault();
+                                }
+                              }}
                             />
+
                           </div>
                         </div>
 
@@ -523,22 +615,29 @@ export default function Shipping() {
                               variant="outlined"
                               className="w-100"
                               size="small"
+                              type="text" 
                               name="pincode"
                               placeholder="Pincode"
                               value={postalCode}
-                              onChange={(e) =>
-                                handlePincodeChange(
-                                  e,
-                                  setPostalCode,
-                                  setLocalities,
-                                  setCity,
-                                  setState,
-                                  setCountry,
-                                )
-                              }
+                              onChange={(e) => {
+                                const sanitized = e.target.value.replace(/\D/g, "").slice(0, 6); // Only digits, max 6
+                                const fakeEvent = { ...e, target: { ...e.target, value: sanitized } };
+                                handlePincodeChange(fakeEvent, setPostalCode, setLocalities, setCity, setState, setCountry, setAddressLine);
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === ' ') {
+                                  e.preventDefault(); // Prevent space
+                                }
+                              }}
                               required
-                              maxLength={6}
+                              inputProps={{
+                                inputMode: 'numeric', // shows number keyboard on mobile
+                                pattern: '[0-9]*',
+                                maxLength: 6,
+                              }}
                             />
+
+
                           </div>
                         </div>
                       </div>
@@ -555,7 +654,11 @@ export default function Shipping() {
                               size="small"
                               name="streetAddressLine1"
                               value={address}
-                              onChange={(e) => setAddress(e.target.value)}
+                              inputProps={{ maxLength: 50 }}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces only
+                                setAddress(value)
+                              }}
                               required
                             />
                           </div>
@@ -582,6 +685,7 @@ export default function Shipping() {
                               </select>
                             </div>
 
+
                           </div>
                         </div>
 
@@ -589,7 +693,7 @@ export default function Shipping() {
                         <div className="col-md-6">
                           <div className="form-group">
                             <TextField
-                              label="City"
+                              label="City/Town"
                               variant="outlined"
                               className="w-100"
                               size="small"
@@ -629,7 +733,7 @@ export default function Shipping() {
                               id="country_field"
                               className="form-control"
                               value={country}
-                              onChange={(e) => setCountry(e.target.value)}
+
                               required
                             >
                               {countryList.map((country, i) => (
@@ -681,24 +785,45 @@ export default function Shipping() {
                         required
                         value={billingName}
                         id="billing_name_field"
-                        onChange={(e) => setBillingName(e.target.value)}
-                        maxLength={13}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces only
+                          setBillingName(value);
+                        }}
+                        inputProps={{ maxLength: 40 }}
+                        onKeyDown={(e) => {
+                          const key = e.key;
+                          const isLetter = /^[a-zA-Z]$/.test(key);
+                          const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
+
+                          if (!isLetter && !isAllowedKey) {
+                            e.preventDefault(); // Block non-letters and non-control keys
+                          }
+
+                          // Prevent space at the start
+                          if (key === ' ' && e.target.selectionStart === 0) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                     <div className="col-md-6">
-                      {/* Billing name */}
-                      <TextField
-                        label="GST Number"
-                        variant="outlined"
-                        className="w-100"
-                        size="small"
-                        type="text"
-                        value={gstNumber}
-                        required
-                        placeholder="Eg:ABCDE1234F"
-                        id="gst_field"
-                        onChange={(e) => setGstNumber(e.target.value)}
-                      />
+                     
+                     <TextField
+                             label="GST Number"
+                             variant="outlined"
+                             className="w-100"
+                             size="small"
+                             type="text"
+                             value={gstNumber}
+                             
+                             placeholder="Eg: 22ABCDE1234F1Z5"
+                             id="gst_field"
+                             onChange={handleGstChange}
+                            //  error={gstError}
+                             helperText={gstHelperText}
+                             inputProps={{ maxLength: 15 }}
+                           />
+                      
                     </div>
 
                   </div>
@@ -711,10 +836,28 @@ export default function Shipping() {
                         className="w-100"
                         size="small"
                         type="text"
-                        required
+                        
                         value={organizationName}
+                        inputProps={{ maxLength: 40 }}
                         id="organization_field"
-                        onChange={(e) => setOrganizationName(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/^\s+/, ""); 
+                          setOrganizationName(value)}
+                        }
+                        onKeyDown={(e) => {
+                          const key = e.key;
+                          const isLetter = /^[a-zA-Z]$/.test(key);
+                          const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
+
+                          if (!isLetter && !isAllowedKey) {
+                            e.preventDefault(); // Block non-letters and non-control keys
+                          }
+
+                          // Prevent space at the start
+                          if (key === ' ' && e.target.selectionStart === 0) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -722,15 +865,49 @@ export default function Shipping() {
                     <div className="col-md-6">
                       {/* phone no */}
                       <div className="form-group">
-                        <input
+                        <TextField
+                          label="Billing Phone Number"
+                          variant="outlined"
+                          className="w-100"
+                          size="small"
                           type="text"
-                          id="billing_phone_field"
-                          className="form-control"
                           value={billingPhoneNo}
-                          onChange={(e) => setBillingPhoneNo(e.target.value)}
                           required
-                          maxLength={13}
+                          placeholder="Eg: +919876543210"
+                          id="billing_phone_field"
+                          inputProps={{ maxLength: 13 }} // +91 + 10 digits
+                          onChange={(e) => {
+                            let value = e.target.value;
+
+                            // Always start with +91
+                            if (!value.startsWith("+91")) {
+                              value = "+91" + value.replace(/\D/g, "");
+                            }
+
+                            // Remove +91 for processing
+                            const digitsOnly = value.replace("+91", "").replace(/\D/g, "");
+
+                            // Limit to 10 digits after +91
+                            if (digitsOnly.length > 10) {
+                              value = "+91" + digitsOnly.substring(0, 10);
+                            } else {
+                              value = "+91" + digitsOnly;
+                            }
+
+                            setBillingPhoneNo(value);
+                          }}
+                          onKeyDown={(e) => {
+                            // Prevent space or deletion of +91
+                            if (e.key === ' ') e.preventDefault();
+                            if (
+                              (e.target.selectionStart <= 3 && ['Backspace', 'Delete'].includes(e.key)) ||
+                              (e.ctrlKey && ['x', 'X'].includes(e.key)) // Prevent Ctrl+X on prefix
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
+
                       </div>
                     </div>
 
@@ -743,22 +920,26 @@ export default function Shipping() {
                           variant="outlined"
                           className="w-100"
                           size="small"
-                          name="pincode"  
+                          name="pincode"
                           placeholder="Pincode"
                           value={billingPostalCode}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const sanitizedValue = e.target.value.replace(/\D/g, "").slice(0, 6);
+                            const fakeEvent = { ...e, target: { ...e.target, value: sanitizedValue } };
                             handlePincodeChange(
-                              e,
+                              fakeEvent,
                               setBillingPostalCode,
                               setBillingLocalities,
                               setBillingCity,
                               setBillingState,
                               setBillingCountry,
-                            )
-                          }
+                              setBillingAddressLine
+                            );
+                          }}
                           required
-                          maxLength={6}
+                          inputProps={{ maxLength: 6 }}
                         />
+
                       </div>
                     </div>
                   </div>
@@ -775,7 +956,11 @@ export default function Shipping() {
                           size="small"
                           name="streetAddressLine1"
                           value={billingAddress}
-                          onChange={(e) => setBillingAddress(e.target.value)}
+                          inputProps={{ maxLength: 40 }}
+                           onChange={(e) => {
+                              const value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces only
+                             setBillingAddress(value)
+                            }}
                           required
                         />
                       </div>
@@ -795,6 +980,7 @@ export default function Shipping() {
                               setBillingAddressLine(e.target.value)
                             }
                             required
+                            disabled={billingLocalities.length === 0}
                           >
                             <option value="" style={{ fontSize: "15px" }}>Select Locality *</option>
                             {billingLocalities.map((locality, index) => (
@@ -813,12 +999,12 @@ export default function Shipping() {
                     <div className="col-md-6">
                       <div className="form-group">
                         <TextField
-                          label="City"
+                          label="City/Town"
                           id="billing_city_field"
                           variant="outlined"
                           className="w-100"
                           size="small"
-                          name="City"
+                          name="City "
                           value={billingCity}
                           readOnly
                           required
@@ -855,7 +1041,7 @@ export default function Shipping() {
                           id="country_field"
                           className="form-control"
                           value={billingCountry}
-                          onChange={(e) => setBillingCountry(e.target.value)}
+                         
                           required
                         >
                           {countryList.map((country, i) => (

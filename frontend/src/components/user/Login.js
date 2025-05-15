@@ -12,6 +12,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { Button } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import Loader from "../layouts/Loader";
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -37,7 +38,7 @@ export default function Login() {
     }
 
     if (error) {
-          setTimeout(() => dispatch(clearAuthError()), 1000);
+      setTimeout(() => dispatch(clearAuthError()), 1000);
     }
   }, [error, isAuthenticated, dispatch, navigate, redirect]);
 
@@ -45,104 +46,113 @@ export default function Login() {
   return (
     <>
       <MetaData title={`Login`} />
-
-      <section className="signIn mb-5">
-        <div class="breadcrumbWrapper">
-          <div class="container-fluid">
-            <ul class="breadcrumb breadcrumb2 mb-0">
-              <li>
-                <Link to="/">Home</Link>{' '}
-              </li>
-              <li>Sign In</li>
-            </ul>
+      {loading ? <Loader /> :
+        <section className="signIn mb-5">
+          <div class="breadcrumbWrapper">
+            <div class="container-fluid">
+              <ul class="breadcrumb breadcrumb2 mb-0">
+                <li>
+                  <Link to="/">Home</Link>{' '}
+                </li>
+                <li>Sign In</li>
+              </ul>
+            </div>
           </div>
-        </div>
 
-        <div className="loginWrapper">
-          <div className="card shadow">
-            <Backdrop
-              sx={{ color: '#000', zIndex: theme => theme.zIndex.drawer + 1 }}
-              open={loading}
-              className="formLoader"
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
+          <div className="loginWrapper">
+            <div className="card shadow">
+              <Backdrop
+                sx={{ color: '#000', zIndex: theme => theme.zIndex.drawer + 1 }}
+                open={loading}
+                className="formLoader"
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
 
-            <h3>Sign In</h3>
-            <form
-              className="mt-4"
-              encType="multipart/form-data"
-              onSubmit={submitHandler}
-            >
-              <div className="form-group mb-4 w-100">
-                <TextField
-                  id="email"
-                  type="email"
-                  name="email"
-                  label="Email"
-                  className="w-100"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="form-group mb-4 w-100">
-                <div className="position-relative">
+              <h3>Sign In</h3>
+              <form
+                className="mt-4"
+                encType="multipart/form-data"
+                onSubmit={submitHandler}
+              >
+                <div className="form-group mb-4 w-100">
                   <TextField
-                    id="password"
-                    type={showPassword === false ? 'password' : 'text'}
-                    name="password"
-                    label="Password"
+                    id="email"
+                    type="email"
+                    name="email"
+                    label="Email"
                     className="w-100"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    value={email}
+                    onChange={e => setEmail(e.target.value.replace(/\s/g, ''))}
+                    onKeyDown={(e) => {
+                      if (e.key === ' ') {
+                        e.preventDefault(); // Prevent space character
+                      }
+                    }}
+                    inputProps={{ pattern: "^[^\\s]+$", title: "Spaces are not allowed" }}
                   />
+                </div>
+                <div className="form-group mb-4 w-100">
+                  <div className="position-relative">
+                    <TextField
+                      id="password"
+                      type={showPassword === false ? 'password' : 'text'}
+                      name="password"
+                      label="Password"
+                      className="w-100"
+                      value={password}
+                      onChange={e => setPassword(e.target.value.replace(/\s+/g, ''))}
+                    />
+                    <Button
+                      className="icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <VisibilityOutlinedIcon />
+                      ) : (
+
+                        <VisibilityOffOutlinedIcon />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                <div className="form-group mb-2 w-100">
+                  <p>
+                    <Link to="/password/forgot">
+                      Forgot password?
+                    </Link>
+                  </p>
+                </div>
+
+                <div className="form-group mt-5 mb-4 w-100">
                   <Button
-                    className="icon"
-                    onClick={() => setShowPassword(!showPassword)}
+                    type="submit"
+                    disabled={loading}
+                    className="btn btn-g btn-lg w-100"
                   >
-                    {showPassword ? (
-                      <VisibilityOffOutlinedIcon />
-                    ) : (
-                      <VisibilityOutlinedIcon />
-                    )}
+                    Sign In
                   </Button>
                 </div>
-              </div>
-              <div className="form-group mb-2 w-100">
-                <Link to="/password/forgot">
-                  {' '}
-                  <p>Forgot password?</p>
-                </Link>
-              </div>
 
-              <div className="form-group mt-5 mb-4 w-100">
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="btn btn-g btn-lg w-100"
-                >
-                  Sign In
-                </Button>
-              </div>
-
-              <p className="text-center">
-                Not have an account
-                <b>
-                  {' '}
-                  <Link to="/register">Sign Up</Link>
-                </b>
-              </p>
-              <p className="text-center">
-               Need to Verify your email?
-                <b>
-                  {' '}
-                  <Link to="/resend-verification">Verify Email</Link>
-                </b>
-              </p>
-            </form>
+                <p className="text-center">
+                  Not have an account
+                  <b>
+                    {' '}
+                    <Link to="/register">Sign Up</Link>
+                  </b>
+                </p>
+                <p className="text-center">
+                  Need to Verify your email?
+                  <b>
+                    {' '}
+                    <Link to="/resend-verification">Verify Email</Link>
+                  </b>
+                </p>
+              </form>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      }
     </>
   );
 }

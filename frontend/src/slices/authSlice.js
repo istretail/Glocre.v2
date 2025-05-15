@@ -105,6 +105,28 @@ const authSlice = createSlice({
         error: action.payload,
       };
     },
+    updateUserProfileRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+        isUpdated: false,
+      };
+    },
+    updateUserProfileSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
+        isUpdated: true,
+      };
+    },
+    updateUserProfileFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
     clearUpdateProfile(state, action) {
       return {
         ...state,
@@ -297,6 +319,10 @@ export const {
   updateProfileSuccess,
   clearUpdateProfile,
   updatePasswordFail,
+  updateUserProfileRequest,
+  updateUserProfileSuccess,
+  updateUserProfileFail,
+  updateUserPasswordFail,
   updatePasswordSuccess,
   updatePasswordRequest,
   forgotPasswordFail,

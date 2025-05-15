@@ -1,22 +1,17 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { countries } from 'countries-list';
 import { updateSavedAddress } from '../../actions/userActions';
 import { toast } from 'react-toastify';
 import Loader from '../layouts/Loader';
-import { useNavigate } from 'react-router-dom';
-import { TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { TextField, InputAdornment } from '@mui/material';
 import Button from '@mui/material/Button';
 import Nav from '../layouts/nav';
 
-// Define a function to fetch details from the Postal PIN Code API
-const fetchPostalCodeDetails = async pincode => {
+const fetchPostalCodeDetails = async (pincode) => {
   try {
-    const response = await fetch(
-      `https://api.postalpincode.in/pincode/${pincode}`
-    );
+    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -28,8 +23,10 @@ const fetchPostalCodeDetails = async pincode => {
 const UpdateSavedAddress = () => {
   const { id: addressId } = useParams();
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.authState);
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.authState);
   const countryList = Object.values(countries);
+
   const [addressData, setAddressData] = useState({
     address: '',
     addressLine: '',
@@ -39,107 +36,155 @@ const UpdateSavedAddress = () => {
     country: '',
     state: '',
   });
+
+  const [localities, setLocalities] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const savedAddress =
-      user &&
-      user.savedAddress &&
-      user.savedAddress.find(address => address._id === addressId);
+    const savedAddress = user?.savedAddress?.find((address) => address._id === addressId);
     if (savedAddress) {
       setAddressData(savedAddress);
-      setIsLoading(false);
-    }
-  }, [user, addressId]);
+      
 
-  const handleChange = async e => {
-    const { name, value } = e.target;
-    setAddressData({ ...addressData, [name]: value });
-    if (name === 'postalCode' && value.length === 6) {
+      if (savedAddress.postalCode) {
+        fetchPostalCodeDetails(savedAddress.postalCode)
+          .then((data) => {
+            if (data && data[0]?.PostOffice?.length > 0) {
+              const offices = data[0].PostOffice;
+              const localityNames = offices.map((office) => office.Name);
+
+              // Include saved addressLine if it's not in the fetched localities
+              if (!localityNames.includes(savedAddress.addressLine)) {
+                localityNames.unshift(savedAddress.addressLine);
+              }
+              if (savedAddress.addressLine && !localityNames.includes(savedAddress.addressLine)) {
+                localityNames = [savedAddress.addressLine, ...localityNames];
+              }
+              setLocalities(localityNames);
+            } else {
+              toast.error('Invalid pin code for saved address');
+            }
+          })
+          .catch(() => {
+            toast.error('Failed to fetch postal code details');
+          });
+      }
+      // console.log("Localities:", localityNames);
+      console.log("Saved addressLine:", savedAddress.addressLine);
+
+    }
+    setIsLoading(false);
+  }, [user, addressId]);
+  
+
+
+  const handlePostalCodeChange = useCallback(async (e) => {
+    const sanitized = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setAddressData((prev) => ({ ...prev, postalCode: sanitized }));
+
+    if (sanitized.length === 6) {
       try {
-        const data = await fetchPostalCodeDetails(value);
+        const data = await fetchPostalCodeDetails(sanitized);
         if (data && data[0]?.PostOffice?.length > 0) {
-          const office = data[0].PostOffice[0];
-          setAddressData(prevState => ({
-            ...prevState,
-            city: office.Name,
-            postalCode: value,
-            state: office.State,
-            country: office.Country,
+          const offices = data[0].PostOffice;
+          const localityNames = offices.map((office) => office.Name);
+          setLocalities(localityNames);
+
+          setAddressData((prev) => ({
+            ...prev,
+            addressLine: localityNames[0],
+            city: offices[0].Name || '',
+            state: offices[0].State || '',
+            country: offices[0].Country || '',
           }));
         } else {
           toast.error('Invalid pin code');
         }
       } catch (error) {
-        console.error('Error fetching pin code details:', error);
-        toast.error('Error fetching pin code details');
+        toast.error('Failed to fetch postal code details');
       }
     }
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAddressData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(addressData)
     try {
-      const response = await dispatch(
-        updateSavedAddress(addressId, addressData)
-      );
+      await dispatch(updateSavedAddress(addressId, addressData));
       toast.success('Address updated successfully');
       navigate('/myprofile/saved-address');
     } catch (error) {
-      toast.error(error || 'Failed to update address');
+      toast.error('Failed to update address');
     }
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
+
   return (
     <>
       <Nav />
-
       <div className="breadcrumbWrapper mb-4">
         <div className="container-fluid">
           <ul className="breadcrumb breadcrumb2 mb-0">
-            <li>
-              <Link to={'/'}>Home</Link>
-            </li>
-            <li>
-              <Link to={'/myprofile'}>My Profile</Link>
-            </li>
-            <li>
-              <Link to={'/myprofile/saved-address'}>Saved Addres</Link>
-            </li>
+            <li><Link to={'/'}>Home</Link></li>
+            <li><Link to={'/myprofile'}>My Profile</Link></li>
+            <li><Link to={'/myprofile/saved-address'}>Saved Address</Link></li>
             <li>Update Saved Address</li>
           </ul>
         </div>
       </div>
 
       <section className="container mb-5">
-        <h1 className="hd ">Update Saved Address</h1>
+        <h1 className="hd">Update Saved Address</h1>
         <form onSubmit={handleSubmit}>
           <div className="cartWrapper Form Contents mt-1">
             <div className="row mt-3 mb-4">
               <div className="col-md-6">
-                {/* phone no */}
                 <div className="form-group">
                   <TextField
-                    label="Postal code"
+                    label="Name"
                     size="small"
-                    placeholder="Eg:+91987654321"
-                    type="phone"
-                    id="postalCode_field"
-                    name="postalCode"
+                    placeholder="Name"
+                    type="text"
+                    id="name_field"
+                    name="name"
                     className="form-control w-100"
-                    value={addressData.postalCode}
+                    value={addressData.name}
                     onChange={handleChange}
-                    maxLength={6}
+                    inputProps={{
+                      maxLength: 15,
+                    }}
                     required
                   />
                 </div>
               </div>
               <div className="col-md-6">
-                {/* pincode */}
+                <div className="form-group">
+                  <TextField
+                    label="Postal code"
+                    size="small"
+                    placeholder="Eg: 560001"
+                    type="text"
+                    id="postalCode_field"
+                    name="postalCode"
+                    className="form-control w-100"
+                    value={addressData.postalCode}
+                    onChange={handlePostalCodeChange}
+                    inputProps={{
+                      inputMode: 'numeric',
+                      pattern: '[0-9]*',
+                      maxLength: 6,
+                    }}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
                 <div className="form-group">
                   <TextField
                     label="Phone No"
@@ -147,61 +192,114 @@ const UpdateSavedAddress = () => {
                     variant="outlined"
                     className="form-control w-100"
                     size="small"
-                    type="phone"
+                    type="text"
                     name="phoneNo"
                     value={addressData.phoneNo}
-                    onChange={handleChange}
-                    maxLength={10}
+                    onChange={(e) => {
+                      let value = e.target.value;
+
+                      // Remove all non-digit characters except +
+                      value = value.replace(/[^\d+]/g, '');
+
+                      // Ensure it starts with +91
+                      if (!value.startsWith("+91")) {
+                        value = "+91" + value.replace(/\D/g, "");
+                      }
+
+                      // Extract digits after +91
+                      const digitsOnly = value.replace("+91", "").replace(/\D/g, "");
+
+                      // Limit to 10 digits after +91
+                      if (digitsOnly.length > 10) {
+                        value = "+91" + digitsOnly.substring(0, 10);
+                      } else {
+                        value = "+91" + digitsOnly;
+                      }
+
+                      setAddressData((prev) => ({
+                        ...prev,
+                        phoneNo: value,
+                      }));
+                    }}
+                    onKeyDown={(e) => {
+                      const cursorPos = e.target.selectionStart;
+
+                      // Prevent spacebar
+                      if (e.key === ' ') e.preventDefault();
+
+                      // Prevent deleting or modifying +91
+                      if (
+                        cursorPos <= 3 &&
+                        (e.key === 'Backspace' || e.key === 'Delete')
+                      ) {
+                        e.preventDefault();
+                      }
+
+                      // Prevent Ctrl+X or Cmd+X cutting the prefix
+                      if ((e.ctrlKey || e.metaKey) && ['x', 'X'].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    InputProps={{
+                      inputProps: { maxLength: 13 }, // +91 + 10 digits = 13 characters
+                    }}
                     required
                   />
+
+
                 </div>
               </div>
             </div>
 
             <div className="Street mb-4">
-              <div className="Street">
-                {/* address */}
-                <div className="form-group">
-                  <TextField
-                    label="House number and street name"
-                    id="address_field"
-                    variant="outlined"
-                    className="form-control w-100"
-                    size="small"
-                    type="text"
-                    value={addressData.address}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+              <div className="form-group">
+                <TextField
+                  label="House number and street name"
+                  id="address_field"
+                  variant="outlined"
+                  className="form-control w-100"
+                  size="small"
+                  type="text"
+                  name="address"
+                  value={addressData.address}
+                  onChange={handleChange}
+                  inputProps={{ maxLength: 50 }}
+                  required
+                />
               </div>
             </div>
 
             <div className="row mb-4">
               <div className="col-md-6">
-                <TextField
-                  label="Locality"
-                  variant="outlined"
-                  id="address_field"
-                  name="address"
-                  size="small"
-                  className="w-100 "
-                  value={addressData.addressLine}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="form-group">
+                  <select
+                    className="form-control custom-select"
+                    value={addressData.addressLine || ""}
+                    onChange={(e) => setAddressData((prev) => ({ ...prev, addressLine: e.target.value }))}
+                  >
+                    <option value="" disabled>Select locality</option>
+                    {localities.map((locality, index) => (
+                      <option key={index} value={locality}>
+                        {locality}
+                      </option>
+                    ))}
+                  </select>
+
+
+                </div>
               </div>
-              {/* City */}
+
               <div className="col-md-6">
                 <div className="form-group">
                   <TextField
                     label="City"
                     variant="outlined"
                     className="form-control w-100"
-                    id="address_field"
+                    id="city_field"
                     size="small"
-                    name="City"
+                    name="city"
                     value={addressData.city}
+                    // onChange={handleChange}
                     required
                   />
                 </div>
@@ -209,7 +307,6 @@ const UpdateSavedAddress = () => {
             </div>
 
             <div className="row mb-1">
-              {/* State */}
               <div className="col-md-6">
                 <div className="form-group">
                   <TextField
@@ -221,7 +318,7 @@ const UpdateSavedAddress = () => {
                     size="small"
                     name="state"
                     value={addressData.state}
-                    //onChange={handleChange}
+                    // onChange={handleChange}
                     required
                   />
                 </div>
@@ -230,31 +327,23 @@ const UpdateSavedAddress = () => {
               <div className="col-md-6">
                 <div className="form-group">
                   <select
-                    label="Country *"
-                    variant="outlined"
-                    size="small"
-                    name="state"
                     id="country_field"
                     className="form-control"
+                    name="country"
                     value={addressData.country}
-                    //onChange={handleChange}
+                    // onChange={handleChange}
                     required
                   >
+                    <option value="">Select Country *</option>
                     {countryList.map((country, i) => (
-                      <option key={i} value={country.name}>
-                        {country.name}
-                      </option>
+                      <option key={i} value={country.name}>{country.name}</option>
                     ))}
                   </select>
                 </div>
               </div>
             </div>
 
-            <Button
-              id="shipping_btn"
-              type="submit"
-              className="btn-g btn-lg w-20 col-1"
-            >
+            <Button type="submit" className="btn-g btn-lg w-20 col-1">
               Update
             </Button>
           </div>
@@ -265,158 +354,3 @@ const UpdateSavedAddress = () => {
 };
 
 export default UpdateSavedAddress;
-
-// const UpdateSavedAddress1 = () => {
-//   return (
-//     <>
-
-//       <section className="container mb-5">
-//         <h1 className="hd ">Update Saved Address</h1>
-//         <form className="" onSubmit={handleSubmit}>
-//             <div className="cartWrapper Form Contents mt-1">
-//               <div className="row mt-3 mb-4">
-//                 <div className="col-md-6">
-//                   {/* phone no */}
-//                   <div className="form-group">
-//                     <TextField
-//                       label="Postal code"
-//                       variant="outlined"
-//                       className="w-100"
-//                       size="small"
-//                       type="text"
-//                       required
-//                       placeholder="Eg:+91987654321"
-//                       id="postalCode_field"
-//                       value={addressData.postalCode}
-//                       onChange={handleChange}
-//                     />
-//                   </div>
-//                 </div>
-
-//                 <div className="col-md-6">
-//                   {/* pincode */}
-//                   <div className="form-group">
-//                     <TextField
-//                       label="Phone No"
-//                       id="phone_field"
-//                       variant="outlined"
-//                       className="w-100"
-//                       size="small"
-//                       type="text"
-//                       name="pincode"
-//                       value={addressData.phoneNo}
-//                       onChange={handleChange}
-//                       maxLength={10}
-//                       required
-//                     />
-//                   </div>
-//                 </div>
-//               </div>
-
-//               <div className="Street mb-4">
-//                 <div className="Street">
-//                   {/* address */}
-//                   <div className="form-group">
-//                     <TextField
-//                       label="House number and street name"
-//                       id="address_field"
-//                       variant="outlined"
-//                       className="w-100"
-//                       size="small"
-//                       type="text"
-//                       value={addressData.address}
-//                       onChange={handleChange}
-//                       required
-//                     />
-//                   </div>
-//                 </div>
-//               </div>
-
-//               <div className="row mb-4">
-//                 <div className="col-md-6">
-//                   <div className="form-group">
-//                      <TextField
-//                     type="text"
-//                     id="address_field"
-//                     name="address"
-//                     className="form-control"
-//                     value={addressData.addressLine}
-//                     onChange={handleChange}
-//                     required
-//                   />
-//                   </div>
-//                 </div>
-
-//                 {/* City */}
-//                 <div className="col-md-6">
-//                   <div className="form-group">
-//                     <TextField
-//                       label="City"
-//                       variant="outlined"
-//                       className="w-100"
-//                       size="small"
-//                       name="City"
-//                       value={addressData.city}
-//                     required
-//                     />
-//                   </div>
-//                 </div>
-//               </div>
-
-//               <div className="row mb-1">
-//                 {/* State */}
-//                 <div className="col-md-6">
-//                   <div className="form-group">
-//                     <TextField
-//                     id="state_field"
-//                       label="State"
-//                       variant="outlined"
-//                       className="w-100"
-//                       size="small"
-//                       name="state"
-//     value={addressData.state}
-//                     //onChange={handleChange}
-//                     required
-//                     />
-
-//                   </div>
-//                 </div>
-
-//                 <div className="col-md-6">
-//                   <div className="form-group">
-//                     <select
-//                       label="Country *"
-//                       variant="outlined"
-//                       size="small"
-//                       name="state"
-//                       id="country_field"
-//                       className="form-control"
-//              value={addressData.country}
-//                     //onChange={handleChange}
-//                     required
-//                     >
-//                        {countryList.map((country, i) => (
-//                       <option key={i} value={country.name}>
-//                         {country.name}
-//                       </option>
-//                     ))}
-//                     </select>
-
-//                   </div>
-//                 </div>
-
-//               </div>
-//             </div>
-//            <Button
-//                 type="submit"
-//                 className="btn-g btn-lg w-20 col-1"
-//                 id="shipping_btn"
-//               >
-//                Update
-//               </Button>
-//         </form>
-//       </section>
-
-//     </>
-//   );
-// };
