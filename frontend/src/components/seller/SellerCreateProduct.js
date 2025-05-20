@@ -72,8 +72,28 @@ const SellerCreateProduct = () => {
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Convert only for numeric fields
+    const numericFields = ['price', 'offPrice', 'tax'];
+    const newValue = numericFields.includes(name) ? Number(value) : value;
+
+    setFormData((prev) => {
+      const updatedForm = { ...prev, [name]: newValue };
+
+      // MRP validation only if price/offPrice is involved
+      const price = name === 'price' ? newValue : Number(prev.price);
+      const offPrice = name === 'offPrice' ? newValue : Number(prev.offPrice);
+
+      if (price !== 0 && offPrice !== 0 && price <= offPrice) {
+        alert("Maximum Retail Price must be greater than Offer Price.");
+        return prev; // block update
+      }
+
+      return updatedForm;
+    });
   };
+
+
 
   // Handle key points change
   const handleKeyPointsChange = (index, value) => {
@@ -88,10 +108,34 @@ const SellerCreateProduct = () => {
   const handleVariantChange = (index, name, value) => {
     setVariantDetails((prevVariants) => {
       const newVariants = [...prevVariants];
-      newVariants[index] = { ...newVariants[index], [name]: value };
+      const currentVariant = newVariants[index];
+
+      // Decide whether to convert value to number
+      const isNumericField = ['price', 'offPrice'].includes(name);
+      const updatedValue = isNumericField ? Number(value) : value;
+
+      // Validation: MRP should be greater than Offer Price
+      if (isNumericField) {
+        const price = name === 'price' ? updatedValue : Number(currentVariant.price);
+        const offPrice = name === 'offPrice' ? updatedValue : Number(currentVariant.offPrice);
+
+        if (price <= offPrice) {
+          alert("MRP must be greater than Offer Price.");
+          return prevVariants; // Block update
+        }
+      }
+
+      // If valid, update the variant
+      newVariants[index] = {
+        ...currentVariant,
+        [name]: updatedValue,
+      };
+
       return newVariants;
     });
   };
+
+
 
   // Handle image upload
   const handleImageChange = (index, e) => {
@@ -107,11 +151,20 @@ const SellerCreateProduct = () => {
         if (!newVariants[index]) {
           newVariants[index] = {};
         }
-        newVariants[index].images = validImages;
+
+        // Append new images instead of replacing
+        const existingImages = newVariants[index].images || [];
+        const newUniqueImages = validImages.filter(
+          (file) => !existingImages.some((img) => img.name === file.name && img.size === file.size)
+        );
+        newVariants[index].images = [...existingImages, ...newUniqueImages];
+
+
         return newVariants;
       });
     }
   };
+
 
   // Remove selected image
   const handleRemoveImage = (variantIndex, imageIndex) => {
@@ -123,10 +176,23 @@ const SellerCreateProduct = () => {
       return newVariants;
     });
   };
+  const handleRemoveProductImage = (indexToRemove) => {
+    setProductImages((prevImages) =>
+      prevImages.filter((_, index) => index !== indexToRemove)
+    );
+  };
+  
   const handleProductImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setProductImages(files);
+
+    setProductImages((prevImages) => {
+      const newImages = files.filter(
+        (file) => !prevImages.some((img) => img.name === file.name && img.size === file.size)
+      );
+      return [...prevImages, ...newImages];
+    });
   };
+
 
   const handleAddKeyPoint = () => {
     setFormData((prev) => ({
@@ -142,93 +208,123 @@ const SellerCreateProduct = () => {
       return { ...prev, keyPoints: updated };
     });
   };
+  const validateForm = () => {
+    const { itemModelNum, sku, upc, hsn } = formData;
+    const alphaNumericRegex = /^[A-Z0-9\-]+$/;
+
+    const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
+
+    // --- SKU ---
+    if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
+      alert("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
+      return false;
+    }
+
+    // --- HSN ---
+    if (!hsn || !/^\d{4,10}$/.test(hsn) || /^0+$/.test(hsn)) {
+      alert("HSN code is required, should be 4–10 digits, and cannot be all zeros (e.g. '0000').");
+      return false;
+    }
+
+    // --- Item Model Number ---
+    if (itemModelNum) {
+      if (!alphaNumericRegex.test(itemModelNum) || isOnlyZerosOrDashes(itemModelNum)) {
+        alert("Item Model Number should be alphanumeric and not just zeros or dashes.");
+        return false;
+      }
+    }
+
+    // --- UPC ---
+    if (upc) {
+      if (!alphaNumericRegex.test(upc) || isOnlyZerosOrDashes(upc)) {
+        alert("UPC should be alphanumeric and not just zeros or dashes.");
+        return false;
+      }
+    }
+
+    return true;
+  };
   // Submit the form
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (imageErrors.length > 0) {
-            alert("Please fix the image errors before submitting.");
-            return;
+    if (imageErrors.length > 0) {
+      alert("Please fix the image errors before submitting.");
+      return;
+    }
+    if (validateForm()) {
+      const productData = new FormData();
+
+      // Append non-array fields
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key !== "variants" && key !== "keyPoints" && value) {
+          productData.append(key, value);
         }
+      });
 
-        const filledPoints = formData.keyPoints.filter(point => point.trim() !== "");
+      // Append key points
+      formData.keyPoints.forEach((point, index) => {
+        if (point) {
+          productData.append(`keyPoints[${index}]`, point);
+        }
+      });
 
-        // if (filledPoints.length < 3) {
-        //     console.log(filledPoints.length);
-        //     toast.error("Please provide at least 3 key points.");
-        //     return;
-        // }
-
-        // Proceed with form submission
-        // console.log("Form submitted with:", filledPoints);
-
-        const productData = new FormData();
-
-        // Append non-array fields
-        Object.entries(formData).forEach(([key, value]) => {
-            if (key !== "variants" && key !== "keyPoints" && value) {
-                productData.append(key, value);
-            }
-        });
-
-        // Append key points
-        formData.keyPoints.forEach((point, index) => {
-            if (point) {
-                productData.append(`keyPoints[${index}]`, point);
-            }
-        });
-
-
-
+      if (hasVariants) {
         // Append variants as a JSON string
         variantDetails.forEach((variant, i) => {
-            productData.append(`variants[${i}][variantType]`, variant.variantType);
-            productData.append(`variants[${i}][variantName]`, variant.variantName);
-            productData.append(`variants[${i}][price]`, variant.price);
-            productData.append(`variants[${i}][offPrice]`, variant.offPrice);
-            productData.append(`variants[${i}][stock]`, variant.stock);
+          productData.append(`variants[${i}][variantType]`, variant.variantType);
+          productData.append(`variants[${i}][variantName]`, variant.variantName);
+          productData.append(`variants[${i}][price]`, variant.price);
+          productData.append(`variants[${i}][offPrice]`, variant.offPrice);
+          productData.append(`variants[${i}][stock]`, variant.stock);
 
-           
+
         });
-          
+
 
         // Append variant images
         variantDetails.forEach((variant, variantIndex) => {
-            if (variant.images && Array.isArray(variant.images)) {
-                variant.images.forEach((imageFile) => {
-                    if (imageFile && typeof imageFile === 'object' && imageFile.name && imageFile.type) {
-                        productData.append(`variants[${variantIndex}][images]`, imageFile);
-                    }
-                });
-            }
-        });
-        
-        // Append product images if no variants
-        if (!hasVariants) {
-            productImages.forEach((imageFile) => {
-                productData.append('images', imageFile);
+          if (variant.images && Array.isArray(variant.images)) {
+            variant.images.forEach((imageFile) => {
+              if (imageFile && typeof imageFile === 'object' && imageFile.name && imageFile.type) {
+                productData.append(`variants[${variantIndex}][images]`, imageFile);
+              }
             });
-        }
-        // Log the FormData entries
-        // for (let [key, value] of productData.entries()) {
-        //     if (value instanceof File) {
-        //         console.log(`${key}: ${value.name}`);
-        //     } else {
-        //         console.log(`${key}: ${value}`);
-        //     }
-        // }
-          
+          }
+        });
+      }
 
-        // Dispatch action to add product
-        // console.log("FormData before submission:", formData);
 
-        try {
-          await dispatch(addSellerNewProduct(productData));
-            // toast("Product updated successfully!", { type: "success" });
-        } catch (error) {
-            toast(error.message, { type: "error" });
-        }
-    };
+
+      // Append product images if no variants
+      if (!hasVariants) {
+        productImages.forEach((imageFile) => {
+          productData.append('images', imageFile);
+        });
+      }
+      // Log the FormData entries
+      // for (let [key, value] of productData.entries()) {
+      //     if (value instanceof File) {
+      //         console.log(`${key}: ${value.name}`);
+      //     } else {
+      //         console.log(`${key}: ${value}`);
+      //     }
+      // }
+
+
+      // Dispatch action to add product
+      // console.log("FormData before submission:", formData);
+
+      try {
+        await dispatch(addSellerNewProduct(productData));
+        // toast("Product updated successfully!", { type: "success" });
+      } catch (error) {
+        toast(error.message, { type: "error" });
+      }
+    }
+
+
+  };
   useEffect(() => {
     if (isProductCreated) {
       toast('Product Created Successfully!', {
@@ -646,7 +742,7 @@ const SellerCreateProduct = () => {
                       onChange={handleChange}
                       required
                     >
-                      <option value="">Select Condition<span style={{ color: "red" }}> 
+                      <option value="">Select Condition<span style={{ color: "red" }}>
                       </span></option>
                       <option value="New">New</option>
                       <option value="Unboxed">Unboxed</option>
@@ -799,81 +895,96 @@ const SellerCreateProduct = () => {
                             />
                           </div>
                           <div className="form-group">
-                            <label>Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *
-                              <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip>
-                            </span></label>
+                            <label>Price:<span style={{ color: "red" }}> *</span></label>
                             <input
                               type="number"
                               className="form-control"
                               value={variant.price}
-                              onChange={e =>
-                                handleVariantChange(
-                                  index,
-                                  'price',
-                                  e.target.value
-                                )
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (
+                                  value !== '' &&
+                                  /^[1-9][0-9]{0,4}$/.test(value) // ensures 1–99999 and not starting with 0
+                                ) {
+                                  handleVariantChange(index, 'price', value);
+                                }
+                              }}
                               required
-                              min="0"
+                              inputMode="numeric"
                               max="99999"
+                              onWheel={(e) => e.target.blur()}
+                              onKeyDown={(e) => {
+                                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                             />
                           </div>
+
                           <div className="form-group">
-                            <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
-
-                              <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip>
-
-                            </span></label>
+                            <label>
+                              Offer Price:<span style={{ color: "red" }}> *
+                                <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                                  <ErrorOutlineIcon className="errorout-icon" />
+                                </LightTooltip>
+                              </span>
+                            </label>
                             <input
                               type="number"
                               className="form-control"
                               value={variant.offPrice}
-                              onChange={e =>
-                                handleVariantChange(
-                                  index,
-                                  'offPrice',
-                                  e.target.value
-                                )
-                              }
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (
+                                  value !== '' &&
+                                  /^[1-9][0-9]{0,4}$/.test(value)
+                                ) {
+                                  handleVariantChange(index, 'offPrice', value);
+                                }
+                              }}
                               required
-                              min="0"
+                              inputMode="numeric"
                               max="99999"
+                              onWheel={(e) => e.target.blur()}
+                              onKeyDown={(e) => {
+                                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                             />
                           </div>
+
                           <div className="form-group">
-                            <label>Stock:<span style={{ color: "red" }}> *
-
-                              <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
-                                <ErrorOutlineIcon className="errorout-icon" />
-                              </LightTooltip>
-
-                            </span></label>
+                            <label>
+                              Stock:<span style={{ color: "red" }}> *
+                                <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                                  <ErrorOutlineIcon className="errorout-icon" />
+                                </LightTooltip>
+                              </span>
+                            </label>
                             <input
                               type="number"
                               className="form-control"
                               value={variant.stock}
                               onChange={(e) => {
                                 const value = e.target.value;
-                                // Allow empty input (for deletion) and only numbers between 0–9999
-                                if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                if (
+                                  value !== '' &&
+                                  /^[1-9][0-9]{0,4}$/.test(value) // ensures 1–99999
+                                ) {
                                   handleVariantChange(index, 'stock', value);
                                 }
                               }}
                               required
-                              min="0"
-                              max="9999"
-                              onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                              inputMode="numeric"
+                              max="99999"
+                              onWheel={(e) => e.target.blur()}
                               onKeyDown={(e) => {
-                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                  e.preventDefault(); // disables arrow key changes
+                                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+                                  e.preventDefault();
                                 }
                               }}
                             />
-
                           </div>
                           <div className="form-group">
                             <label>Images:<span style={{ color: "red" }}> *
@@ -889,6 +1000,7 @@ const SellerCreateProduct = () => {
                               multiple
                               accept="image/*"
                               onChange={e => handleImageChange(index, e)}
+                              required
                             />
                             {imageErrors.length > 0 && (
                               <div className="alert alert-danger mt-2">
@@ -901,13 +1013,13 @@ const SellerCreateProduct = () => {
                               {variant.images.map((image, imageIndex) => (
                                 <div
                                   key={imageIndex}
-                                  className="d-inline-block position-relative mr-2"
+                                  className="d-inline-block position-relative mr-5"
                                 >
                                   <img
                                     src={URL.createObjectURL(image)}
                                     alt={`Preview ${imageIndex}`}
                                     className="img-thumbnail"
-                                    width="100"
+                                    width="100 "
                                   />
                                   <button
                                     type="button"
@@ -978,91 +1090,106 @@ const SellerCreateProduct = () => {
                   <>
                     <div className="col-lg-6">
                       <div className="form-group">
-                        <label>Maximum Retail Price (in ₹)<span style={{ color: "red" }}> *
-                          <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
-                            <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-                        </span></label>
+                        <label>
+                          Maximum Retail Price (in ₹)<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </span>
+                        </label>
                         <input
                           type="number"
                           className="form-control"
                           name="price"
                           value={formData.price}
-                          onChange={handleChange}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^[1-9][0-9]{0,4}$/.test(value)) {
+                              handleChange(e);
+                            }
+                          }}
                           required
-                          min="0"
+                          inputMode="numeric"
                           max="99999"
-                          onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                          onWheel={(e) => e.target.blur()}
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                              e.preventDefault(); // disables arrow key changes
+                              e.preventDefault();
                             }
                           }}
                         />
                       </div>
                     </div>
 
+
                     <div className="col-lg-6">
                       <div className="form-group">
-                        <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
-
-                          <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
-                            <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-
-                        </span></label>
+                        <label>
+                          Offer Price (in ₹):<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </span>
+                        </label>
                         <input
                           type="number"
                           className="form-control"
                           name="offPrice"
                           value={formData.offPrice}
-                          onChange={handleChange}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^[1-9][0-9]{0,4}$/.test(value)) {
+                              handleChange(e);
+                            }
+                          }}
                           required
-                          min="0"
+                          inputMode="numeric"
                           max="99999"
-                          onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                          onWheel={(e) => e.target.blur()}
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                              e.preventDefault(); // disables arrow key changes
+                              e.preventDefault();
                             }
                           }}
                         />
                       </div>
                     </div>
 
+
+
                     <div className="col-lg-6">
                       <div className="form-group">
-                        <label>Stock:<span style={{ color: "red" }}> *
-
-                          <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
-                            <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-
-                        </span></label>
+                        <label>
+                          Stock:<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </span>
+                        </label>
                         <input
                           type="number"
                           className="form-control"
                           name="stock"
                           value={formData.stock}
-                          min="0"
-                          max="9999"
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
-                              handleChange(e); // only update if within range
+                            if (/^[1-9][0-9]{0,3}$/.test(value)) {
+                              handleChange(e);
                             }
                           }}
                           required
-                        
-                          onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                          inputMode="numeric"
+                          max="9999"
+                          onWheel={(e) => e.target.blur()}
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                              e.preventDefault(); // disables arrow key changes
+                              e.preventDefault();
                             }
                           }}
                         />
                       </div>
                     </div>
+
 
                     <div className="col-lg-6">
                       <div className="form-group">
@@ -1079,13 +1206,13 @@ const SellerCreateProduct = () => {
                           multiple
                           accept="image/*"
                           onChange={handleProductImageChange}
-                        // required
+                          required
                         />
                         <div className="mt-2">
                           {productImages.map((image, index) => (
                             <div
                               key={index}
-                              className="d-inline-block position-relative mr-2"
+                              className="d-inline-block position-relative mr-5"
                             >
                               <img
                                 src={URL.createObjectURL(image)}
@@ -1093,6 +1220,15 @@ const SellerCreateProduct = () => {
                                 className="img-thumbnail"
                                 width="100"
                               />
+                              <button
+                                type="button"
+                                className="btn btn-danger btn-sm position-absolute top-0 right-0"
+                                onClick={() =>
+                                  handleRemoveProductImage(index)
+                                }
+                              >
+                                &times;
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -1273,7 +1409,7 @@ const SellerCreateProduct = () => {
                       value={formData.itemLength}
                       onChange={handleChange}
                       required
-                      min="0"
+                      min="1"
                       max="9999"
                     />
                   </div>
@@ -1289,7 +1425,7 @@ const SellerCreateProduct = () => {
                       name="itemHeight"
                       value={formData.itemHeight}
                       onChange={handleChange}
-                      min="0"
+                      min="1"
                       max="9999"
                       required
                     />
@@ -1306,7 +1442,7 @@ const SellerCreateProduct = () => {
                       name="itemWeight"
                       value={formData.itemWeight}
                       onChange={handleChange}
-                      min="0"
+                      min="1"
                       max="9999"
                       required
                     />
@@ -1323,7 +1459,7 @@ const SellerCreateProduct = () => {
                       name="itemWidth"
                       value={formData.itemWidth}
                       onChange={handleChange}
-                      min="0"
+                      min="1"
                       max="9999"
                       required
                     />
@@ -1345,7 +1481,7 @@ const SellerCreateProduct = () => {
                       name="moq"
                       value={formData.moq}
                       onChange={handleChange}
-                      min="0"
+                      min="1"
                       max="9999"
                       required
                     />

@@ -29,7 +29,9 @@ export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
   const { categories = [], error } = useSelector((state) => state.categoryState);
   const { items } = useSelector((state) => state.cartState);
-  const { wishlist } = useSelector((state) => state.wishlistState);
+    const { wishlist: witems = [] } = useSelector(
+      (state) => state.wishlistState,
+    );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,6 +82,8 @@ export default function Header() {
 
   const logoutHandler = () => {
     dispatch(logout);
+    dispatch(fetchWishlist());
+    dispatch(getCartItemsFromCart());
     return navigate("/login");
   };
 
@@ -118,7 +122,7 @@ export default function Header() {
   const cancelLogout = () => {
     setLogoutModalOpen(false);
   };
-
+  console.log(witems.length)
 
   return (
     <>
@@ -173,7 +177,7 @@ export default function Header() {
                         <span>
                           <FavoriteBorderOutlinedIcon />
                           <span className="badge  rounded-circle">
-                            {wishlist.length}
+                            {witems.length}
                           </span>
                           Wishlist
                         </span>

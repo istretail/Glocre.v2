@@ -65,7 +65,8 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
 
 //Create Product - /api/v1/products/new
 exports.newProduct = catchAsyncError(async (req, res, next) => {
-  // console.log("received variant body:", req.body);
+  // Attach variant images from req.files
+  // console.log("Request Body:", req.body)
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
       const match = key.match(/variants\[(\d+)\]\[images\]/);
@@ -78,6 +79,33 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     });
   }
 
+  // Validate image requirement
+  const variants = req.body.variants;
+
+  if (variants && Array.isArray(variants) && variants.length > 0) {
+    // If product has variants, ensure each variant has images
+    const invalidVariant = variants.find(
+      (variant) => !variant.images || variant.images.length === 0
+    );
+
+    if (invalidVariant) {
+      return res.status(400).json({
+        success: false,
+        message: "Each variant must have at least one image.",
+      });
+    }
+  } else {
+    // If product has no variants, ensure main product images are present
+    const mainImages = req.files.images;
+    if (!mainImages || mainImages.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Product images are required ",
+      });
+    }
+  }
+
+  // Create the product
   const product = await Product.create({
     name: req.body.name,
     description: req.body.description,
@@ -116,12 +144,11 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
     unit: req.body.unit,
-
-
   });
-  // console.log(req.body)
+
   res.status(201).json({ success: true, product });
 });
+
 //getting single product -- api/v1/product/id
 exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
   const product = await Product.findOne({
@@ -142,7 +169,7 @@ exports.getSingleProduct = catchAsyncError(async (req, res, next) => {
 
 //Update Product - api/v1/product/:id 
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
-  // console.log("received variant body:", req.body.variants);
+  // console.log("received variant body:", req.body);
 
   let product = await Product.findById(req.params.id).populate("createdBy");
   if (!product) {
@@ -220,7 +247,28 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
       }
     });
   }
+  console.log(updatedVariants)
+  const hasVariants = Array.isArray(req.body.variants) && req.body.variants.length > 0;
 
+  if (hasVariants) {
+    const missingImagesVariantIndex = req.body.variants.findIndex(
+      (variant) => !variant.images || !Array.isArray(variant.images) || variant.images.length === 0
+    );
+
+    if (missingImagesVariantIndex !== -1) {
+      return res.status(400).json({
+        success: false,
+        message: `Images are required for variant `,
+      });
+    }
+  } else {
+    if (!req.body.images || !Array.isArray(req.body.images) || req.body.images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Images are required for the product.",
+      });
+    }
+  }
   // Handle variant images (S3)
   if (req.files && Array.isArray(req.body.variants)) {
     Object.keys(req.files).forEach((key) => {
@@ -553,7 +601,30 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
       }
     });
   }
+  const variants = req.body.variants;
 
+  if (variants && Array.isArray(variants) && variants.length > 0) {
+    // If product has variants, ensure each variant has images
+    const invalidVariant = variants.find(
+      (variant) => !variant.images || variant.images.length === 0
+    );
+
+    if (invalidVariant) {
+      return res.status(400).json({
+        success: false,
+        message: "Each variant must have at least one image.",
+      });
+    }
+  } else {
+    // If product has no variants, ensure main product images are present
+    const mainImages = req.files.images;
+    if (!mainImages || mainImages.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Product images are required ",
+      });
+    }
+  }
   const product = await Product.create({
     name: req.body.name,
     description: req.body.description,
@@ -668,8 +739,10 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
 });
 // Update a product (only if it belongs to the seller)
 exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
+  console.log(req.body)
+  
   let product = await Product.findById(req.params.id).populate("createdBy");
-
+  // console.log(req.params.id)
   if (!product) {
     return res.status(404).json({
       success: false,
@@ -744,7 +817,27 @@ exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
       }
     });
   }
+  const hasVariants = Array.isArray(req.body.variants) && req.body.variants.length > 0;
 
+  if (hasVariants) {
+    const missingImagesVariantIndex = req.body.variants.findIndex(
+      (variant) => !variant.images || !Array.isArray(variant.images) || variant.images.length === 0
+    );
+
+    if (missingImagesVariantIndex !== -1) {
+      return res.status(400).json({
+        success: false,
+        message: `Images are required for variant `,
+      });
+    }
+  } else {
+    if (!req.body.images || !Array.isArray(req.body.images) || req.body.images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Images are required for the product.",
+      });
+    }
+  }
   // Handle variant images (S3)
   if (req.files && Array.isArray(req.body.variants)) {
     Object.keys(req.files).forEach((key) => {
@@ -1002,7 +1095,10 @@ exports.getCategoryHierarchy = (req, res) => {
 
 exports.getAvailableCategories = async (req, res) => {
   try {
-    const products = await Product.find({ status: "approved" }).select("maincategory category subcategory -_id");
+    const products = await Product.find({
+      status: "approved",
+      isArchived: { $ne: true, $exists: true } // isArchived must exist AND not be true
+    }).select("maincategory category subcategory -_id");
 
     const usedMain = new Set();
     const usedCat = new Set();

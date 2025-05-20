@@ -9,15 +9,15 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Pagination from "react-js-pagination";
 import { useParams } from "react-router-dom";
-import Slider from "rc-slider";
+
 import Nav from "../layouts/nav";
 import "rc-slider/assets/index.css";
 import "rc-tooltip/assets/bootstrap.css";
 import "./ProductDetail.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { Dropdown } from "react-bootstrap";
 import "react-range-slider-input/dist/style.css";
-import { faFilter, faSort, faStar } from "@fortawesome/free-solid-svg-icons";
+
 
 export default function ProductCategory() {
   const dispatch = useDispatch();
@@ -108,10 +108,10 @@ export default function ProductCategory() {
           <MetaData title={"Results"} />
 
           {/* Medium & Small screen filter/sort */}
-          <div className="d-block d-md-none px-3 mobileSticky">
+          <div className="px-3 mobileSticky">
             <div className="d-flex w-100">
               {/* CATEGORY Dropdown */}
-              <Dropdown className="w-50 text-center">
+              <Dropdown className="w-50 m-1 text-center">
                 <Dropdown.Toggle
                   as="div"
                   className="mobileBtn-l py-2"
@@ -181,7 +181,7 @@ export default function ProductCategory() {
               </Dropdown>
 
               {/* PRICE FILTER Dropdown Placeholder */}
-              <Dropdown className="w-50 text-center">
+              <Dropdown className="w-50 m-1 text-center">
                 <Dropdown.Toggle
                   as="div"
                   className="mobileBtn-r py-2"
@@ -309,7 +309,7 @@ export default function ProductCategory() {
           {/* Big screen */}
           <section className="listingPage">
             <div className="listingData">
-              <div className="row">
+              <div className="row container-fluid"> 
                 <div className="col-md-2 sidebarWrapper pt-0">
                   <div className="sidebar">
                     <div className="card border-0 shadow p-3">
@@ -479,7 +479,7 @@ export default function ProductCategory() {
                 </div>
 
                 <div className="col-md-10 rightContent homeProducts pt-0">
-                  <div className="productRow  pl-3 pr-3">
+                  <div className="productRow pt-0 pl-3 pr-3">
                     {products && products.length > 0 ? (
                       products.map((product) => (
                         <div key={product._id} className="productCard p-1">
@@ -512,6 +512,7 @@ export default function ProductCategory() {
               </div>
             )}
           </section>
+          
 
         </>
       )}

@@ -73,6 +73,7 @@ const authSlice = createSlice({
     },
     logoutSuccess(state, action) {
       return {
+        ...state,
         loading: false,
         isAuthenticated: false,
       };

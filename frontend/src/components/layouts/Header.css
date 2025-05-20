@@ -1,18 +1,22 @@
 a {
   text-decoration: none;
 }
+
 .dropdown_menu {
   transition: all 0.3s ease-in-out;
 }
+
 .custom-dropdown-toggle {
   position: relative;
   /* Ensure dropdown button is relative to dropdown content */
   z-index: 10;
   /* Priority for button */
 }
-.drawer-sub-li{
+
+.drawer-sub-li {
   border-bottom: none !important;
 }
+
 .dropdown_menu {
   list-style-type: disc;
   /* show bullet points */
@@ -24,6 +28,7 @@ a {
   margin-bottom: 0.5rem;
   /* optional: space between sub-items */
 }
+
 .dropdown-menu {
   position: absolute;
   top: -10px;
@@ -297,6 +302,12 @@ header {
   color: #fff !important;
 }
 
+@media (max-width: 600px) {
+  .slick-arrow  {
+    display: none !important;
+  }
+}
+
 .home_slider_Main .slick-dots {
   position: absolute;
   bottom: 30px !important;
@@ -540,6 +551,7 @@ header {
   .headerWrapper {
     display: none;
   }
+
   .respon-nav {
     display: none;
   }

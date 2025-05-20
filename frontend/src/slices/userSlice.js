@@ -261,6 +261,46 @@ const userSlice = createSlice({
         error: action.payload,
       };
     },
+    subscribeRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    subscribeSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message,
+      };
+    },
+    subscribeFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
+    unsubscribeRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    unsubscribeSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message,
+      };
+    },
+    unsubscribeFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -303,6 +343,12 @@ export const {
   resendVerificationRequest,
   resendVerificationSuccess,
   resendVerificationFail,
+  subscribeRequest,
+  subscribeSuccess,
+  subscribeFail,
+  unsubscribeRequest,
+  unsubscribeSuccess,
+  unsubscribeFail,
 } = actions;
 
 export default reducer;

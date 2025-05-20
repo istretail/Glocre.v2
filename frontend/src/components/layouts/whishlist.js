@@ -11,6 +11,10 @@ import { logEvent } from "../../actions/analyticsActions";
 import empty from "../../images/wishlist.png";
 import Nav from "./nav";
 import { Modal, Box, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+
+
 export default function Wishlist() {
   const { wishlist: items = [], loading } = useSelector(
     (state) => state.wishlistState,
@@ -119,17 +123,17 @@ export default function Wishlist() {
                       <table className="table">
                         <thead>
                           <tr>
-                            <th>Product</th>
-                            <th>Brand</th>
-                            <th>OffPrice</th>
-                            <th>Price</th>
-                            <th>Remove</th>
+                            <th  style={{ minWidth: "200px" }}>Product</th>
+                            <th  style={{ minWidth: "150px" }}>Brand</th>
+                            <th  style={{ minWidth: "150px" }}>OffPrice</th>
+                            <th  style={{ minWidth: "150px" }}>Price</th>
+                            <th  style={{ minWidth: "150px" }}>Remove</th>
                           </tr>
                         </thead>
                         <tbody>
                           {items.map((item) => (
                             <tr key={item._id}>
-                              <td width={"50%"}>
+                              <td>
                                 <div className="d-flex align-items-center">
                                   <div className="img">
                                     <Link to={`/products/${item._id}`}>
@@ -153,16 +157,17 @@ export default function Wishlist() {
                                 </div>
                               </td>
 
-                              <td width="10%">
+                              <td>
                                 <span>{item.brand}</span>
                               </td>
-                              <td width="10%">
+
+                              <td>
                                 <span>Rs: ₹{item?.offPrice || item?.variants?.[0]?.offPrice || item?.variants?.[1]?.offPrice}.00/-</span>
                               </td>
-                              <td width="10%">
+
+                              <td>
                                 <span>Rs: ₹{item?.price || item?.variants?.[0]?.price || item?.variants?.[1]?.price}.00/-</span>
                               </td>
-
 
                               {/* <td width="10%">
                                 <span className="cursor">
@@ -173,13 +178,14 @@ export default function Wishlist() {
                                 </span>
                               </td> */}
 
-                              <td width="10%">
-                                <span className="cursor">
-                                  <DeleteOutlineOutlinedIcon
-                                    onClick={() => handleDeleteClick(item._id)}
-                                    style={{ color: "red", cursor: "pointer" }}
-                                  />
-                                </span>
+                              <td>
+                                <Button
+                                  style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }}
+                                  onClick={() => handleDeleteClick(item._id)}
+                                  className="btn ms-2"
+                                >
+                                  <FontAwesomeIcon icon={faTrash} />
+                                </Button>
                               </td>
 
 

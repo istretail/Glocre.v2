@@ -71,10 +71,17 @@ const cartSlice = createSlice({
 
     updateCartItemQuantity(state, action) {
       const { productId, quantity, stock, variantId } = action.payload;
-      const cartItemIndex = state.items.findIndex(item =>
-        item.product === productId &&
-        (!variantId || (item.variant && item.variant._id === variantId))
-      );
+
+      const cartItemIndex = state.items.findIndex(item => {
+        if (variantId) {
+          // Match by variant ID
+          return item.variant && item.variant._id === variantId;
+        } else {
+          // Match by product ID for non-variant products
+          return item.product === productId;
+        }
+      });
+
       if (cartItemIndex !== -1) {
         const updatedCartItem = { ...state.items[cartItemIndex], quantity };
         if (typeof stock !== 'undefined') {
@@ -82,8 +89,11 @@ const cartSlice = createSlice({
         }
         state.items[cartItemIndex] = updatedCartItem;
       }
+
       localStorage.setItem('cartItems', JSON.stringify(state.items));
     },
+    
+
     saveShippingInfo(state, action) {
       localStorage.setItem('shippingInfo', JSON.stringify(action.payload));
       state.shippingInfo = action.payload;

@@ -11,6 +11,7 @@ const order = require('./routes/order')
 const payment = require('./routes/payment')
 const analyticsRoutes = require('./routes/analyticsRoutes')
 const bannerRoutes = require('./routes/bannerRoute')
+const subscriberRoutes = require('./routes/subscriberRoute')
 const catchAsyncError = require("./middlewares/catchAsyncError");
 app.use('/uploads', express.static(path.join(__dirname,'uploads')))
 app.use(express.json());
@@ -22,7 +23,8 @@ app.use('/api/v1/',auth);
 app.use('/api/v1/',order);
 app.use('/api/v1/',payment);
 app.use('/api/v1/',analyticsRoutes)
-app.use('/api/v1/',bannerRoutes)
+app.use('/api/v1/', bannerRoutes)
+app.use('/api/v1/', subscriberRoutes)
 if (process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(__dirname,'../frontend/build')))
     app.get('*', (req,res) => {

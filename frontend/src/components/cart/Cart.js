@@ -29,17 +29,25 @@ export default function Cart() {
     const count = item.quantity;
     if (item.stock === 0 || count >= item.stock) return;
 
+    const cartItemId = item.variant ? item.variant._id : item.product;
+
     if (user) {
-      // Dispatch increaseCartItemQty action from actions file
-      dispatch(updateCartItemQuantityInCart(item.product, item.quantity + 1));
+      dispatch(
+        updateCartItemQuantityInCart(
+          item.product,
+          item.quantity + 1,
+          item.stock,
+          item.variant?._id
+        )
+      );
     } else {
-      // Dispatch increaseCartItemQty action from slice
       dispatch(
         updateCartItemQuantity({
-          productId: item.product,
+          productId: item.product,      // Always pass product ID
+          variantId: item.variant ? item.variant._id : null,  // Only pass if variant exists
           quantity: item.quantity + 1,
           stock: item.stock,
-        }),
+        })
       );
     }
   };
@@ -48,17 +56,25 @@ export default function Cart() {
     const count = item.quantity;
     if (count === 1) return;
 
+    const cartItemId = item.variant ? item.variant._id : item.product;
+
     if (user) {
-      // Dispatch decreaseCartItemQty action from actions file
-      dispatch(updateCartItemQuantityInCart(item.product, item.quantity - 1));
+      dispatch(
+        updateCartItemQuantityInCart(
+          item.product,
+          item.quantity - 1,
+          item.stock,
+          item.variant?._id
+        )
+      );
     } else {
-      // Dispatch decreaseCartItemQty action from slice
       dispatch(
         updateCartItemQuantity({
-          productId: item.product,
+          productId: item.product,      // Always pass product ID
+          variantId: item.variant ? item.variant._id : null,  // Only pass if variant exists
           quantity: item.quantity - 1,
           stock: item.stock,
-        }),
+        })
       );
     }
   };
@@ -66,12 +82,14 @@ export default function Cart() {
   const handleQuantityChange = (e, item) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value >= 0 && value <= item.stock) {
+      const cartItemId = item.variant ? item.variant._id : item.product;
+
       if (user) {
-        dispatch(updateCartItemQuantityInCart(item.product, value));
+        dispatch(updateCartItemQuantityInCart(cartItemId, value));
       } else {
         dispatch(
           updateCartItemQuantity({
-            productId: item.product,
+            productId: cartItemId,
             quantity: value,
             stock: item.stock,
           })
@@ -79,6 +97,7 @@ export default function Cart() {
       }
     }
   };
+  
 
   useEffect(() => {
     // Fetch cart items when the component mounts

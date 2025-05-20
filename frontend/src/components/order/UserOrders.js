@@ -48,7 +48,7 @@ export default function UserOrders() {
           <>
             <div className="empty d-flex align-items-center justify-content-center flex-column mb-5">
               <Link to="/">
-                <img src={empty} alt="image" width="150" height="150px" />
+                <img src={empty} alt="image" height="150px" />
               </Link>
               <h3> Orders page is currently empty</h3>
               <br />
@@ -82,33 +82,34 @@ export default function UserOrders() {
                         <table className="table">
                           <thead>
                             <tr>
-                              <th>Order ID</th>
-                              <th>Number of Items</th>
-                              <th>Amount</th>
-                              <th>Status</th>
-                              <th>Actions</th>
+                              <th style={{minWidth:"200px"}}>Order ID</th>
+                              <th style={{minWidth:"200px"}}>Number of Items</th>
+                              <th style={{minWidth:"200px"}}>Amount</th>
+                              <th style={{minWidth:"200px"}}>Status</th>
+                              <th style={{minWidth:"150px"}}>Actions</th>
                             </tr>
                           </thead>
 
                           {userOrders.map((items) => (
                             <tbody>
                               <tr>
-                                <td width="30%">
+                                <td>
                                   <span>{items.clocreOrderId}</span>
                                 </td>
-                                <td width="20%">
+                                <td>
                                   <span>{items.orderItems.length}</span>
                                 </td>
-                                <td width="20%">
+                                <td>
                                   <span>Rs: {items.totalPrice}</span>
                                 </td>
-                                <td width="20%">
+                                <td>
                                   <span>{items.orderStatus}</span>
                                 </td>
-                                <td width="10%">
+                                <td>
                                   <Link
                                     to={`/order/${items._id}`}
-                                    className="btn btn-primary"
+                                    className="btn"
+                                    style={{backgroundColor:"#ffad63", color:"#fff"}}
                                   >
                                     <i className="fa fa-eye"></i>
                                   </Link>

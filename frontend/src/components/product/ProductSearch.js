@@ -132,10 +132,10 @@ export default function ProductSearch({ onFilterChange }) {
           <MetaData title={"Results"} />
 
           {/* Medium & Small screen filter/sort */}
-          <div className="d-block d-md-none px-3 mobileSticky">
+          <div className="px-3 mobileSticky">
             <div className="d-flex w-100">
               {/* CATEGORY Dropdown */}
-              <Dropdown className="w-50 text-center">
+              <Dropdown className="w-50 m-1 text-center">
                 <Dropdown.Toggle
                   as="div"
                   className="mobileBtn-l py-2"
@@ -211,7 +211,7 @@ export default function ProductSearch({ onFilterChange }) {
               </Dropdown>
 
               {/* PRICE FILTER Dropdown Placeholder */}
-              <Dropdown className="w-50 text-center">
+              <Dropdown className="w-50 m-1 text-center">
                 <Dropdown.Toggle
                   as="div"
                   className="mobileBtn-r py-2"
@@ -339,7 +339,7 @@ export default function ProductSearch({ onFilterChange }) {
           {/* Big screen */}
           <section className="listingPage">
             <div className="listingData">
-              <div className="row">
+              <div className="row container-fluid">
                 <div className="col-md-2 sidebarWrapper pt-0">
                   <div className="sidebar">
                     <div className="card border-0 shadow p-3">
@@ -514,7 +514,7 @@ export default function ProductSearch({ onFilterChange }) {
                 </div>
 
                 <div className="col-md-10 rightContent homeProducts pt-0">
-                  <div className="productRow pl-3 pr-3">
+                  <div className="productRow pt-0 pl-3 pr-3">
                     {products && products.length > 0 ? (
                       products.map((product) => (
                         <div key={product._id} className="productCard p-1">

@@ -3,12 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../../actions/userActions";
 import { toast } from "react-toastify";
 import Loader from "../layouts/Loader";
-import SellerSidebar from "./SellerSidebar";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import Drawer from '@mui/material/Drawer';
-import { Link } from "react-router-dom"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { countries } from "countries-list";
@@ -176,12 +171,22 @@ const SellerRegistration = () => {
 
 
   if (user.role === "seller" && user.isSeller) {
-    return <p>You are already a seller. Use the seller dashboard.</p>;
+    return (
+      <>
+        <section className="pt-3 pb-3 container">
+          <p>You are already a seller. Use the seller dashboard.</p>
+        </section>
+      </>
+    )
   }
 
   if (user.role === "user" && user.isSeller === false) {
     return (
-      <p>You have successfully requested for seller. We will notify you.</p>
+      <>
+        <section className="pt-3 pb-3 container">
+          <p>You have successfully requested for seller. We will notify you.</p>
+        </section>
+      </>
     );
   }
 
@@ -194,9 +199,9 @@ const SellerRegistration = () => {
 
 
 
-        <div className="col-12 newprod-right-glc  pt-3 pb-3">
+        <div className="col-12 newprod-right-glc pt-3">
 
-          <h3 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
+          <h3 className="mb-4" style={{ color: '#ffad63' }}>
             SELLER REGISTRATION
           </h3>
 
@@ -205,8 +210,9 @@ const SellerRegistration = () => {
           {isSubmitting && <Loader />}
           <form onSubmit={handleSubmit}>
 
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+            <div className="row mt-3 mb-3">
+
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Name :"
@@ -223,7 +229,7 @@ const SellerRegistration = () => {
                 </div>
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Last Name:"
@@ -239,10 +245,8 @@ const SellerRegistration = () => {
                   />
                 </div>
               </div>
-            </div>
 
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Email:"
@@ -259,7 +263,7 @@ const SellerRegistration = () => {
                 </div>
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="GST Number:"
@@ -283,10 +287,7 @@ const SellerRegistration = () => {
                 </div>
               </div>
 
-            </div>
-
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Business Name:"
@@ -317,7 +318,7 @@ const SellerRegistration = () => {
                 </div>
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Business Email:"
@@ -345,10 +346,8 @@ const SellerRegistration = () => {
 
                 </div>
               </div>
-            </div>
 
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Business Contact Number:"
@@ -401,7 +400,7 @@ const SellerRegistration = () => {
                 </div>
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-6 mb-3">
                 {/* pincode */}
                 <div className="form-group">
                   <TextField
@@ -430,9 +429,8 @@ const SellerRegistration = () => {
 
                 </div>
               </div>
-            </div>
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="Business Address:"
@@ -454,7 +452,8 @@ const SellerRegistration = () => {
 
                 </div>
               </div>
-              <div className="col-md-6">
+
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <div className="custom-select-wrapper">
                     <select
@@ -474,9 +473,8 @@ const SellerRegistration = () => {
 
                 </div>
               </div>
-            </div>
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="City/Town"
@@ -490,7 +488,8 @@ const SellerRegistration = () => {
                   />
                 </div>
               </div>
-              <div className="col-md-6">
+
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <TextField
                     label="State"
@@ -504,9 +503,8 @@ const SellerRegistration = () => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="row mt-3 mb-4">
-              <div className="col-md-6">
+
+              <div className="col-md-6 mb-3">
                 <div className="form-group">
                   <select
                     label="Country *"
@@ -527,13 +525,14 @@ const SellerRegistration = () => {
                   </select>
                 </div>
               </div>
+
             </div>
 
             <div class="">
               <Button
                 disabled={isSubmitting}
                 type="submit"
-                className="btn-g btn-lg w-20 mb-5"
+                className="btn-g btn-lg w-20 mb-4"
                 id="shipping_btn"
               >
                 SAVE & CONTINUE

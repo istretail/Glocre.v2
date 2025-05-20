@@ -32,20 +32,28 @@ export const removeCartItemFromCart =
     }
   };
 
-export const updateCartItemQuantityInCart =(productId, quantity, stock, variantId) => async (dispatch) => {
-    try {
-      await axios.put(`/api/v1/cart/update`, {
+export const updateCartItemQuantityInCart = (productId, quantity, stock, variantId) => async (dispatch) => {
+  try {
+    await axios.put(`/api/v1/cart/update`, {
+      productId,
+      quantity,
+      variantId, // send only if present
+    });
+
+    dispatch(
+      updateCartItemQuantity({
         productId,
         quantity,
+        stock,
         variantId,
-      });
-      dispatch(
-        updateCartItemQuantity({ productId, quantity, stock, variantId }),
-      );
-    } catch (error) {
-      // Handle error
-    }
-  };
+      })
+    );
+  } catch (error) {
+    console.error("Error updating cart quantity:", error.response?.data || error.message);
+    // Optionally show toast or dispatch failure action
+  }
+};
+  
 
 export const getCartItemsFromCart = () => async (dispatch) => {
   try {

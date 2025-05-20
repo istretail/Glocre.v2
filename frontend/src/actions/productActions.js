@@ -58,7 +58,7 @@ import {
   relatedProductsFail,
 } from "../slices/relatedProductSlice";
 import { getCategoryFail, getCategoryRequest, getCategorySuccess } from "../slices/categorySlice";
-
+import { toast } from "react-toastify";
 export const getProducts =
   (keyword, price, maincategory, category, subcategory, rating, currentPage) =>
   async (dispatch) => {
@@ -175,6 +175,7 @@ export const updateProduct = (id, productData) => async (dispatch) => {
   } catch (error) {
     //handle error
     dispatch(updateProductFail(error.response.data.message));
+    // toast.error(error.response.data.message)
   }
 };
 export const getReviews = (id) => async (dispatch) => {

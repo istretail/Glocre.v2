@@ -18,8 +18,8 @@ import 'react-medium-image-zoom/dist/styles.css'
 export default function UpdateProduct() {
 
     const { id: productId } = useParams();
-    const { loading, error, products, categories = {} } = useSelector(state => state.productsState);
-    const { isProductUpdated, isImageDeleted, error: productError } = useSelector(state => state.productState);
+    const { loading, products, categories = {} } = useSelector(state => state.productsState);
+    const { isProductUpdated, isImageDeleted, error } = useSelector(state => state.productState);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -77,9 +77,40 @@ export default function UpdateProduct() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
 
+        // Fields that should be uppercase (alphanumeric fields)
+        const upperCaseFields = ["sku", "upc", "itemModelNum", "hsn"];
+
+        // Handle numeric fields like price and offPrice
+        if (name === "price" || name === "offPrice") {
+            const numericValue = Number(value);
+
+            setFormData((prev) => {
+                const updated = { ...prev, [name]: numericValue };
+
+                const price = name === "price" ? numericValue : Number(prev.price);
+                const offPrice = name === "offPrice" ? numericValue : Number(prev.offPrice);
+
+                if (price !== 0 && offPrice !== 0 && price <= offPrice) {
+                    alert("Maximum Retail Price must be greater than Offer Price.");
+                    return prev; // block update
+                }
+
+                return updated;
+            });
+        } else {
+            // For other fields (like sku, upc, hsn etc.)
+            const transformedValue = upperCaseFields.includes(name)
+                ? value.toUpperCase()
+                : value;
+
+            setFormData((prev) => ({
+                ...prev,
+                [name]: transformedValue,
+            }));
+        }
+    };
+      
     const handleKeyPointsChange = (index, value) => {
         const newKeyPoints = [...formData.keyPoints];
         newKeyPoints[index] = value;
@@ -135,7 +166,7 @@ export default function UpdateProduct() {
                     sku: product.sku,
                     upc: product.upc,
                     hsn: product.hsn,
-
+                    moq: product.moq,
                     manufactureDetails: product.manufactureDetails,
                     productCertifications: product.productCertifications,
                     itemLength: product.itemLength,
@@ -154,7 +185,7 @@ export default function UpdateProduct() {
                     variants: product.variants
 
                 });
-                
+
                 setVariantDetails(product.variants);
                 setHasVariants(product.variants.length > 0);
                 setImagesPreview(product.images);
@@ -177,9 +208,9 @@ export default function UpdateProduct() {
         if (error) {
             toast(error, {
                 type: 'error',
-                onOpen: () => { dispatch(updateProduct(error.message)) }
-            });
-            return;
+                onOpen: () => { dispatch(clearError()) }
+            })
+            return
         }
 
         dispatch(getAdminProducts(productId));
@@ -188,9 +219,21 @@ export default function UpdateProduct() {
 
 
     const handleVariantChange = (index, name, value) => {
+        const numericValue = Number(value);
+
         setVariantDetails((prevVariants) => {
             const newVariants = [...prevVariants];
-            newVariants[index] = { ...newVariants[index], [name]: value };
+            const current = newVariants[index];
+
+            const price = name === "price" ? numericValue : Number(current.price);
+            const offPrice = name === "offPrice" ? numericValue : Number(current.offPrice);
+
+            if (price !== 0 && offPrice !== 0 && price <= offPrice) {
+                alert(`Variant ${index + 1}: MRP must be greater than Offer Price.`);
+                return prevVariants; // block update
+            }
+
+            newVariants[index] = { ...current, [name]: numericValue };
             return newVariants;
         });
     };
@@ -205,7 +248,7 @@ export default function UpdateProduct() {
             return newVariants;
         });
     };
-   
+
 
     const openModal = (image) => {
         setModalImage(image);
@@ -232,6 +275,43 @@ export default function UpdateProduct() {
         });
     };
 
+    const validateForm = () => {
+        const { itemModelNum, sku, upc, hsn } = formData;
+        const alphaNumericRegex = /^[A-Z0-9\-]+$/;
+
+        const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
+
+        // --- SKU ---
+        if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
+            alert("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
+            return false;
+        }
+
+        // --- HSN ---
+        if (!hsn || !/^\d{4,10}$/.test(hsn) || /^0+$/.test(hsn)) {
+            alert("HSN code is required, should be 4–10 digits, and cannot be all zeros (e.g. '0000').");
+            return false;
+        }
+
+        // --- Item Model Number ---
+        if (itemModelNum) {
+            if (!alphaNumericRegex.test(itemModelNum) || isOnlyZerosOrDashes(itemModelNum)) {
+                alert("Item Model Number should be alphanumeric and not just zeros or dashes.");
+                return false;
+            }
+        }
+
+        // --- UPC ---
+        if (upc) {
+            if (!alphaNumericRegex.test(upc) || isOnlyZerosOrDashes(upc)) {
+                alert("UPC should be alphanumeric and not just zeros or dashes.");
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -239,71 +319,74 @@ export default function UpdateProduct() {
             toast("Please fix the image errors before submitting.");
             return;
         }
+        if (validateForm()) {
 
-        const productData = new FormData();
+            const productData = new FormData();
 
-        // Append product fields
-        Object.keys(formData).forEach((key) => {
-            if (key === "images") {
-                formData.images.forEach((image) => {
-                    if (typeof image === "string" && image.startsWith("http")) {
-                        // Add only valid URLs to existingImages
-                        productData.append("existingImages", image);
-                    }
-                });
-                imageFiles.forEach((file) => {
-                    // Add only File objects to images
-                    productData.append("images", file);
-                });
-            } else if (key === "keyPoints") {
-                formData[key].forEach((point) => {
-                    productData.append("keyPoints", point);
-                });
-            } else {
-                productData.append(key, formData[key]);
-            }
-        });
-
-        // Ensure ALL variants (both updated & unchanged) are included
-        variantDetails.forEach((variant, index) => {
-            productData.append(`variants[${index}][id]`, variant._id); // Keep existing ID
-            productData.append(`variants[${index}][type]`, variant.variantType);
-            productData.append(`variants[${index}][name]`, variant.variantName);
-            productData.append(`variants[${index}][price]`, variant.price);
-            productData.append(`variants[${index}][offPrice]`, variant.offPrice);
-            productData.append(`variants[${index}][stock]`, variant.stock);
-
-            if (variant.images && variant.images.length > 0) {
-                variant.images.forEach((file) => {
-                    if (typeof file === "string" && file.startsWith("http")) {
-                        // Add only valid URLs to existingImages
-                        productData.append(`variants[${index}][existingImages]`, file);
-                    } else {
+            // Append product fields
+            Object.keys(formData).forEach((key) => {
+                if (key === "images") {
+                    formData.images.forEach((image) => {
+                        if (typeof image === "string" && image.startsWith("http")) {
+                            // Add only valid URLs to existingImages
+                            productData.append("existingImages", image);
+                        }
+                    });
+                    imageFiles.forEach((file) => {
                         // Add only File objects to images
-                        productData.append(`variants[${index}][images]`, file);
-                    }
-                });
-            } else {
-                // Ensure existingImages is sent even if no new images are added
-                productData.append(`variants[${index}][existingImages]`, []);
+                        productData.append("images", file);
+                    });
+                } else if (key === "keyPoints") {
+                    formData[key].forEach((point) => {
+                        productData.append("keyPoints", point);
+                    });
+                } else {
+                    productData.append(key, formData[key]);
+                }
+            });
+
+            // Ensure ALL variants (both updated & unchanged) are included
+            variantDetails.forEach((variant, index) => {
+                productData.append(`variants[${index}][id]`, variant._id); // Keep existing ID
+                productData.append(`variants[${index}][type]`, variant.variantType);
+                productData.append(`variants[${index}][name]`, variant.variantName);
+                productData.append(`variants[${index}][price]`, variant.price);
+                productData.append(`variants[${index}][offPrice]`, variant.offPrice);
+                productData.append(`variants[${index}][stock]`, variant.stock);
+
+                if (variant.images && variant.images.length > 0) {
+                    variant.images.forEach((file) => {
+                        if (typeof file === "string" && file.startsWith("http")) {
+                            // Add only valid URLs to existingImages
+                            productData.append(`variants[${index}][existingImages]`, file);
+                        } else {
+                            // Add only File objects to images
+                            productData.append(`variants[${index}][images]`, file);
+                        }
+                    });
+                } else {
+                    // Ensure existingImages is sent even if no new images are added
+                    productData.append(`variants[${index}][existingImages]`, []);
+                }
+            });
+
+            // if (formData.status === 'rejected') {
+            //     productData.append('rejectionReason', rejectionReason);
+            // }
+
+            // Debugging: Log FormData
+            // for (let pair of productData.entries()) {
+            //     console.log(pair[0], pair[1]);
+            // }
+            // console.log("FormData before submission:", formData);
+            try {
+                await dispatch(updateProduct(productId, productData));
+                // toast("Product updated successfully!", { type: "success" });
+            } catch (error) {
+                toast(error.message, { type: "error" });
             }
-        });
-
-        // if (formData.status === 'rejected') {
-        //     productData.append('rejectionReason', rejectionReason);
-        // }
-
-        // Debugging: Log FormData
-        // for (let pair of productData.entries()) {
-        //     console.log(pair[0], pair[1]);
-        // }
-        // console.log("FormData before submission:", formData);
-        try {
-            await dispatch(updateProduct(productId, productData));
-            // toast("Product updated successfully!", { type: "success" });
-        } catch (error) {
-            toast(error.message, { type: "error" });
         }
+
     };
 
 
@@ -331,11 +414,11 @@ export default function UpdateProduct() {
                         ...prev,
                         images: (prev.images || []).filter((image) => image !== imageUrl),
                     }));
-                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); 
+                    setImagesPreview((prev) => prev.filter((image) => image !== imageUrl));
                 }
 
 
-                
+
             } catch (error) {
                 toast.error("Failed to delete image.");
             }
@@ -346,13 +429,13 @@ export default function UpdateProduct() {
     // console.log("Variant Details before submitting:", variantDetails);
     // console.log("Final Variant Data:", variantDetails);
     useEffect(() => {
-        if (error || productError) {
-                    toast(error || productError, {
-                        type: 'error',
-                        onOpen: () => { dispatch(clearError()) }
-                    })
-                    return
-                }
+        if (error) {
+            toast(error, {
+                type: 'error',
+                onOpen: () => { dispatch(clearError()) }
+            })
+            return
+        }
         if (isImageDeleted) {
             toast('Image Delete Successfully!', {
                 type: 'success',
@@ -790,72 +873,85 @@ export default function UpdateProduct() {
                                         {!hasVariants && (
                                             <>
                                                 <div className="form-group">
-                                                    <label htmlFor="price_field">Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span></label>
+                                                    <label htmlFor="price_field">
+                                                        Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span>
+                                                        <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </label>
                                                     <input
                                                         type="number"
                                                         id="price_field"
                                                         className="form-control"
-                                                        onChange={handleChange}
-                                                        value={formData.price}
                                                         name="price"
+                                                        value={formData.price}
+                                                        onChange={handleChange}
                                                         min="0"
                                                         max="99999"
-                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                        onWheel={(e) => e.target.blur()}
                                                         onKeyDown={(e) => {
                                                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                                e.preventDefault(); // disables arrow key changes
+                                                                e.preventDefault();
                                                             }
                                                         }}
                                                     />
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="offPrice_field">Offer Price (in ₹):<span style={{ color: "red" }}> *
-                                                        <LightTooltip placement="top" title="Provide the manufacturer’s model number, if available." arrow>
+                                                    <label htmlFor="offPrice_field">
+                                                        Offer Price (in ₹):<span style={{ color: "red" }}> *</span>
+                                                        <LightTooltip placement="top" title="Enter the offer price of the product." arrow>
                                                             <ErrorOutlineIcon className="errorout-icon" />
-                                                        </LightTooltip></span></label>
+                                                        </LightTooltip>
+                                                    </label>
                                                     <input
                                                         type="number"
                                                         id="offPrice_field"
                                                         className="form-control"
-                                                        onChange={handleChange}
-                                                        value={formData.offPrice}
                                                         name="offPrice"
+                                                        value={formData.offPrice}
+                                                        onChange={handleChange}
                                                         min="0"
                                                         max="99999"
-                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                        onWheel={(e) => e.target.blur()}
                                                         onKeyDown={(e) => {
                                                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                                e.preventDefault(); // disables arrow key changes
+                                                                e.preventDefault();
                                                             }
                                                         }}
                                                     />
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="stock_field">Stock:<span style={{ color: "red" }}> *</span></label>
+                                                    <label htmlFor="stock_field">
+                                                        Stock:<span style={{ color: "red" }}> *</span>
+                                                        <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                                                            <ErrorOutlineIcon className="errorout-icon" />
+                                                        </LightTooltip>
+                                                    </label>
                                                     <input
                                                         type="number"
+                                                        id="stock_field"
                                                         className="form-control"
                                                         name="stock"
                                                         value={formData.stock}
                                                         onChange={(e) => {
                                                             const value = e.target.value;
-                                                            if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
-                                                                handleChange(e); // only update if within range
+                                                            if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                                                handleChange(e);
                                                             }
                                                         }}
-                                                        required
                                                         min="0"
                                                         max="9999"
-                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                        onWheel={(e) => e.target.blur()}
                                                         onKeyDown={(e) => {
                                                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                                e.preventDefault(); // disables arrow key changes
+                                                                e.preventDefault();
                                                             }
                                                         }}
                                                     />
                                                 </div>
+
 
                                                 <div className="form-group">
                                                     <label>Images:<span style={{ color: "red" }}> *</span></label>
@@ -891,7 +987,7 @@ export default function UpdateProduct() {
                                                             accept="image/*"
                                                             multiple
                                                             onChange={handleImageChange}
-                                                           
+
                                                         />
                                                         <label className="custom-file-label" htmlFor="customFile">
                                                             Choose Images
@@ -999,11 +1095,12 @@ export default function UpdateProduct() {
                                                 </div>
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *
+                                                        <label>
+                                                            Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span>
                                                             <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
-                                                        </span></label>
+                                                        </label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -1012,17 +1109,24 @@ export default function UpdateProduct() {
                                                             required
                                                             min="0"
                                                             max="99999"
+                                                            onWheel={(e) => e.target.blur()}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
                                                         />
                                                     </div>
                                                 </div>
+
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
-                                                            <LightTooltip placement="top" title="Enter the Offer price of the product." arrow>
+                                                        <label>
+                                                            Offer Price (in ₹):<span style={{ color: "red" }}> *</span>
+                                                            <LightTooltip placement="top" title="Enter the offer price of the product." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
-
-                                                        </span></label>
+                                                        </label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
@@ -1031,40 +1135,47 @@ export default function UpdateProduct() {
                                                             required
                                                             min="0"
                                                             max="99999"
+                                                            onWheel={(e) => e.target.blur()}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
                                                         />
                                                     </div>
                                                 </div>
+
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
-                                                        <label>Stock:<span style={{ color: "red" }}> *
+                                                        <label>
+                                                            Stock:<span style={{ color: "red" }}> *</span>
                                                             <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                                                                 <ErrorOutlineIcon className="errorout-icon" />
                                                             </LightTooltip>
-                                                        </span></label>
+                                                        </label>
                                                         <input
                                                             type="number"
                                                             className="form-control"
                                                             value={variant.stock}
                                                             onChange={(e) => {
                                                                 const value = e.target.value;
-                                                                // Allow empty input (for deletion) and only numbers between 0–9999
                                                                 if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
                                                                     handleVariantChange(index, 'stock', value);
                                                                 }
                                                             }}
                                                             required
-                                                            
                                                             min="0"
                                                             max="9999"
-                                                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                                                            onWheel={(e) => e.target.blur()}
                                                             onKeyDown={(e) => {
                                                                 if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                                                    e.preventDefault(); // disables arrow key changes
+                                                                    e.preventDefault();
                                                                 }
                                                             }}
                                                         />
                                                     </div>
                                                 </div>
+
                                                 <div className="col-lg-6">
                                                     <div className="form-group">
                                                         <label>Images:<span style={{ color: "red" }}> *</span></label>
@@ -1111,7 +1222,7 @@ export default function UpdateProduct() {
                                                     id="itemModelNum_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.itemModelNum?.toLocaleUpperCase()}
+                                                    value={formData.itemModelNum || ""}
                                                     maxLength={15}
                                                     name="itemModelNum"
                                                 />
@@ -1125,7 +1236,7 @@ export default function UpdateProduct() {
                                                     id="sku_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    value={formData.sku?.toLocaleUpperCase()}
+                                                    value={formData.sku || ""}
                                                     maxLength={15}
                                                     name="sku"
                                                 />
@@ -1144,7 +1255,7 @@ export default function UpdateProduct() {
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     maxLength={15}
-                                                    value={formData.upc?.toLocaleUpperCase()}
+                                                    value={formData.upc || ""}
                                                     name="upc"
                                                 />
                                             </div>
@@ -1161,7 +1272,7 @@ export default function UpdateProduct() {
                                                     className="form-control"
                                                     onChange={handleChange}
                                                     maxLength={10}
-                                                    value={formData.hsn?.toLocaleUpperCase()}
+                                                    value={formData.hsn || ""}
                                                     name="hsn"
                                                 />
                                             </div>
@@ -1221,7 +1332,7 @@ export default function UpdateProduct() {
                                                     value={formData.productCertifications}
                                                     name="productCertifications"
                                                     maxLength={50}
-                                                    
+
                                                 />
                                             </div>
                                         </div>
@@ -1235,7 +1346,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.itemLength}
                                                     name="itemLength"
-                                                    min="0"
+                                                    min="1"
                                                     max="9999"
                                                     required
                                                 />
@@ -1251,7 +1362,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.itemHeight}
                                                     name="itemHeight"
-                                                    min="0"
+                                                    min="1"
                                                     max="9999"
                                                     required
                                                 />
@@ -1267,7 +1378,7 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.itemWeight}
                                                     name="itemWeight"
-                                                    min="0"
+                                                    min="1"
                                                     max="9999"
                                                     required
                                                 />
@@ -1283,12 +1394,47 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.itemWidth}
                                                     name="itemWidth"
-                                                    min="0"
+                                                    min="1"
                                                     max="9999"
                                                     required
                                                 />
                                             </div>
                                         </div>
+                                        <div className="col-6">
+                                            <div className="form-group">
+                                                <label htmlFor="moq_field">
+                                                    Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *</span>
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    id="moq_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.moq}
+                                                    name="moq"
+                                                    min="1"
+                                                    max="9999"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-4">
+                                                            <div className="form-group">
+                                                              <label htmlFor="manufactureDetails_field">Manufacture Details
+                                                                <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                                                                  <ErrorOutlineIcon className="errorout-icon" />
+                                                                </LightTooltip>
+                                                              </label>
+                                                              <input
+                                                                type="text"
+                                                                id="manufactureDetails_field"
+                                                                className="form-control"
+                                                                onChange={handleChange}
+                                                                value={formData.manufactureDetails}
+                                                                name="manufactureDetails"
+                                                              />
+                                                            </div>
+                                                          </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostlol_field">Shipping Cost local (Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>
@@ -1305,7 +1451,7 @@ export default function UpdateProduct() {
                                                 />
                                             </div>
                                         </div>
-                                        
+
                                         <div className="col-lg-6">
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostNorth_field">Shipping Cost North India:<span style={{ color: "red" }}> *</span></label>

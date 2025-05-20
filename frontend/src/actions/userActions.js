@@ -77,6 +77,12 @@ import {
   resendVerificationRequest,
   resendVerificationSuccess,
   resendVerificationFail,
+  subscribeRequest,
+  subscribeSuccess,
+  subscribeFail,
+  unsubscribeRequest,
+  unsubscribeSuccess,
+  unsubscribeFail,
 } from "../slices/userSlice";
 import {
   addWishlistRequest,
@@ -479,6 +485,28 @@ export const resendVerification = (email) => async (dispatch) => {
     toast.success(response.data.message);
   } catch (error) {
     dispatch(resendVerificationFail(error.response.data.message));
+    toast.error(error.response.data.message)
+  }
+};
+export const subscribe = (email) => async (dispatch) => {
+  try {
+    dispatch(subscribeRequest());
+    const response = await axios.post("/api/v1/subscribe", { email });
+    dispatch(subscribeSuccess(response.data));
+    toast.success(response.data.message);
+  } catch (error) {
+    dispatch(subscribeFail(error.response.data.message));
+    toast.error(error.response.data.message)
+  }
+};
+export const unsubscribe = (email, reason) => async (dispatch) => {
+  try {
+    dispatch(unsubscribeRequest());
+    const response = await axios.post("/api/v1/unsubscribe", { email, reason });
+    dispatch(unsubscribeSuccess(response.data));
+    toast.success(response.data.message);
+  } catch (error) {
+    dispatch(unsubscribeFail(error.response.data.message));
     toast.error(error.response.data.message)
   }
 };

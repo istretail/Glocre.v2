@@ -158,13 +158,13 @@ export default function OrderDetail() {
           <Text
             style={
               orderDetail.paymentInfo &&
-              orderDetail.paymentInfo.status === 'paid'
+                orderDetail.paymentInfo.status === 'paid'
                 ? styles.greenColor
                 : styles.redColor
             }
           >
             {orderDetail.paymentInfo &&
-            orderDetail.paymentInfo.status === 'paid'
+              orderDetail.paymentInfo.status === 'paid'
               ? 'PAID'
               : 'NOT PAID'}
           </Text>
@@ -173,7 +173,7 @@ export default function OrderDetail() {
           <Text
             style={
               orderDetail.orderStatus &&
-              orderDetail.orderStatus.includes('Delivered')
+                orderDetail.orderStatus.includes('Delivered')
                 ? styles.greenColor
                 : styles.redColor
             }
@@ -231,12 +231,12 @@ export default function OrderDetail() {
 
           <section className="container-fluid order-tracking-section-procureg mb-4">
             <div class="">
-              <div class="cartRightBox">
-               
+              <div class="cartRightBox pt-0">
+
                 <div className="row mb-2">
                   <div className="col-lg-9">
                     <h4 style={{ color: '#ffad63' }}>
-                        Order ID :{orderDetail.clocreOrderId}{' '}
+                      Order ID :{orderDetail.clocreOrderId}{' '}
                     </h4>
                   </div>
                   <div className="col-lg-3">
@@ -249,16 +249,16 @@ export default function OrderDetail() {
 
                 <div className="order-tracking-box-contents-procureg ">
                   <div className="row">
-                    <div className="col-lg-3 mb-2">
-                      <div className="card box-contents-glc">
+                    <div className="col-lg-3 mb-2 col-sm-6 col-md-6 ">
+                      <div className="card">
                         <div className="">
                           <h5>Estimated time of delivery</h5>
                           <p>{formattedDate}</p>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-3 mb-2">
-                      <div className="card box-contents-glc">
+                    <div className="col-lg-3 mb-2 col-sm-6 col-md-6 ">
+                      <div className="card">
                         <div className="">
                           <h5>Delivering to</h5>
                           <p>
@@ -269,31 +269,31 @@ export default function OrderDetail() {
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-3 mb-2">
-                      <div className="card box-contents-glc">
+                    <div className="col-lg-3 mb-2 col-sm-6 col-md-6 ">
+                      <div className="card">
                         <div className="">
                           <h5>Status</h5>
-                            <p>{orderStatus }</p>
+                          <p>{orderStatus}</p>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-3">
-                      <div className="card box-contents-glc">
-                          <div>
-                            {orderStatus === "Processing" ? (
-                              <p style={{ fontStyle: 'italic', color: '#888' }}>
-                                Tracking information will be available after the order is shipped.
-                              </p>
-                            ) : (
-                              <>
-                                <h5>Tracking Number:</h5>
-                                <p>{orderDetail?.trackingInfo?.trackingNumber || "N/A"}</p>
+                    <div className="col-sm-6 col-md-6 col-lg-3 ">
+                      <div className="card">
+                        <div>
+                          {orderStatus === "Processing" ? (
+                            <p style={{ fontStyle: 'italic', color: '#888' }}>
+                              Tracking information will be available after the order is shipped.
+                            </p>
+                          ) : (
+                            <>
+                              <h5>Tracking Number:</h5>
+                              <p>{orderDetail?.trackingInfo?.trackingNumber || "N/A"}</p>
 
-                                <h5>Courier Slug:</h5>
-                                <p>{orderDetail?.trackingInfo?.courierSlug || "N/A"}</p>
-                              </>
-                            )}
-                          </div>
+                              <h5>Courier Slug:&nbsp;&nbsp;<b className="text-g">{orderDetail?.trackingInfo?.courierSlug || "N/A"}</b></h5>
+                             
+                            </>
+                          )}
+                        </div>
 
                       </div>
                     </div>
@@ -302,7 +302,7 @@ export default function OrderDetail() {
 
                 <div
                   className="progress mt-4"
-                  style={{ backgroundColor: '#f5f5f5', height: '7px' }}
+                  style={{ backgroundColor: '#f5f5f5 ', height: '7px' }}
                 >
                   <div
                     className="progress-bar"
@@ -316,19 +316,19 @@ export default function OrderDetail() {
 
                 <div class="order-tracking-progress-contents-procureg">
                   <div className="row ">
-                    <div className="col-lg-4" style={{display:"flex", justifyContent:"center"}}>
+                    <div className="col-lg-4" style={{ display: "flex", justifyContent: "center" }}>
                       <div>
                         <FontAwesomeIcon icon={faCheck} className="iconnn" />
                         <h6>Order Confirmed</h6>
                       </div>
                     </div>
-                    <div className="col-lg-4"  style={{display:"flex", justifyContent:"center"}}>
+                    <div className="col-lg-4" style={{ display: "flex", justifyContent: "center" }}>
                       <div>
                         <FontAwesomeIcon icon={faCheck} className="iconnn" />
                         <h6>Shipped</h6>
                       </div>
                     </div>
-                    <div className="col-lg-4"  style={{display:"flex", justifyContent:"center"}}>
+                    <div className="col-lg-4" style={{ display: "flex", justifyContent: "center" }}>
                       <div>
                         <FontAwesomeIcon icon={faCheck} className="iconnn" />
                         <h6>Delivered</h6>
@@ -340,37 +340,31 @@ export default function OrderDetail() {
                 <div className="order-tracking-pdf-contents-procureg">
                   {orderItems &&
                     orderItems.map(item => (
-                      <div class="card col-3 mb-3 ">
-                        <div class="card-body">
-                          <div className="row">
-                            <div className="col-lg-3">
-                              <img
-                                class="card-img-top"
-                                src={item.image}
-                                alt={item.name}
-                              />
-                            </div>
-                            <div
-                              className="col-lg-9"
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                flexDirection: 'column',
-                              }}
-                            >
-                              <div>
-                                <Link to={`/products/${item.product}`}
-                                style={{color:"#2f4d2a"}}
-                                >
-                                  {item.name}
-                                </Link>
-                                <p>₹{item.price}</p>
-                                <p>{item.quantity} Piece(s)</p>
+                      <div className="col-12 col-sm-6 col-md-6 col-lg-3 mb-3 mt-3">
+                        <div className="card h-100">
+                          <div className="card-body p-0">
+                            <div className="row align-items-center">
+                              <div className="col-5">
+                                <img
+                                  className="img-fluid"
+                                  src={item.image}
+                                  alt={item.name}
+                                />
+                              </div>
+                              <div className="col-7">
+                                <div>
+                                  <Link to={`/products/${item.product}`} style={{ color: "#2f4d2a" }}>
+                                    <strong>{item.name}</strong>
+                                  </Link>
+                                  <p className="mb-1">₹{item.price}</p>
+                                  <p className="mb-0">{item.quantity} Piece(s)</p>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+
                     ))}
                 </div>
 
@@ -388,7 +382,7 @@ export default function OrderDetail() {
                       }
                     </PDFDownloadLink>
                   ) : orderDetail.orderStatus === 'Delivered' ? (
-                    <button onClick={handleGeneratePdf} className="">
+                    <button onClick={handleGeneratePdf} className="btn-g">
                       Generate Invoice
                     </button>
                   ) : null}{' '}

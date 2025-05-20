@@ -18,8 +18,8 @@ import 'react-medium-image-zoom/dist/styles.css'
 import { Modal, Box, Typography, Button } from "@mui/material";
 export default function SellerUpdateProduct() {
   const { id: productId } = useParams();
-  const { loading, error, categories = {} } = useSelector(state => state.productsState);
-  const { isProductUpdated, product, isImageDeleted, error:productError } = useSelector(state => state.productState);
+  const { loading, categories = {} } = useSelector(state => state.productsState);
+  const { isProductUpdated, product, isImageDeleted, error } = useSelector(state => state.productState);
   const [formData, setFormData] = useState({
     name: "",
     offPrice: "",
@@ -78,8 +78,40 @@ export default function SellerUpdateProduct() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    // Fields that should be uppercase (alphanumeric fields)
+    const upperCaseFields = ["sku", "upc", "itemModelNum", "hsn"];
+
+    // Handle numeric fields like price and offPrice
+    if (name === "price" || name === "offPrice") {
+      const numericValue = Number(value);
+
+      setFormData((prev) => {
+        const updated = { ...prev, [name]: numericValue };
+
+        const price = name === "price" ? numericValue : Number(prev.price);
+        const offPrice = name === "offPrice" ? numericValue : Number(prev.offPrice);
+
+        if (price !== 0 && offPrice !== 0 && price <= offPrice) {
+          alert("Maximum Retail Price must be greater than Offer Price.");
+          return prev; // block update
+        }
+
+        return updated;
+      });
+    } else {
+      // For other fields (like sku, upc, hsn etc.)
+      const transformedValue = upperCaseFields.includes(name)
+        ? value.toUpperCase()
+        : value;
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: transformedValue,
+      }));
+    }
   };
+
 
   const handleKeyPointsChange = (index, value) => {
     const newKeyPoints = [...formData.keyPoints];
@@ -107,21 +139,46 @@ export default function SellerUpdateProduct() {
     if (error) {
       toast(error, {
         type: 'error',
-        onOpen: () => { dispatch(updateSellerProduct(error.message)) }
+        onOpen: () => { dispatch(clearError()) }
       });
       return;
     }
+    
 
     dispatch(getSellerSingleProduct(productId));
-  }, [isProductUpdated, error, dispatch, navigate,]);
+  }, [isProductUpdated, error, dispatch, navigate]); 
+  
 
   const handleVariantChange = (index, name, value) => {
     setVariantDetails((prevVariants) => {
       const newVariants = [...prevVariants];
-      newVariants[index] = { ...newVariants[index], [name]: value };
+      const currentVariant = newVariants[index];
+
+      // Decide whether to convert value to number
+      const isNumericField = ['price', 'offPrice'].includes(name);
+      const updatedValue = isNumericField ? Number(value) : value;
+
+      // Validation: MRP should be greater than Offer Price
+      if (isNumericField) {
+        const price = name === 'price' ? updatedValue : Number(currentVariant.price);
+        const offPrice = name === 'offPrice' ? updatedValue : Number(currentVariant.offPrice);
+
+        if (price <= offPrice) {
+          alert("MRP must be greater than Offer Price.");
+          return prevVariants; // Block update
+        }
+      }
+
+      // If valid, update the variant
+      newVariants[index] = {
+        ...currentVariant,
+        [name]: updatedValue,
+      };
+
       return newVariants;
     });
   };
+  
 
   const handleVariantImageChange = (index, e) => {
     const files = Array.from(e.target.files);
@@ -244,8 +301,8 @@ export default function SellerUpdateProduct() {
     });
   };
   useEffect(() => {
-    if (error || productError) {
-      toast(error || productError, {
+    if (error) {
+      toast(error, {
         type: 'error',
         onOpen: () => { dispatch(clearError()) }
       })
@@ -262,6 +319,43 @@ export default function SellerUpdateProduct() {
     }
   }, [dispatch, isImageDeleted]);
 
+
+  const validateForm = () => {
+    const { itemModelNum, sku, upc, hsn } = formData;
+    const alphaNumericRegex = /^[A-Z0-9\-]+$/;
+
+    const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
+
+    // --- SKU ---
+    if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
+      alert("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
+      return false;
+    }
+
+    // --- HSN ---
+    if (!hsn || !/^\d{4,10}$/.test(hsn) || /^0+$/.test(hsn)) {
+      alert("HSN code is required, should be 4–10 digits, and cannot be all zeros (e.g. '0000').");
+      return false;
+    }
+
+    // --- Item Model Number ---
+    if (itemModelNum) {
+      if (!alphaNumericRegex.test(itemModelNum) || isOnlyZerosOrDashes(itemModelNum)) {
+        alert("Item Model Number should be alphanumeric and not just zeros or dashes.");
+        return false;
+      }
+    }
+
+    // --- UPC ---
+    if (upc) {
+      if (!alphaNumericRegex.test(upc) || isOnlyZerosOrDashes(upc)) {
+        alert("UPC should be alphanumeric and not just zeros or dashes.");
+        return false;
+      }
+    }
+
+    return true;
+  };
   const handleNavConfirm = async () => {
     setNavModalOpen(false);
     if (!pendingSubmit) return;
@@ -270,8 +364,9 @@ export default function SellerUpdateProduct() {
       toast("Please fix the image errors before submitting.");
       return;
     }
+    if (validateForm()) {
 
-    const productData = new FormData();
+      const productData = new FormData();
 
     Object.keys(formData).forEach((key) => {
       if (key === "images") {
@@ -293,9 +388,10 @@ export default function SellerUpdateProduct() {
     });
 
     variantDetails.forEach((variant, index) => {
-      productData.append(`variants[${index}][id]`, variant.id);
-      productData.append(`variants[${index}][name]`, variant.name);
+      productData.append(`variants[${index}][variantType]`, variant.variantType);
+      productData.append(`variants[${index}][name]`, variant.variantType);
       productData.append(`variants[${index}][price]`, variant.price);
+      productData.append(`variants[${index}][offPrice]`, variant.offPrice);
       productData.append(`variants[${index}][stock]`, variant.stock);
 
       if (variant.images && variant.images.length > 0) {
@@ -318,10 +414,12 @@ export default function SellerUpdateProduct() {
     try {
       await dispatch(updateSellerProduct(productId, productData));
     } catch (error) {
-      toast(error.message, { type: "error" });
+      // toast(error.message, { type: "error" });
     }
 
     setPendingSubmit(false); // reset flag
+    }
+    
   };
 
 
@@ -847,32 +945,35 @@ export default function SellerUpdateProduct() {
 
                   {!hasVariants && (
                     <>
-                      <div className="col-lg-6">
                         <div className="form-group">
-                          <label htmlFor="price_field">Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *
+                          <label htmlFor="price_field">
+                            Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span>
                             <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
-                          </span></label>
+                          </label>
                           <input
                             type="number"
                             id="price_field"
                             className="form-control"
-                            onChange={handleChange}
-                            value={formData.price}
                             name="price"
-                            required
+                            value={formData.price}
+                            onChange={handleChange}
                             min="0"
                             max="99999"
+                            onWheel={(e) => e.target.blur()}
+                            onKeyDown={(e) => {
+                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                e.preventDefault();
+                              }
+                            }}
                           />
                         </div>
-                      </div>
 
-                      <div className="col-lg-6">
                         <div className="form-group">
                           <label htmlFor="offPrice_field">
-                            Offer Price (in ₹)
-                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                            Offer Price (in ₹):<span style={{ color: "red" }}> *</span>
+                            <LightTooltip placement="top" title="Enter the offer price of the product." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </label>
@@ -880,48 +981,50 @@ export default function SellerUpdateProduct() {
                             type="number"
                             id="offPrice_field"
                             className="form-control"
-                            onChange={handleChange}
-                            value={formData.offPrice}
                             name="offPrice"
-                            required
+                            value={formData.offPrice}
+                            onChange={handleChange}
                             min="0"
                             max="99999"
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                            onWheel={(e) => e.target.blur()}
                             onKeyDown={(e) => {
                               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault(); // disables arrow key changes
+                                e.preventDefault();
                               }
                             }}
                           />
                         </div>
-                      </div>
 
-                      <div className="col-lg-6">
                         <div className="form-group">
-                          <label htmlFor="stock_field">Stock:<span style={{ color: "red" }}> *
+                          <label htmlFor="stock_field">
+                            Stock:<span style={{ color: "red" }}> *</span>
                             <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip></span></label>
+                            </LightTooltip>
+                          </label>
                           <input
                             type="number"
                             id="stock_field"
                             className="form-control"
-                            onChange={handleChange}
-                            value={formData.stock}
                             name="stock"
-                            required
-                            maxLength={4}
+                            value={formData.stock}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                handleChange(e);
+                              }
+                            }}
                             min="0"
                             max="9999"
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
+                            onWheel={(e) => e.target.blur()}
                             onKeyDown={(e) => {
                               if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault(); // disables arrow key changes
+                                e.preventDefault();
                               }
                             }}
                           />
                         </div>
-                      </div>
+
 
                       <div className="col-lg-6">
                         <div className="form-group">
@@ -936,6 +1039,7 @@ export default function SellerUpdateProduct() {
                                   width="55"
                                   height="52"
                                   style={{ cursor: "pointer" }}
+                                  
                                 />
                                 <button
                                   type="button"
@@ -1073,82 +1177,89 @@ export default function SellerUpdateProduct() {
                             required
                           />
                         </div>
-                        <div className="form-group">
-                          <label>Maximum Retail price (in ₹):<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip></span></label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={variant.price}
-                            onChange={e =>
-                              handleVariantChange(
-                                index,
-                                'price',
-                                e.target.value
-                              )
-                            }
-                            required
-                            min="0"
-                            max="99999"
-                          />
+                        <div className="col-lg-6">
+                          <div className="form-group">
+                            <label>
+                              Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span>
+                              <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={variant.price}
+                              onChange={(e) => handleVariantChange(index, "price", e.target.value)}
+                              required
+                              min="0"
+                              max="99999"
+                              onWheel={(e) => e.target.blur()}
+                              onKeyDown={(e) => {
+                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                  e.preventDefault();
+                                }
+                              }}
+                            />
+                          </div>
                         </div>
-                        <div className="form-group">
-                          <label>Offer Price (in ₹):<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip></span></label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={variant.offPrice}
-                            onChange={e =>
-                              handleVariantChange(
-                                index,
-                                'offPrice',
-                                e.target.value
-                              )
-                            }
-                            required
-                            min="0"
-                            max="99999"
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
-                            onKeyDown={(e) => {
-                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault(); // disables arrow key changes
-                              }
-                            }}
-                          />
+
+                        <div className="col-lg-6">
+                          <div className="form-group">
+                            <label>
+                              Offer Price (in ₹):<span style={{ color: "red" }}> *</span>
+                              <LightTooltip placement="top" title="Enter the offer price of the product." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={variant.offPrice}
+                              onChange={(e) => handleVariantChange(index, "offPrice", e.target.value)}
+                              required
+                              min="0"
+                              max="99999"
+                              onWheel={(e) => e.target.blur()}
+                              onKeyDown={(e) => {
+                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                  e.preventDefault();
+                                }
+                              }}
+                            />
+                          </div>
                         </div>
-                        <div className="form-group">
-                          <label>Stock:<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip></span></label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={variant.stock}
-                            onChange={e =>
-                              handleVariantChange(
-                                index,
-                                'stock',
-                                e.target.value
-                              )
-                            }
-                            required
-                            maxLength={4}
-                            min="0"
-                            max="9999"
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
-                            onKeyDown={(e) => {
-                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault(); // disables arrow key changes
-                              }
-                            }}
-                          />
+
+                        <div className="col-lg-6">
+                          <div className="form-group">
+                            <label>
+                              Stock:<span style={{ color: "red" }}> *</span>
+                              <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                                <ErrorOutlineIcon className="errorout-icon" />
+                              </LightTooltip>
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={variant.stock}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                  handleVariantChange(index, 'stock', value);
+                                }
+                              }}
+                              required
+                              min="0"
+                              max="9999"
+                              onWheel={(e) => e.target.blur()}
+                              onKeyDown={(e) => {
+                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                  e.preventDefault();
+                                }
+                              }}
+                            />
+                          </div>
                         </div>
+
                         <div className="form-group">
                           <label>Images:<span style={{ color: "red" }}> *
                             <LightTooltip placement="top" title="Provide the images of the product." arrow>
@@ -1210,7 +1321,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="sku_field">SKU
+                        <label htmlFor="sku_field">SKU <span style={{ color: "red" }}> *</span>
                         <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
@@ -1250,7 +1361,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="hsn_field">
-                        HSN Code
+                          HSN Code:<span style={{ color: "red" }}> *</span>
                         <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
@@ -1346,7 +1457,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-6">
                     <div className="form-group">
-                      <label htmlFor="itemLength_field">Item Length in Centimeters</label>
+                        <label htmlFor="itemLength_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="itemLength_field"
@@ -1354,7 +1465,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemLength}
                         name="itemLength"
-                        min="0"
+                        min="1"
                         max="9999"
                         required
                       />
@@ -1364,7 +1475,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="itemHeight_field">
-                        Item Height in Centimeters
+                          Item Height in Centimeters:<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1373,7 +1484,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemHeight}
                         name="itemHeight"
-                        min="0"
+                        min="1"
                         max="9999"
                         required
                       />
@@ -1383,7 +1494,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="itemWeight_field">
-                        Item Weight in Kgs
+                          Item Weight in Kgs:<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1392,7 +1503,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemWeight}
                         name="itemWeight"
-                        min="0"
+                        min="1"
                         max="9999"
                         required
                       />
@@ -1402,7 +1513,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="itemWidth_field">
-                        Item Width in Centimeters
+                          Item Width in Centimeters:<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1411,7 +1522,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.itemWidth}
                         name="itemWidth"
-                        min="0"
+                        min="1"
                         max="9999"
                         required
                       />
@@ -1421,7 +1532,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="moq_field">
-                        Minimum Order QTY(MOQ)
+                          Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1430,7 +1541,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.moq}
                         name="moq"
-                        min="0"
+                        min="1"
                         max="9999"
                         required
                       />
@@ -1439,7 +1550,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostlol_field">Shipping Cost local (in ₹) (Based on seller pincode)</label>
+                        <label htmlFor="shippingCostlol_field">Shipping Cost local (in ₹) (Based on seller pincode):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostlol_field"
@@ -1457,7 +1568,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="shippingCostNorth_field">
-                        Shipping Cost North India (in ₹)
+                          Shipping Cost North India (in ₹):<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1476,7 +1587,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="shippingCostSouth_field">
-                        Shipping Cost South India (in ₹)
+                          Shipping Cost South India (in ₹):<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1496,7 +1607,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostEast_field">Shipping Cost East India (in ₹)</label>
+                        <label htmlFor="shippingCostEast_field">Shipping Cost East India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostEast_field"
@@ -1513,7 +1624,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostWest_field">Shipping Cost West India (in ₹)</label>
+                        <label htmlFor="shippingCostWest_field">Shipping Cost West India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostWest_field"
@@ -1529,7 +1640,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostNe_field">shipping Cost Northeast India (in ₹)</label>
+                        <label htmlFor="shippingCostNe_field">shipping Cost Northeast India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostNe_field"
@@ -1545,7 +1656,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in ₹)</label>
+                        <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostCentral_field"
@@ -1561,7 +1672,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                      <label htmlFor="unit_field">Unit (EA/ML/Set)
+                        <label htmlFor="unit_field">Unit (EA/ML/Set):<span style={{ color: "red" }}> *</span>
                         <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
@@ -1589,52 +1700,52 @@ export default function SellerUpdateProduct() {
                     </button>
                   </div>
 
-                  <Modal open={navModalOpen} onClose={handleNavClose}>
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        bgcolor: "background.paper",
-                        p: 4,
-                        borderRadius: 2,
-                        width: 300,
-                        border: "none",
-                        outline: "none",
-                      }}
-                    >
-                      <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
-                        Are you sure want to update this product?(Item will be moved to pending state)
-                      </Typography>
-                      <Box display="flex" justifyContent="space-between">
-                        <Button
-                          onClick={handleNavConfirm}
-                          className="left-but"
-                          sx={{ margin: "3px" }}
-                        >
-                          Yes
-                        </Button>
-                        <Button
-                          onClick={handleNavClose}
-                          sx={{
-                            backgroundColor: '#2f4d2a',
-                            color: '#fff',
-                            '&:hover': {
-                              backgroundColor: '#2f4d2a50',
-                            },
-                            width: "100%",
-                            margin: "3px"
-                          }}
-                        >
-                          No
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Modal>
+                  
                 </div>
               </form>
-
+                <Modal open={navModalOpen} onClose={handleNavClose}>
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      bgcolor: "background.paper",
+                      p: 4,
+                      borderRadius: 2,
+                      width: 300,
+                      border: "none",
+                      outline: "none",
+                    }}
+                  >
+                    <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                      Are you sure want to update this product?(Item will be moved to pending state)
+                    </Typography>
+                    <Box display="flex" justifyContent="space-between">
+                      <Button
+                        onClick={handleNavConfirm}
+                        className="left-but"
+                        sx={{ margin: "3px" }}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        onClick={handleNavClose}
+                        sx={{
+                          backgroundColor: '#2f4d2a',
+                          color: '#fff',
+                          '&:hover': {
+                            backgroundColor: '#2f4d2a50',
+                          },
+                          width: "100%",
+                          margin: "3px"
+                        }}
+                      >
+                        No
+                      </Button>
+                    </Box>
+                  </Box>
+                </Modal>
               {showModal && (
                 <div className="modal" style={{ display: 'block' }}>
                   <div className="modal-dialog modal-dialog-centered">

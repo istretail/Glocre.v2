@@ -268,7 +268,8 @@ export default function ProductList() {
                                                 <th style={{ minWidth: "200px" }}>NAME</th>
                                                 <th style={{ minWidth: "200px" }}>STATUS</th>
                                                 <th style={{ minWidth: "200px" }}>STOCK</th>
-                                                <th style={{ minWidth: "200px" }}>DATE</th>
+                                                <th style={{ minWidth: "200px" }}>CREATED AT</th>
+                                                <th style={{ minWidth: "200px" }}>UPDATED AT</th>
                                                 <th style={{ minWidth: "200px" }}>Product ID</th>
                                                 <th style={{ minWidth: "200px" }}>Update</th>
                                                 <th style={{ minWidth: "200px" }}>DELETE</th>
@@ -321,6 +322,11 @@ export default function ProductList() {
                                                             <td>
                                                                 <span className="text-g">
                                                                     {new Date(product.createdAt).toLocaleDateString()}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span className="text-g">
+                                                                    {new Date(product.updatedAt).toLocaleDateString()}
                                                                 </span>
                                                             </td>
 
