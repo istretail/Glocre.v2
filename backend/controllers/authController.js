@@ -349,19 +349,27 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorHandler("Password reset token is invalid or expired"));
+    return next(new ErrorHandler("Password reset token is invalid or expired", 400));
   }
 
-  if (req.body.password !== req.body.confirmPassword) {
-    return next(new ErrorHandler("Password does not match"));
+  const { password, confirmPassword } = req.body;
+
+  if (!password || !confirmPassword) {
+    return next(new ErrorHandler("Password and Confirm Password are required", 400));
   }
 
-  user.password = req.body.password;
+  if (password !== confirmPassword) {
+    return next(new ErrorHandler("Passwords do not match", 400));
+  }
+
+  user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordTokenExpire = undefined;
-  await user.save({ validateBeforeSave: false });
-  sendToken(user, 201, res);
+
+  await user.save(); // keep validation enabled
+  return res.status(200).json({ success: true, message: "Password updated successfully" });
 });
+  
 
 //Get User Profile - /api/v1/myprofile
 exports.getUserProfile = catchAsyncError(async (req, res, next) => {

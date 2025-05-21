@@ -34,6 +34,7 @@ const Faqs = () => {
 
   return (
     <>
+   
       < Faqs1 />
     </>
   );
@@ -52,144 +53,144 @@ const Faqs1 = () => {
             Find quick answers to common questions about our products, shipping, returns, and more. If you can't find what you're looking for, feel free to contact our support team.
           </p>
 
-          <div className="accordion mt-5">
-            <div className="accordion-item">
+          <div className="accordion mt-5 mb-5">
+          < div className = "accordion-item ko-accordion-item" >
               <button id="accordion-button-1" aria-expanded="false">
-                <span className="accordion-title" > How do I place an order ? </span>
-                <span className="icon" aria-hidden="true"></span>
+                <span className = "accordion-title ko-accordion-item-header" > How do I place an order ? </span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
-                <p>
+              < div className = "accordion-content ko-accordion-item-body" >
+                < p className = "ko-accordion-item-body-conten" >
                   To place an order, browse the products on Glocre.com, add your desired items to the cart, and proceed to checkout.Follow the steps to provide your shipping details and complete payment.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > Does Glocre sell the products directly ?
+                < span className="accordion-title ko-accordion-item-header" > Does Glocre sell the products directly ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, Glocre sells products directly as well as through trusted and verified sellers
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > How will my order be delivered ?
+                < span className="accordion-title ko-accordion-item-header" > How will my order be delivered ?
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Your order will be delivered to your address via a reliable third - party courier service like India post, DTDC, BlueDart, Professional courier.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > How will I know
+                < span className="accordion-title ko-accordion-item-header" > How will I know
                   if my order has been placed successfully ?
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Once your order is placed, you’ ll receive a confirmation email with the order number and details.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > What is the standard delivery time ?
+                < span className="accordion-title ko-accordion-item-header" > What is the standard delivery time ?
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Standard delivery usually takes 2– 10 business days, depending on your location and order volume.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > Will I be notified once my order is processed ?
+                < span className="accordion-title ko-accordion-item-header" > Will I be notified once my order is processed ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, you’ ll receive notifications via email as your order is processed, shipped and delivered.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > Do you accept orders over the phone ?
+                < span className="accordion-title ko-accordion-item-header" > Do you accept orders over the phone ?
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, we do accept orders over the phone;
                   however, an advance payment is required to confirm the order.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > How can I check the status of my order ?
+                < span className="accordion-title ko-accordion-item-header" > How can I check the status of my order ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   You can check your order status by logging into your Glocre account or using the tracking link provided in your email.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > Can I place a bulk order
+                < span className="accordion-title ko-accordion-item-header" > Can I place a bulk order
                   for item(s) ?
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, bulk orders are welcome.Please contact our customer support team
                   for more details and assistance.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > The tracking status shows delivery was attempted but I wasn’ t available.Can I still receive it ?
+                < span className="accordion-title ko-accordion-item-header" > The tracking status shows delivery was attempted but I wasn’ t available.Can I still receive it ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, the courier will attempt redelivery.You can also contact the delivery service or our support team to reschedule.
                 </p>
               </div>
             </div>
             {/* inside */}
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                <span className="accordion-title">
+                < span className = "accordion-title ko-accordion-item-header" >
                   What are the return and exchange guidelines?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p className="mb-4">
                   Currently, Glocre does not offer exchanges for any products. If you need a different item or size,
                   we recommend completing the return process and placing a new order for the desired product.
@@ -234,103 +235,103 @@ const Faqs1 = () => {
                 </ul>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > When is a customer not eligible for return or exchange ?
+                < span className="accordion-title ko-accordion-item-header" > When is a customer not eligible for return or exchange ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Customer tried to handle the product and unable to use it which promotes any tear / damage.Made to Product(on demand) will not be returned.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > I haven’ t received my refund yet.Why ?
+                < span className="accordion-title ko-accordion-item-header" > I haven’ t received my refund yet.Why ?
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Refunds can take time due to banking procedures.If it’ s been longer than the standard refund period, please contact our support team with your order details.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > How long does it take to process a refund ?
+                < span className="accordion-title ko-accordion-item-header" > How long does it take to process a refund ?
 
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Refunds are typically processed within 7– 10 business days after the returned item is received and approved.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > What payment methods are accepted on Glocre.com
+                < span className="accordion-title ko-accordion-item-header" > What payment methods are accepted on Glocre.com
 
 
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   We accept payment through secured third - party service provider RazorPay.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > Is it safe to use my credit or debit card on Glocre ?
+                < span className="accordion-title ko-accordion-item-header" > Is it safe to use my credit or debit card on Glocre ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, Glocre uses secure third - party service provider RazorPay to ensure your transaction is safe.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > Can I make card or internet banking payments through my mobile ?
+                < span className="accordion-title ko-accordion-item-header" > Can I make card or internet banking payments through my mobile ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   Yes, our website is mobile - friendly and supports payments through cards, net banking, UPI, and wallets on mobile devices.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > What should I do if my payment fails ?
+                < span className="accordion-title ko-accordion-item-header" > What should I do if my payment fails ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   If your payment fails,
                   try again or use a different payment method.If the issue persists, contact your bank or Glocre support.
                 </p>
               </div>
             </div>
-            <div className="accordion-item">
+            <div className="accordion-item ko-accordion-item">
               <button id="accordion-button-1" aria-expanded="false">
-                < span className="accordion-title" > My transaction failed, but the amount was deducted.What should I do ?
+                < span className="accordion-title ko-accordion-item-header" > My transaction failed, but the amount was deducted.What should I do ?
                 </span>
-                <span className="icon" aria-hidden="true"></span>
+                {/* <span className="icon" aria-hidden="true"></span> */}
               </button>
-              <div className="accordion-content">
+              <div className="accordion-content ko-accordion-item-body">
                 <p>
                   If the transaction failed but money was deducted, the amount is usually refunded within 5– 7 business days.If not, please contact our support team with the transaction reference.
                 </p>

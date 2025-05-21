@@ -17,9 +17,9 @@ export default function ProductList() {
     const { products = [], loading = true, productsCount, resPerPage, error, filteredProductsCount } = useSelector(state => state.productsState)
     const { isProductDeleted, error: productError } = useSelector(state => state.productState)
     const [clocreProductId, setclocreProductId] = useState('');
+    const [searchKeyword, setSearchKeyword] = useState(''); // this is submitted one
     const [filterStatus, setFilterStatus] = useState('');
     const [filterVisible, setFilterVisible] = useState(false);
-
     const [currentPage, setCurrentPage] = useState(1);
     // const [limit, setLimit] = useState(10);
 
@@ -33,19 +33,32 @@ export default function ProductList() {
         setCurrentPage(pageNo);
     };
 
-    // const debouncedSearch = debounce((term) => {
-    //     dispatch(getAdminProducts(term, filterStatus));
-    // }, 300);
+    function debounce(func, delay) {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), delay);
+        };
+    }
+    useEffect(() => {
+        const debouncedSearch = debounce(() => {
+            dispatch(getAdminProducts(clocreProductId, filterStatus, 1)); // always reset to 1
+            setCurrentPage(1);
+        }, 500); // 500ms debounce
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (!clocreProductId.trim()) return;
+        debouncedSearch();
 
-        setCurrentPageNo(1); // reset page
+        // Cleanup on unmount
+        return () => {
+            debouncedSearch.cancel && debouncedSearch.cancel();
+        };
+    }, [clocreProductId, filterStatus, dispatch]);
 
-        // Pass correct arguments
-        // dispatch(getAdminProducts(clocreProductId.trim(), filterStatus, 1));
-    };
+    // const submitHandler = (e) => {
+    //     e.preventDefault();
+    //     setSearchKeyword(clocreProductId); // trigger a new search
+    //     setCurrentPage(1); // reset to first page on new keyword
+    //   };
     
     
     // const handleFilterClick = () => {
@@ -57,24 +70,25 @@ export default function ProductList() {
         setFilterVisible(false);
         dispatch(getAdminProducts(status));
     };
+
     useEffect(() => {
         if (error || productError) {
             toast(error || productError, {
                 type: 'error',
                 onOpen: () => { dispatch(clearError()) }
-            })
-            return
+            });
+            return;
         }
         if (isProductDeleted) {
             toast('Product Deleted Succesfully!', {
                 type: 'success',
                 onOpen: () => dispatch(clearProductDeleted())
-            })
+            });
             return;
         }
-        dispatch(getAdminProducts(clocreProductId, filterStatus, currentPage));
-        // setCurrentPage(1);
-    }, [dispatch, error, isProductDeleted, clocreProductId, filterStatus, currentPage])
+
+        dispatch(getAdminProducts(searchKeyword, filterStatus, currentPage));
+    }, [dispatch, error, isProductDeleted, searchKeyword, filterStatus, currentPage]);
 
 
     // Drawer
@@ -164,20 +178,19 @@ export default function ProductList() {
                                             <div className="row">
                                                 <div className="topnav">
                                                         <div className="search-container">
-                                                            <form className="d-flex" onSubmit={(e) => {
-                                                                e.preventDefault();
-                                                            }}>
+                                                            <form className="d-flex" >
                                                                 <input
                                                                     type="text"
                                                                     placeholder="Search"
                                                                     name="search"
-                                                                    // value={clocreProductId}
+                                                                    value={clocreProductId}
                                                                     onChange={(e) => setclocreProductId(e.target.value)}
                                                                 />
                                                                 <button type="submit">
                                                                     <FontAwesomeIcon icon={faSearch} />
                                                                 </button>
                                                             </form>
+
                                                         </div>
 
                                                 </div>

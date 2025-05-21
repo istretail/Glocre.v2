@@ -5,6 +5,8 @@ const authSlice = createSlice({
   initialState: {
     loading: false,
     isAuthenticated: false,
+    resetSuccess: false,
+    message: null,
     banners: [],
   },
   reducers: {
@@ -30,6 +32,7 @@ const authSlice = createSlice({
     },
     clearError(state) {
       state.error = null;
+      state.message= null;
     },
     registerRequest(state, action) {
       return {
@@ -181,14 +184,14 @@ const authSlice = createSlice({
       return {
         ...state,
         loading: true,
+        resetSuccess: false, // new flag
       };
     },
     resetPasswordSuccess(state, action) {
       return {
         ...state,
         loading: false,
-        isAuthenticated: true,
-        user: action.payload.user,
+        resetSuccess: true, // success flag
       };
     },
     resetPasswordFail(state, action) {
@@ -196,6 +199,7 @@ const authSlice = createSlice({
         ...state,
         loading: false,
         error: action.payload,
+        resetSuccess: false, // new flag
       };
     },
     sendVerificationEmailRequest(state, action) {

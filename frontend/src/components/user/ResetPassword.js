@@ -7,42 +7,49 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Link } from 'react-router-dom';
 import Nav from '../layouts/nav';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
-  const { isAuthenticated, error } = useSelector((state) => state.authState);
+  const { error, resetSuccess } = useSelector((state) => state.authState);
   const navigate = useNavigate();
   const { token } = useParams();
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
   const submitHandler = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("password", password);
-    formData.append("confirmPassword", confirmPassword);
-
-    dispatch(resetPassword(formData, token));
-  };
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      toast("Password Reset Success!", {
-        type: "success",
-      });
-      navigate("/");
+    if (!password || !confirmPassword) {
+      toast.error("Please fill in all fields");
       return;
     }
+    const formData = { password, confirmPassword };
+    dispatch(resetPassword(formData, token));
+  };
+  
+
+  useEffect(() => {
+    if (resetSuccess) {
+      toast.success("Password Reset Success!");
+      navigate("/login"); // Redirect to login
+      return;
+    }
+
     if (error) {
       toast(error, {
         type: "error",
         onOpen: () => {
-          dispatch(clearAuthError);
+          dispatch(clearAuthError());
         },
       });
-      return;
     }
-  }, [isAuthenticated, error, dispatch, navigate]);
+  }, [resetSuccess, error, dispatch, navigate]);
+  
 
   return (
     <>
@@ -75,25 +82,45 @@ export default function ResetPassword() {
                       variant="outlined"
                       className="w-100 form-control"
                       name="New Password"
-                      type="password"
-                      id="password_field"
+                      type={showPassword ? "text" : "password"}
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      onChange={e => setPassword(e.target.value.replace(/\s/g, ''))} // remove spaces
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                              {showPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
                     />
+
+
                   </div>
                 </div>
 
                 <div className="col-md-4">
                   <div className="form-group">
                     <TextField
-                      type="confirm password"
-                      id="confirm_password_field"
-                      label="confirm password"
+                      label="Confirm Password"
                       variant="outlined"
                       className="w-100 form-control"
+                      type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
+                      onChange={e => setConfirmPassword(e.target.value.replace(/\s/g, ''))} // remove spaces
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                              {showConfirmPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      }}
                     />
+
+
                   </div>
                 </div>
               </div>

@@ -30,7 +30,7 @@ export default function ProductCategory() {
   const [selectedMain, setSelectedMain] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-  const [price, setPrice] = useState([0, 200000]);
+  const [price, setPrice] = useState([1, 200000]);
 
   // 1. Toast error separately
   useEffect(() => {
@@ -201,18 +201,18 @@ export default function ProductCategory() {
                         className="form-check-input custom-checkbox1"
                         name="price"
                         id="price1"
-                        onChange={() => setPrice([0, 1000])}
-                        checked={price[0] === 0 && price[1] === 1000}
+                        onChange={() => setPrice([1, 1000])}
+                        checked={price[0] === 1 && price[1] === 1000}
                         style={{
                           outline: "1px solid #ffad63",
                           border: "none",
                           width: "20px",
                           height: "20px",
-                          backgroundColor: price[0] === 0 && price[1] === 1000 ? "#ffad63" : "transparent",
+                          backgroundColor: price[0] === 1 && price[1] === 1000 ? "#ffad63" : "transparent",
                         }}
                       />
                       <label className="form-check-label" htmlFor="price1">
-                        ₹0 – ₹1000
+                        ₹1 – ₹1000
                       </label>
                     </div>
 
@@ -375,18 +375,18 @@ export default function ProductCategory() {
                           className="form-check-input custom-checkbox1"
                           name="price"
                           id="price1"
-                          onChange={() => setPrice([0, 1000])}
-                          checked={price[0] === 0 && price[1] === 1000}
+                          onChange={() => setPrice([1, 1000])}
+                          checked={price[0] === 1 && price[1] === 1000}
                           style={{
                             outline: "1px solid #ffad63",
                             border: "none",
                             width: "20px",
                             height: "20px",
-                            backgroundColor: price[0] === 0 && price[1] === 1000 ? "#ffad63" : "transparent",
+                            backgroundColor: price[0] === 1 && price[1] === 1000 ? "#ffad63" : "transparent",
                           }}
                         />
                         <label className="form-check-label" htmlFor="price1">
-                          ₹0 – ₹1000
+                          ₹1 – ₹1000
                         </label>
                       </div>
 

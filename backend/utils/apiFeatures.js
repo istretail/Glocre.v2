@@ -20,6 +20,7 @@ class APIFeatures {
             { subcategory: { $regex: keyword, $options: 'i' } },
             { sku: { $regex: keyword, $options: 'i' } },
             { itemModelNum: { $regex: keyword, $options: 'i' } },
+            { clocreProductId: { $regex: keyword, $options: 'i' } },
           ],
         };
 
@@ -40,33 +41,52 @@ class APIFeatures {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
     const filters = JSON.parse(queryStr);
 
-    // console.log("🧮 Filters Before Price Handling:", JSON.stringify(filters, null, 2));
+    const additionalConditions = [];
 
-    // Price handling
+    // ✅ Price filtering with $elemMatch for variants
     if (filters.price) {
-      const priceFilter = {};
-      if (filters.price.$gte) priceFilter.$gte = filters.price.$gte;
-      if (filters.price.$lte) priceFilter.$lte = filters.price.$lte;
+      const offPriceFilter = {};
+      if (filters.price.$gte) offPriceFilter.$gte = Number(filters.price.$gte);
+      if (filters.price.$lte) offPriceFilter.$lte = Number(filters.price.$lte);
 
-      const andConditions = [{ $or: [{ price: priceFilter }, { "variants.price": priceFilter }] }];
-      if (Object.keys(this.filterQuery).length > 0) {
-        andConditions.push(this.filterQuery);
-      }
-      this.filterQuery = { $and: andConditions };
-
-      // console.log("Price Filter Applied:", JSON.stringify(priceFilter, null, 2));
+      additionalConditions.push({
+        $or: [
+          { offPrice: offPriceFilter },
+          {
+            variants: {
+              $elemMatch: {
+                offPrice: offPriceFilter
+              }
+            }
+          }
+        ]
+      });
 
       delete filters.price;
     }
 
-    // Merge other filters
-    this.filterQuery = { ...this.filterQuery, ...filters };
+    // ✅ Add remaining filters
+    if (Object.keys(filters).length > 0) {
+      additionalConditions.push(filters);
+    }
 
-    // console.log("🔗 Final Combined FilterQuery:", JSON.stringify(this.filterQuery, null, 2));
+    // ✅ Add any existing search conditions
+    if (Object.keys(this.filterQuery).length > 0) {
+      additionalConditions.push(this.filterQuery);
+    }
+
+    // ✅ Final combined query
+    if (additionalConditions.length > 0) {
+      this.filterQuery = { $and: additionalConditions };
+    }
+
+    // console.log("🔍 Final Combined Filter Query:", JSON.stringify(this.filterQuery, null, 2));
 
     this.query = this.query.find(this.filterQuery);
     return this;
   }
+  
+  
 
   paginate(resPerPage) {
     const currentPage = Number(this.queryStr.page) || 1;

@@ -18,6 +18,8 @@ export default function ForgotPassword() {
     e.preventDefault();
     const formData = new FormData();
     formData.append("email", email);
+
+    
     dispatch(forgotPassword(formData));
   };
 
@@ -25,8 +27,12 @@ export default function ForgotPassword() {
     if (message) {
       toast(message, {
         type: "success",
+        onOpen: () => {
+          dispatch(clearAuthError());
+        },
       });
       setEmail("");
+     
       return;
     }
 
@@ -34,7 +40,7 @@ export default function ForgotPassword() {
       toast(error, {
         type: "error",
         onOpen: () => {
-          dispatch(clearAuthError);
+          dispatch(clearAuthError());
         },
       });
       return;
@@ -81,7 +87,12 @@ export default function ForgotPassword() {
                   label="Enter Email"
                   className="w-100"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    // Convert to lowercase and remove spaces
+                    const formattedInput = input.toLowerCase().replace(/\s/g, '');
+                    setEmail(formattedInput);
+                  }}
                 />
               </div>
 

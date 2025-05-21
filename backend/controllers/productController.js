@@ -1198,3 +1198,67 @@ exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
 
   res.status(200).json({ success: true, message: 'Image deleted successfully' });
 });
+
+
+// Validate cart items before checkout
+exports.validateCartItems = catchAsyncError(async (req, res) => {
+  try {
+    const { cartItems } = req.body;
+
+    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+      return res.status(400).json({ success: false, message: 'Cart is empty.' });
+    }
+
+    const updatedCart = [];
+    let allValid = true;
+
+    for (const item of cartItems) {
+      const product = await Product.findById(item.productId);
+
+      if (
+        !product ||
+        product.status !== 'approved' ||
+        product.stock === 0 ||
+        product.stock < item.quantity
+      ) {
+        allValid = false;
+
+        updatedCart.push({
+          ...item,
+          isAvailable: false,
+          message: !product
+            ? 'Product not found.'
+            : product.status !== 'approved'
+              ? 'Product is not approved.'
+              : 'Product is out of stock.',
+        });
+
+        continue;
+      }
+
+      // Optional: Check price change
+      const priceChanged = product.price !== item.price;
+
+      updatedCart.push({
+        ...item,
+        isAvailable: !priceChanged,
+        message: priceChanged ? 'Price has been updated.' : 'Available',
+        latestPrice: product.price,
+      });
+
+      if (priceChanged) {
+        allValid = false;
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      allValid,
+      cartItems: updatedCart,
+    });
+
+  } catch (error) {
+    console.error('Cart validation error:', error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+});

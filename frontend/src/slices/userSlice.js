@@ -9,6 +9,7 @@ const userSlice = createSlice({
     isUserUpdated: false,
     isUserDeleted: false,
     savedAddresses: [],
+    isFormSubmitted: false,
 
   },
   reducers: {
@@ -225,6 +226,7 @@ const userSlice = createSlice({
       return {
         ...state,
         loading: true,
+        isFormSubmitted: false,
       };
     },
     contactFormSuccess(state, action) {
@@ -232,6 +234,7 @@ const userSlice = createSlice({
         ...state,
         loading: false,
         message: action.payload.message,
+        isFormSubmitted: true,
       };
     },
     contactFormFail(state, action) {
@@ -239,6 +242,7 @@ const userSlice = createSlice({
         ...state,
         loading: false,
         error: action.payload,
+        isFormSubmitted: false,
       };
     },
     resendVerificationRequest(state, action) {

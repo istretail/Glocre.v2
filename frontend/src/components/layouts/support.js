@@ -1,69 +1,67 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import "./Footer.css";
 import contactban from "../../images/GLOCRE-CONTACT-BANNER.png";
 import enquirygif from "../../images/mogli-chat.gif";
 import faqgif from "../../images/FAQs.gif";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { submitContactForm } from "../../actions/userActions";
+import { clearAuthError, submitContactForm } from "../../actions/userActions";
 import Loader from "./Loader";
 import { TextField } from "@mui/material";
-
+import { toast } from "react-toastify";
 export default function Support() {
-  const { loading } = useSelector((state) => state.userState)
+  const { loading, isFormSubmitted, error } = useSelector((state) => state.userState)
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
-    name: "",
-    organization: "",
-    function: "",
-    mobile: "",
-    email: "",
-    pincode: "",
-    requirements: "",
-  });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   const mobilePattern = /^[0-9]{10}$/;
-
-  //   if (!emailPattern.test(formData.email)) {
-  //     alert("Please enter a valid email address.");
-  //     return;
-  //   }
-
-  //   if (!mobilePattern.test(formData.mobile)) {
-  //     alert("Please enter a valid 10-digit mobile number.");
-  //     return;
-  //   }
-
-  //   // Submit the form or do something with formData
-  //   console.log("Form submitted:", formData);
-  // };
-
+  const [phone, setPhone] = useState("+91");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [requirements, setRequirements] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
+  const [yourfunction, setYourFunction] = useState("");
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(submitContactForm(formData, () => {
-      // Reset form after successful submission
-      setFormData({
-        name: "",
-        organization: "",
-        function: "",
-        mobile: "",
-        email: "",
-        pincode: "",
-        requirements: "",
-      });
-    }));
-  };
 
+    // Create a complete formData object using the latest input values
+    const updatedFormData = {
+      name,
+      organization: organizationName,
+      function: yourfunction,
+      mobile: phone,
+      email,
+      pincode,
+      requirements,
+    };
+    dispatch(submitContactForm(updatedFormData));
+  };
+  
+useEffect(() => {
+  if (isFormSubmitted) {
+    // toast("Password updated successfully", {
+    //   type: "success",
+    // });
+    setName("");
+    setOrganizationName("");
+    setYourFunction("");
+    setPhone("+91");
+    setEmail("");
+    setPincode("");
+    setRequirements("");
+    dispatch(clearAuthError()); // clear state after success too (optional)
+    return;
+  }
+
+  if (error) {
+    toast(error, {
+      type: "error",
+    });
+    dispatch(clearAuthError()); 
+    return;
+  }
+}, [isFormSubmitted, error, dispatch]);
 
 
   return (
@@ -97,8 +95,6 @@ export default function Support() {
                       <div className="Form Contents">
 
                         <div className="row">
-
-
                           <div className="col-md-6 mb-4">
                             <div className="form-group">
                               <TextField
@@ -110,10 +106,29 @@ export default function Support() {
                                 required
                                 placeholder="Name"
                                 id="name"
-                                onChange={handleChange}
+                                value={name}
+                                inputProps={{ maxLength: 25 }}
+                                onChange={(e) => setName(e.target.value)}
+
+                                onKeyDown={(e) => {
+                                  const key = e.key;
+                                  const isLetter = /^[a-zA-Z]$/.test(key);
+                                  const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
+
+                                  if (!isLetter && !isAllowedKey) {
+                                    e.preventDefault(); // Block non-letters and non-control keys
+                                  }
+
+                                  // Prevent space at the start
+                                  if (key === ' ' && e.target.selectionStart === 0) {
+                                    e.preventDefault();
+                                  }
+                                }}
+
                               />
                             </div>
                           </div>
+
                           <div className="col-md-6 mb-4">
                             <div className="form-group">
                               <TextField
@@ -124,8 +139,29 @@ export default function Support() {
                                 type="text"
                                 required
                                 placeholder="Organization Name"
-                                id="Organization Name"
-                                onChange={handleChange}
+                                id="organization"
+                                value={organizationName}
+                                inputProps={{ maxLength: 40 }}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/^\s+/, "");
+                                  setOrganizationName(value)
+                                }
+                                }
+                                onKeyDown={(e) => {
+                                  const key = e.key;
+                                  const isLetter = /^[a-zA-Z]$/.test(key);
+                                  const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
+
+                                  if (!isLetter && !isAllowedKey) {
+                                    e.preventDefault(); // Block non-letters and non-control keys
+                                  }
+
+                                  // Prevent space at the start
+                                  if (key === ' ' && e.target.selectionStart === 0) {
+                                    e.preventDefault();
+                                  }
+                                }}
+
                               />
                             </div>
                           </div>
@@ -133,18 +169,39 @@ export default function Support() {
                           <div className="col-md-6 mb-4">
                             <div className="form-group">
                               <TextField
-                                label="Your Function "
+                                label="Your Function"
                                 variant="outlined"
                                 className="w-100"
                                 size="small"
                                 type="text"
                                 required
-                                placeholder="Your Function "
-                                id="Your Function "
-                              />
+                                placeholder="Your Function"
+                                id="function"
+                                  value={yourfunction}
+                                inputProps={{ maxLength: 40 }}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/^\s+/, "");
+                                  setYourFunction(value)
+                                }
+                                }
+                                onKeyDown={(e) => {
+                                  const key = e.key;
+                                  const isLetter = /^[a-zA-Z]$/.test(key);
+                                  const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
 
+                                  if (!isLetter && !isAllowedKey) {
+                                    e.preventDefault(); // Block non-letters and non-control keys
+                                  }
+
+                                  // Prevent space at the start
+                                  if (key === ' ' && e.target.selectionStart === 0) {
+                                    e.preventDefault();
+                                  }
+                                }}
+                              />
                             </div>
                           </div>
+
                           <div className="col-md-6 mb-4">
                             <div className="form-group">
                               <TextField
@@ -156,6 +213,38 @@ export default function Support() {
                                 required
                                 placeholder="Eg: +919876543210"
                                 id="phone_field"
+                                value={phone}
+                                inputProps={{ maxLength: 13 }}
+                                onChange={(e) => {
+                                  let value = e.target.value;
+
+                                  // Ensure it always starts with +91
+                                  if (!value.startsWith("+91")) {
+                                    value = "+91" + value.replace(/\D/g, ''); // Remove non-digits
+                                  }
+
+                                  // Remove +91 for counting only the 10-digit number
+                                  const digitsOnly = value.replace("+91", "").replace(/\D/g, "");
+
+                                  // Limit to 10 digits after +91
+                                  if (digitsOnly.length > 10) {
+                                    value = "+91" + digitsOnly.substring(0, 10);
+                                  } else {
+                                    value = "+91" + digitsOnly;
+                                  }
+
+                                  setPhone(value);
+                                }}
+                                onKeyDown={(e) => {
+                                  // Prevent space or deletion of +91
+                                  if (e.key === ' ') e.preventDefault();
+                                  if (
+                                    (e.target.selectionStart <= 3 && ['Backspace', 'Delete'].includes(e.key)) ||
+                                    (e.ctrlKey && ['x', 'X'].includes(e.key)) // Prevent Ctrl+X from cutting +91
+                                  ) {
+                                    e.preventDefault();
+                                  }
+                                }}
                               />
                             </div>
                           </div>
@@ -167,14 +256,22 @@ export default function Support() {
                                 variant="outlined"
                                 className="w-100"
                                 size="small"
-                                type="text"
+                                type="email"
                                 required
                                 placeholder="E-Mail Address"
-                                id="E-Mail Address"
+                                id="email"
+                                value={email}
+                                  onChange={e => setEmail(e.target.value.replace(/\s/g, ''))}
+                                  onKeyDown={(e) => {
+                                    if (e.key === ' ') {
+                                      e.preventDefault(); // Prevent space character
+                                    }
+                                  }}
+                                  inputProps={{ pattern: "^[^\\s]+$", title: "Spaces are not allowed" }}
                               />
-
                             </div>
                           </div>
+
                           <div className="col-md-6 mb-4">
                             <div className="form-group">
                               <TextField
@@ -186,9 +283,14 @@ export default function Support() {
                                 type="text"
                                 name="pincode"
                                 placeholder="Pincode"
+                                required
+                                value={pincode}
+                                inputProps={{ maxLength: 6 }}
+                                onChange={e => {
+                                  const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                                  setPincode(value);
+                                }}
                               />
-
-
                             </div>
                           </div>
 
@@ -202,13 +304,29 @@ export default function Support() {
                                 type="text"
                                 required
                                 placeholder="Your Requirements ( Feedback / Suggestions / New Product Enquiry ) *"
-                                id="Requirements"
-                              />
+                                id="requirements"
+                                inputProps={{ maxLength: 300 }}
+                                value={requirements}
+                                onChange={e => setRequirements(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    const key = e.key;
+                                    const isLetter = /^[a-zA-Z]$/.test(key);
+                                    const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', ' '].includes(key);
 
+                                    if (!isLetter && !isAllowedKey) {
+                                      e.preventDefault(); // Block non-letters and non-control keys
+                                    }
+
+                                    // Prevent space at the start
+                                    if (key === ' ' && e.target.selectionStart === 0) {
+                                      e.preventDefault();
+                                    }
+                                }}
+                              />
                             </div>
                           </div>
-
                         </div>
+
 
                         <div className="d-flex justify-content-center mt-4">
                           <button

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.a6d203ad.css",
-    "main.js": "/static/js/main.057cf1a9.js",
+    "main.css": "/static/css/main.b769ec9b.css",
+    "main.js": "/static/js/main.04bc6369.js",
     "static/media/mailsent.jpg": "/static/media/mailsent.2e5a3625ffacb533e874.jpg",
     "static/media/Verification-success.png": "/static/media/Verification-success.9754d53181cb5834434c.png",
     "static/media/OURBUSINESSG1.png": "/static/media/OURBUSINESSG1.59f22d338555831247a1.png",
@@ -16,6 +16,7 @@
     "static/media/banner-3 1.png": "/static/media/banner-3 1.de75a4184cf07b3ef808.png",
     "static/media/OIP.jpg": "/static/media/OIP.ab18fe9bec03ebf1e425.jpg",
     "static/media/FAQs.gif": "/static/media/FAQs.241b5722600b1239df67.gif",
+    "static/media/1.jpg": "/static/media/1.899bfc4bbbba38aaba37.jpg",
     "static/media/Register-img.avif": "/static/media/Register-img.b7722ca185793d37c128.avif",
     "static/media/payment  (1).png": "/static/media/payment  (1).257843bf06c27a77fd0f.png",
     "static/media/cartempty.png": "/static/media/cartempty.49efd90ea75b10bede28.png",
@@ -26,11 +27,11 @@
     "static/media/fea.webp": "/static/media/fea.90624b3e2ca329e26f30.webp",
     "static/media/fea4.webp": "/static/media/fea4.03ed8956919efff9df8f.webp",
     "index.html": "/index.html",
-    "main.a6d203ad.css.map": "/static/css/main.a6d203ad.css.map",
-    "main.057cf1a9.js.map": "/static/js/main.057cf1a9.js.map"
+    "main.b769ec9b.css.map": "/static/css/main.b769ec9b.css.map",
+    "main.04bc6369.js.map": "/static/js/main.04bc6369.js.map"
   },
   "entrypoints": [
-    "static/css/main.a6d203ad.css",
-    "static/js/main.057cf1a9.js"
+    "static/css/main.b769ec9b.css",
+    "static/js/main.04bc6369.js"
   ]
 }

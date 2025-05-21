@@ -19,7 +19,8 @@ const {
   getArchiveProducts,
   getCategoryHierarchy,
   getAvailableCategories,
-  deleteProductImage
+  deleteProductImage,
+  validateCartItems
 } = require("../controllers/productController");
 const router = express.Router();
 const {
@@ -93,6 +94,7 @@ router.route("/review").put(isAuthenticatedUser, createReview)
   .delete(deleteReview);
 router.route("/reviews").get(isAuthenticatedUser, getReviews);
 router.route("/cetegories").get(getCategoryHierarchy);
+router.post('/validate', validateCartItems);
 // Admin routes
 router.route("/admin/product/new").post(isAuthenticatedUser, authorizeRoles("admin"), upload, // Multer middleware to process FormData
   handleVariantUploads, newProduct);
