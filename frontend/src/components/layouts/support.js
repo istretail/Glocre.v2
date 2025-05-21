@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { submitContactForm } from "../../actions/userActions";
 import Loader from "./Loader";
+import { TextField } from "@mui/material";
 
 export default function Support() {
   const { loading } = useSelector((state) => state.userState)
@@ -68,7 +69,7 @@ export default function Support() {
   return (
     <>
       {/* CONTACT US FORM */}
-      <body className="body-contact-glc">
+      <body className="body-contact-glc pt-0">
         {/* Banner */}
         <section className="contact-banner-glc">
           <div>
@@ -88,84 +89,144 @@ export default function Support() {
             </div>
 
             <Fragment>
+
               <form onSubmit={handleSubmit}>
-                {/* Input Feilds */}
+                <section className="mb-5 col-lg-12">
+                  <div className="row d-flex">
+                    <div className="cartWrapper mt-1">
+                      <div className="Form Contents">
 
-                <div className="row input-contact-glc">
+                        <div className="row">
 
-                  <div className="col-lg-6">
-                    <p>
-                      Your Name <span>*</span>
-                    </p>
-                    <input type="text" name="name" required onChange={handleChange} />
-                  </div>
-                  <div className="col-lg-6">
-                    <p>
-                      Organization Name
-                    </p>
-                    <input type="text" name="organization" onChange={handleChange} />
-                  </div>
-                  <div className="col-lg-6">
-                    <p>
-                      Your Function
-                    </p>
-                    <input type="text" name="function" onChange={handleChange} />
-                  </div>
-                  <div className="col-lg-6">
-                    <p>
-                      Mobile Number <span>*</span>
-                    </p>
-                    <input
-                      type="tel"
-                      name="mobile"
-                      required
-                      pattern="[0-9]{10}"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <p>
-                      E-Mail Address<span>*</span>
-                    </p>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="col-lg-6">
-                    <p>
-                      Pincode <span>*</span>
-                    </p>
-                    <input type="text" name="pincode" required onChange={handleChange} />
-                  </div>
-                  <div className="col-12">
-                    <p>
-                      Your Requirements ( Feedback / Suggestions / New Product Enquiry ) <span>*</span>
-                    </p>
-                    <input
-                      type="text-area"
-                      id="fname"
-                      name="requirements" required
-                      style={{ height: "125px" }}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-                <div className="d-flex justify-content-center pt-3">
-                  <button
-                    className="btn"
-                    type="submit"
-                    style={{ backgroundColor: "#2f4d2a", color: "#fff" }}
-                  >
-                    Submit
-                  </button>
-                </div>
 
+                          <div className="col-md-6 mb-4">
+                            <div className="form-group">
+                              <TextField
+                                label="Name"
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                required
+                                placeholder="Name"
+                                id="name"
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+                          <div className="col-md-6 mb-4">
+                            <div className="form-group">
+                              <TextField
+                                label="Organization Name"
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                required
+                                placeholder="Organization Name"
+                                id="Organization Name"
+                                onChange={handleChange}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-md-6 mb-4">
+                            <div className="form-group">
+                              <TextField
+                                label="Your Function "
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                required
+                                placeholder="Your Function "
+                                id="Your Function "
+                              />
+
+                            </div>
+                          </div>
+                          <div className="col-md-6 mb-4">
+                            <div className="form-group">
+                              <TextField
+                                label="Phone Number"
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                required
+                                placeholder="Eg: +919876543210"
+                                id="phone_field"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="col-md-6 mb-4">
+                            <div className="form-group">
+                              <TextField
+                                label="E-Mail Address"
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                required
+                                placeholder="E-Mail Address"
+                                id="E-Mail Address"
+                              />
+
+                            </div>
+                          </div>
+                          <div className="col-md-6 mb-4">
+                            <div className="form-group">
+                              <TextField
+                                label="PIN Code"
+                                id="pincode_field"
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                name="pincode"
+                                placeholder="Pincode"
+                              />
+
+
+                            </div>
+                          </div>
+
+                          <div className="">
+                            <div className="form-group">
+                              <TextField
+                                label="Requirements"
+                                variant="outlined"
+                                className="w-100"
+                                size="small"
+                                type="text"
+                                required
+                                placeholder="Your Requirements ( Feedback / Suggestions / New Product Enquiry ) *"
+                                id="Requirements"
+                              />
+
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <div className="d-flex justify-content-center mt-4">
+                          <button
+                            className="btn"
+                            type="submit"
+                            style={{ backgroundColor: "#2f4d2a", color: "#fff" }}
+                          >
+                            Submit
+                          </button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </section>
               </form>
-            </Fragment>
 
+            </Fragment>
 
 
 

@@ -179,7 +179,9 @@ const NewProduct = () => {
     const handleImageChange = (index, e) => {
         const files = Array.from(e.target.files);
         const validImages = files.filter((file) => file.size <= 1024 * 1024);
-        const errors = files.filter((file) => file.size > 1024 * 1024).map((file) => `${file.name} is larger than 1MB`);
+        const errors = files
+            .filter((file) => file.size > 1024 * 1024)
+            .map((file) => `${file.name} is larger than 1MB`);
 
         setImageErrors(errors);
 
@@ -189,11 +191,36 @@ const NewProduct = () => {
                 if (!newVariants[index]) {
                     newVariants[index] = {};
                 }
-                newVariants[index].images = validImages;
+
+                const existingImages = newVariants[index].images || [];
+
+                // Filter out duplicates
+                const newUniqueImages = validImages.filter(
+                    (file) =>
+                        !existingImages.some(
+                            (img) => img.name === file.name && img.size === file.size
+                        )
+                );
+
+                // Combine existing + new images
+                const combinedImages = [...existingImages, ...newUniqueImages];
+
+                // Limit to max 3 images
+                if (combinedImages.length > 3) {
+                    setImageErrors((prev) => [
+                        ...prev,
+                        `Only 3 images allowed. You selected ${combinedImages.length}.`,
+                    ]);
+                    newVariants[index].images = combinedImages.slice(0, 3);
+                } else {
+                    newVariants[index].images = combinedImages;
+                }
+
                 return newVariants;
             });
         }
     };
+      
 
     // Remove selected image
     const handleRemoveImage = (variantIndex, imageIndex) => {
@@ -213,14 +240,35 @@ const NewProduct = () => {
 
     const handleProductImageChange = (e) => {
         const files = Array.from(e.target.files);
+        const validImages = files.filter((file) => file.size <= 1024 * 1024);
+        const errors = files
+            .filter((file) => file.size > 1024 * 1024)
+            .map((file) => `${file.name} is larger than 1MB`);
+
+        setImageErrors(errors); // Assuming you have a setImageErrors state
 
         setProductImages((prevImages) => {
-            const newImages = files.filter(
-                (file) => !prevImages.some((img) => img.name === file.name && img.size === file.size)
+            const newImages = validImages.filter(
+                (file) =>
+                    !prevImages.some(
+                        (img) => img.name === file.name && img.size === file.size
+                    )
             );
-            return [...prevImages, ...newImages];
+
+            const combined = [...prevImages, ...newImages];
+
+            if (combined.length > 3) {
+                setImageErrors((prev) => [
+                    ...prev,
+                    `Only 3 images are allowed. You selected ${combined.length}.`,
+                ]);
+                return combined.slice(0, 3);
+            }
+
+            return combined;
         });
-      };
+    };
+      
     // Submit the form
 
     const handleAddKeyPoint = () => {
@@ -519,6 +567,9 @@ const NewProduct = () => {
                                                         name="name"
                                                         value={formData.name}
                                                         onChange={handleChange}
+                                                        onKeyDown={(e) => {
+                                                            if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                                                          }}
                                                         maxlength="80"
                                                         required
                                                     />
@@ -536,6 +587,9 @@ const NewProduct = () => {
                                                         name="description"
                                                         value={formData.description}
                                                         onChange={handleChange}
+                                                        onKeyDown={(e) => {
+                                                            if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                                                          }}
                                                         required
                                                         maxLength={200}
                                                     />
@@ -767,17 +821,27 @@ const NewProduct = () => {
                                                             />
                                                         </div>
                                                         <div className="form-group">
-                                                            <label>How many variants?<span style={{ color: "red" }}> *
-                                                                <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
-                                                                    <ErrorOutlineIcon className="errorout-icon" />
-                                                                </LightTooltip></span></label>
+                                                            <label>
+                                                                How many variants?<span style={{ color: "red" }}> *
+                                                                    <LightTooltip placement="top" title="You can add up to 7 variants" arrow>
+                                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                                    </LightTooltip>
+                                                                </span>
+                                                            </label>
+
                                                             <input
                                                                 type="number"
                                                                 className="form-control"
+                                                                placeholder="You can add up to 7 variants"
                                                                 value={variantCount}
-
+                                                                min={1}
+                                                                max={7}
                                                                 onChange={e => {
-                                                                    const count = Number(e.target.value); // Ensure it's a number
+                                                                    let count = Number(e.target.value);
+
+                                                                    // Prevent count > 7
+                                                                    if (count > 7) count = 7;
+
                                                                     setVariantCount(count);
                                                                     setVariantDetails(
                                                                         Array.from({ length: count }, () => ({
@@ -793,6 +857,7 @@ const NewProduct = () => {
                                                                 required
                                                             />
                                                         </div>
+
                                                         {variantDetails.map((variant, index) => (
                                                             <div key={index} className="variant-section">
                                                                 <h4>Variant {index + 1}</h4>
@@ -922,6 +987,7 @@ const NewProduct = () => {
                                                                         accept="image/*"
                                                                         onChange={e => handleImageChange(index, e)}
                                                                         required
+                                                                        disabled={variant.images.length >= 3}
                                                                     />
                                                                     {imageErrors.length > 0 && (
                                                                         <div className="alert alert-danger mt-2">
@@ -934,7 +1000,7 @@ const NewProduct = () => {
                                                                         {variant.images.map((image, imageIndex) => (
                                                                             <div
                                                                                 key={imageIndex}
-                                                                                className="d-inline-block position-relative mr-2"
+                                                                                className="d-inline-block position-relative mr-5"
                                                                             >
                                                                                 <img
                                                                                     src={URL.createObjectURL(image)}
@@ -1105,12 +1171,13 @@ const NewProduct = () => {
                                                                 accept="image/*"
                                                                 onChange={handleProductImageChange}
                                                                 required
+                                                                disabled={productImages.length >= 3}
                                                             />
                                                             <div className="mt-2">
                                                                 {productImages.map((image, index) => (
                                                                     <div
                                                                         key={index}
-                                                                        className="d-inline-block position-relative mr-2"
+                                                                        className="d-inline-block position-relative mr-5"
                                                                     >
                                                                         <img
                                                                             src={URL.createObjectURL(image)}
@@ -1129,6 +1196,13 @@ const NewProduct = () => {
                                                                         </button>
                                                                     </div>
                                                                 ))}
+                                                                {imageErrors.length > 0 && (
+                                                                    <div className="alert alert-danger mt-2">
+                                                                        {imageErrors.map((error, index) => (
+                                                                            <p key={index}>{error}</p>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>

@@ -7610,7 +7610,7 @@ input[type="submit"].btn-block {
   left: 0;
   list-style: none;
   margin: 0.125rem 0 0;
-  width: 10rem;
+  width: fit-content;
   padding: 0.5rem 0;
   position: absolute;
   text-align: left;

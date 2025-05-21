@@ -20,7 +20,6 @@
   .empowering-global-right-procureg .card {
     border: none;
     outline: none;
-    margin-left: -15%;
     width: 100%;
     height: fit-content;
   }
@@ -32,41 +31,40 @@
   }
 
   .empowering-global-right-procureg .card-title {
-    font-size: 35px;
+    font-size: clamp(25px, 4vw, 30px);
     font-weight: bold;
     color: #ffad63;
   }
 
   .empowering-global-right-procureg .card-text {
-    font-size: 17px;
+    font-size: clamp(15px, 4vw, 17px);
     color: #8c8c8c;
   }
 
   .empowering-global-right-procureg button {
     background-color: #ffad63;
-    /* Change to any color you like */
     color: white;
-    /* Text color */
-    padding: 15px 35px;
-    /* Adjust padding for size */
+    padding: 2% 3%;
     border: none;
-    /* Removes default border */
     border-radius: 5px;
-    /* Rounded corners */
     cursor: pointer;
-    /* Changes cursor on hover */
     text-align: center;
-    /* Centers text */
     font-size: 14px;
-    /* Adjust font size */
     display: inline-block;
-    /* Ensures proper alignment */
+    width: 100%;
+    max-width: 250px;
+    box-sizing: border-box;
   }
 
-  .empowering-global-right-procureg button:hover {
-    background-color: #ffad63;
-    /* Slightly darker shade on hover */
+  @media (max-width: 600px) {
+    .empowering-global-right-procureg button {
+      font-size: 12px;
+      padding: 12px 18px;
+      max-width: 100%;
+    }
   }
+
+
 }
 
 /* OUR BUSINESS AT PROCUREG */
@@ -105,8 +103,7 @@
     width: 75%;
   }
 
-  .global-buyer-right-contents-procureg {
-  }
+  .global-buyer-right-contents-procureg {}
 
   .global-buyer-right-contents-procureg .card {
     outline: none;
@@ -129,32 +126,33 @@
     font-size: 16px;
   }
 }
+
 /* OUR CORE VALUES */
 .our-core-section-procureg {
   padding: 7% 0;
   background-color: #ffad63;
   border-radius: 15px;
- 
+
   .our-core-heading-procureg {
     padding: 0 0 2% 0;
   }
- 
+
   .our-core-heading-procureg h3 {
     color: white;
     font-size: 40px;
     font-weight: bold;
   }
- 
+
   .our-core-sub-section-procureg {
-    padding: 25px;
+    padding: 20px;
   }
- 
+
   .our-core-sub-section-procureg h3 {
     color: #ffad63;
     font-size: 22px;
     font-weight: bold;
   }
- 
+
   .our-core-sub-section-procureg p {
     color: #8c8c8c;
   }
@@ -236,8 +234,7 @@
     margin-top: 10px;
   }
 
-  .key-benefits-right-procureg {
-  }
+  .key-benefits-right-procureg {}
 
   .key-benefits-right-procureg .card {
     outline: none;
@@ -291,8 +288,7 @@
   background-color: #ffad63;
   padding: 4% 0;
 
-  .started-procurement-content1-procureg {
-  }
+  .started-procurement-content1-procureg {}
 
   .started-procurement-content2-procureg {
     display: flex;

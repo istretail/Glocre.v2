@@ -41,7 +41,7 @@ export default function Nav1() {
       <nav className="Mobile-second-nav respon-nav headerWrapper1" >
         <div class="nav-container">
           <div class="logo me-5">
-            <ul class="menu">
+            <ul class="menu pl-0">
               <li className="list-inline-item sec-nav-pro">
                 <Button className="bg-g text-white catTab res-hide" style={{ border: "none" }}>
                   <GridViewIcon /> &nbsp; Categories

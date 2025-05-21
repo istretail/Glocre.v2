@@ -127,14 +127,14 @@ export const createReview = (reviewData) => async (dispatch) => {
 export const getAdminProducts =
   (keyword, status, currentPage) => async (dispatch) => {
     try {
-      dispatch(productsRequest());
+      dispatch(adminProductsRequest());
       let link = `/api/v1/admin/products?page=${currentPage}`;
       if (keyword) link += `&keyword=${keyword}`;
       if (status) link += `&status=${status}`;
       const { data } = await axios.get(link);
-      dispatch(productsSuccess(data));
+      dispatch(adminProductsSuccess(data));
     } catch (error) {
-      dispatch(productsFail(error.response.data.message));
+      dispatch(adminProductsFail(error.response.data.message));
     }
   };
 export const createNewProduct = (productData) => async (dispatch) => {

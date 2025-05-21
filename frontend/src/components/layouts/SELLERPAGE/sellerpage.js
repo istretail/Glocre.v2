@@ -18,7 +18,7 @@ export default function ProcuregSeller() {
   };
   return (
     <>
-    <MetaData title={"Become a Seller"} />
+      <MetaData title={"Become a Seller"} />
       {/* START YOUR B2B */}
       <section className="start-your-b2b-section-procureg">
         <div className="container">
@@ -34,13 +34,13 @@ export default function ProcuregSeller() {
                 organizations efficiently manage suppliers, negotiate better
                 deals, and optimize procurement workflows.
               </p>
-              <Link onClick={registerHandler()} style={{ color: "white" }}> 
-              <button className="col-lg-3 col-5 text-white">
-                {" "}
-                Register
-              </button>
+              <Link onClick={registerHandler()} style={{ color: "white" }}>
+                <button className="col-lg-3 col-5 text-white">
+                  {" "}
+                  Register
+                </button>
               </Link>
-             
+
             </div>
             <div className="col-lg-6 start-your-b2b-right-contents-procureg">
               <div>
@@ -76,29 +76,30 @@ export default function ProcuregSeller() {
             </div>
           </div>
           <div className="why-choose-3-contents-procureg">
-            <div className="row" style={{ marginLeft: "5%" }}>
-              <div className="col-lg-4 mb-2">
-                <div class="card">
-                  <img src={prosellerimg6} />
-                  <h5 class="card-title">Add Products</h5>
+            <div className="row justify-content-center">
+              <div className="col-lg-4 mb-2 d-flex justify-content-center">
+                <div className="card text-center">
+                  <img src={prosellerimg6} className="card-img-top" />
+                  <h5 className="card-title">Add Products</h5>
                 </div>
               </div>
-              <div className="col-lg-4 mb-2">
-                <div class="card">
-                  <img src={prosellerimg7} />
-                  <h5 class="card-title">Available Globally</h5>
+              <div className="col-lg-4 mb-2 d-flex justify-content-center">
+                <div className="card text-center">
+                  <img src={prosellerimg7} className="card-img-top" />
+                  <h5 className="card-title">Available Globally</h5>
                 </div>
               </div>
-              <div className="col-lg-4 mb-2">
-                <div class="card">
-                  <img src={prosellerimg8} />
-                  <h5 class="card-title">
+              <div className="col-lg-4 mb-2 d-flex justify-content-center">
+                <div className="card text-center">
+                  <img src={prosellerimg8} className="card-img-top" />
+                  <h5 className="card-title">
                     Start selling <br /> with your GSTIN
                   </h5>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </section>
 

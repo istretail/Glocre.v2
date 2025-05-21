@@ -22,8 +22,8 @@ const SavedAddress = () => {
 
   const handleDeleteAddress = (addressId) => {
     dispatch(deleteSavedAddress(addressId, error))
-      .then(() => {})
-      .catch((error) => {});
+      .then(() => { })
+      .catch((error) => { });
   };
 
   return (
@@ -44,17 +44,18 @@ const SavedAddress = () => {
         </div>
       </div>
 
-      <section className="container">
-        <h1 className="hd mb-2">SAVED ADDRESS</h1>
-        <div className=" cartRightBox row mb-5">
-          {savedAddresses.map(address => (
-            <div className="card p-4 col-lg-12 col-md-12 m-2 " key={address._id}>
 
-                <div class="info-box">
+      <section className="container-fluid my-4">
+        <h1 className="hd mb-3">SAVED ADDRESS</h1>
+        <div className="row g-2">
+          {savedAddresses.map(address => (
+            <div className="cartRightBox col-lg-4 col-md-6 col-sm-12 p-1" key={address._id}>
+              <div className="card p-2 d-flex flex-column justify-content-between">
+                <div className="info-box mb-3">
                   <p>
                     <b className="info-box-p-b">Name</b>
                     <b className="info-box-p-b2">:</b>
-                    <span className="info-box-p-span">{address?.name || "not given"}</span>
+                    <span className="info-box-p-span">{address?.name || "Not given"}</span>
                   </p>
                   <p>
                     <b className="info-box-p-b">Phone</b>
@@ -65,15 +66,14 @@ const SavedAddress = () => {
                     <b className="info-box-p-b">Address</b>
                     <b className="info-box-p-b2">:</b>
                     <span className="info-box-p-span">
-                      {address.address}, {address.addressLine},{address.city},{' '}
-                      {address.postalCode}, {address.state},{address.country} ,
+                      {address.address}, {address.addressLine}, {address.city}, {address.postalCode}, {address.state}, {address.country}
                     </span>
                   </p>
                 </div>
-            
-              <div>
-                <Button className="loyal-btn">
-                  <Link to={`/myprofile/update-saved-address/${address._id}`}>
+
+                <div>
+                  <Button className="loyal-btn">
+                    <Link to={`/myprofile/update-saved-address/${address._id}`} className="btn flex-grow-1">
                     <FontAwesomeIcon icon={faEdit} className="fa-icon" />
                   </Link>
                 </Button>
@@ -87,10 +87,15 @@ const SavedAddress = () => {
                   />
                 </Button>
               </div>
+
+             
+            </div>
             </div>
           ))}
-        </div>
-      </section>
+      </div>
+    </section >
+
+
     </>
   );
 };

@@ -26,7 +26,8 @@
 
   .start-your-b2b-left-contents-procureg p {
     color: #8c8c8c;
-    width: 80%;
+    width: 100%;
+    text-align: justify;
   }
 
   .start-your-b2b-left-contents-procureg button {
@@ -97,7 +98,6 @@
   .why-choose-heading-procureg p {
     color: #8c8c8c;
     margin-top: 15px;
-    width: 85%;
     text-align: center;
   }
 

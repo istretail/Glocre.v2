@@ -75,7 +75,7 @@ export default function SellerUpdateProduct() {
   const [hasVariants, setHasVariants] = useState(false);
   const [navModalOpen, setNavModalOpen] = useState(false);
   const [pendingSubmit, setPendingSubmit] = useState(false);
-
+    const [imagePreviews, setImagePreviews] = useState([]);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -182,14 +182,44 @@ export default function SellerUpdateProduct() {
 
   const handleVariantImageChange = (index, e) => {
     const files = Array.from(e.target.files);
+    const maxImages = 3;
+    const maxSizeInBytes = 1024 * 1024; // 1MB
+
+    const newValidImages = [];
+    const errors = [];
+
+    files.forEach((file) => {
+      if (file.size > maxSizeInBytes) {
+        errors.push(`${file.name} is larger than 1MB.`);
+      } else {
+        newValidImages.push(file);
+      }
+    });
+
     setVariantDetails((prevVariants) => {
       const newVariants = [...prevVariants];
-      const existingImages = newVariants[index].images || []; // Ensure images is always an array
-      const newImages = [...existingImages, ...files].slice(0, 3); // Limit to 3 images
-      newVariants[index] = { ...newVariants[index], images: newImages };
+      const existingImages = newVariants[index].images || [];
+
+      const totalImages = existingImages.length + newValidImages.length;
+      if (totalImages > maxImages) {
+        errors.push("You can upload a maximum of 3 images per variant.");
+      }
+
+      const validImages = newValidImages.slice(0, maxImages - existingImages.length);
+      newVariants[index] = {
+        ...newVariants[index],
+        images: [...existingImages, ...validImages],
+      };
+
       return newVariants;
     });
+
+    // Optional: Store/display errors for each variant (e.g., setVariantErrors)
+    if (errors.length > 0) {
+      alert(errors.join("\n")); // Replace with better UI if needed
+    }
   };
+  
   // const handleRemoveVariantImage = (variantIndex, imageIndex) => {
   //   setVariantDetails((prevVariants) => {
   //     const newVariants = [...prevVariants];
@@ -270,7 +300,8 @@ export default function SellerUpdateProduct() {
       } else if (formData.images.length + newImages.length >= 3) {
         errors.push("You can upload a maximum of 3 images.");
       } else {
-        newImages.push(file);
+        const url = URL.createObjectURL(file);
+        newImages.push({ file, url });
       }
     });
 
@@ -278,12 +309,11 @@ export default function SellerUpdateProduct() {
     if (errors.length === 0) {
       setFormData((prev) => ({
         ...prev,
-        images: [
-          ...prev.images,
-          ...newImages.map((file) => URL.createObjectURL(file)),
-        ],
+        images: [...prev.images, ...newImages.map((img) => img.url)], // URLs only
       }));
-      setImageFiles((prev) => [...prev, ...newImages]);
+
+      setImagePreviews((prev) => [...prev, ...newImages]); // file + url pairs
+      setImageFiles((prev) => [...prev, ...newImages.map((img) => img.file)]); // actual files
     }
   };
   const handleAddKeyPoint = () => {
@@ -389,7 +419,7 @@ export default function SellerUpdateProduct() {
 
     variantDetails.forEach((variant, index) => {
       productData.append(`variants[${index}][variantType]`, variant.variantType);
-      productData.append(`variants[${index}][name]`, variant.variantType);
+      productData.append(`variants[${index}][variantName]`, variant.variantName);
       productData.append(`variants[${index}][price]`, variant.price);
       productData.append(`variants[${index}][offPrice]`, variant.offPrice);
       productData.append(`variants[${index}][stock]`, variant.stock);
@@ -424,40 +454,75 @@ export default function SellerUpdateProduct() {
 
 
   // Removed duplicate handleSubmit function
-  const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
-    if (window.confirm("Are you sure you want to delete this image? it won't be recovered")) {
-      try {
-        await dispatch(deleteProductImage(imageUrl, productId, variantId));
+   const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
+        const isString = typeof imageUrl === "string";
+        const isLocalImage = isString && imageUrl.startsWith("blob:");
 
-        if (variantId) {
-          // Handle variant image deletion
-          setFormData((prev) => ({
-            ...prev,
-            variants: prev.variants.map((variant) =>
-              variant._id === variantId
-                ? {
-                  ...variant,
-                  images: (variant.images || []).filter((image) => image !== imageUrl), // Ensure images is always an array
+        if (window.confirm("Are you sure you want to delete this image? It won't be recovered")) {
+            try {
+                if (variantId) {
+                    // Handle variant images
+                    if (!isString && imageUrl instanceof File) {
+                        // If it's a newly added local File, just remove it from state
+                        setVariantDetails((prevVariants) =>
+                            prevVariants.map((variant) =>
+                                variant._id === variantId
+                                    ? {
+                                        ...variant,
+                                        images: (variant.images || []).filter((img) => img !== imageUrl),
+                                    }
+                                    : variant
+                            )
+                        );
+                        return; // No server call needed
+                    }
+
+                    if (!isLocalImage) {
+                        await dispatch(deleteProductImage(imageUrl, productId, variantId));
+                    }
+
+                    setFormData((prev) => ({
+                        ...prev,
+                        variants: prev.variants.map((variant) =>
+                            variant._id === variantId
+                                ? {
+                                    ...variant,
+                                    images: (variant.images || []).filter((img) => img !== imageUrl),
+                                }
+                                : variant
+                        ),
+                    }));
+                } else {
+                    // Handle normal product images
+                    if (!isLocalImage) {
+                        await dispatch(deleteProductImage(imageUrl, productId));
+                    }
+
+                    setFormData((prev) => ({
+                        ...prev,
+                        images: (prev.images || []).filter((img) => img !== imageUrl),
+                    }));
+
+                    setImagePreviews((prev) => prev.filter((img) => img.url !== imageUrl));
+                    setImageFiles((prev) =>
+                        prev.filter((file) => {
+                            const matching = imagePreviews.find(
+                                (img) => img.url === imageUrl && img.file === file
+                            );
+                            return !matching;
+                        })
+                    );
+
+                    if (isLocalImage) {
+                        URL.revokeObjectURL(imageUrl);
+                    }
                 }
-                : variant
-            ),
-          }));
-        } else {
-          // Handle main product image deletion
-          setFormData((prev) => ({
-            ...prev,
-            images: (prev.images || []).filter((image) => image !== imageUrl),
-          }));
-          setImagesPreview((prev) => prev.filter((image) => image !== imageUrl)); // ✅ fix
+            } catch (error) {
+                toast.error("Failed to delete image.");
+            }
         }
+    };
 
-
-
-      } catch (error) {
-        toast.error("Failed to delete image.");
-      }
-    }
-  };
   const openModal = (image) => {
     setModalImage(image);
     setShowModal(true);
@@ -730,6 +795,9 @@ export default function SellerUpdateProduct() {
                         className="form-control"
                         onChange={handleChange}
                         value={formData.name}
+                          onKeyDown={(e) => {
+                            if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                        }}
                         name="name"
                         maxLength={80}
                       />

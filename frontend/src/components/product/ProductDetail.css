@@ -1798,3 +1798,132 @@ ul.actions li:last-child a {
 
 
 }
+@media (min-width: 1201px) {
+  .mobileSticky {
+    display: none;
+  }
+}
+ 
+@media (max-width: 1200px) {
+ 
+  .catItem {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 10px 0;
+    padding: 7px 10px;
+    transition: all 0.3s ease-in-out;
+  }
+ 
+  .catItem h4 {
+    color: #000 !important;
+    font-size: 14px;
+  }
+ 
+  .catItem .rounded-circle {
+    background: #ffad63;
+    font-size: 12px;
+    height: 27px;
+    width: 27px;
+  }
+ 
+  .catItem .img img {
+    width: 22px !important;
+  }
+ 
+  .form-check-label {
+    font-size: 13px !important;
+    color: #8c8c8c;
+    margin-left: 5px;
+  }
+ 
+  .mobileSidebarOverlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+ 
+  .mobileSidebarOverlay.show {
+    transform: translateX(0);
+  }
+ 
+  .mobileSidebarOverlay .sidebar {
+    max-width: 280px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  }
+ 
+  .mobileBtn-l {
+    background-color: #ffad63;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+ 
+  .mobileBtn-r {
+    border: 1px solid #ffad63;
+    color: #ffad63;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+ 
+ 
+  .dropdo-menu-prodcat {
+    border: none !important;
+    box-shadow: 1px 1px 5px #ffac6365 !important;
+  }
+ 
+  .cancel-cat-but-glc {
+    background-color: #ffad63;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.25rem .5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    letter-spacing: 0.0625rem;
+    margin-bottom: 13px;
+  }
+ 
+ 
+}
+
+                    
+ 
+ 
+ 
+/* Style for Swiper navigation arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  background-color: #ffffff;
+  height: 40px !important;
+  width: 40px !important;
+  border-radius: 50%;
+  color: #000; /* Icon color */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.30);
+}
+ 
+/* Hover effect */
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: #ffad60;
+  color: #000; /* You can change this if needed */
+}
+ 
+ 
+/* Make the arrow icons inside smaller */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 14px !important; /* ↓ reduce this to make the arrow symbol smaller */
+  color: #000;
+}

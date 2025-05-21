@@ -29,9 +29,9 @@ export default function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.authState);
   const { categories = [], error } = useSelector((state) => state.categoryState);
   const { items } = useSelector((state) => state.cartState);
-    const { wishlist: witems = [] } = useSelector(
-      (state) => state.wishlistState,
-    );
+  const { wishlist: witems = [] } = useSelector(
+    (state) => state.wishlistState,
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -148,7 +148,15 @@ export default function Header() {
                       id="search_field"
                       className=" desktop-search"
                       placeholder="Lets us know What you are looking for ?"
-                      onChange={e => setKeyword(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only letters, numbers, and spaces
+                        const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                        setKeyword(cleanedValue);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                      }}
                       value={keyword}
                     />
                     <SearchIcon className="searchIcon cursor ms-2" />
@@ -388,11 +396,11 @@ export default function Header() {
           <div className="d-flex justify-content- align-items-center">
             <div className="me-auto">
               <Link to="/">
-                <img src={require("../../images/procure-g-logo.png")} className="" style={{ height: "35px" }} />
+                <img src={require("../../images/procure-g-logo.png")} className="" style={{ maxHeight: "25px" }} />
               </Link>
             </div>
 
-            <Link to="/seller">
+            <Link to="/becomeseller">
               <div className="d-flex justify-content-center align-items-center me-2" style={{ backgroundColor: "#f5f5f5", color: "#2f4d23", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }}>
                 <FontAwesomeIcon icon={faPlus} />
               </div>
@@ -471,7 +479,7 @@ export default function Header() {
                       </span>
                     </li> */}
                     <li onClick={() => setLogoutModalOpen(true)}>
-                      <span className="dropdown-item text-danger">
+                      <span className="dropdown-item">
                         <LogoutOutlinedIcon className="me-2" /> Log Out
                       </span>
                     </li>
@@ -563,6 +571,28 @@ export default function Header() {
               </div>
             </Link>
 
+            <Link to="/wishlist">
+              <div
+                className="position-relative d-flex justify-content-center align-items-center me-2"
+                style={{
+                  backgroundColor: "#f5f5f5",
+                  color: "#2f4d23",
+                  height: "35px",
+                  width: "35px",
+                  borderRadius: "50%",
+                  fontSize: "15px",
+                }}
+              >
+                <FavoriteBorderOutlinedIcon />
+                <span
+                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                  style={{ fontSize: "10px", backgroundColor: "#ffad63" }}
+                >
+                  {witems.length}
+                </span>
+              </div>
+            </Link>
+
             <div className="d-flex justify-content-center align-items-center" style={{ backgroundColor: "#ffad63", color: "#fff", height: "35px", width: "35px", borderRadius: "50%", fontSize: "15px" }} onClick={toggleDrawer}>
               <FontAwesomeIcon icon={faList} />
             </div>
@@ -631,13 +661,28 @@ export default function Header() {
                   type="text"
                   id="search_field"
                   className="mobile-search mt-2"
-                  width="100%"
-                  onChange={e => setKeyword(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Allow only letters, numbers, and spaces
+                    const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                    setKeyword(cleanedValue);
+                  }}
                   value={keyword}
-                  style={{ borderRadius: "0px", border: "1px solid #ccc", padding: "5px", width: "98%", height: "35px", fontSize: "12px" }}
-                  placeholder="Lets us know What you are looking for ?"
+                  style={{
+                    borderRadius: "0px",
+                    border: "1px solid #ccc",
+                    padding: "5px",
+                    width: "98%",
+                    height: "35px",
+                    fontSize: "12px"
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                  }}
+                  placeholder="Let us know what you are looking for?"
                 />
               </div>
+
             </div>
             <div className="col-md-2 col-lg-2 col-1 mt-2" style={{ backgroundColor: "#ffad63", color: "#fff", height: "35px", width: "35px", borderRadius: "5px", display: "flex", justifyContent: "center", alignItems: "center" }} >
               <SearchIcon className="searchIcon cursor ms-1" />

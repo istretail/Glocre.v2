@@ -41,9 +41,10 @@ export default function SellerProducts() {
 
   const handleFilterChange = (status) => {
     setFilterStatus(status);
-
+    setCurrentPageNo(1); 
     dispatch(getSellerProducts(searchKeyword, status));
   };
+  
   useEffect(() => {
     if (error) {
       toast(error, {
@@ -232,9 +233,12 @@ export default function SellerProducts() {
                                 type="text"
                                 placeholder="Search"
                                 value={searchKeyword}
-                                onChange={e =>
-                                  setSearchKeyword(e.target.value)
-                                }
+                                onChange={e =>{
+                                  const value = e.target.value;
+                                  // Allow only letters, numbers, and spaces
+                                  const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                  setSearchKeyword(cleanedValue)
+                                } }
                                 name="search"
                               />
                               <button type="submit">
@@ -421,6 +425,7 @@ export default function SellerProducts() {
                       <th style={{ minWidth: '150px' }}>Update Product</th>
                       <th style={{ minWidth: '150px' }}>Clone</th>
                       <th style={{ minWidth: '150px' }}>Action</th>
+                 
                     </tr>
                   </thead>
                   <tbody>
@@ -622,9 +627,8 @@ export default function SellerProducts() {
                   </tbody>
                 </table>
               </div>
-            </section>
-          </div>
-          {sellerProductCount > 0 && sellerProductCount > resPerPage ? (
+
+                {sellerProductCount > 0 && sellerProductCount > resPerPage ? (
             <div className="d-flex justify-content-center mt-5 tab-slider">
               <Pagination
                 activePage={currentPage}
@@ -639,6 +643,9 @@ export default function SellerProducts() {
               />
             </div>
           ) : null}
+            </section>
+          </div>
+        
         </div>
       </section>
     </>

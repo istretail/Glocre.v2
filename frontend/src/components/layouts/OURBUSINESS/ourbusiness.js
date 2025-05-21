@@ -13,10 +13,10 @@ export default function Ourbusiness() {
         <section className="empowering-global-section-procureg">
           <div className="container">
             <div className="row">
-              <div className="col-lg-6 empowering-global-left-procureg">
+              <div className="col-lg-6 empowering-global-left-procureg p-0">
                 <img src={ourbusineeg1} className="img-fluid w-100" />
               </div>
-              <div className="col-lg-6 empowering-global-right-procureg">
+              <div className="col-lg-6 p-0 mt-2 empowering-global-right-procureg">
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">
@@ -134,7 +134,7 @@ export default function Ourbusiness() {
 
             <div className="d-flex flex-column justify-content-center align-items-center">
               <div className="row g-4" style={{ width: "100%", maxWidth: "1700px" }}>
-                <div className="col-lg-6">
+                <div className="col-lg-6 pl-0">
                   <div className="our-core-sub-section-procureg p-4" style={{ backgroundColor: "#fff", borderRadius: "15px" }}>
                     <h3>Customer-Centricity</h3>
                     <p>
@@ -145,7 +145,7 @@ export default function Ourbusiness() {
                     </p>
                   </div>
                 </div>
-                <div className="col-lg-6">
+                <div className="col-lg-6 pl-0">
                   <div
                     className="our-core-sub-section-procureg p-4"
                     style={{ backgroundColor: "#fff", borderRadius: "15px" }}
@@ -159,7 +159,7 @@ export default function Ourbusiness() {
                     </p>
                   </div>
                 </div>
-                <div className="col-lg-6">
+                <div className="col-lg-6 pl-0">
                   <div
                     className="our-core-sub-section-procureg p-4"
                     style={{ backgroundColor: "#fff", borderRadius: "15px" }}
@@ -173,7 +173,7 @@ export default function Ourbusiness() {
                     </p>
                   </div>
                 </div>
-                <div className="col-lg-6">
+                <div className="col-lg-6 pl-0">
                   <div
                     className="our-core-sub-section-procureg p-4"
                     style={{ backgroundColor: "#fff", borderRadius: "15px" }}
@@ -309,7 +309,7 @@ export default function Ourbusiness() {
           </div>
         </section>
 
-        <section className="buying-selling-section-procureg ">
+        <section className="buying-selling-section-procureg mb-5">
           <div class="card ">
             <div class=" container">
               <div className="buying-selling-contents-procureg">

@@ -73,24 +73,37 @@ const SellerCreateProduct = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Convert only for numeric fields
-    const numericFields = ['price', 'offPrice', 'tax'];
-    const newValue = numericFields.includes(name) ? Number(value) : value;
+    // Fields that should be uppercase (alphanumeric fields)
+    const upperCaseFields = ["sku", "upc", "itemModelNum", "hsn"];
 
-    setFormData((prev) => {
-      const updatedForm = { ...prev, [name]: newValue };
+    // Handle numeric fields like price and offPrice
+    if (name === "price" || name === "offPrice") {
+      const numericValue = Number(value);
 
-      // MRP validation only if price/offPrice is involved
-      const price = name === 'price' ? newValue : Number(prev.price);
-      const offPrice = name === 'offPrice' ? newValue : Number(prev.offPrice);
+      setFormData((prev) => {
+        const updated = { ...prev, [name]: numericValue };
 
-      if (price !== 0 && offPrice !== 0 && price <= offPrice) {
-        alert("Maximum Retail Price must be greater than Offer Price.");
-        return prev; // block update
-      }
+        const price = name === "price" ? numericValue : Number(prev.price);
+        const offPrice = name === "offPrice" ? numericValue : Number(prev.offPrice);
 
-      return updatedForm;
-    });
+        if (price !== 0 && offPrice !== 0 && price <= offPrice) {
+          alert("Maximum Retail Price must be greater than Offer Price.");
+          return prev; // block update
+        }
+
+        return updated;
+      });
+    } else {
+      // For other fields (like sku, upc, hsn etc.)
+      const transformedValue = upperCaseFields.includes(name)
+        ? value.toUpperCase()
+        : value;
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: transformedValue,
+      }));
+    }
   };
 
 
@@ -141,7 +154,9 @@ const SellerCreateProduct = () => {
   const handleImageChange = (index, e) => {
     const files = Array.from(e.target.files);
     const validImages = files.filter((file) => file.size <= 1024 * 1024);
-    const errors = files.filter((file) => file.size > 1024 * 1024).map((file) => `${file.name} is larger than 1MB`);
+    const errors = files
+      .filter((file) => file.size > 1024 * 1024)
+      .map((file) => `${file.name} is larger than 1MB`);
 
     setImageErrors(errors);
 
@@ -152,13 +167,29 @@ const SellerCreateProduct = () => {
           newVariants[index] = {};
         }
 
-        // Append new images instead of replacing
         const existingImages = newVariants[index].images || [];
-        const newUniqueImages = validImages.filter(
-          (file) => !existingImages.some((img) => img.name === file.name && img.size === file.size)
-        );
-        newVariants[index].images = [...existingImages, ...newUniqueImages];
 
+        // Filter out duplicates
+        const newUniqueImages = validImages.filter(
+          (file) =>
+            !existingImages.some(
+              (img) => img.name === file.name && img.size === file.size
+            )
+        );
+
+        // Combine existing + new images
+        const combinedImages = [...existingImages, ...newUniqueImages];
+
+        // Limit to max 3 images
+        if (combinedImages.length > 3) {
+          setImageErrors((prev) => [
+            ...prev,
+            `Only 3 images allowed. You selected ${combinedImages.length}.`,
+          ]);
+          newVariants[index].images = combinedImages.slice(0, 3);
+        } else {
+          newVariants[index].images = combinedImages;
+        }
 
         return newVariants;
       });
@@ -181,7 +212,7 @@ const SellerCreateProduct = () => {
       prevImages.filter((_, index) => index !== indexToRemove)
     );
   };
-  
+
   const handleProductImageChange = (e) => {
     const files = Array.from(e.target.files);
 
@@ -571,6 +602,9 @@ const SellerCreateProduct = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
+                      onKeyDown={(e) => {
+                        if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                      }}
                       maxlength="80"
                       required
                     />
@@ -588,6 +622,9 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="description"
                       value={formData.description}
+                      onKeyDown={(e) => {
+                        if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                      }}
                       onChange={handleChange}
                       maxLength={200}
                     />
@@ -835,37 +872,38 @@ const SellerCreateProduct = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>How many variants?<span style={{ color: "red" }}> *
+                        <label>
+                          How many variants?<span style={{ color: "red" }}> *
+                            <LightTooltip placement="top" title="You can add up to 7 variants" arrow>
+                              <ErrorOutlineIcon className="errorout-icon" />
+                            </LightTooltip>
+                          </span>
+                        </label>
 
-                          <LightTooltip placement="top" title="List product variants like size, color, etc." arrow>
-                            <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-
-                        </span></label>
                         <input
                           type="number"
                           className="form-control"
-                          min="2"
+                          placeholder="You can add up to 7 variants"
                           value={variantCount}
+                          min={1}
+                          max={7}
                           onChange={e => {
-                            const count = Number(e.target.value);
+                            let count = Number(e.target.value);
 
-                            // Guard clause: only proceed if count is 2 or more
-                            if (count >= 2) {
-                              setVariantCount(count);
-                              setVariantDetails(
-                                Array.from({ length: count }, () => ({
-                                  variantType: variantType,
-                                  variantName: '',
-                                  price: '',
-                                  offPrice: '',
-                                  stock: '',
-                                  images: [],
-                                }))
-                              );
-                            } else {
-                              setVariantCount(2); // fallback value if user tries to go below 2
-                            }
+                            // Prevent count > 7
+                            if (count > 7) count = 7;
+
+                            setVariantCount(count);
+                            setVariantDetails(
+                              Array.from({ length: count }, () => ({
+                                variantType: variantType,
+                                variantName: '',
+                                price: '',
+                                offPrice: '',
+                                stock: '',
+                                images: [],
+                              }))
+                            );
                           }}
                           required
                         />

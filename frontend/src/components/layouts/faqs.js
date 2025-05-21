@@ -48,7 +48,7 @@ const Faqs1 = () => {
       <div className="faqsglocre">
         <div className="container">
           <h2 className="text-center">Frequently Asked Questions</h2>
-          <p className="text-center text-gray-600 max-w-xl mx-auto mt-2">
+          <p className="text-center text-gray-600 max-w-xl mx-auto mt-2 mb-0">
             Find quick answers to common questions about our products, shipping, returns, and more. If you can't find what you're looking for, feel free to contact our support team.
           </p>
 

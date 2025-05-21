@@ -28,7 +28,7 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
         discount,
         paymentInfo,
     } = req.body;
-
+console.log(req.body)
     const estimatedDelivery = new Date();
     estimatedDelivery.setDate(estimatedDelivery.getDate() + 7);
 
@@ -98,24 +98,9 @@ exports.newOrder = catchAsyncError(async (req, res, next) => {
         // 3. Update stock and prepare seller-specific emails
         const sellerProductMap = {}; // sellerId => [items]
 
-        for (const item of orderItems) {
-            const product = await Product.findById(item.product);
-
-            if (product) {
-                // Update stock
-                await updateStock(product._id, item.quantity);
-
-                // Group items by seller
-                const sellerId = product.createdBy?.toString();
-                if (sellerId) {
-                    if (!sellerProductMap[sellerId]) sellerProductMap[sellerId] = [];
-                    sellerProductMap[sellerId].push({
-                        name: item.name,
-                        quantity: item.quantity,
-                    });
-                }
-            }
-        }
+            await Promise.all(order.orderItems.map(async orderItem => {
+                await updateStock(orderItem.product, orderItem.quantity);
+            }));
 
         const sellerIds = Object.keys(sellerProductMap);
         const sellers = await User.find({ _id: { $in: sellerIds } });
@@ -642,8 +627,10 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
 
 
     const isLocalDelivery = (shippingPin, businessPin) => {
-        return shippingPin?.substring(0, 3) === businessPin?.substring(0, 3);
+        if (!shippingPin || !businessPin) return false;
+        return String(shippingPin).substring(0, 3) === String(businessPin).substring(0, 3);
     };
+    
 
     const shippingPin = shippingInfo?.postalCode;
     const state = shippingInfo?.state;

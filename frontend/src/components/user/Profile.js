@@ -13,7 +13,6 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Nav from '../layouts/nav';
 import profileimage from '../../images/profileimage.svg';
-import './user.css';
 import { logEvent } from '../../actions/analyticsActions';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -137,29 +136,29 @@ export default function Profile() {
       </div>
 
       <div className="container">
-        <h3 className="hd">MY Profile</h3>
+        <h3 className="hd mb-0">MY Profile</h3>
         <div className="row">
           <div className="col-md-4">
             <div className=" d-flex align-items-center justify-content-center">
-              <img src={profileimage} />
+              <img src={profileimage} style={{ objectFit: 'cover' }}/>
             </div>
           </div>
 
           <div className="col-md-8">
             <div class="info-box">
               <p>
-                <b className="info-box-p-b">Full Name</b>
+                <b className="info-box-p-b" style={{width:"110px"}}>Full Name</b>
                 <b className="info-box-p-b2">:</b>
                 <span className="info-box-p-span">{user.name}</span>
               </p>
               <p>
-                <b className="info-box-p-b">Email Address</b>
+                <b className="info-box-p-b" style={{width:"110px"}}>Email Address</b>
                 <b className="info-box-p-b2">:</b>
                 <span className="info-box-p-span">{user.email}</span>
               </p>
 
               <p>
-                <b className="info-box-p-b">Joined</b>
+                <b className="info-box-p-b" style={{width:"110px"}}>Joined</b>
                 <b className="info-box-p-b2">:</b>
                 <span className="info-box-p-span">
                   {String(user.createdAt).substring(0, 10)}
@@ -178,12 +177,8 @@ export default function Profile() {
                         "User has no address"
                       )}
                     </span>
-
                   </p>
-               
                 </>
-               
-
               )}
             </div>
 

@@ -57,7 +57,9 @@ const productsSlice = createSlice({
         loading: false,
         products: action.payload.products,
         resPerPage: action.payload.resPerPage,
-        productsCount: action.payload.totalCount,
+        filteredProductsCount: action.payload.filteredProductsCount,
+        totalProductsCount: action.payload.totalProductsCount,
+        
       };
     },
     adminProductsFail(state, action) {

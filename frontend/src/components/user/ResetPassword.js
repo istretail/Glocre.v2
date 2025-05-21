@@ -68,7 +68,7 @@ export default function ResetPassword() {
           <div className="row">
             <div className="col-md-12">
               <div className="row">
-                <div className="col-md-4">
+                <div className="col-md-4 mb-4">
                   <div className="form-group">
                     <TextField
                       label="New Password"

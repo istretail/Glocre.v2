@@ -111,7 +111,7 @@ export default function Shipping() {
   const navigate = useNavigate();
   const countryList = Object.values(countries);
 
-  
+
   useEffect(() => {
     dispatch(getAllSavedAddresses());
     fetchPostalCodeDetails(shippingInfo.postalCode)
@@ -141,7 +141,7 @@ export default function Shipping() {
     async (e) => {
       e.preventDefault();
       setLoading(true);
-      
+
       // Validate shipping address
       const isShippingPostalValid = await checkPostalCodeExists(postalCode);
       if (
@@ -325,7 +325,7 @@ export default function Shipping() {
             setCity(offices[0].Name);
             setState(offices[0].State);
             setCountry(offices[0].Country);
-            setAddressLine(localityNames[0]); 
+            setAddressLine(localityNames[0]);
           } else {
             toast.error("Invalid pin code");
           }
@@ -337,7 +337,7 @@ export default function Shipping() {
     },
     []
   );
-  
+
   const handleAddressSelect = useCallback(
     (selectedAddressId) => {
       setSelectedAddress(selectedAddressId);
@@ -368,7 +368,7 @@ export default function Shipping() {
       setBillingLocalities((prev) => [...prev, billingAddressLine]);
     }
   }, [addressLine]);
-  
+
   useEffect(() => {
     const startTime = Date.now();
     return () => {
@@ -472,6 +472,7 @@ export default function Shipping() {
                 <div className="row d-flex">
                   <div className="cartWrapper mt-1">
                     <div className="Form Contents">
+
                       {/* Form Contents */}
                       <div
                         id="flush-collapseThree"
@@ -520,8 +521,9 @@ export default function Shipping() {
                         )}
                       </div>
 
-                      <div className="row mt-3 mb-4">
-                        <div className="col-md-6">
+                      <div className="row">
+
+                        <div className="col-md-6 mb-4">
                           <div className="form-group">
                             <TextField
                               label="Name"
@@ -554,10 +556,7 @@ export default function Shipping() {
                           </div>
                         </div>
 
-
-                      </div>
-                      <div className="row mt-3 mb-4">
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-4">
                           {/* phone no */}
                           <div className="form-group">
                             <TextField
@@ -606,7 +605,7 @@ export default function Shipping() {
                           </div>
                         </div>
 
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-4">
                           {/* pincode */}
                           <div className="form-group">
                             <TextField
@@ -615,7 +614,7 @@ export default function Shipping() {
                               variant="outlined"
                               className="w-100"
                               size="small"
-                              type="text" 
+                              type="text"
                               name="pincode"
                               placeholder="Pincode"
                               value={postalCode}
@@ -640,33 +639,31 @@ export default function Shipping() {
 
                           </div>
                         </div>
-                      </div>
 
-                      <div className="Street mb-4">
-                        <div className="Street">
-                          {/* address */}
-                          <div className="form-group">
-                            <TextField
-                              label="House number and street name"
-                              variant="outlined"
-                              className="w-100"
-                              id="address_field"
-                              size="small"
-                              name="streetAddressLine1"
-                              value={address}
-                              inputProps={{ maxLength: 50 }}
-                              onChange={(e) => {
-                                const value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces only
-                                setAddress(value)
-                              }}
-                              required
-                            />
+                        <div className="Street  mb-4">
+                          <div className="Street">
+                            {/* address */}
+                            <div className="form-group">
+                              <TextField
+                                label="House number and street name"
+                                variant="outlined"
+                                className="w-100"
+                                id="address_field"
+                                size="small"
+                                name="streetAddressLine1"
+                                value={address}
+                                inputProps={{ maxLength: 50 }}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces only
+                                  setAddress(value)
+                                }}
+                                required
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="row mb-4">
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-4">
                           <div className="form-group">
                             <div className="custom-select-wrapper">
                               <select
@@ -690,7 +687,7 @@ export default function Shipping() {
                         </div>
 
                         {/* City */}
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-4">
                           <div className="form-group">
                             <TextField
                               label="City/Town"
@@ -704,11 +701,9 @@ export default function Shipping() {
                             />
                           </div>
                         </div>
-                      </div>
 
-                      <div className="row mb-1">
                         {/* State */}
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-4">
                           <div className="form-group">
                             <TextField
                               label="State"
@@ -723,7 +718,7 @@ export default function Shipping() {
                           </div>
                         </div>
 
-                        <div className="col-md-6">
+                        <div className="col-md-6 mb-4">
                           <div className="form-group">
                             <select
                               label="Country *"
@@ -744,21 +739,22 @@ export default function Shipping() {
                             </select>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="mb-1">
-                        <div className="card-check-box-shipping1 d-flex align-items-center">
-                          <input
-                            type="checkbox"
-                            id="billingSameAsShipping"
-                            className=" ms-1 custom-checkbox1"
-                            checked={billingSameAsShipping}
-                            style={{ backgroundColor: "#ffad63", border: "none", width: "20px", height: "20px" }}
-                            onChange={(e) => setBillingSameAsShipping(e.target.checked)}
-                          />
-                          <label htmlFor="billingSameAsShipping" className="ms-2 mb-0"></label>
-                          <p className="ms-2 mb-0">Billing address same as shipping address</p>
+                        <div className="mb-4">
+                          <div className="card-check-box-shipping1 d-flex align-items-center">
+                            <input
+                              type="checkbox"
+                              id="billingSameAsShipping"
+                              className=" ms-1 custom-checkbox1"
+                              checked={billingSameAsShipping}
+                              style={{ backgroundColor: "#ffad63", border: "none", width: "20px", height: "20px" }}
+                              onChange={(e) => setBillingSameAsShipping(e.target.checked)}
+                            />
+                            <label htmlFor="billingSameAsShipping" className="ms-2 mb-0"></label>
+                            <p className="ms-2 mb-0">Billing address same as shipping address</p>
+                          </div>
                         </div>
+
                       </div>
 
                     </div>
@@ -768,13 +764,14 @@ export default function Shipping() {
             </div>
           </div>
 
-          <section className="cartRightBox">
+          <section className="cartRightBox pt-0 p-0">
             {!billingSameAsShipping && (
               <>
-                <h1 className="hd mb-4">BILLING ADDRESS</h1>
+                <h1 className="hd mb-5">BILLING ADDRESS</h1>
                 <div className="Form Contents">
-                  <div className="row mt-3 mb-4">
-                    <div className="col-md-6">
+                  <div className="row mt-3">
+
+                    <div className="col-md-6 mb-4">
                       {/* Billing name */}
                       <TextField
                         label="Billing Name"
@@ -806,29 +803,25 @@ export default function Shipping() {
                         }}
                       />
                     </div>
-                    <div className="col-md-6">
-                     
-                     <TextField
-                             label="GST Number"
-                             variant="outlined"
-                             className="w-100"
-                             size="small"
-                             type="text"
-                             value={gstNumber}
-                             
-                             placeholder="Eg: 22ABCDE1234F1Z5"
-                             id="gst_field"
-                             onChange={handleGstChange}
-                            //  error={gstError}
-                             helperText={gstHelperText}
-                             inputProps={{ maxLength: 15 }}
-                           />
-                      
-                    </div>
+                    <div className="col-md-6 mb-4">
+                      <TextField
+                        label="GST Number"
+                        variant="outlined"
+                        className="w-100"
+                        size="small"
+                        type="text"
+                        value={gstNumber}
 
-                  </div>
-                  <div className="row mt-3 mb-4">
-                    <div className="col-md-6">
+                        placeholder="Eg: 22ABCDE1234F1Z5"
+                        id="gst_field"
+                        onChange={handleGstChange}
+                        //  error={gstError}
+                        helperText={gstHelperText}
+                        inputProps={{ maxLength: 15 }}
+                      />
+
+                    </div>
+                    <div className="col-md-6 mb-4">
                       {/* Billing name */}
                       <TextField
                         label="Organization Name"
@@ -836,13 +829,14 @@ export default function Shipping() {
                         className="w-100"
                         size="small"
                         type="text"
-                        
+
                         value={organizationName}
                         inputProps={{ maxLength: 40 }}
                         id="organization_field"
                         onChange={(e) => {
-                          const value = e.target.value.replace(/^\s+/, ""); 
-                          setOrganizationName(value)}
+                          const value = e.target.value.replace(/^\s+/, "");
+                          setOrganizationName(value)
+                        }
                         }
                         onKeyDown={(e) => {
                           const key = e.key;
@@ -860,9 +854,7 @@ export default function Shipping() {
                         }}
                       />
                     </div>
-                  </div>
-                  <div className="row mt-3 mb-4">
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-4">
                       {/* phone no */}
                       <div className="form-group">
                         <TextField
@@ -910,8 +902,7 @@ export default function Shipping() {
 
                       </div>
                     </div>
-
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-4">
                       {/* pincode */}
                       <div className="form-group">
                         <TextField
@@ -942,33 +933,29 @@ export default function Shipping() {
 
                       </div>
                     </div>
-                  </div>
-
-                  <div className="Street mb-4">
-                    <div className="Street">
-                      {/* address */}
-                      <div className="form-group">
-                        <TextField
-                          label="House number and street name"
-                          variant="outlined"
-                          className="w-100"
-                          id="billing_address_field"
-                          size="small"
-                          name="streetAddressLine1"
-                          value={billingAddress}
-                          inputProps={{ maxLength: 40 }}
-                           onChange={(e) => {
+                    <div className="Street mb-4">
+                      <div className="Street">
+                        {/* address */}
+                        <div className="form-group">
+                          <TextField
+                            label="House number and street name"
+                            variant="outlined"
+                            className="w-100"
+                            id="billing_address_field"
+                            size="small"
+                            name="streetAddressLine1"
+                            value={billingAddress}
+                            inputProps={{ maxLength: 40 }}
+                            onChange={(e) => {
                               const value = e.target.value.replace(/^\s+/, ""); // Removes leading spaces only
-                             setBillingAddress(value)
+                              setBillingAddress(value)
                             }}
-                          required
-                        />
+                            required
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="row mb-4">
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-4">
                       <div className="form-group">
 
                         <div className="custom-select-wrapper">
@@ -994,9 +981,8 @@ export default function Shipping() {
 
                       </div>
                     </div>
-
                     {/* City */}
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-4">
                       <div className="form-group">
                         <TextField
                           label="City/Town"
@@ -1011,11 +997,8 @@ export default function Shipping() {
                         />
                       </div>
                     </div>
-                  </div>
-
-                  <div className="row mb-1">
                     {/* State */}
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-4">
                       <div className="form-group">
                         <TextField
                           label="State"
@@ -1030,8 +1013,7 @@ export default function Shipping() {
                         />
                       </div>
                     </div>
-
-                    <div className="col-md-6">
+                    <div className="col-md-6 mb-4">
                       <div className="form-group">
                         <select
                           label="Country *"
@@ -1041,7 +1023,7 @@ export default function Shipping() {
                           id="country_field"
                           className="form-control"
                           value={billingCountry}
-                         
+
                           required
                         >
                           {countryList.map((country, i) => (
@@ -1052,12 +1034,16 @@ export default function Shipping() {
                         </select>
                       </div>
                     </div>
+
+
+
                   </div>
+
                 </div>
               </>
             )}
 
-            <div class="button-container">
+            <div class="button-container pt-0">
               <Button
                 type="submit"
                 className="btn-g btn-lg w-20"

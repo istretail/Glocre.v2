@@ -17,7 +17,7 @@ import { useState } from "react";
 // import img1 from '../../public/images/IMAGE-1.png';
 
 export default function Dashboard() {
-    const { products = [], productsCount } = useSelector(state => state.productsState);
+    const { products = [], totalProductsCount } = useSelector(state => state.productsState);
     const { adminOrders = [], orderCount, totalPrice } = useSelector(state => state.orderState);
     const {  userConut } = useSelector(state => state.userState);
     const dispatch = useDispatch();
@@ -236,7 +236,7 @@ export default function Dashboard() {
                                                             {/* <p className="card-title-2">50+ products added </p> */}
                                                         </div>
                                                     </div>
-                                                    <h3 className="card-title-3">{productsCount}</h3>
+                                                    <h3 className="card-title-3">{totalProductsCount}</h3>
                                                     <div className="d-flex justify-content-between">
                                                         <p className="card-title-4"><FontAwesomeIcon icon={faMoneyBillTrendUp} />0</p>
                                                         <p className="card-title-5" style={{ marginTop: "4%" }} >0 <span className="card-title-6">in this week</span></p>

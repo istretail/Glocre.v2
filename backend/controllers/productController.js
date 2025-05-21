@@ -489,23 +489,33 @@ exports.deleteReview = catchAsyncError(async (req, res, next) => {
 
 // get admin products  - api/v1/admin/products
 exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 15; // Adjust results per page as needed
+  const resPerPage = 10;
+
+  const totalProductsCount = await Product.countDocuments();
+
+  const apiFeaturesForCount = new APIFeatures(Product.find(), req.query)
+    .search()
+    .filter();
+
+  const filteredProducts = await apiFeaturesForCount.query;
+  const filteredProductsCount = filteredProducts.length;
 
   const apiFeatures = new APIFeatures(Product.find(), req.query)
-    .search() 
-    .filter() 
-    .paginate(resPerPage); 
+    .search()
+    .filter()
+    .paginate(resPerPage);
 
   const products = await apiFeatures.query;
-  const totalProductsCount = await Product.countDocuments();
 
   res.status(200).json({
     success: true,
     totalProductsCount,
+    filteredProductsCount,
     resPerPage,
     products,
   });
 });
+
 
 // seller Controller
 exports.getSellerProducts = catchAsyncError(async (req, res, next) => {

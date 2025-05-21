@@ -14,7 +14,7 @@ import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faSh
 import Drawer from '@mui/material/Drawer';
 import { Modal, Box, Typography } from "@mui/material";
 export default function ProductList() {
-    const { products = [], loading = true, productsCount, resPerPage, error } = useSelector(state => state.productsState)
+    const { products = [], loading = true, productsCount, resPerPage, error, filteredProductsCount } = useSelector(state => state.productsState)
     const { isProductDeleted, error: productError } = useSelector(state => state.productState)
     const [clocreProductId, setclocreProductId] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
@@ -37,20 +37,25 @@ export default function ProductList() {
     //     dispatch(getAdminProducts(term, filterStatus));
     // }, 300);
 
-    // const handleSearch = (e) => {
-    //     e.preventDefault();
-    //     if (!clocreProductId.trim()) return; // Prevent empty searches
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (!clocreProductId.trim()) return;
 
-    //     const isObjectId = /^[a-f\d]{24}$/i.test(clocreProductId.trim()); // Check for ObjectId format
-    //     dispatch(getAdminProducts({ keyword: clocreProductId.trim(), idSearch: isObjectId }));
-    // };
+        setCurrentPageNo(1); // reset page
+
+        // Pass correct arguments
+        // dispatch(getAdminProducts(clocreProductId.trim(), filterStatus, 1));
+    };
+    
+    
     // const handleFilterClick = () => {
     //     setFilterVisible(!filterVisible);
     // };
     const handleFilterChange = (status) => {
         setFilterStatus(status);
+        setCurrentPageNo(1);
         setFilterVisible(false);
-        dispatch(getAdminProducts(clocreProductId, status));
+        dispatch(getAdminProducts(status));
     };
     useEffect(() => {
         if (error || productError) {
@@ -67,7 +72,8 @@ export default function ProductList() {
             })
             return;
         }
-        dispatch(getAdminProducts(clocreProductId, filterStatus, currentPage))
+        dispatch(getAdminProducts(clocreProductId, filterStatus, currentPage));
+        // setCurrentPage(1);
     }, [dispatch, error, isProductDeleted, clocreProductId, filterStatus, currentPage])
 
 
@@ -157,21 +163,23 @@ export default function ProductList() {
                                         <div className="dash-cont-glc">
                                             <div className="row">
                                                 <div className="topnav">
-                                                    <div className="search-container">
-                                                        <form className="d-flex"
-                                                            onSubmit={(e) => {
+                                                        <div className="search-container">
+                                                            <form className="d-flex" onSubmit={(e) => {
                                                                 e.preventDefault();
-                                                            }}
-                                                        >
-                                                            <input type="text" placeholder="Search" name="search"
-                                                                value={clocreProductId}
-                                                                onChange={(e) => setclocreProductId(e.target.value)}
-                                                            />
-                                                            <button type="submit">
-                                                                <FontAwesomeIcon icon={faSearch} />
-                                                            </button>
-                                                        </form>
-                                                    </div>
+                                                            }}>
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="Search"
+                                                                    name="search"
+                                                                    // value={clocreProductId}
+                                                                    onChange={(e) => setclocreProductId(e.target.value)}
+                                                                />
+                                                                <button type="submit">
+                                                                    <FontAwesomeIcon icon={faSearch} />
+                                                                </button>
+                                                            </form>
+                                                        </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -207,7 +215,7 @@ export default function ProductList() {
                                                 }}
                                             >
                                                 <input type="text" placeholder="Search" name="search"
-                                                    value={clocreProductId}
+                                                    // value={clocreProductId}
                                                     onChange={(e) => setclocreProductId(e.target.value)}
                                                 />
                                                 <button type="submit">
@@ -413,12 +421,12 @@ export default function ProductList() {
 
                             </div>
                             <br />
-                            {productsCount > 0 && productsCount > resPerPage ? (
+                            {filteredProductsCount > 0 && filteredProductsCount > resPerPage ? (
                                 <div className="d-flex justify-content-center mt-5 tab-slider">
                                     <Pagination
                                         activePage={currentPage}
                                         onChange={setCurrentPageNo}
-                                        totalItemsCount={productsCount}
+                                        totalItemsCount={filteredProductsCount}
                                         itemsCountPerPage={resPerPage}
                                         nextPageText={"Next"}
                                         firstPageText={"First"}
