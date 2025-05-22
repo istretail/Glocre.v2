@@ -121,6 +121,7 @@ const cartSlice = createSlice({
     },
     vaildateCartItemsSuccess(state, action){
       return {
+        ...state,
         loading: false,
         cartItems: action.payload.cartItems,
       }

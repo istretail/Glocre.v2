@@ -1203,62 +1203,78 @@ exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
 // Validate cart items before checkout
 exports.validateCartItems = catchAsyncError(async (req, res) => {
   try {
-    const { cartItems } = req.body;
-    console.log(cartItems);
+    // const { cartItems } = req.body;
+    console.log("Request cart",cartItems);
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({ success: false, message: 'Cart is empty.' });
     }
 
     const updatedCart = [];
-    let allValid = true;
 
     for (const item of cartItems) {
-      const product = await Product.findById(item.productId);
+      const product = await Product.findById(item.product);
 
-      if (
-        !product ||
-        product.status !== 'approved' ||
-        product.stock === 0 ||
-        product.stock < item.quantity
-      ) {
-        allValid = false;
+      if (!product) continue;
 
-        updatedCart.push({
-          ...item,
-          isAvailable: false,
-          message: !product
-            ? 'Product not found.'
-            : product.status !== 'approved'
-              ? 'Product is not approved.'
-              : 'Product is out of stock.',
-        });
-
-        continue;
+      // Check if item has a variant
+      let variantData = null;
+      if (item.variant && item.variant._id) {
+        variantData = product.variants.find(
+          (v) => v._id.toString() === item.variant._id
+        );
+        if (!variantData) continue;
       }
 
-      // Optional: Check price change
-      const priceChanged = product.price !== item.price;
+      const isVariant = Boolean(variantData);
 
       updatedCart.push({
-        ...item,
-        isAvailable: !priceChanged,
-        message: priceChanged ? 'Price has been updated.' : 'Available',
-        latestPrice: product.price,
+        _id: item._id,
+        product: product._id,
+        name: product.name + (isVariant ? ` (${variantData.variantName})` : ''),
+        price: isVariant ? variantData.offPrice : product.offPrice,
+        stock: isVariant ? variantData.stock : product.stock,
+        image: isVariant
+          ? variantData.images?.[0]
+          : product.images?.[0],
+        quantity: item.quantity,
+        tax: product.tax,
+        shippingCostlol: product.shippingCostlol,
+        shippingCostNorth: product.shippingCostNorth,
+        shippingCostSouth: product.shippingCostSouth,
+        shippingCostEast: product.shippingCostEast,
+        shippingCostWest: product.shippingCostWest,
+        shippingCostCentral: product.shippingCostCentral,
+        shippingCostNe: product.shippingCostNe,
+        createdBy: product.createdBy,
+        isArchived: product.isArchived,
+        status: product.status,
+        ...(isVariant && {
+          variant: {
+            _id: variantData._id,
+            variantType: variantData.variantType,
+            variantName: variantData.variantName,
+            price: variantData.price,
+            offPrice: variantData.offPrice,
+            stock: variantData.stock,
+            images: variantData.images,
+          },
+        }),
       });
-
-      if (priceChanged) {
-        allValid = false;
-      }
     }
-
+    // console.log('Updated cart:', updatedCart);
     return res.status(200).json({
       success: true,
-      allValid,
       cartItems: updatedCart,
-    });
+     
+    }
+  );
+
+   
 
   } catch (error) {
     console.error('Cart validation error:', error);
     res.status(500).json({ success: false, message: 'Server error.' });
   }
 });
+
+
