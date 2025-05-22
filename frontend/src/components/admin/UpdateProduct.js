@@ -112,7 +112,7 @@ export default function UpdateProduct() {
             }));
         }
     };
-      
+
     const handleKeyPointsChange = (index, value) => {
         const newKeyPoints = [...formData.keyPoints];
         newKeyPoints[index] = value;
@@ -279,7 +279,7 @@ export default function UpdateProduct() {
             alert(errors.join("\n")); // Replace with better UI if needed
         }
     };
-      
+
 
 
     const openModal = (image) => {
@@ -491,7 +491,7 @@ export default function UpdateProduct() {
         }
     };
 
-    
+
     // console.log("Variant Details before submitting:", variantDetails);
     // console.log("Final Variant Data:", variantDetails);
     useEffect(() => {
@@ -583,7 +583,7 @@ export default function UpdateProduct() {
                     <div className="col-12 col-md-2">
                         <Sidebar />
                     </div>
-                    <div className="col-12 col-lg-10 col-md-12 ">
+                   <div className="col-12 col-lg-10 col-md-12 pr-0">
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} />
                         </div>
@@ -607,14 +607,14 @@ export default function UpdateProduct() {
                                                     <li>Update Product</li>
                                                 </ul>
                                             </div>
-                                            <div className="col-2 text-end">
+                                            <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                                                 <button className="fab" onClick={toggleDrawer}>
                                                     <FontAwesomeIcon icon={faList} />
                                                 </button>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="row dash-navbar-big-glc">
+                                        <div className="row dash-navbar-big-glc small-sticky-navbar">
                                             <div className="col-lg-3 col-md-12">
                                                 <ul className="breadcrumb breadcrumb2 mb-0">
                                                     <li>
@@ -626,7 +626,7 @@ export default function UpdateProduct() {
                                                     <li>Update Product</li>
                                                 </ul>
                                             </div>
-                                            <div className="col-lg-7 col-md-6" style={{ display: "flex", justifyContent: "end", alignItems: "end" }}>
+                                            <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                                                 <div className="dash-cont-glc">
                                                     <div className="row">
                                                         <div className="topnav">
@@ -642,27 +642,23 @@ export default function UpdateProduct() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-lg-1 col-md-2 dash-cont-glc" style={{ display: "flex", justifyContent: "center", alignItems: "end" }}>
+                                            <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                                                 <Dropdown className="d-inline">
                                                     <Dropdown.Toggle
-                                                        variant="default text-white"
+                                                        variant="default"
                                                         id="dropdown-basic"
-                                                        className="text-dark dropdown1 icon-list-filter-procureg"
-                                                        style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
+                                                        className="custom-filter-toggle"
                                                     >
                                                         <FontAwesomeIcon icon={faFilter} />
                                                     </Dropdown.Toggle>
                                                 </Dropdown>
                                             </div>
-                                            {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                                                <img src={avatar1} alt="Avatar" className="avatar" />
-                                            </div> */}
                                         </div>
                                     )}
                                     {/* Search, Filter & Avatar Row (For Mobile) */}
                                     {isMobile && (
                                         <div className="row mobile-bottombar">
-                                            <div className="col-8">
+                                            <div className="col-9 col-md-10 pr-0">
                                                 <div className="search-container">
                                                     <form className="d-flex">
                                                         <input type="text" placeholder="Search" name="search" />
@@ -672,7 +668,7 @@ export default function UpdateProduct() {
                                                     </form>
                                                 </div>
                                             </div>
-                                            <div className="col-2 text-center">
+                                            <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                                                 <Dropdown className="d-inline">
                                                     <Dropdown.Toggle
                                                         variant="default text-white"
@@ -684,9 +680,6 @@ export default function UpdateProduct() {
                                                     </Dropdown.Toggle>
                                                 </Dropdown>
                                             </div>
-                                            {/* <div className="col-2 text-center">
-                                                <img src={avatar1} alt="Avatar" className="avatar" />
-                                            </div> */}
                                         </div>
                                     )}
 
@@ -728,7 +721,7 @@ export default function UpdateProduct() {
                                                     value={formData.name}
                                                     onKeyDown={(e) => {
                                                         if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
-                                                      }}
+                                                    }}
                                                     name="name"
                                                     maxLength={80}
                                                 />
@@ -1284,10 +1277,10 @@ export default function UpdateProduct() {
                                                                     </button>
 
                                                                 </div>
-                                                                
+
                                                             ))}
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div>
 
@@ -1499,22 +1492,22 @@ export default function UpdateProduct() {
                                             </div>
                                         </div>
                                         <div className="col-lg-4">
-                                                            <div className="form-group">
-                                                              <label htmlFor="manufactureDetails_field">Manufacture Details
-                                                                <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
-                                                                  <ErrorOutlineIcon className="errorout-icon" />
-                                                                </LightTooltip>
-                                                              </label>
-                                                              <input
-                                                                type="text"
-                                                                id="manufactureDetails_field"
-                                                                className="form-control"
-                                                                onChange={handleChange}
-                                                                value={formData.manufactureDetails}
-                                                                name="manufactureDetails"
-                                                              />
-                                                            </div>
-                                                          </div>
+                                            <div className="form-group">
+                                                <label htmlFor="manufactureDetails_field">Manufacture Details
+                                                    <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
+                                                        <ErrorOutlineIcon className="errorout-icon" />
+                                                    </LightTooltip>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="manufactureDetails_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.manufactureDetails}
+                                                    name="manufactureDetails"
+                                                />
+                                            </div>
+                                        </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
                                                 <label htmlFor="shippingCostlol_field">Shipping Cost local (Based on sellers pincode):<span style={{ color: "red" }}> *</span></label>

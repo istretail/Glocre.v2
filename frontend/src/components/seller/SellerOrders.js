@@ -12,9 +12,9 @@ import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from 'react-js-pagination';
 import SellerSidebar from "./SellerSidebar";
-import { faCartShopping, faFilter, faPencil, faSearch,  faDashboard, faList,  faShoppingBag, faSort, } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
-import { Dropdown,  } from "react-bootstrap";
+import { Dropdown, } from "react-bootstrap";
 
 
 export default function SellerOrders() {
@@ -90,7 +90,7 @@ export default function SellerOrders() {
                     <div className="col-12 col-md-2">
                         <SellerSidebar />
                     </div>
-                    <div className="col-12 col-lg-10 col-md-12 ">
+                    <div className="col-12 col-lg-10 col-md-12 pr-0">
 
                         <Link to="/">
                             <div className="mobile-logo">
@@ -111,14 +111,14 @@ export default function SellerOrders() {
                                             <li>Order List</li>
                                         </ul>
                                     </div>
-                                    <div className="col-2 text-end">
+                                      <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                                         <button className="fab" onClick={toggleDrawer}>
                                             <FontAwesomeIcon icon={faList} />
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="row dash-navbar-big-glc">
+                              <div className="row dash-navbar-big-glc small-sticky-navbar">
                                     <div className="col-lg-3 col-md-12">
                                         <ul className="breadcrumb breadcrumb2 mb-0">
                                             <li>
@@ -127,7 +127,7 @@ export default function SellerOrders() {
                                             <li>Order List</li>
                                         </ul>
                                     </div>
-                                    <div className="col-lg-7 col-md-6" style={{ display: "flex", justifyContent: "end", alignItems: "end" }}>
+                                   <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                                         <div className="dash-cont-glc">
                                             <div className="row">
                                                 <div className="topnav">
@@ -143,13 +143,12 @@ export default function SellerOrders() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-1 col-md-2 dash-cont-glc" style={{ display: "flex", justifyContent: "center", alignItems: "end" }}>
+                                     <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
-                                                variant="default text-white"
+                                               variant="default"
                                                 id="dropdown-basic"
-                                                className="text-dark dropdown1 icon-list-filter-procureg"
-                                                style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
+                                                className="custom-filter-toggle"
                                             >
                                                 <FontAwesomeIcon icon={faFilter} />
                                             </Dropdown.Toggle>
@@ -161,15 +160,12 @@ export default function SellerOrders() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
                             {isMobile && (
                                 <div className="row mobile-bottombar">
-                                    <div className="col-8">
+                                       <div className="col-9 col-md-10 pr-0">
                                         <div className="search-container">
                                             <form className="d-flex">
                                                 <input type="text" placeholder="Search" name="search" value={searchKeyword}
@@ -180,7 +176,7 @@ export default function SellerOrders() {
                                             </form>
                                         </div>
                                     </div>
-                                    <div className="col-2 text-center">
+                                <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
                                                 variant="default text-white"
@@ -216,6 +212,7 @@ export default function SellerOrders() {
                                         <li><Link to="/seller/products"><FontAwesomeIcon icon={faCartShopping} /> &nbsp;Product List</Link></li>
                                         <li><Link to="/seller/products/create"><FontAwesomeIcon icon={faShoppingBag} /> &nbsp;Create Product</Link></li>
                                         <li><Link to="/seller/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
+                                        <li><Link to="/seller/archive/product"><FontAwesomeIcon icon={faSort} /> &nbsp;Archive Products</Link></li>
                                     </ul>
                                 </div>
                             </Drawer>
@@ -223,7 +220,7 @@ export default function SellerOrders() {
                         </div>
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>ORDERS LIST</h3>
-                   
+
                         <section className="orderlist-section-procureg cartWrapper mt-2">
                             <div className="table-responsive" style={{ overflowX: "auto" }}>
                                 <table className="table">
@@ -247,7 +244,7 @@ export default function SellerOrders() {
                                         ) : sellerOrders.length === 0 ? (
                                             <div className="text-center py-5">
                                                 <p style={{ color: "#8c8c8c", fontSize: "18px" }}>We have no orders.</p>
-                                                
+
                                             </div>
                                         ) : (
                                             sellerOrders.map((SellerOrder) => (

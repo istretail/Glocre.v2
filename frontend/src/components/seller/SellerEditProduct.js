@@ -75,7 +75,7 @@ export default function SellerUpdateProduct() {
   const [hasVariants, setHasVariants] = useState(false);
   const [navModalOpen, setNavModalOpen] = useState(false);
   const [pendingSubmit, setPendingSubmit] = useState(false);
-    const [imagePreviews, setImagePreviews] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -143,11 +143,11 @@ export default function SellerUpdateProduct() {
       });
       return;
     }
-    
+
 
     dispatch(getSellerSingleProduct(productId));
-  }, [isProductUpdated, error, dispatch, navigate]); 
-  
+  }, [isProductUpdated, error, dispatch, navigate]);
+
 
   const handleVariantChange = (index, name, value) => {
     setVariantDetails((prevVariants) => {
@@ -178,7 +178,7 @@ export default function SellerUpdateProduct() {
       return newVariants;
     });
   };
-  
+
 
   const handleVariantImageChange = (index, e) => {
     const files = Array.from(e.target.files);
@@ -219,7 +219,7 @@ export default function SellerUpdateProduct() {
       alert(errors.join("\n")); // Replace with better UI if needed
     }
   };
-  
+
   // const handleRemoveVariantImage = (variantIndex, imageIndex) => {
   //   setVariantDetails((prevVariants) => {
   //     const newVariants = [...prevVariants];
@@ -398,130 +398,130 @@ export default function SellerUpdateProduct() {
 
       const productData = new FormData();
 
-    Object.keys(formData).forEach((key) => {
-      if (key === "images") {
-        formData.images.forEach((image) => {
-          if (typeof image === "string" && image.startsWith("http")) {
-            productData.append("existingImages", image);
-          }
-        });
-        imageFiles.forEach((file) => {
-          productData.append("images", file);
-        });
-      } else if (key === "keyPoints") {
-        formData[key].forEach((point) => {
-          productData.append("keyPoints", point);
-        });
-      } else {
-        productData.append(key, formData[key]);
+      Object.keys(formData).forEach((key) => {
+        if (key === "images") {
+          formData.images.forEach((image) => {
+            if (typeof image === "string" && image.startsWith("http")) {
+              productData.append("existingImages", image);
+            }
+          });
+          imageFiles.forEach((file) => {
+            productData.append("images", file);
+          });
+        } else if (key === "keyPoints") {
+          formData[key].forEach((point) => {
+            productData.append("keyPoints", point);
+          });
+        } else {
+          productData.append(key, formData[key]);
+        }
+      });
+
+      variantDetails.forEach((variant, index) => {
+        productData.append(`variants[${index}][variantType]`, variant.variantType);
+        productData.append(`variants[${index}][variantName]`, variant.variantName);
+        productData.append(`variants[${index}][price]`, variant.price);
+        productData.append(`variants[${index}][offPrice]`, variant.offPrice);
+        productData.append(`variants[${index}][stock]`, variant.stock);
+
+        if (variant.images && variant.images.length > 0) {
+          variant.images.forEach((file) => {
+            if (typeof file === "string" && file.startsWith("http")) {
+              productData.append(`variants[${index}][existingImages]`, file);
+            } else {
+              productData.append(`variants[${index}][images]`, file);
+            }
+          });
+        } else {
+          productData.append(`variants[${index}][existingImages]`, []);
+        }
+      });
+
+      // for (let pair of productData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
+
+      try {
+        await dispatch(updateSellerProduct(productId, productData));
+      } catch (error) {
+        // toast(error.message, { type: "error" });
       }
-    });
 
-    variantDetails.forEach((variant, index) => {
-      productData.append(`variants[${index}][variantType]`, variant.variantType);
-      productData.append(`variants[${index}][variantName]`, variant.variantName);
-      productData.append(`variants[${index}][price]`, variant.price);
-      productData.append(`variants[${index}][offPrice]`, variant.offPrice);
-      productData.append(`variants[${index}][stock]`, variant.stock);
-
-      if (variant.images && variant.images.length > 0) {
-        variant.images.forEach((file) => {
-          if (typeof file === "string" && file.startsWith("http")) {
-            productData.append(`variants[${index}][existingImages]`, file);
-          } else {
-            productData.append(`variants[${index}][images]`, file);
-          }
-        });
-      } else {
-        productData.append(`variants[${index}][existingImages]`, []);
-      }
-    });
-
-    // for (let pair of productData.entries()) {
-    //   console.log(pair[0], pair[1]);
-    // }
-
-    try {
-      await dispatch(updateSellerProduct(productId, productData));
-    } catch (error) {
-      // toast(error.message, { type: "error" });
+      setPendingSubmit(false); // reset flag
     }
 
-    setPendingSubmit(false); // reset flag
-    }
-    
   };
 
 
   // Removed duplicate handleSubmit function
-   const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
-        const isString = typeof imageUrl === "string";
-        const isLocalImage = isString && imageUrl.startsWith("blob:");
+  const handleDeleteImage = async (imageUrl, productId, variantId = null) => {
+    const isString = typeof imageUrl === "string";
+    const isLocalImage = isString && imageUrl.startsWith("blob:");
 
-        if (window.confirm("Are you sure you want to delete this image? It won't be recovered")) {
-            try {
-                if (variantId) {
-                    // Handle variant images
-                    if (!isString && imageUrl instanceof File) {
-                        // If it's a newly added local File, just remove it from state
-                        setVariantDetails((prevVariants) =>
-                            prevVariants.map((variant) =>
-                                variant._id === variantId
-                                    ? {
-                                        ...variant,
-                                        images: (variant.images || []).filter((img) => img !== imageUrl),
-                                    }
-                                    : variant
-                            )
-                        );
-                        return; // No server call needed
-                    }
+    if (window.confirm("Are you sure you want to delete this image? It won't be recovered")) {
+      try {
+        if (variantId) {
+          // Handle variant images
+          if (!isString && imageUrl instanceof File) {
+            // If it's a newly added local File, just remove it from state
+            setVariantDetails((prevVariants) =>
+              prevVariants.map((variant) =>
+                variant._id === variantId
+                  ? {
+                    ...variant,
+                    images: (variant.images || []).filter((img) => img !== imageUrl),
+                  }
+                  : variant
+              )
+            );
+            return; // No server call needed
+          }
 
-                    if (!isLocalImage) {
-                        await dispatch(deleteProductImage(imageUrl, productId, variantId));
-                    }
+          if (!isLocalImage) {
+            await dispatch(deleteProductImage(imageUrl, productId, variantId));
+          }
 
-                    setFormData((prev) => ({
-                        ...prev,
-                        variants: prev.variants.map((variant) =>
-                            variant._id === variantId
-                                ? {
-                                    ...variant,
-                                    images: (variant.images || []).filter((img) => img !== imageUrl),
-                                }
-                                : variant
-                        ),
-                    }));
-                } else {
-                    // Handle normal product images
-                    if (!isLocalImage) {
-                        await dispatch(deleteProductImage(imageUrl, productId));
-                    }
-
-                    setFormData((prev) => ({
-                        ...prev,
-                        images: (prev.images || []).filter((img) => img !== imageUrl),
-                    }));
-
-                    setImagePreviews((prev) => prev.filter((img) => img.url !== imageUrl));
-                    setImageFiles((prev) =>
-                        prev.filter((file) => {
-                            const matching = imagePreviews.find(
-                                (img) => img.url === imageUrl && img.file === file
-                            );
-                            return !matching;
-                        })
-                    );
-
-                    if (isLocalImage) {
-                        URL.revokeObjectURL(imageUrl);
-                    }
+          setFormData((prev) => ({
+            ...prev,
+            variants: prev.variants.map((variant) =>
+              variant._id === variantId
+                ? {
+                  ...variant,
+                  images: (variant.images || []).filter((img) => img !== imageUrl),
                 }
-            } catch (error) {
-                toast.error("Failed to delete image.");
-            }
+                : variant
+            ),
+          }));
+        } else {
+          // Handle normal product images
+          if (!isLocalImage) {
+            await dispatch(deleteProductImage(imageUrl, productId));
+          }
+
+          setFormData((prev) => ({
+            ...prev,
+            images: (prev.images || []).filter((img) => img !== imageUrl),
+          }));
+
+          setImagePreviews((prev) => prev.filter((img) => img.url !== imageUrl));
+          setImageFiles((prev) =>
+            prev.filter((file) => {
+              const matching = imagePreviews.find(
+                (img) => img.url === imageUrl && img.file === file
+              );
+              return !matching;
+            })
+          );
+
+          if (isLocalImage) {
+            URL.revokeObjectURL(imageUrl);
+          }
         }
-    };
+      } catch (error) {
+        toast.error("Failed to delete image.");
+      }
+    }
+  };
 
   const openModal = (image) => {
     setModalImage(image);
@@ -583,7 +583,7 @@ export default function SellerUpdateProduct() {
           {loading ? (
             <Loader />
           ) : (
-            <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
+            <div className="col-12 col-lg-10 col-md-12 pr-0 newprod-right-glc">
               <Link to="/">
                 <div className="mobile-logo">
                   <img src={require('../../images/procure-g-logo.png')} />
@@ -614,14 +614,14 @@ export default function SellerUpdateProduct() {
                         <li>Update Product</li>
                       </ul>
                     </div>
-                    <div className="col-2 text-end">
+                    <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                       <button className="fab" onClick={toggleDrawer}>
                         <FontAwesomeIcon icon={faList} />
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="row dash-navbar-big-glc">
+                  <div className="row dash-navbar-big-glc small-sticky-navbar">
                     <div className="col-lg-3 col-md-12">
                       <ul className="breadcrumb breadcrumb2 mb-0">
                         <li>
@@ -633,14 +633,7 @@ export default function SellerUpdateProduct() {
                         <li>Update Product</li>
                       </ul>
                     </div>
-                    <div
-                      className="col-lg-7 col-md-6"
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'end',
-                        alignItems: 'end',
-                      }}
-                    >
+                    <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                       <div className="dash-cont-glc">
                         <div className="row">
                           <div className="topnav">
@@ -660,38 +653,23 @@ export default function SellerUpdateProduct() {
                         </div>
                       </div>
                     </div>
-                    <div
-                      className="col-lg-1 col-md-2 dash-cont-glc"
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'end',
-                      }}
-                    >
+                    <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                       <Dropdown className="d-inline">
                         <Dropdown.Toggle
-                          variant="default text-white"
+                          variant="default"
                           id="dropdown-basic"
-                          className="text-dark dropdown1 icon-list-filter-procureg"
-                          style={{
-                            backgroundImage: 'none',
-                            border: 'none',
-                            boxShadow: 'none',
-                          }}
+                          className="custom-filter-toggle"
                         >
                           <FontAwesomeIcon icon={faFilter} />
                         </Dropdown.Toggle>
                       </Dropdown>
                     </div>
-                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                      <img src={avatar1} alt="Avatar" className="avatar" />
-                    </div> */}
                   </div>
                 )}
                 {/* Search, Filter & Avatar Row (For Mobile) */}
                 {isMobile && (
                   <div className="row mobile-bottombar">
-                    <div className="col-8">
+                      <div className="col-9 col-md-10 pr-0">
                       <div className="search-container">
                         <form className="d-flex">
                           <input
@@ -705,7 +683,7 @@ export default function SellerUpdateProduct() {
                         </form>
                       </div>
                     </div>
-                    <div className="col-2 text-center">
+                   <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                       <Dropdown className="d-inline">
                         <Dropdown.Toggle
                           variant="default text-white"
@@ -721,9 +699,6 @@ export default function SellerUpdateProduct() {
                         </Dropdown.Toggle>
                       </Dropdown>
                     </div>
-                    {/* <div className="col-2 text-center">
-                      <img src={avatar1} alt="Avatar" className="avatar" />
-                    </div> */}
                   </div>
                 )}
 
@@ -763,6 +738,11 @@ export default function SellerUpdateProduct() {
                           <FontAwesomeIcon icon={faSort} /> &nbsp;Order List
                         </Link>
                       </li>
+                      <li>
+                        <Link to="/seller/archive/product">
+                          <FontAwesomeIcon icon={faSort} /> &nbsp;Archived Products
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </Drawer>
@@ -795,8 +775,8 @@ export default function SellerUpdateProduct() {
                         className="form-control"
                         onChange={handleChange}
                         value={formData.name}
-                          onKeyDown={(e) => {
-                            if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
+                        onKeyDown={(e) => {
+                          if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
                         }}
                         name="name"
                         maxLength={80}
@@ -1013,85 +993,85 @@ export default function SellerUpdateProduct() {
 
                   {!hasVariants && (
                     <>
-                        <div className="form-group">
-                          <label htmlFor="price_field">
-                            Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span>
-                            <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip>
-                          </label>
-                          <input
-                            type="number"
-                            id="price_field"
-                            className="form-control"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleChange}
-                            min="0"
-                            max="99999"
-                            onWheel={(e) => e.target.blur()}
-                            onKeyDown={(e) => {
-                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault();
-                              }
-                            }}
-                          />
-                        </div>
+                      <div className="form-group">
+                        <label htmlFor="price_field">
+                          Maximum Retail Price (in ₹):<span style={{ color: "red" }}> *</span>
+                          <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+                        </label>
+                        <input
+                          type="number"
+                          id="price_field"
+                          className="form-control"
+                          name="price"
+                          value={formData.price}
+                          onChange={handleChange}
+                          min="0"
+                          max="99999"
+                          onWheel={(e) => e.target.blur()}
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </div>
 
-                        <div className="form-group">
-                          <label htmlFor="offPrice_field">
-                            Offer Price (in ₹):<span style={{ color: "red" }}> *</span>
-                            <LightTooltip placement="top" title="Enter the offer price of the product." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip>
-                          </label>
-                          <input
-                            type="number"
-                            id="offPrice_field"
-                            className="form-control"
-                            name="offPrice"
-                            value={formData.offPrice}
-                            onChange={handleChange}
-                            min="0"
-                            max="99999"
-                            onWheel={(e) => e.target.blur()}
-                            onKeyDown={(e) => {
-                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault();
-                              }
-                            }}
-                          />
-                        </div>
+                      <div className="form-group">
+                        <label htmlFor="offPrice_field">
+                          Offer Price (in ₹):<span style={{ color: "red" }}> *</span>
+                          <LightTooltip placement="top" title="Enter the offer price of the product." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+                        </label>
+                        <input
+                          type="number"
+                          id="offPrice_field"
+                          className="form-control"
+                          name="offPrice"
+                          value={formData.offPrice}
+                          onChange={handleChange}
+                          min="0"
+                          max="99999"
+                          onWheel={(e) => e.target.blur()}
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </div>
 
-                        <div className="form-group">
-                          <label htmlFor="stock_field">
-                            Stock:<span style={{ color: "red" }}> *</span>
-                            <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
-                              <ErrorOutlineIcon className="errorout-icon" />
-                            </LightTooltip>
-                          </label>
-                          <input
-                            type="number"
-                            id="stock_field"
-                            className="form-control"
-                            name="stock"
-                            value={formData.stock}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
-                                handleChange(e);
-                              }
-                            }}
-                            min="0"
-                            max="9999"
-                            onWheel={(e) => e.target.blur()}
-                            onKeyDown={(e) => {
-                              if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                                e.preventDefault();
-                              }
-                            }}
-                          />
-                        </div>
+                      <div className="form-group">
+                        <label htmlFor="stock_field">
+                          Stock:<span style={{ color: "red" }}> *</span>
+                          <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                            <ErrorOutlineIcon className="errorout-icon" />
+                          </LightTooltip>
+                        </label>
+                        <input
+                          type="number"
+                          id="stock_field"
+                          className="form-control"
+                          name="stock"
+                          value={formData.stock}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                              handleChange(e);
+                            }
+                          }}
+                          min="0"
+                          max="9999"
+                          onWheel={(e) => e.target.blur()}
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
+                      </div>
 
 
                       <div className="col-lg-6">
@@ -1107,7 +1087,7 @@ export default function SellerUpdateProduct() {
                                   width="55"
                                   height="52"
                                   style={{ cursor: "pointer" }}
-                                  
+
                                 />
                                 <button
                                   type="button"
@@ -1389,7 +1369,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-6">
                     <div className="form-group">
-                        <label htmlFor="sku_field">SKU <span style={{ color: "red" }}> *</span>
+                      <label htmlFor="sku_field">SKU <span style={{ color: "red" }}> *</span>
                         <LightTooltip placement="top" title="Stock Keeping Unit – your internal tracking code for this product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
@@ -1429,7 +1409,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="hsn_field">
-                          HSN Code:<span style={{ color: "red" }}> *</span>
+                        HSN Code:<span style={{ color: "red" }}> *</span>
                         <LightTooltip placement="top" title="HSN code for GST classification of your product." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
@@ -1525,7 +1505,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-6">
                     <div className="form-group">
-                        <label htmlFor="itemLength_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="itemLength_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="itemLength_field"
@@ -1543,7 +1523,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="itemHeight_field">
-                          Item Height in Centimeters:<span style={{ color: "red" }}> *</span>
+                        Item Height in Centimeters:<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1562,7 +1542,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-6">
                     <div className="form-group">
                       <label htmlFor="itemWeight_field">
-                          Item Weight in Kgs:<span style={{ color: "red" }}> *</span>
+                        Item Weight in Kgs:<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1581,7 +1561,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="itemWidth_field">
-                          Item Width in Centimeters:<span style={{ color: "red" }}> *</span>
+                        Item Width in Centimeters:<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1600,7 +1580,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-12">
                     <div className="form-group">
                       <label htmlFor="moq_field">
-                          Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *</span>
+                        Minimum Order QTY(MOQ):<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1618,7 +1598,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="shippingCostlol_field">Shipping Cost local (in ₹) (Based on seller pincode):<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="shippingCostlol_field">Shipping Cost local (in ₹) (Based on seller pincode):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostlol_field"
@@ -1636,7 +1616,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="shippingCostNorth_field">
-                          Shipping Cost North India (in ₹):<span style={{ color: "red" }}> *</span>
+                        Shipping Cost North India (in ₹):<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1655,7 +1635,7 @@ export default function SellerUpdateProduct() {
                   <div className="col-lg-4">
                     <div className="form-group">
                       <label htmlFor="shippingCostSouth_field">
-                          Shipping Cost South India (in ₹):<span style={{ color: "red" }}> *</span>
+                        Shipping Cost South India (in ₹):<span style={{ color: "red" }}> *</span>
                       </label>
                       <input
                         type="number"
@@ -1675,7 +1655,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="shippingCostEast_field">Shipping Cost East India (in ₹):<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="shippingCostEast_field">Shipping Cost East India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostEast_field"
@@ -1692,7 +1672,7 @@ export default function SellerUpdateProduct() {
 
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="shippingCostWest_field">Shipping Cost West India (in ₹):<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="shippingCostWest_field">Shipping Cost West India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostWest_field"
@@ -1708,7 +1688,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="shippingCostNe_field">shipping Cost Northeast India (in ₹):<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="shippingCostNe_field">shipping Cost Northeast India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostNe_field"
@@ -1724,7 +1704,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in ₹):<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="shippingCostCentral_field">shipping Cost Central India (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
                         id="shippingCostCentral_field"
@@ -1740,7 +1720,7 @@ export default function SellerUpdateProduct() {
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="unit_field">Unit (EA/ML/Set):<span style={{ color: "red" }}> *</span>
+                      <label htmlFor="unit_field">Unit (EA/ML/Set):<span style={{ color: "red" }}> *</span>
                         <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
                           <ErrorOutlineIcon className="errorout-icon" />
                         </LightTooltip>
@@ -1768,52 +1748,52 @@ export default function SellerUpdateProduct() {
                     </button>
                   </div>
 
-                  
+
                 </div>
               </form>
-                <Modal open={navModalOpen} onClose={handleNavClose}>
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      bgcolor: "background.paper",
-                      p: 4,
-                      borderRadius: 2,
-                      width: 300,
-                      border: "none",
-                      outline: "none",
-                    }}
-                  >
-                    <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
-                      Are you sure want to update this product?(Item will be moved to pending state)
-                    </Typography>
-                    <Box display="flex" justifyContent="space-between">
-                      <Button
-                        onClick={handleNavConfirm}
-                        className="left-but"
-                        sx={{ margin: "3px" }}
-                      >
-                        Yes
-                      </Button>
-                      <Button
-                        onClick={handleNavClose}
-                        sx={{
-                          backgroundColor: '#2f4d2a',
-                          color: '#fff',
-                          '&:hover': {
-                            backgroundColor: '#2f4d2a50',
-                          },
-                          width: "100%",
-                          margin: "3px"
-                        }}
-                      >
-                        No
-                      </Button>
-                    </Box>
+              <Modal open={navModalOpen} onClose={handleNavClose}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    bgcolor: "background.paper",
+                    p: 4,
+                    borderRadius: 2,
+                    width: 300,
+                    border: "none",
+                    outline: "none",
+                  }}
+                >
+                  <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                    Are you sure want to update this product?(Item will be moved to pending state)
+                  </Typography>
+                  <Box display="flex" justifyContent="space-between">
+                    <Button
+                      onClick={handleNavConfirm}
+                      className="left-but"
+                      sx={{ margin: "3px" }}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      onClick={handleNavClose}
+                      sx={{
+                        backgroundColor: '#2f4d2a',
+                        color: '#fff',
+                        '&:hover': {
+                          backgroundColor: '#2f4d2a50',
+                        },
+                        width: "100%",
+                        margin: "3px"
+                      }}
+                    >
+                      No
+                    </Button>
                   </Box>
-                </Modal>
+                </Box>
+              </Modal>
               {showModal && (
                 <div className="modal" style={{ display: 'block' }}>
                   <div className="modal-dialog modal-dialog-centered">

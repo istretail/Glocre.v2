@@ -44,7 +44,7 @@ const AdminBannerPage = () => {
                 </div>
                 <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
                     <div className="container mt-4">
-                        <h3>Manage Banner Images</h3>
+                        <h2>Manage Banner Images</h2>
 
                         <form onSubmit={handleUpload} className="mb-3">
                             <input
@@ -52,11 +52,12 @@ const AdminBannerPage = () => {
                                 accept="image/*"
                                 onChange={(e) => setBannerImage(e.target.files[0])}
                             />
-                            <Button type="submit" className="ms-2" disabled={loading}>
+                            <Button type="submit" className="ms-2 btn-g border-0" disabled={loading}>
                                 {loading ? <Spinner size="sm" /> : "Upload"}
                             </Button>
                         </form>
-                        <span>need image size in </span><h3>width = 1660 px ||  height = 400px </h3>
+                        <p>need image size in </p>
+                        <h5>Width = 1660 px || Height = 400px </h5>
                         {error && <p className="text-danger">{error}</p>}
 
                         <div className="row">
@@ -74,6 +75,7 @@ const AdminBannerPage = () => {
                                                 <Button
                                                     variant="danger"
                                                     onClick={() => handleDelete(banner._id)}
+                                                    className="btn-g border-0"
                                                 >
                                                     Delete
                                                 </Button>

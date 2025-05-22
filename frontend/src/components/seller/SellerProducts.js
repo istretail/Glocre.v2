@@ -41,10 +41,10 @@ export default function SellerProducts() {
 
   const handleFilterChange = (status) => {
     setFilterStatus(status);
-    setCurrentPageNo(1); 
+    setCurrentPageNo(1);
     dispatch(getSellerProducts(searchKeyword, status));
   };
-  
+
   useEffect(() => {
     if (error) {
       toast(error, {
@@ -170,7 +170,7 @@ export default function SellerProducts() {
           <div className="col-12 col-md-2">
             <SellerSidebar />
           </div>
-          <div className="col-12 col-lg-10 col-md-12 ">
+          <div className="col-12 col-lg-10 col-md-12 pr-0">
             <Link to="/">
               <div className="mobile-logo">
                 <img
@@ -195,14 +195,14 @@ export default function SellerProducts() {
                       <li>Product List</li>
                     </ul>
                   </div>
-                  <div className="col-2 text-end">
+                  <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                     <button className="fab" onClick={toggleDrawer}>
                       <FontAwesomeIcon icon={faList} />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="row dash-navbar-big-glc">
+                <div className="row dash-navbar-big-glc small-sticky-navbar">
                   <div className="col-lg-3 col-md-12">
                     <ul className="breadcrumb breadcrumb2 mb-0">
                       <li>
@@ -211,14 +211,7 @@ export default function SellerProducts() {
                       <li>Product List</li>
                     </ul>
                   </div>
-                  <div
-                    className="col-lg-7 col-md-6"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      alignItems: 'end',
-                    }}
-                  >
+                  <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                     <div className="dash-cont-glc">
                       <div className="row">
                         <div className="topnav">
@@ -233,12 +226,12 @@ export default function SellerProducts() {
                                 type="text"
                                 placeholder="Search"
                                 value={searchKeyword}
-                                onChange={e =>{
+                                onChange={e => {
                                   const value = e.target.value;
                                   // Allow only letters, numbers, and spaces
                                   const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
                                   setSearchKeyword(cleanedValue)
-                                } }
+                                }}
                                 name="search"
                               />
                               <button type="submit">
@@ -250,24 +243,12 @@ export default function SellerProducts() {
                       </div>
                     </div>
                   </div>
-                  <div
-                    className="col-lg-1 col-md-2 dash-cont-glc"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'end',
-                    }}
-                  >
+                  <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                     <Dropdown className="d-inline">
                       <Dropdown.Toggle
-                        variant="default text-white"
+                        variant="default"
                         id="dropdown-basic"
-                        className="text-dark dropdown1 icon-list-filter-procureg"
-                        style={{
-                          backgroundImage: 'none',
-                          border: 'none',
-                          boxShadow: 'none',
-                        }}
+                        className="custom-filter-toggle"
                       >
                         <FontAwesomeIcon icon={faFilter} />
                       </Dropdown.Toggle>
@@ -293,15 +274,12 @@ export default function SellerProducts() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
-                  {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                      <img src={avatar1} alt="Avatar" className="avatar" />
-                    </div> */}
                 </div>
               )}
               {/* Search, Filter & Avatar Row (For Mobile) */}
               {isMobile && (
                 <div className="row mobile-bottombar">
-                  <div className="col-8">
+                    <div className="col-9 col-md-10 pr-0">
                     <div className="search-container">
                       <form className="d-flex">
                         <input
@@ -351,9 +329,6 @@ export default function SellerProducts() {
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
-                  {/* <div className="col-2 text-center">
-                      <img src={avatar1} alt="Avatar" className="avatar" />
-                    </div> */}
                 </div>
               )}
 
@@ -403,6 +378,12 @@ export default function SellerProducts() {
                         Order List
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/seller/archive/product">
+                        <FontAwesomeIcon icon={faSort} className="me-2" />
+                       Archived Products
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </Drawer>
@@ -411,7 +392,7 @@ export default function SellerProducts() {
             <h3 style={{ color: '#ffad63', marginTop: '40px' }}>
               PRODUCT LIST
             </h3>
-        
+
 
             <section className="cartWrapper">
               <div className="table-responsive" style={{ overflowX: 'auto' }}>
@@ -421,11 +402,11 @@ export default function SellerProducts() {
                       <th style={{ minWidth: '200px' }}>Name</th>
                       <th style={{ minWidth: '180px' }}>Status</th>
                       <th style={{ minWidth: '180px' }}>Date</th>
-                      <th style={{ minWidth: '300px' }}>ID</th>
+                      <th style={{ minWidth: '180px' }}>ID</th>
                       <th style={{ minWidth: '150px' }}>Update Product</th>
                       <th style={{ minWidth: '150px' }}>Clone</th>
                       <th style={{ minWidth: '150px' }}>Action</th>
-                 
+
                     </tr>
                   </thead>
                   <tbody>
@@ -507,7 +488,7 @@ export default function SellerProducts() {
                             </Link>
                           </td>
 
-                         
+
 
 
                           {/* <td>
@@ -572,7 +553,7 @@ export default function SellerProducts() {
 
                           <td>
                             <button
-                              className="m-3"
+                              // className="m-3"
                               onClick={(e) => handleArchiveClick(e, product._id)}
                               style={{ backgroundColor: "#2f4d2a", color: "#fff", fontSize: "15px", padding: "5px", borderRadius: "7px" }}
                             >
@@ -628,24 +609,24 @@ export default function SellerProducts() {
                 </table>
               </div>
 
-                {sellerProductCount > 0 && sellerProductCount > resPerPage ? (
-            <div className="d-flex justify-content-center mt-5 tab-slider">
-              <Pagination
-                activePage={currentPage}
-                onChange={setCurrentPageNo}
-                totalItemsCount={sellerProductCount}
-                itemsCountPerPage={resPerPage}
-                nextPageText={'Next'}
-                firstPageText={'First'}
-                lastPageText={'Last'}
-                itemClass={'page-item'}
-                linkClass={'page-link'}
-              />
-            </div>
-          ) : null}
+              {sellerProductCount > 0 && sellerProductCount > resPerPage ? (
+                <div className="d-flex justify-content-center mt-5 tab-slider">
+                  <Pagination
+                    activePage={currentPage}
+                    onChange={setCurrentPageNo}
+                    totalItemsCount={sellerProductCount}
+                    itemsCountPerPage={resPerPage}
+                    nextPageText={'Next'}
+                    firstPageText={'First'}
+                    lastPageText={'Last'}
+                    itemClass={'page-item'}
+                    linkClass={'page-link'}
+                  />
+                </div>
+              ) : null}
             </section>
           </div>
-        
+
         </div>
       </section>
     </>

@@ -12,8 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Pagination from 'react-js-pagination';
 
-import { faCartShopping,  faFilter, faPencil, faSearch, faTrash,  faDashboard, faList,  faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown,  } from "react-bootstrap";
+import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 
 export default function UserList() {
@@ -101,7 +101,7 @@ export default function UserList() {
                     <div className="col-12 col-md-2">
                         <Sidebar />
                     </div>
-                    <div className="col-12 col-lg-10 col-md-12 ">
+                    <div className="col-12 col-lg-10 col-md-12 pr-0">
 
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
@@ -122,14 +122,14 @@ export default function UserList() {
                                             <li>User List</li>
                                         </ul>
                                     </div>
-                                    <div className="col-2 text-end">
+                                    <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                                         <button className="fab" onClick={toggleDrawer}>
                                             <FontAwesomeIcon icon={faList} />
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="row dash-navbar-big-glc">
+                                <div className="row dash-navbar-big-glc small-sticky-navbar">
                                     <div className="col-lg-3 col-md-12">
                                         <ul className="breadcrumb breadcrumb2 mb-0">
                                             <li>
@@ -138,7 +138,7 @@ export default function UserList() {
                                             <li>User List</li>
                                         </ul>
                                     </div>
-                                    <div className="col-lg-7 col-md-6" style={{ display: "flex", justifyContent: "end", alignItems: "end" }}>
+                                    <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                                         <div className="dash-cont-glc">
                                             <div className="row">
                                                 <div className="topnav">
@@ -156,13 +156,12 @@ export default function UserList() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-1 col-md-2 dash-cont-glc" style={{ display: "flex", justifyContent: "center" }}>
+                                    <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
-                                                variant="default text-white"
+                                                variant="default"
                                                 id="dropdown-basic"
-                                                className="text-dark dropdown1 icon-list-filter-procureg"
-                                                style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
+                                                className="custom-filter-toggle"
                                             >
                                                 <FontAwesomeIcon icon={faFilter} />
                                             </Dropdown.Toggle>
@@ -179,15 +178,12 @@ export default function UserList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
                                 </div>
                             )}
                             {/* Search, Filter & Avatar Row (For Mobile) */}
                             {isMobile && (
                                 <div className="row mobile-bottombar">
-                                    <div className="col-8">
+                                    <div className="col-9 col-md-10 pr-0">
                                         <div className="search-container">
                                             <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                                                 <input type="text" placeholder="Search" name="search"
@@ -199,7 +195,7 @@ export default function UserList() {
                                             </form>
                                         </div>
                                     </div>
-                                    <div className="col-2 text-center">
+                                    <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
                                                 variant="default text-white"
@@ -222,9 +218,6 @@ export default function UserList() {
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
-                                    {/* <div className="col-2 text-center">
-                                        <img src={avatar1} alt="Avatar" className="avatar" />
-                                    </div> */}
                                 </div>
                             )}
                             {/* Drawer Component */}
@@ -242,7 +235,7 @@ export default function UserList() {
                                         <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                                         <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
                                     </ul>
-                                    
+
                                 </div>
                             </Drawer>
 
@@ -250,15 +243,15 @@ export default function UserList() {
 
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>USER LIST</h3>
-                     
+
 
 
                         {loading ? (
                             <Loader />) : users.length === 0 ? (
                                 <div className="text-center py-5">
-                                    <p style={{ color: "#8c8c8c", fontSize: "18px" }}>We have no Users. Please create one.</p>                                  
+                                    <p style={{ color: "#8c8c8c", fontSize: "18px" }}>We have no Users. Please create one.</p>
                                 </div>
-                            ) : ( <div className="cartWrapper mt-4">
+                            ) : (<div className="cartWrapper mt-4">
                                 <div className="table-responsive" style={{ overflowX: "auto" }}>
                                     <table className="table">
                                         <thead>
@@ -316,27 +309,24 @@ export default function UserList() {
                                 </div>
                             </div>
                         )
-                        
-                            
                         }
+                        {userConut > 0 && userConut > resPerPage ? (
+                            <div className="d-flex justify-content-center mt-5 tab-slider">
+                                <Pagination
+                                    activePage={currentPage}
+                                    onChange={setCurrentPageNo}
+                                    totalItemsCount={userConut}
+                                    itemsCountPerPage={resPerPage}
+                                    nextPageText={"Next"}
+                                    firstPageText={"First"}
+                                    lastPageText={"Last"}
+                                    itemClass={"page-item"}
+                                    linkClass={"page-link"}
+                                />
+                            </div>
+                        ) : null}
                         <br />
                     </div>
-
-                    {userConut > 0 && userConut > resPerPage ? (
-                        <div className="d-flex justify-content-center mt-5 tab-slider">
-                            <Pagination
-                                activePage={currentPage}
-                                onChange={setCurrentPageNo}
-                                totalItemsCount={userConut}
-                                itemsCountPerPage={resPerPage}
-                                nextPageText={"Next"}
-                                firstPageText={"First"}
-                                lastPageText={"Last"}
-                                itemClass={"page-item"}
-                                linkClass={"page-link"}
-                            />
-                        </div>
-                    ) : null}
                 </div>
             </section>
         </>

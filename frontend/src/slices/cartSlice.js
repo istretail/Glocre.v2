@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 
 // Safe JSON parse function
 const safeParseJSON = (key, fallbackValue) => {
@@ -17,7 +18,8 @@ const cartSlice = createSlice({
     items: safeParseJSON('cartItems', []),
     loading: false,
     shippingInfo: safeParseJSON('shippingInfo', {}),
-    billingInfo: safeParseJSON('billingInfo', {})
+    billingInfo: safeParseJSON('billingInfo', {}),
+    cartItems: [],
   },
   reducers: {
     clearCart(state) {
@@ -110,7 +112,26 @@ const cartSlice = createSlice({
       state.items = [];
       state.shippingInfo = {};
       state.billingInfo = {};
-    }
+    },
+    vaildateCartItemsRequest(state, action){
+      return {
+        ...state,
+        loading: true,
+      }
+    },
+    vaildateCartItemsSuccess(state, action){
+      return {
+        loading: false,
+        cartItems: action.payload.cartItems,
+      }
+    },
+    vaildateCartItemsFail(state, action){
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      }
+    },
   }
 });
 const { actions, reducer } = cartSlice;
@@ -124,7 +145,10 @@ export const {
   getCartItemsFail,
   saveShippingInfo,
   saveBillingInfo,
-  orderCompleted
+  orderCompleted,
+  vaildateCartItemsRequest,
+  vaildateCartItemsSuccess,
+  vaildateCartItemsFail,
 } = actions;
 
 export default reducer;

@@ -419,7 +419,7 @@ const SellerCreateProduct = () => {
             <SellerSidebar />
           </div>
 
-          <div className="col-12 col-lg-10 col-md-12 newprod-right-glc">
+          <div className="col-12 col-lg-10 col-md-12 pr-0 newprod-right-glc">
             <Link to="/">
               <div className="mobile-logo">
                 <img src={require('../../images/procure-g-logo.png')} />
@@ -439,14 +439,14 @@ const SellerCreateProduct = () => {
                       <li>Create Product</li>
                     </ul>
                   </div>
-                  <div className="col-2 text-end">
+               <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                     <button className="fab" onClick={toggleDrawer}>
                       <FontAwesomeIcon icon={faList} />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="row dash-navbar-big-glc">
+                <div className="row dash-navbar-big-glc small-sticky-navbar">
                   <div className="col-lg-3 col-md-12">
                     <ul className="breadcrumb breadcrumb2 mb-0">
                       <li>
@@ -455,14 +455,7 @@ const SellerCreateProduct = () => {
                       <li>Create Product</li>
                     </ul>
                   </div>
-                  <div
-                    className="col-lg-7 col-md-6"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      alignItems: 'end',
-                    }}
-                  >
+                  <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                     <div className="dash-cont-glc">
                       <div className="row">
                         <div className="topnav">
@@ -482,38 +475,23 @@ const SellerCreateProduct = () => {
                       </div>
                     </div>
                   </div>
-                  <div
-                    className="col-lg-1 col-md-2 dash-cont-glc"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'end',
-                    }}
-                  >
+                  <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                     <Dropdown className="d-inline">
                       <Dropdown.Toggle
-                        variant="default text-white"
+                        variant="default"
                         id="dropdown-basic"
-                        className="text-dark dropdown1 icon-list-filter-procureg"
-                        style={{
-                          backgroundImage: 'none',
-                          border: 'none',
-                          boxShadow: 'none',
-                        }}
+                        className="custom-filter-toggle"
                       >
                         <FontAwesomeIcon icon={faFilter} />
                       </Dropdown.Toggle>
                     </Dropdown>
                   </div>
-                  {/* <div className="col-lg-1 col-md-2 dash-cont-glc">
-                    <img src={avatar1} alt="Avatar" className="avatar" />
-                  </div> */}
                 </div>
               )}
               {/* Search, Filter & Avatar Row (For Mobile) */}
               {isMobile && (
                 <div className="row mobile-bottombar">
-                  <div className="col-8">
+                 <div className="col-9 col-md-10 pr-0">
                     <div className="search-container">
                       <form className="d-flex">
                         <input type="text" placeholder="Search" name="search" />
@@ -523,7 +501,7 @@ const SellerCreateProduct = () => {
                       </form>
                     </div>
                   </div>
-                  <div className="col-2 text-center">
+                   <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                     <Dropdown className="d-inline">
                       <Dropdown.Toggle
                         variant="default text-white"
@@ -539,9 +517,6 @@ const SellerCreateProduct = () => {
                       </Dropdown.Toggle>
                     </Dropdown>
                   </div>
-                  {/* <div className="col-2 text-center">
-                    <img src={avatar1} alt="Avatar" className="avatar" />
-                  </div> */}
                 </div>
               )}
 
@@ -578,6 +553,11 @@ const SellerCreateProduct = () => {
                     <li>
                       <Link to="/seller/orders">
                         <FontAwesomeIcon icon={faSort} /> &nbsp;Order List
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/seller/archive/product">
+                        <FontAwesomeIcon icon={faSort} /> &nbsp;Archieved Products
                       </Link>
                     </li>
                   </ul>

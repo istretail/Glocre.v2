@@ -69,23 +69,23 @@ export default function SellerArchiveProducts() {
 
 
   // 
-    const [navModalOpen, setNavModalOpen] = useState(false);
-    const [selectedProductId, setSelectedProductId] = useState(null);
-    const navigate = useNavigate();
-  
-    const handleEditClick = (id) => {
-      setSelectedProductId(id);
-      setNavModalOpen(true);
-    };
-  
-    const handleNavConfirm = () => {
-      navigate(`/seller/product/${selectedProductId}`);
-    };
-  
-    const handleNavClose = () => {
-      setNavModalOpen(false);
-      setSelectedProductId(null);
-    };
+  const [navModalOpen, setNavModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const navigate = useNavigate();
+
+  const handleEditClick = (id) => {
+    setSelectedProductId(id);
+    setNavModalOpen(true);
+  };
+
+  const handleNavConfirm = () => {
+    navigate(`/seller/product/${selectedProductId}`);
+  };
+
+  const handleNavClose = () => {
+    setNavModalOpen(false);
+    setSelectedProductId(null);
+  };
 
   const [unarchiveModalOpen, setUnarchiveModalOpen] = useState(false);
   const [productToUnarchive, setProductToUnarchive] = useState(null);
@@ -117,7 +117,7 @@ export default function SellerArchiveProducts() {
           <div className="col-12 col-md-2">
             <SellerSidebar />
           </div>
-          <div className="col-12 col-lg-10 col-md-12 ">
+          <div className="col-12 col-lg-10 col-md-12 pr-0">
             <Link to="/">
               <div className="mobile-logo">
                 <img
@@ -139,33 +139,26 @@ export default function SellerArchiveProducts() {
                           Dashboard
                         </Link>
                       </li>
-                      <li>Product List</li>
+                      <li>Archived Product List</li>
                     </ul>
                   </div>
-                  <div className="col-2 text-end">
+                  <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                     <button className="fab" onClick={toggleDrawer}>
                       <FontAwesomeIcon icon={faList} />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="row dash-navbar-big-glc">
+                <div className="row dash-navbar-big-glc small-sticky-navbar">
                   <div className="col-lg-3 col-md-12">
                     <ul className="breadcrumb breadcrumb2 mb-0">
                       <li>
                         <Link to="/seller/dashboard">Dashboard</Link>
                       </li>
-                      <li>Product List</li>
+                      <li>Archived Product List</li>
                     </ul>
                   </div>
-                  <div
-                    className="col-lg-7 col-md-6"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      alignItems: 'end',
-                    }}
-                  >
+                  <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                     <div className="dash-cont-glc">
                       <div className="row">
                         <div className="topnav">
@@ -194,24 +187,12 @@ export default function SellerArchiveProducts() {
                       </div>
                     </div>
                   </div>
-                  <div
-                    className="col-lg-1 col-md-2 dash-cont-glc"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'end',
-                    }}
-                  >
+                  <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                     <Dropdown className="d-inline">
                       <Dropdown.Toggle
-                        variant="default text-white"
+                        variant="default"
                         id="dropdown-basic"
-                        className="text-dark dropdown1 icon-list-filter-procureg"
-                        style={{
-                          backgroundImage: 'none',
-                          border: 'none',
-                          boxShadow: 'none',
-                        }}
+                        className="custom-filter-toggle"
                       >
                         <FontAwesomeIcon icon={faFilter} />
                       </Dropdown.Toggle>
@@ -243,7 +224,7 @@ export default function SellerArchiveProducts() {
               {/* Search, Filter & Avatar Row (For Mobile) */}
               {isMobile && (
                 <div className="row mobile-bottombar">
-                  <div className="col-8">
+                     <div className="col-9 col-md-10 pr-0">
                     <div className="search-container">
                       <form className="d-flex">
                         <input
@@ -257,7 +238,7 @@ export default function SellerArchiveProducts() {
                       </form>
                     </div>
                   </div>
-                  <div className="col-2 text-center">
+                  <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                     <Dropdown className="d-inline">
                       <Dropdown.Toggle
                         variant="default text-white"
@@ -343,6 +324,12 @@ export default function SellerArchiveProducts() {
                         Order List
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/seller/archive/product">
+                        <FontAwesomeIcon icon={faSort} className="me-2" />
+                        Archived Products
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </Drawer>
@@ -351,7 +338,7 @@ export default function SellerArchiveProducts() {
             <h3 style={{ color: '#ffad63', marginTop: '40px' }}>
               Archived Products List
             </h3>
-      
+
 
             <section className="cartWrapper">
               <div className="table-responsive" style={{ overflowX: 'auto' }}>
@@ -361,7 +348,7 @@ export default function SellerArchiveProducts() {
                       <th style={{ minWidth: '200px' }}>Name</th>
                       <th style={{ minWidth: '180px' }}>Status</th>
                       <th style={{ minWidth: '180px' }}>Date</th>
-                      <th style={{ minWidth: '300px' }}>ID</th>
+                      <th style={{ minWidth: '180px' }}>ID</th>
                       <th style={{ minWidth: '150px' }}>Update Product</th>
                       <th style={{ minWidth: '150px' }}>Action</th>
                     </tr>
@@ -483,7 +470,7 @@ export default function SellerArchiveProducts() {
                                 </Button>
                               </Box>
                             </Box>
-                          </Modal> 
+                          </Modal>
 
                           {/* <td>
                             <button className="m-3" onClick={e => unarchiveHandler(e, product._id)}
@@ -493,7 +480,7 @@ export default function SellerArchiveProducts() {
 
                           <td>
                             <button
-                              className="m-3"
+                              className=""
                               onClick={(e) => handleUnarchiveClick(e, product._id)}
                               style={{
                                 backgroundColor: "#2f4d2a",

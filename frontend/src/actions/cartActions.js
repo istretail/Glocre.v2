@@ -6,6 +6,9 @@ import {
   getCartItemsRequest,
   getCartItemsSuccess,
   getCartItemsFail,
+  vaildateCartItemsRequest,
+  vaildateCartItemsSuccess,
+  vaildateCartItemsFail,
 } from "../slices/cartSlice";
 import { toast } from "react-toastify";
 
@@ -70,5 +73,23 @@ export const clearCart = () => async (dispatch) => {
     await axios.delete(`/api/v1/cart/clear`);
   } catch (error) {
     // Handle error
+  }
+};
+
+export const validateCartItems = (cartItems) => async (dispatch) => {
+  try {
+    dispatch(vaildateCartItemsRequest());
+
+    const { data } = await axios.post('/api/v1/validate', { cartItems });
+
+    dispatch(vaildateCartItemsSuccess(data));
+  } catch (error) {
+    dispatch(
+      vaildateCartItemsFail(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      )
+    );
   }
 };

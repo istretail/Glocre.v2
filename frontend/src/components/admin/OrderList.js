@@ -100,7 +100,7 @@ export default function OrderList() {
                     <div className="col-12 col-md-2">
                         <Sidebar />
                     </div>
-                    <div className="col-12 col-lg-10 col-md-12 ">
+                <div className="col-12 col-lg-10 col-md-12 pr-0">
 
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
@@ -118,14 +118,14 @@ export default function OrderList() {
                                             <li>Order List</li>
                                         </ul>
                                     </div>
-                                    <div className="col-2 text-end">
+                                   <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                                         <button className="fab" onClick={toggleDrawer}>
                                             <FontAwesomeIcon icon={faList} />
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="row dash-navbar-big-glc">
+                                <div className="row dash-navbar-big-glc small-sticky-navbar">
                                     <div className="col-lg-3 col-md-12">
                                         <ul className="breadcrumb breadcrumb2 mb-0">
                                             <li>
@@ -134,7 +134,7 @@ export default function OrderList() {
                                             <li>Order List</li>
                                         </ul>
                                     </div>
-                                    <div className="col-lg-7 col-md-6" style={{ display: "flex", justifyContent: "end", alignItems: "end" }}>
+                                  <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                                         <div className="dash-cont-glc">
                                             <div className="row">
                                                 <div className="topnav">
@@ -153,13 +153,12 @@ export default function OrderList() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-lg-1 col-md-2 dash-cont-glc" style={{ display: "flex", justifyContent: "center" }}>
+                                   <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
-                                                variant="default text-white"
+                                               variant="default"
                                                 id="dropdown-basic"
-                                                className="text-dark dropdown1 icon-list-filter-procureg"
-                                                style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
+                                                className="custom-filter-toggle"
                                             >
                                                 <FontAwesomeIcon icon={faFilter} />
                                             </Dropdown.Toggle>
@@ -177,7 +176,7 @@ export default function OrderList() {
                             {/* Search, Filter & Avatar Row (For Mobile) */}
                             {isMobile && (
                                 <div className="row mobile-bottombar">
-                                    <div className="col-8">
+                                    <div className="col-9 col-md-10 pr-0">
                                         <div className="search-container">
                                             <form className="d-flex"
                                                 onSubmit={(e) => e.preventDefault()}
@@ -190,7 +189,7 @@ export default function OrderList() {
                                             </form>
                                         </div>
                                     </div>
-                                    <div className="col-2 text-center">
+                                    <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
                                                 variant="default text-white"

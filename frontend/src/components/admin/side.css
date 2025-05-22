@@ -567,7 +567,7 @@
 }
 
 /* Media Querry FOr Side Nav */
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1000px) {
   .app-side-nav-glocre {
     display: none;
   }

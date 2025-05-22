@@ -1204,7 +1204,7 @@ exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
 exports.validateCartItems = catchAsyncError(async (req, res) => {
   try {
     const { cartItems } = req.body;
-
+    console.log(cartItems);
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({ success: false, message: 'Cart is empty.' });
     }

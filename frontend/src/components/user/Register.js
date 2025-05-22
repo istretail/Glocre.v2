@@ -95,7 +95,7 @@ export default function Register() {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      // toast.error(error);
       dispatch(sendVerificationEmailFail);
       dispatch(clearAuthError());
     }

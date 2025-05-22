@@ -55,16 +55,17 @@ const Footer = () => {
               <p>Official or personal, shop everything <br />you need with us</p>
               <br />
               <div className="newsLetterBanner">
-                <SendOutlinedIcon />
-                <input
-                  type="text"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <Button className="bg-g" onClick={handleSubscribe}>
-                  Subscribe
-                </Button>
+                <SendOutlinedIcon className="newsiconfooter" />
+                <input type="text" placeholder="Your email address" value={email}
+                  onChange={(e) => setEmail(e.target.value)} />
+                <Button className="bg-g" onClick={handleSubscribe}>Subscribe</Button>
+              </div>
+              <div className="mobile-newsletter">
+                <div className="input-wrapper">
+                  <SendOutlinedIcon className="input-icon" />
+                  <input type="email" placeholder="Your email address" onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <button className="subscribe-button" onClick={handleSubscribe}>Subscribe</button>
               </div>
             </div>
 
