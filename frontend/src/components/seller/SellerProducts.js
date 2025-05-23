@@ -21,11 +21,18 @@ export default function SellerProducts() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
 
-
+  const [clocreProductId, setclocreProductId] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const dispatch = useDispatch();
 
+  function debounce(func, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
+  }
   const cloneHandler = (e, id) => {
     e.target.disabled = true;
     dispatch(cloneProduct(id))
@@ -44,6 +51,20 @@ export default function SellerProducts() {
     setCurrentPageNo(1);
     dispatch(getSellerProducts(searchKeyword, status));
   };
+
+    useEffect(() => {
+        const debouncedSearch = debounce(() => {
+            dispatch(getSellerProducts(clocreProductId, filterStatus, 1)); // always reset to 1
+            setCurrentPage(1);
+        }, 500); // 500ms debounce
+
+        debouncedSearch();
+
+        // Cleanup on unmount
+        return () => {
+            debouncedSearch.cancel && debouncedSearch.cancel();
+        };
+    }, [clocreProductId, filterStatus, dispatch]);
 
   useEffect(() => {
     if (error) {
@@ -218,22 +239,19 @@ export default function SellerProducts() {
                           <div className="search-container">
                             <form
                               className="d-flex"
-                              onSubmit={e => {
-                                e.preventDefault();
-                              }}
+                              
                             >
-                              <input
-                                type="text"
-                                placeholder="Search"
-                                value={searchKeyword}
-                                onChange={e => {
-                                  const value = e.target.value;
-                                  // Allow only letters, numbers, and spaces
-                                  const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
-                                  setSearchKeyword(cleanedValue)
-                                }}
-                                name="search"
-                              />
+                                <input
+                                  type="text"
+                                  placeholder="Search"
+                                  name="search"
+                                  value={clocreProductId}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                    setclocreProductId(cleanedValue)
+                                  }}
+                                />
                               <button type="submit">
                                 <FontAwesomeIcon icon={faSearch} />
                               </button>
@@ -286,6 +304,12 @@ export default function SellerProducts() {
                           type="text"
                           placeholder="Search"
                           name="search"
+                          value={clocreProductId}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                            setclocreProductId(cleanedValue)
+                          }}
                         />
                         <button type="submit">
                           <FontAwesomeIcon icon={faSearch} />

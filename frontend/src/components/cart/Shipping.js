@@ -381,6 +381,22 @@ export default function Shipping() {
     };
   }, []);
 
+
+
+  // 
+
+  useEffect(() => {
+    if (savedAddresses && savedAddresses.length > 0) {
+      setSelectedAddress(savedAddresses[0]._id);
+      handleAddressSelect(savedAddresses[0]._id); // notify parent
+    }
+  }, [savedAddresses]);
+
+  const handleSelect = (id) => {
+    setSelectedAddress(id);
+    handleAddressSelect(id);
+  };
+
   return (
     <>
       <MetaData title="Shipping" />
@@ -416,7 +432,7 @@ export default function Shipping() {
                   >
                     <Typography component="span">Saved Address</Typography>
                   </AccordionSummary>
-                  <AccordionDetails>
+                  {/* <AccordionDetails>
                     {savedAddresses && savedAddresses.length > 0 && (
                       <div>
                         <div>
@@ -459,6 +475,39 @@ export default function Shipping() {
                             </div>
                           ))}
                         </div>
+                      </div>
+                    )}
+                  </AccordionDetails> */}
+                  <AccordionDetails>
+                    {savedAddresses && savedAddresses.length > 0 && (
+                      <div>
+                        {savedAddresses.map((address) => {
+                          const isSelected = selectedAddress === address._id;
+                          return (
+                            <div
+                              key={address._id}
+                              className={` ${isSelected ? "selected" : ""}`}
+                              style={{
+                                padding: "12px",
+                                marginBottom: "12px",
+                                borderRadius: "6px",
+                                border: isSelected ? "2px solid #ffad6320" : "1px solid #ccc",
+                                backgroundColor: isSelected ? "#f5f5f5" : "#fff",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => handleSelect(address._id)}
+                            >
+                              <div className="address-item num-shiping" style={{ color: "#ffad63" }}>{address.phoneNo}</div><br />
+                              <div className="address-item">
+                                {`${address.address}, ${address.addressLine},`}
+                              </div>
+                              <div className="address-item">{`${address.city},`}</div>
+                              <div className="address-item">
+                                {`${address.country} - ${address.postalCode},`}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </AccordionDetails>

@@ -343,10 +343,8 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
 
   const user = await User.findOne({
     resetPasswordToken,
-    resetPasswordTokenExpire: {
-      $gt: Date.now(),
-    },
-  });
+    resetPasswordTokenExpire: { $gt: Date.now() },
+  }).select("+password"); // <--- this is critical
 
   if (!user) {
     return next(new ErrorHandler("Password reset token is invalid or expired", 400));
@@ -362,13 +360,23 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Passwords do not match", 400));
   }
 
+  const isSamePassword = await user.comparePassword(password);
+  if (isSamePassword) {
+    return next(new ErrorHandler("Your new password is the same as the current one. Please choose a different password.", 400));
+  }
+
   user.password = password;
   user.resetPasswordToken = undefined;
   user.resetPasswordTokenExpire = undefined;
 
-  await user.save(); // keep validation enabled
-  return res.status(200).json({ success: true, message: "Password updated successfully" });
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
+  });
 });
+
   
 
 //Get User Profile - /api/v1/myprofile
@@ -903,7 +911,7 @@ exports.getAllSavedAddresses = catchAsyncError(async (req, res, next) => {
 
 // POST /api/v1/cart/add
 exports.addToCart = catchAsyncError(async (req, res, next) => {
-  const { product, name, price, image, stock, quantity, variant, tax, shippingCostlol, shippingCostNorth, shippingCostSouth, shippingCostEast, shippingCostWest, shippingCostCentral, shippingCostNe, createdBy } = req.body;
+  const { product, name, price, image, stock, quantity, variant, tax, shippingCostlol, shippingCostNorth, shippingCostSouth, shippingCostEast, shippingCostWest, shippingCostCentral, shippingCostNe, additionalShippingCost, createdBy } = req.body;
   const userId = req.user.id;
   const user = await User.findById(userId);
 
@@ -960,6 +968,7 @@ exports.addToCart = catchAsyncError(async (req, res, next) => {
       shippingCostWest,
       shippingCostCentral,
       shippingCostNe,
+      additionalShippingCost,
       createdBy,
     };
 
@@ -1101,39 +1110,45 @@ exports.addToWishlist = catchAsyncError(async (req, res) => {
     const { productId } = req.body;
 
     if (!productId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Product ID is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is required",
+      });
     }
 
     // Check if the product exists
     const product = await Product.findById(productId);
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
     // Add to wishlist if not already added
     if (!user.wishlist.includes(productId)) {
       user.wishlist.push(productId);
       await user.save();
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Product added to wishlist",
-          wishlist: user.wishlist,
-        });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Product already in wishlist",
+      });
     }
 
-    res
-      .status(400)
-      .json({ success: false, message: "Product already in wishlist" });
+    // Populate wishlist after update
+    const updatedUser = await User.findById(req.user.id).populate("wishlist");
+
+    res.status(200).json({
+      success: true,
+      message: "Product added to wishlist",
+      wishlist: updatedUser.wishlist,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
+
 
 exports.removeFromWishlist = catchAsyncError(async (req, res) => {
   try {

@@ -45,8 +45,8 @@ export default function ProductCategory() {
         keyword,
         price,
         maincategory,
-        category,
-        subcategory,
+        selectedCategory,     // ✅ use local state here
+        selectedSubCategory,  // ✅ use local state here
         rating,
         currentPage
       )
@@ -61,6 +61,7 @@ export default function ProductCategory() {
     rating,
     JSON.stringify(price)
   ]);
+  
   useEffect(() => {
     if (location.state) {
       const { category, subcategory } = location.state;
@@ -93,6 +94,7 @@ export default function ProductCategory() {
     setSelectedCategory(cat);
     setSelectedSubCategory(null);
   };
+  console.log("selectedCategory", selectedCategory);
 
   const handleSubCategoryChange = (sub) => {
     setSelectedSubCategory(sub);
@@ -368,7 +370,15 @@ export default function ProductCategory() {
                     </div>
                     <div className="card border-0 shadow priceCard">
                       <h3 className="mb-4">Filter by Price</h3>
-
+                        <button
+                          className="cancel-cat-but-glc"
+                          onClick={() => {
+                            setPrice([1, 200000]);
+                          }}
+                        >
+                          Clear Price
+                        </button>
+                          
                       <div className="form-check">
                         <input
                           type="checkbox"

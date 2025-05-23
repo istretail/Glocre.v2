@@ -782,6 +782,7 @@ export default function SellerUpdateProduct() {
                         }}
                         name="name"
                         maxLength={80}
+                          required
                       />
                     </div>
                   </div>
@@ -800,6 +801,7 @@ export default function SellerUpdateProduct() {
                         value={formData.description}
                         name="description"
                         maxLength={200}
+                          required
                       ></textarea>
                     </div>
                   </div>
@@ -863,6 +865,7 @@ export default function SellerUpdateProduct() {
                           name="maincategory"
                           className="form-control appearance-none pr-8 custom-select"
                           value={formData.maincategory}
+                            required
                           onChange={(e) => {
                             handleChange(e);
                             // Reset category and subcategory when main category changes
@@ -899,6 +902,7 @@ export default function SellerUpdateProduct() {
                           name="category"
                           className="form-control appearance-none pr-8 custom-select"
                           value={formData.category}
+                            required
                           onChange={(e) => {
                             handleChange(e);
                             setFormData((prev) => ({
@@ -937,6 +941,7 @@ export default function SellerUpdateProduct() {
                           className="form-control appearance-none pr-8 custom-select"
                           value={formData.subcategory}
                           onChange={handleChange}
+                            required
                           disabled={!formData.category}
                         >
                           <option value="">Select Subcategory</option>
@@ -989,6 +994,7 @@ export default function SellerUpdateProduct() {
                         name="tax"
                         min="0"
                         max="99"
+                          required
                       />
                     </div>
                   </div>
@@ -1011,6 +1017,7 @@ export default function SellerUpdateProduct() {
                           onChange={handleChange}
                           min="0"
                           max="99999"
+                            required
                           onWheel={(e) => e.target.blur()}
                           onKeyDown={(e) => {
                             if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -1033,6 +1040,7 @@ export default function SellerUpdateProduct() {
                           className="form-control"
                           name="offPrice"
                           value={formData.offPrice}
+                            required
                           onChange={handleChange}
                           min="0"
                           max="99999"
@@ -1058,6 +1066,7 @@ export default function SellerUpdateProduct() {
                           className="form-control"
                           name="stock"
                           value={formData.stock}
+                            required
                           onChange={(e) => {
                             const value = e.target.value;
                             if (value === '' || (Number(value) >= 1 && Number(value) <= 9999)) {
@@ -1089,6 +1098,7 @@ export default function SellerUpdateProduct() {
                                   width="55"
                                   height="52"
                                   style={{ cursor: "pointer" }}
+                                  required
 
                                 />
                                 <button
@@ -1111,6 +1121,7 @@ export default function SellerUpdateProduct() {
                               accept="image/*"
                               multiple
                               onChange={handleImageChange}
+                                required
 
                             />
                             <label className="custom-file-label" htmlFor="customFile">
@@ -1141,6 +1152,7 @@ export default function SellerUpdateProduct() {
                           id="condition_field"
                           onChange={handleChange}
                           value={formData.condition}
+                            required
                           name="condition"
                         >
                           <option value="">Select Condition</option>
@@ -1168,6 +1180,7 @@ export default function SellerUpdateProduct() {
                           onChange={handleChange}
                           value={formData.isRefundable}
                           name="isRefundable"
+                            required
                         >
                           <option value="false">No</option>
                           <option value="true">Yes</option>
@@ -1187,6 +1200,7 @@ export default function SellerUpdateProduct() {
                         value={formData.brand}
                         name="brand"
                         maxLength={30}
+                          required
                       />
                     </div>
                   </div>
@@ -1320,6 +1334,7 @@ export default function SellerUpdateProduct() {
                             className="form-control"
                             multiple
                             accept="image/*"
+                            required
                             onChange={e => handleVariantImageChange(index, e)}
                           />
                           <div className="mt-2">
@@ -1384,6 +1399,7 @@ export default function SellerUpdateProduct() {
                         value={formData.sku?.toLocaleUpperCase()}
                         maxLength={15}
                         name="sku"
+                          required
                       />
                     </div>
                   </div>
@@ -1423,6 +1439,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         maxLength={10}
                         value={formData.hsn?.toLocaleUpperCase()}
+                          required
                         name="hsn"
                       />
                     </div>
@@ -1443,6 +1460,7 @@ export default function SellerUpdateProduct() {
                           name="countryofOrgin"
                           value={formData.countryofOrgin}
                           onChange={handleChange}
+                            
                           required
                         >
                           {[
@@ -1485,6 +1503,7 @@ export default function SellerUpdateProduct() {
                         value={formData.productCertifications}
                         name="productCertifications"
                         maxLength={50}
+                        
                       />
                     </div>
                   </div>
@@ -1502,6 +1521,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.manufactureDetails}
                         name="manufactureDetails"
+                          required
                       />
                     </div>
                   </div>

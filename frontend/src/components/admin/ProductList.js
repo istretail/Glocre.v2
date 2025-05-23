@@ -184,7 +184,11 @@ export default function ProductList() {
                                                                 placeholder="Search"
                                                                 name="search"
                                                                 value={clocreProductId}
-                                                                onChange={(e) => setclocreProductId(e.target.value)}
+                                                                onChange={(e) => {
+                                                                    const value = e.target.value;
+                                                                    const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                                    setclocreProductId(cleanedValue)
+                                                                }}
                                                             />
                                                             <button type="submit">
                                                                 <FontAwesomeIcon icon={faSearch} />
@@ -221,14 +225,14 @@ export default function ProductList() {
                                 <div className="row mobile-bottombar">
                                     <div className="col-9 col-md-10 pr-0">
                                         <div className="search-container">
-                                            <form className="d-flex"
-                                                onSubmit={(e) => {
-                                                    e.preventDefault();
-                                                }}
-                                            >
+                                            <form className="d-flex">
                                                 <input type="text" placeholder="Search" name="search"
                                                     // value={clocreProductId}
-                                                    onChange={(e) => setclocreProductId(e.target.value)}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                        setclocreProductId(cleanedValue)}
+                                                    }
                                                 />
                                                 <button type="submit">
                                                     <FontAwesomeIcon icon={faSearch} />

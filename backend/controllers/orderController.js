@@ -549,7 +549,7 @@ exports.trackOrder = catchAsyncError(async (req, res, next) => {
 
 exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
     const { shippingInfo = [], cartItem } = req.body;
-    
+    // console.log("Request Body", req.body);
     if (!Array.isArray(cartItem) || !shippingInfo) {
         return next(new ErrorHandler("Missing or invalid cart items or shipping info", 400));
     }
@@ -558,62 +558,27 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
         if (!state) return null;
 
         const northStates = [
-            "Delhi",
-            "Haryana",
-            "Uttar Pradesh",
-            "Punjab",
-            "Chandigarh",
-            "Himachal Pradesh",
-            "Jammu and Kashmir",
-            "Jammu & Kashmir",
-            "Ladakh",
-            "Uttarakhand"
+            "Delhi", "Haryana", "Uttar Pradesh", "Punjab", "Chandigarh",
+            "Himachal Pradesh", "Jammu and Kashmir", "Jammu & Kashmir",
+            "Ladakh", "Uttarakhand"
         ];
         const southStates = [
-            "Andhra Pradesh",
-            "Telangana",
-            "Karnataka",
-            "Kerala",
-            "Tamil Nadu",
-            "Puducherry",
-            "Pondicherry",
-            "Lakshadweep",
-            "Andaman and Nicobar Islands",
-            "Andaman & Nicobar",
+            "Andhra Pradesh", "Telangana", "Karnataka", "Kerala", "Tamil Nadu",
+            "Puducherry", "Pondicherry", "Lakshadweep",
+            "Andaman and Nicobar Islands", "Andaman & Nicobar",
         ];
-        const eastStates = [
-            "Bihar",
-            "Odisha",
-            "Jharkhand",
-            "West Bengal"
-           
-        ];
+        const eastStates = ["Bihar", "Odisha", "Jharkhand", "West Bengal"];
         const westStates = [
-            "Rajasthan",
-            "Gujarat",
-            "Maharashtra",
-            "Goa",
-            "Dadra and Nagar Haveli and Daman and Diu",
-            "Dadra & Nagar Haveli",
-            "Daman & Diu",
-            
+            "Rajasthan", "Gujarat", "Maharashtra", "Goa",
+            "Dadra and Nagar Haveli and Daman and Diu", "Dadra & Nagar Haveli", "Daman & Diu",
         ];
-        const centralStates = [
-            "Madhya Pradesh",
-            "Chhattisgarh"
-        ];
+        const centralStates = ["Madhya Pradesh", "Chhattisgarh"];
         const northeastStates = [
-            "Assam",
-            "Meghalaya",
-            "Manipur",
-            "Mizoram",
-            "Nagaland",
-            "Tripura",
-            "Arunachal Pradesh",
-            "Sikkim"
+            "Assam", "Meghalaya", "Manipur", "Mizoram",
+            "Nagaland", "Tripura", "Arunachal Pradesh", "Sikkim"
         ];
-        
-        state = state.trim(); // Normalize spacing
+
+        state = state.trim();
 
         if (northStates.includes(state)) return "North";
         if (southStates.includes(state)) return "South";
@@ -625,25 +590,24 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
         return null;
     };
 
-
     const isLocalDelivery = (shippingPin, businessPin) => {
         if (!shippingPin || !businessPin) return false;
         return String(shippingPin).substring(0, 3) === String(businessPin).substring(0, 3);
     };
-    
 
     const shippingPin = shippingInfo?.postalCode;
     const state = shippingInfo?.state;
-    // console.log("state:", state);
-    // console.log("shippingPin:", shippingPin);
     const region = getRegionFromState(state);
     const results = [];
+
+    let totalShippingCost = 0;
 
     for (const item of cartItem) {
         const seller = await User.findById(item.createdBy);
         const businessPin = seller?.businessAddress?.[0]?.postalCode || "641001";
+        const localDelivery = isLocalDelivery(shippingPin, businessPin);
+
         let shippingCost = 0;
-        let localDelivery = isLocalDelivery(shippingPin, businessPin);
 
         if (localDelivery) {
             shippingCost = item.shippingCostlol;
@@ -658,24 +622,28 @@ exports.calculateShippingCost = catchAsyncError(async (req, res, next) => {
                 default: shippingCost = 0;
             }
         }
-        // console.log("Region:", region);
+
+        const quantity = item.quantity || 1;
+        const additionalCost = (item.additionalShippingCost || 0) * quantity;
+
+        totalShippingCost += shippingCost + additionalCost;
+
         results.push({
             productId: item.product,
             shippingCost,
+            additionalShippingCost: additionalCost,
+            totalCost: shippingCost + additionalCost,
             sellerId: item.createdBy,
             region: region || "Unknown",
             isLocal: localDelivery,
         });
     }
 
-    const totalShippingCost = results.reduce((sum, r) => sum + (r.shippingCost || 0), 0);
-
     res.status(200).json({
         success: true,
         totalShippingCost,
         breakdown: results,
     });
-    // console.log("Result", results);
-    // console.log("Total Shipping cost", totalShippingCost);
 });
+
 

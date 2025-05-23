@@ -10,20 +10,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 export default function Product({ product }) {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.authState);
   const { wishlist } = useSelector((state) => state.wishlistState);
-  const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
-  const [isInWishlist, setIsInWishlist] = useState(false);
 
-  useEffect(() => {
-    if (wishlist && wishlist.some((item) => item._id === product._id)) {
-      setIsInWishlist(true);
-    } else {
-      setIsInWishlist(false);
-    }
-  }, [wishlist, product._id]);
+  const isInWishlist = wishlist?.some(
+    (item) => item?._id === product?._id
+  );
 
+  // console.log("WishList", wishlist);
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
     if (!user) {
@@ -46,6 +42,14 @@ export default function Product({ product }) {
   return (
     <div className="product-card" onClick={openProductDetailPage}>
       <div className="product-tilt-effect">
+        <div className="heart-top-right">
+          <a onClick={handleWishlistToggle} style={{ cursor: "pointer" }}>
+            <FontAwesomeIcon
+              icon={faHeart}
+              style={{ color: isInWishlist ? "red" : "#ffad63" }}
+            />
+          </a>
+        </div>
         <div className="product-image">
           <img
             src={
@@ -61,14 +65,7 @@ export default function Product({ product }) {
       <div className="product-info">
         <div className="product-meta mb-1">
           <div className="product-stock">In Stock</div>
-          <div className="product-stock">
-            <a onClick={handleWishlistToggle} style={{ cursor: "pointer" }}>
-              <FontAwesomeIcon
-                icon={faHeart}
-                style={{ color: isInWishlist ? "red" : "#ffad63" }}
-              />
-            </a>
-          </div>
+
         </div>
         <div className="product-category">
           {(() => {
@@ -80,39 +77,39 @@ export default function Product({ product }) {
           })()}
         </div>
         <h2 className="product-title">
-  {(() => {
-    const words = product.name.split(" ");
-    if (words.length > 2) {
-      return `${words.slice(0, 2).join(" ")}...`;
-    }
-    return product.name;
-  })()}
-</h2>
+          {(() => {
+            const words = product.name.split(" ");
+            if (words.length > 2) {
+              return `${words.slice(0, 2).join(" ")}...`;
+            }
+            return product.name;
+          })()}
+        </h2>
 
         <div className="product-features">
           <span className="feature">By {product.brand}</span>
         </div>
         <div className="product-bottom">
-  <div className="price-row">
-  <span className="price-now">
-      ₹
-      {product?.offPrice ||
-        product?.variants?.[0]?.offPrice ||
-        product?.variants?.[1]?.offPrice ||
-        0}
-      .00/-
-    </span>
-    <span className="price-was">
-      ₹
-      {product?.price ||
-        product?.variants?.[0]?.price ||
-        product?.variants?.[1]?.price ||
-        0}
-      .00/-
-    </span>
-    
-  </div>
-</div>
+          <div className="price-row">
+            <span className="price-now">
+              ₹
+              {product?.offPrice ||
+                product?.variants?.[0]?.offPrice ||
+                product?.variants?.[1]?.offPrice ||
+                0}
+              .00/-
+            </span>
+            <span className="price-was">
+              ₹
+              {product?.price ||
+                product?.variants?.[0]?.price ||
+                product?.variants?.[1]?.price ||
+                0}
+              .00/-
+            </span>
+
+          </div>
+        </div>
 
         <button className="product-button">
           <svg

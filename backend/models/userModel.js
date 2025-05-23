@@ -71,6 +71,7 @@ const cartItemSchema = new mongoose.Schema({
   shippingCostWest: { type: Number, required: true },
   shippingCostCentral: { type: Number, required: true },
   shippingCostNe: { type: Number, required: true },
+  additionalShippingCost: { type: Number, required: true },
   createdBy: {
     type: mongoose.SchemaTypes.ObjectId,
     required: true,
@@ -247,6 +248,9 @@ userSchema.methods.getJwtToken = function () {
     expiresIn: process.env.JWT_EXPIRES_TIME
   })
 }
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return  bcrypt.compare(enteredPassword, this.password);
+};
 
 userSchema.methods.isValidPassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password)

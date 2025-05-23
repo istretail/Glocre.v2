@@ -26,8 +26,9 @@ export default function Cart() {
   const { user } = useSelector((state) => state.authState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // const [items, setItems] = useState([]);
 
-  console.log("cartItems", cartItems);
+  // console.log("cartItems", cartItems);
   const getActualStock = (item, cartItems) => {
     const matched = cartItems.find(ci => ci._id === item._id);
     return matched?.variant?.stock ?? matched?.stock ?? 0;
@@ -140,7 +141,7 @@ export default function Cart() {
     unavailableItems.forEach(item => {
       removeItemHandler(item.product, item.variant?._id);
     });
-
+    
     // Proceed to checkout
     navigate("/login?redirect=shipping");
   };

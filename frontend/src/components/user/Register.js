@@ -178,7 +178,6 @@ export default function Register() {
                   />
                 </div>
 
-
                 <div className="form-group mb-4 w-100">
                   <TextField
                     id="email"
@@ -186,20 +185,21 @@ export default function Register() {
                     name="email"
                     label="Email"
                     className="w-100"
-                    onChange={onChange}
-                    onKeyDown={(e) => {
-                      if (e.key === ' ') {
-                        e.preventDefault(); // Prevent space character
-                      }
-                    }}
-                    inputProps={{
-                      maxLength: 35,
-                     
-                    }}
                     value={userData.email}
                     required
+                    onChange={(e) => {
+                      const value = e.target.value.toLowerCase().replace(/\s/g, '');
+                      onChange({ target: { name: "email", value } });
+                    }}
+                    
+                    inputProps={{
+                      maxLength: 35,
+                      pattern: "^[^\\s]+$",
+                      title: "Spaces and capital letters are not allowed",
+                    }}
                   />
                 </div>
+
 
                 <div className="form-group mb-4 w-100">
                   <div className="position-relative">

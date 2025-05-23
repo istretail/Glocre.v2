@@ -32,7 +32,7 @@ export default function Slideshow() {
 
   return (
     <>
-      <section className="homeSlider">
+      {/* <section className="homeSlider">
         <div className="container-fluid position-relative">
           <Slider {...settings} className="home_slider_Main">
             {banners.map((banner, index) => (
@@ -47,7 +47,51 @@ export default function Slideshow() {
             ))}
           </Slider>
         </div>
-      </section>
+      </section> */}
+
+      <div className="container-fluid carousel-pad">
+        <div
+          id="carouselExample"
+          className="carousel slide carousel-fade"
+          data-bs-ride="carousel"
+          data-bs-interval="3000"
+          data-bs-pause="false"
+        >
+          <div className="carousel-inner" style={{ borderRadius: "10px" }}>
+            {banners.map((banner, index) => (
+              <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
+                <img
+                  src={banner.url}
+                  className="d-block w-100"
+                  alt={`Slide ${index + 1}`}
+                  style={{ pointerEvents: "none", userSelect: "none" }}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
+              </div>
+            ))}
+          </div>
+
+          <button
+            className="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExample"
+            data-bs-slide="prev"
+          >
+            <span className="custom-arrow-icon" aria-hidden="true">&#8592;</span>
+            <span className="visually-hidden">Previous</span>
+          </button>
+          <button
+            className="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExample"
+            data-bs-slide="next"
+          >
+            <span className="custom-arrow-icon" aria-hidden="true">&#8594;</span>
+            <span className="visually-hidden">Next</span>
+          </button>
+
+        </div>
+      </div>
 
       <Nav />
       <CatSlider />

@@ -8,6 +8,7 @@ const categoryHierarchy = require("../config/categoryHierarchy");
 const s3 = require('../config/s3');
 //get all Product -- /api/v1/Products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
+  // console.log(req.body)
   const resPerPage = 100;
 
   let limit = parseInt(req.query.limit);
@@ -673,6 +674,7 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
     shippingCostWest: req.body.shippingCostWest,
     shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
+    additionalShippingCost: req.body.additionalShippingCost,
     unit: req.body.unit,
   });
 
@@ -1204,7 +1206,7 @@ exports.deleteProductImage = catchAsyncError(async (req, res, next) => {
 // Validate cart items before checkout
 exports.validateCartItems = catchAsyncError(async (req, res) => {
   try {
-    // const { cartItems } = req.body;
+    const { cartItems } = req.body;
     console.log("Request cart",cartItems);
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return res.status(400).json({ success: false, message: 'Cart is empty.' });
@@ -1246,6 +1248,7 @@ exports.validateCartItems = catchAsyncError(async (req, res) => {
         shippingCostWest: product.shippingCostWest,
         shippingCostCentral: product.shippingCostCentral,
         shippingCostNe: product.shippingCostNe,
+        additionalShippingCost: product.additionalShippingCost,
         createdBy: product.createdBy,
         isArchived: product.isArchived,
         status: product.status,

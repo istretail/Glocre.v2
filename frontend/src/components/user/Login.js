@@ -84,15 +84,15 @@ export default function Login() {
                     label="Email"
                     className="w-100"
                     value={email}
-                    onChange={e => setEmail(e.target.value.replace(/\s/g, ''))}
-                    onKeyDown={(e) => {
-                      if (e.key === ' ') {
-                        e.preventDefault(); // Prevent space character
-                      }
+                    onChange={e => {
+                      const lower = e.target.value.toLowerCase().replace(/\s/g, '');
+                      setEmail(lower);
                     }}
-                    inputProps={{ pattern: "^[^\\s]+$", title: "Spaces are not allowed" }}
+                    
+                    inputProps={{ pattern: "^[^\\s]+$", title: "Spaces and capital letters are not allowed" }}
                   />
                 </div>
+
                 <div className="form-group mb-4 w-100">
                   <div className="position-relative">
                     <TextField

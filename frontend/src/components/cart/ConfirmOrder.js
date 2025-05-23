@@ -21,7 +21,7 @@ export default function ConfirmOrder() {
   const {
     shippingInfo,
     billingInfo,
-    items: cartItems,
+    cartItems,
   } = useSelector((state) => state.cartState);
   const { user } = useSelector((state) => state.authState);
   const { error: orderError, cost=[] } = useSelector((state) => state.orderState);

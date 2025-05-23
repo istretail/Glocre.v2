@@ -15,7 +15,7 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-
+ import { Dropdown } from "react-bootstrap";
 export default function Nav1() {
   const dispatch = useDispatch();
   const { categories = [], error } = useSelector((state) => state.categoryState);
@@ -36,6 +36,20 @@ export default function Nav1() {
   const handleSubCategoryClick = (category) => {
     navigate(`/maincategory/${category}`);
   };
+
+ 
+  // Prepare the first 5 category items flattened as you did
+  const flatCategories = categories
+    .flatMap((main) =>
+      main.categories?.map((cat) => ({
+        maincategory: main.maincategory,
+        category: cat.category,
+        subcategories: cat.subcategories || [],
+      }))
+    )
+    .slice(0, 5);
+
+
   return (
     <>
       <nav className="Mobile-second-nav respon-nav headerWrapper1" >
@@ -73,7 +87,7 @@ export default function Nav1() {
             <span></span>
           </label>
 
-          <ul className="list list-inline mb-0 menu">
+          {/* <ul className="list list-inline mb-0 menu">
             {categories.flatMap((main) =>
               main.categories?.map((cat) => ({
                 maincategory: main.maincategory,
@@ -100,7 +114,48 @@ export default function Nav1() {
                 </ul>
               </li>
             ))}
+          </ul> */}
+
+
+          <ul className="list list-inline mb-0 menu">
+            {flatCategories.map((catItem, i) => (
+              <li className="" key={i}>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    variant="light"
+                    id={`dropdown-${i}`}
+                    className="text-dark"
+                    style={{ backgroundColor: "transparent", border: "none", boxShadow: "none" }}
+
+                  >
+                    {catItem.category}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu
+                    style={{ border: "1px solid #ccc", padding: "7px" }}
+                  >
+                    {catItem.subcategories.map((sub, j) => (
+                      <Dropdown.Item
+                        key={j}
+                        onClick={() =>
+                          navigate(`/maincategory/${catItem.maincategory}`, {
+                            state: {
+                              category: catItem.category,
+                              subcategory: sub,
+                            },
+                          })
+                        }
+                      >
+                        {sub}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              </li>
+            ))}
           </ul>
+
+
         </div>
       </nav>
     </>

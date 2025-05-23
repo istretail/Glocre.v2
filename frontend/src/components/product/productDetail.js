@@ -36,6 +36,7 @@ export default function ProductDetail() {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [mainImage, setMainImage] = useState('');    // Set the first image as the default main image.
     // Add this state
+// console.log(user)
     const [selectedVariant, setSelectedVariant] = useState(null);
     useEffect(() => {
         if (product.images && product.images.length > 0) {
@@ -131,6 +132,7 @@ export default function ProductDetail() {
             shippingCostSouth: product.shippingCostSouth,
             shippingCostCentral: product.shippingCostCentral,
             shippingCostNe: product.shippingCostNe,
+            additionalShippingCost: product.additionalShippingCost,
             createdBy: product.createdBy,
             variant: selectedVariant ? {
                 _id: selectedVariant._id,
@@ -402,7 +404,12 @@ export default function ProductDetail() {
                                             <input
                                                 type="number"
                                                 value={quantity}
-                                                onChange={(e) => setQuantity(Number(e.target.value))}
+                                                onChange={(e) => {
+                                                    const value = Number(e.target.value);
+                                                    if (value >= 1) {
+                                                        setQuantity(value);
+                                                    }
+                                                }}
                                                 min="1"
                                                 className="form-control text-center mx-2"
                                                 style={{
@@ -412,7 +419,14 @@ export default function ProductDetail() {
                                                     border: "1px solid #ccc",
                                                     borderRadius: "5px"
                                                 }}
+                                                onKeyDown={(e) => {
+                                                    // Prevent typing "-" or "e" (for exponential input)
+                                                    if (["e", "E", "+", "-"].includes(e.key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
                                             />
+
 
                                             <button className="btn btn-outline-dark" onClick={increaseQty}>+</button>
                                         </div>

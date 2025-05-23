@@ -216,15 +216,39 @@ const SellerCreateProduct = () => {
 
   const handleProductImageChange = (e) => {
     const files = Array.from(e.target.files);
+    const maxSize = 1024 * 1024; // 1MB
+    const maxImages = 3;
 
     setProductImages((prevImages) => {
-      const newImages = files.filter(
-        (file) => !prevImages.some((img) => img.name === file.name && img.size === file.size)
-      );
-      return [...prevImages, ...newImages];
+      const errors = [];
+      const validNewImages = [];
+
+      files.forEach((file) => {
+        const isDuplicate = prevImages.some(
+          (img) => img.name === file.name && img.size === file.size
+        );
+
+        if (file.size > maxSize) {
+          errors.push(`${file.name} is larger than 1MB`);
+        } else if (isDuplicate) {
+          errors.push(`${file.name} is already added`);
+        } else {
+          validNewImages.push(file);
+        }
+      });
+
+      const combinedImages = [...prevImages, ...validNewImages];
+
+      if (combinedImages.length > maxImages) {
+        errors.push(`Only ${maxImages} images are allowed. You selected ${combinedImages.length}.`);
+      }
+
+      setImageErrors(errors);
+
+      return combinedImages.slice(0, maxImages);
     });
   };
-
+  
 
   const handleAddKeyPoint = () => {
     setFormData((prev) => ({
@@ -1202,6 +1226,13 @@ const SellerCreateProduct = () => {
                           onChange={handleProductImageChange}
                           required
                         />
+                        {imageErrors.length > 0 && (
+                          <div className="alert alert-danger mt-2">
+                            {imageErrors.map((error, index) => (
+                              <p key={index}>{error}</p>
+                            ))}
+                          </div>
+                        )}
                         <div className="mt-2">
                           {productImages.map((image, index) => (
                             <div
