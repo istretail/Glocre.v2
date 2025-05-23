@@ -97,6 +97,7 @@ const productSchema = new mongoose.Schema({
 
   shippingCostCentral: { type: Number, required: true },
   shippingCostNe: { type: Number, required: true },
+  additionalShippingCost: { type: Number, required: true },
   unit: { type: String, required: true },
   images: [{ type: String, required: false }],
   price: { type: Number, required: false, default: 0 },

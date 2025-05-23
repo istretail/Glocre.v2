@@ -27,7 +27,7 @@ export default function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
+  console.log("cartItems", cartItems);
   const getActualStock = (item, cartItems) => {
     const matched = cartItems.find(ci => ci._id === item._id);
     return matched?.variant?.stock ?? matched?.stock ?? 0;
@@ -233,7 +233,7 @@ export default function Cart() {
             <li>
               <Link to={"/"}> Home </Link>
             </li>
-            < li > My Profile </li>
+            < li > Cart </li>
           </ul>
         </div>
       </div>

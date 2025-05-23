@@ -57,6 +57,7 @@ export default function UpdateProduct() {
         shippingCostEast: "",
         shippingCostWest: "",
         shippingCostNe: "",
+        additionalShippingCost: "",
         unit: "",
         rejectionReason: "",
         clocreId: "",
@@ -182,6 +183,7 @@ export default function UpdateProduct() {
                     shippingCostWest: product.shippingCostWest,
                     shippingCostCentral: product.shippingCostCentral,
                     shippingCostNe: product.shippingCostNe,
+                    additionalShippingCost: product.additionalShippingCost,
                     unit: product.unit,
                     rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
                     variants: product.variants
@@ -583,7 +585,7 @@ export default function UpdateProduct() {
                     <div className="col-12 col-md-2">
                         <Sidebar />
                     </div>
-                   <div className="col-12 col-lg-10 col-md-12 pr-0">
+                    <div className="col-12 col-lg-10 col-md-12 pr-0">
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} />
                         </div>
@@ -697,6 +699,8 @@ export default function UpdateProduct() {
                                                 <li><Link to="/admin/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
                                                 <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                                                 <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
+                                                <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
+                                                <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
                                             </ul>
                                         </div>
                                     </Drawer>
@@ -1001,11 +1005,11 @@ export default function UpdateProduct() {
                                                         value={formData.stock}
                                                         onChange={(e) => {
                                                             const value = e.target.value;
-                                                            if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                                            if (value === '' || (Number(value) >= 1 && Number(value) <= 9999)) {
                                                                 handleChange(e);
                                                             }
                                                         }}
-                                                        min="0"
+                                                        min="1"
                                                         max="9999"
                                                         onWheel={(e) => e.target.blur()}
                                                         onKeyDown={(e) => {
@@ -1223,12 +1227,12 @@ export default function UpdateProduct() {
                                                             value={variant.stock}
                                                             onChange={(e) => {
                                                                 const value = e.target.value;
-                                                                if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                                                if (value === '' || (Number(value) >= 1 && Number(value) <= 9999)) {
                                                                     handleVariantChange(index, 'stock', value);
                                                                 }
                                                             }}
                                                             required
-                                                            min="0"
+                                                            min="1"
                                                             max="9999"
                                                             onWheel={(e) => e.target.blur()}
                                                             onKeyDown={(e) => {
@@ -1616,6 +1620,22 @@ export default function UpdateProduct() {
                                                     onChange={handleChange}
                                                     value={formData.shippingCostNe}
                                                     name="shippingCostNe"
+                                                    min="0"
+                                                    max="9999"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <div className="form-group">
+                                                <label htmlFor="additionalShippingCost_field">Additional Shipping Cost for each Item:<span style={{ color: "red" }}> *</span></label>
+                                                <input
+                                                    type="number"
+                                                    id="additionalShippingCost_field"
+                                                    className="form-control"
+                                                    onChange={handleChange}
+                                                    value={formData.additionalShippingCost}
+                                                    name="additionalShippingCost"
                                                     min="0"
                                                     max="9999"
                                                     required

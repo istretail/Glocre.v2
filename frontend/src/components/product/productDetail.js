@@ -390,28 +390,33 @@ export default function ProductDetail() {
                                         <div
                                             className="d-flex align-items-center justify-content-center"
                                             style={{
-                                                width: "35%",
-                                                backgroundColor: "none",
-                                                color: "#fff",
+                                                width: "60%",
                                                 border: "1px solid #8c8c8c",
-                                                outline: "none",
                                                 borderRadius: "10px",
                                                 marginTop: "10px",
+                                                padding: "5px",
                                             }}
                                         >
-                                            <button className="btn" onClick={decreaseQty}>-</button>
+                                            <button className="btn btn-outline-dark" onClick={decreaseQty}>-</button>
 
                                             <input
                                                 type="number"
                                                 value={quantity}
                                                 onChange={(e) => setQuantity(Number(e.target.value))}
                                                 min="1"
-                                                className="form-control text-center"
-
+                                                className="form-control text-center mx-2"
+                                                style={{
+                                                    width: "80px",
+                                                    backgroundColor: "transparent",
+                                                    color: "#000",
+                                                    border: "1px solid #ccc",
+                                                    borderRadius: "5px"
+                                                }}
                                             />
 
-                                            <button className="btn" onClick={increaseQty}>+</button>
+                                            <button className="btn btn-outline-dark" onClick={increaseQty}>+</button>
                                         </div>
+
 
                                     </div>
                                 </div>

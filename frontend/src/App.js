@@ -116,6 +116,13 @@ const App = () => {
     setModalVisible(false);
   };
 
+  // document.addEventListener("contextmenu", (event) => event.preventDefault());
+  // useEffect(() => {
+  //   document.querySelectorAll("img").forEach((img) => {
+  //     img.setAttribute("draggable", "false");
+  //   });
+  // }, []);
+
   return (
     <Router>
       <ScrollToTop />

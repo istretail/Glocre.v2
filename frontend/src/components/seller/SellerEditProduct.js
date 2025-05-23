@@ -56,6 +56,7 @@ export default function SellerUpdateProduct() {
     shippingCostCentral: "",
     shippingCostWest: "",
     shippingCostNe: "",
+    additionalShippingCost: "",
     unit: "",
     variants: [],
     clocreId: "", // Add this line
@@ -269,6 +270,7 @@ export default function SellerUpdateProduct() {
         shippingCostCentral: product.shippingCostCentral,
         shippingCostWest: product.shippingCostWest,
         shippingCostNe: product.shippingCostNe,
+        additionalShippingCost: product.additionalShippingCost,
         unit: product.unit,
         variants: product.variants,
         clocreId: product.clocreId,
@@ -1058,11 +1060,11 @@ export default function SellerUpdateProduct() {
                           value={formData.stock}
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                            if (value === '' || (Number(value) >= 1 && Number(value) <= 9999)) {
                               handleChange(e);
                             }
                           }}
-                          min="0"
+                          min="1"
                           max="9999"
                           onWheel={(e) => e.target.blur()}
                           onKeyDown={(e) => {
@@ -1291,12 +1293,12 @@ export default function SellerUpdateProduct() {
                               value={variant.stock}
                               onChange={(e) => {
                                 const value = e.target.value;
-                                if (value === '' || (Number(value) >= 0 && Number(value) <= 9999)) {
+                                if (value === '' || (Number(value) >= 1 && Number(value) <= 9999)) {
                                   handleVariantChange(index, 'stock', value);
                                 }
                               }}
                               required
-                              min="0"
+                              min="1"
                               max="9999"
                               onWheel={(e) => e.target.blur()}
                               onKeyDown={(e) => {
@@ -1712,6 +1714,22 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.shippingCostCentral}
                         name="shippingCostCentral"
+                        min="0"
+                        max="9999"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <div className="form-group">
+                        <label htmlFor="additionalShippingCost_field">Additional Shipping Cost for each Item (in ₹):<span style={{ color: "red" }}> *</span></label>
+                      <input
+                        type="number"
+                          id="additionalShippingCost_field"
+                        className="form-control"
+                        onChange={handleChange}
+                          value={formData.additionalShippingCost}
+                          name="additionalShippingCost"
                         min="0"
                         max="9999"
                         required

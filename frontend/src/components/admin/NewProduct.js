@@ -52,6 +52,7 @@ const NewProduct = () => {
         shippingCostEast: "",
         shippingCostWest: "",
         shippingCostNe: "",
+        additionalShippingCost: "",
         unit: "",
     });
     const { loading, isProductCreated, error } = useSelector(state => state.productState);
@@ -433,7 +434,7 @@ const NewProduct = () => {
                     <div className="col-12 col-md-2">
                         <Sidebar />
                     </div>
-                     <div className="col-12 col-lg-10 col-md-12 pr-0 newprod-right-glc">
+                    <div className="col-12 col-lg-10 col-md-12 pr-0 newprod-right-glc">
 
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
@@ -513,7 +514,7 @@ const NewProduct = () => {
                                     <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
-                                                 variant="default text-white"
+                                                variant="default text-white"
                                                 id="dropdown-basic"
                                                 className="text-dark dropdown1 icon-list-filter-procureg"
                                                 style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
@@ -538,6 +539,8 @@ const NewProduct = () => {
                                         <li><Link to="/admin/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
                                         <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                                         <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
+                                        <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
+                                        <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
                                     </ul>
                                 </div>
                             </Drawer>
@@ -957,7 +960,8 @@ const NewProduct = () => {
                                                                         }}
                                                                         required
                                                                         inputMode="numeric"
-                                                                        max="99999"
+                                                                        min="1"
+                                                                        max="9999"
                                                                         onWheel={(e) => e.target.blur()}
                                                                         onKeyDown={(e) => {
                                                                             if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
@@ -1132,12 +1136,12 @@ const NewProduct = () => {
                                                                 value={formData.stock}
                                                                 onChange={(e) => {
                                                                     const value = e.target.value;
-                                                                    if (value === '' || (Number(value) <= 9999 && Number(value) >= 0)) {
+                                                                    if (value === '' || (Number(value) <= 9999 && Number(value) >= 1)) {
                                                                         handleChange(e); // only update if within range
                                                                     }
                                                                 }}
                                                                 required
-                                                                min="0"
+                                                                min="1"
                                                                 max="9999"
                                                                 onWheel={(e) => e.target.blur()} // disables mouse wheel changing value
                                                                 onKeyDown={(e) => {
@@ -1582,6 +1586,21 @@ const NewProduct = () => {
                                                         className="form-control"
                                                         name="shippingCostCentral"
                                                         value={formData.shippingCostCentral}
+                                                        onChange={handleChange}
+                                                        required
+                                                        min="0"
+                                                        max="9999"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-4">
+                                                <div className="form-group">
+                                                    <label>Additional Shipping Cost for each Item (in ₹):<span style={{ color: "red" }}> *</span></label>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        name="additionalShippingCost"
+                                                        value={formData.additionalShippingCost}
                                                         onChange={handleChange}
                                                         required
                                                         min="0"

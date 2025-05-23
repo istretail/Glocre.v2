@@ -53,6 +53,7 @@ const SellerCreateProduct = () => {
     shippingCostCentral: "",
     shippingCostWest: "",
     shippingCostNe: "",
+    additionalShippingCost: "",
     unit: "",
   });
   const { loading, isProductCreated, error } = useSelector(state => state.productState);
@@ -995,6 +996,7 @@ const SellerCreateProduct = () => {
                               }}
                               required
                               inputMode="numeric"
+                              min="1"
                               max="99999"
                               onWheel={(e) => e.target.blur()}
                               onKeyDown={(e) => {
@@ -1110,7 +1112,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>
                           Maximum Retail Price (in ₹)<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Enter the selling price of the product." arrow>
+                            <LightTooltip placement="top" title="Enter the selling price of the product between '1' to '99999'" arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </span>
@@ -1120,21 +1122,12 @@ const SellerCreateProduct = () => {
                           className="form-control"
                           name="price"
                           value={formData.price}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^[1-9][0-9]{0,4}$/.test(value)) {
-                              handleChange(e);
-                            }
-                          }}
+                          onChange={handleChange}
                           required
                           inputMode="numeric"
                           max="99999"
-                          onWheel={(e) => e.target.blur()}
-                          onKeyDown={(e) => {
-                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                              e.preventDefault();
-                            }
-                          }}
+                          min="1"
+                          
                         />
                       </div>
                     </div>
@@ -1144,7 +1137,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>
                           Offer Price (in ₹):<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Enter the discounted price (if any)." arrow>
+                            <LightTooltip placement="top" title="Enter the discounted price (if any). between '1' to '99999'" arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </span>
@@ -1154,21 +1147,13 @@ const SellerCreateProduct = () => {
                           className="form-control"
                           name="offPrice"
                           value={formData.offPrice}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^[1-9][0-9]{0,4}$/.test(value)) {
-                              handleChange(e);
-                            }
-                          }}
+                          onChange={handleChange}
+                          
                           required
                           inputMode="numeric"
                           max="99999"
-                          onWheel={(e) => e.target.blur()}
-                          onKeyDown={(e) => {
-                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                              e.preventDefault();
-                            }
-                          }}
+                          min="1"
+                         
                         />
                       </div>
                     </div>
@@ -1179,7 +1164,7 @@ const SellerCreateProduct = () => {
                       <div className="form-group">
                         <label>
                           Stock:<span style={{ color: "red" }}> *
-                            <LightTooltip placement="top" title="Enter the quantity currently in stock." arrow>
+                            <LightTooltip placement="top" title="Enter the quantity currently in stock.between '1' to '9999'" arrow>
                               <ErrorOutlineIcon className="errorout-icon" />
                             </LightTooltip>
                           </span>
@@ -1189,21 +1174,12 @@ const SellerCreateProduct = () => {
                           className="form-control"
                           name="stock"
                           value={formData.stock}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^[1-9][0-9]{0,3}$/.test(value)) {
-                              handleChange(e);
-                            }
-                          }}
+                          onChange={handleChange}
                           required
                           inputMode="numeric"
+                          min="1"
                           max="9999"
-                          onWheel={(e) => e.target.blur()}
-                          onKeyDown={(e) => {
-                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                              e.preventDefault();
-                            }
-                          }}
+                         
                         />
                       </div>
                     </div>
@@ -1605,6 +1581,21 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="shippingCostCentral"
                       value={formData.shippingCostCentral}
+                      onChange={handleChange}
+                      min="0"
+                      max="9999"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-group">
+                    <label>Additional Shipping Cost for each Item (in ₹):<span style={{ color: "red" }}> * </span></label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="additionalShippingCost"
+                      value={formData.additionalShippingCost}
                       onChange={handleChange}
                       min="0"
                       max="9999"

@@ -161,3 +161,14 @@
 
 
 /* Saved Address */
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

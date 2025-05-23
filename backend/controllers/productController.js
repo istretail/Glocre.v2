@@ -143,6 +143,7 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
     shippingCostWest: req.body.shippingCostWest,
     shippingCostCentral: req.body.shippingCostCentral,
     shippingCostNe: req.body.shippingCostNe,
+    additionalShippingCost: req.body.additionalShippingCost,
     unit: req.body.unit,
   });
 

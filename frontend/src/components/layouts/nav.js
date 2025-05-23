@@ -41,28 +41,29 @@ export default function Nav1() {
       <nav className="Mobile-second-nav respon-nav headerWrapper1" >
         <div class="nav-container">
           <div class="logo me-5">
-            <ul class="menu pl-0">
-              <li className="list-inline-item sec-nav-pro">
-                <Button className="bg-g text-white catTab res-hide" style={{ border: "none" }}>
-                  <GridViewIcon /> &nbsp; Categories
-                  <KeyboardArrowDownIcon />
-                </Button>
 
-                <div className="dropdown_menu">
-                  <ul className="mb-0 p-2" style={{ border: "1px solid #ccc" }}>
-                    {categories.map((main, i) => (
-                      <li
-                        style={{ fontSize: "13px" }}
-                        key={i}
-                        onClick={() => handleCategoryClick(main.maincategory)}
-                      >
-                        <HomeIcon className="icon-sec-nav me-2" style={{ fontSize: "20px" }} /> {main.maincategory}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            </ul>
+            <div class="menu-wraper d-xl-block d-none">
+
+              <Button className="bg-g text-white catTab res-hide" style={{ border: "none" }}>
+                <GridViewIcon /> &nbsp; Categories
+                <KeyboardArrowDownIcon />
+              </Button>
+
+              <div class="menu-content" id="wstabitem-loader">
+                <ul class="main-category desktop-mega-menu">
+                  {categories.map((main, i) => (
+                    <li class="has-child-menu" key={i}
+                      onClick={() => handleCategoryClick(main.maincategory)}>
+                      <a >
+                        <HomeIcon className="icon-sec-nav me-2" />
+                        {main.maincategory}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+
+              </div>
+            </div>
           </div>
 
           <input type="checkbox" id="toggle" />

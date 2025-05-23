@@ -50,7 +50,7 @@ const SavedAddress = () => {
         <div className="row g-2">
           {savedAddresses.map(address => (
             <div className="cartRightBox col-lg-4 col-md-6 col-sm-12 p-1" key={address._id}>
-              <div className="card p-2 d-flex flex-column justify-content-between">
+              <div className="card p-2 d-flex flex-column justify-content-between" style={{ height: "300px" }}>
                 <div className="info-box mb-3">
                   <p>
                     <b className="info-box-p-b">Name</b>

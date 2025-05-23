@@ -140,27 +140,27 @@ export default function Profile() {
         <div className="row">
           <div className="col-md-4">
             <div className=" d-flex align-items-center justify-content-center">
-              <img src={profileimage} style={{ objectFit: 'cover' }}/>
+              <img src={profileimage} />
             </div>
           </div>
 
           <div className="col-md-8">
             <div class="info-box">
               <p>
-                <b className="info-box-p-b" style={{width:"110px"}}>Full Name</b>
-                <b className="info-box-p-b2">:</b>
-                <span className="info-box-p-span">{user.name}</span>
+                <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Full Name</b>
+                <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
+                <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>{user.name}</span>
               </p>
               <p>
-                <b className="info-box-p-b" style={{width:"110px"}}>Email Address</b>
-                <b className="info-box-p-b2">:</b>
-                <span className="info-box-p-span">{user.email}</span>
+                <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Email Address</b>
+                <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
+                <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>{user.email}</span>
               </p>
 
               <p>
-                <b className="info-box-p-b" style={{width:"110px"}}>Joined</b>
-                <b className="info-box-p-b2">:</b>
-                <span className="info-box-p-span">
+                <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Joined</b>
+                <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
+                <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>
                   {String(user.createdAt).substring(0, 10)}
                 </span>
               </p>
@@ -168,9 +168,9 @@ export default function Profile() {
               {user.role === 'seller' && (
                 <>
                   <p>
-                    <b className="info-box-p-b">Business Address</b>
-                    <b className="info-box-p-b2">:</b>
-                    <span className="info-box-p-span">
+                    <b className="info-box-p-b" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Business Address</b>
+                    <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
+                    <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>
                       {user?.businessAddress && user.businessAddress.length > 0 ? (
                         `${user.businessAddress[0].address}, ${user.businessAddress[0].addressLine}, ${user.businessAddress[0].city}, ${user.businessAddress[0].state} - ${user.businessAddress[0].postalCode}, ${user.businessAddress[0].country}`
                       ) : (
@@ -181,6 +181,7 @@ export default function Profile() {
                 </>
               )}
             </div>
+
 
             <div className="row mt-4">
               <div className="use-link mt-3 ">

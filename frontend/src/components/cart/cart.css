@@ -161,7 +161,7 @@
 }
  
 .info-box {
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
   width: 100%;
 }
@@ -170,8 +170,8 @@
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  display: inline-block; /* Ensures it respects the parent width */
-  max-width: 100%; /* Prevents overflowing */
+  display: inline-block;
+  max-width: 100%;
   color: #ffad63 !important;
 }
  
@@ -179,8 +179,9 @@
   width: 60px;
   color: #8c8c8c;
 }
+ 
 .info-box-p-b2 {
-  width: 20px;
+  min-width: 20px;
 }
  
 .info-box p {
@@ -188,7 +189,6 @@
   border-bottom: 1px solid #eee;
   padding: 8px 0;
   margin: 0;
-  font-size: 16px;
 }
  
 .info-box p:last-child {

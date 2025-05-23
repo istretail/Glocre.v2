@@ -160,7 +160,7 @@ export default function UpdateUser() {
               {/* Search, Filter & Avatar Row (For Mobile) */}
               {isMobile && (
                 <div className="row mobile-bottombar">
-                 <div className="col-9 col-md-10 pr-0">
+                  <div className="col-9 col-md-10 pr-0">
                     <div className="search-container">
                       <form className="d-flex">
                         <input type="text" placeholder="Search" name="search" />
@@ -199,6 +199,8 @@ export default function UpdateUser() {
                     <li><Link to="/admin/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
                     <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                     <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
+                    <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
+                    <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
                   </ul>
                 </div>
               </Drawer>

@@ -59,8 +59,8 @@ export default function ProductList() {
     //     setSearchKeyword(clocreProductId); // trigger a new search
     //     setCurrentPage(1); // reset to first page on new keyword
     //   };
-    
-    
+
+
     // const handleFilterClick = () => {
     //     setFilterVisible(!filterVisible);
     // };
@@ -116,7 +116,7 @@ export default function ProductList() {
     const [productToDelete, setProductToDelete] = useState(null);
 
     const confirmProductDelete = (e) => {
-        deleteHandler(e, productToDelete); 
+        deleteHandler(e, productToDelete);
         setDeleteModalOpen(false);
         setProductToDelete(null);
     };
@@ -138,7 +138,7 @@ export default function ProductList() {
                     <div className="col-lg-2">
                         <Sidebar />
                     </div>
-                      <div className="col-12 col-lg-10 col-md-12 pr-0">
+                    <div className="col-12 col-lg-10 col-md-12 pr-0">
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
                         </div>
@@ -157,14 +157,14 @@ export default function ProductList() {
                                             <li>Product List</li>
                                         </ul>
                                     </div>
-                                  <div className="col-2 p-0 d-flex justify-content-center align-items-center">
+                                    <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                                         <button className="fab" onClick={toggleDrawer}>
                                             <FontAwesomeIcon icon={faList} />
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                  <div className="row dash-navbar-big-glc small-sticky-navbar">
+                                <div className="row dash-navbar-big-glc small-sticky-navbar">
                                     <div className="col-lg-3 col-md-12">
                                         <ul className="breadcrumb breadcrumb2 mb-0">
                                             <li>
@@ -173,31 +173,31 @@ export default function ProductList() {
                                             <li>Product List</li>
                                         </ul>
                                     </div>
-                                     <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
+                                    <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                                         <div className="dash-cont-glc">
                                             <div className="row">
                                                 <div className="topnav">
-                                                        <div className="search-container">
-                                                            <form className="d-flex" >
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="Search"
-                                                                    name="search"
-                                                                    value={clocreProductId}
-                                                                    onChange={(e) => setclocreProductId(e.target.value)}
-                                                                />
-                                                                <button type="submit">
-                                                                    <FontAwesomeIcon icon={faSearch} />
-                                                                </button>
-                                                            </form>
+                                                    <div className="search-container">
+                                                        <form className="d-flex" >
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Search"
+                                                                name="search"
+                                                                value={clocreProductId}
+                                                                onChange={(e) => setclocreProductId(e.target.value)}
+                                                            />
+                                                            <button type="submit">
+                                                                <FontAwesomeIcon icon={faSearch} />
+                                                            </button>
+                                                        </form>
 
-                                                        </div>
+                                                    </div>
 
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                   <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
+                                    <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
                                                 variant="default"
@@ -236,7 +236,7 @@ export default function ProductList() {
                                             </form>
                                         </div>
                                     </div>
-                                 <div className="col-3 col-md-2 d-flex justify-content-center align-items-end">
+                                    <div className="col-3 col-md-2 d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
                                                 variant="default text-white"
@@ -270,6 +270,8 @@ export default function ProductList() {
                                         <li><Link to="/admin/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
                                         <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                                         <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
+                                        <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
+                                        <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
                                     </ul>
                                 </div>
                             </Drawer>
@@ -277,7 +279,7 @@ export default function ProductList() {
                         </div>
 
                         <h3 className="" style={{ color: "#ffad63", marginTop: "40px" }}>PRODUCT LIST</h3>
-                      
+
 
                         <div className="">
                             <div className="cartWrapper pr-3 mt-4">
