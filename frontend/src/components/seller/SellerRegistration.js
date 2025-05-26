@@ -86,9 +86,12 @@ const SellerRegistration = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (userData.gstNumber && !/^[0-9A-Z]{15}$/.test(userData.gstNumber)) {
-      newErrors.gstNumber = "Invalid GST Number (15 alphanumeric characters)";
+    const gstRegex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/;
+
+    if (userData.gstNumber && !gstRegex.test(userData.gstNumber)) {
+      newErrors.gstNumber = "Invalid GST Number"; //22ABCDE1234F1Z5
     }
+    
 
     if (
       userData.businessContactNumber &&
@@ -130,7 +133,7 @@ const SellerRegistration = () => {
     try {
       const response = await dispatch(updateProfile(payload));
       const successMessage = response?.data?.message;
-      toast.success(successMessage);
+      toast.success("Seller registration request sent successfully");
       // console.log(payload);
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
@@ -300,6 +303,10 @@ const SellerRegistration = () => {
                     id="businessName_field"
                     value={userData.businessName}
                     onChange={handleChange}
+                    inputProps={{
+                      minLength: 3,
+                      maxLength: 50
+                    }}
                     onKeyDown={(e) => {
                       const key = e.key;
                       const isLetter = /^[a-zA-Z]$/.test(key);
@@ -315,6 +322,7 @@ const SellerRegistration = () => {
                       }
                     }}
                   />
+
                 </div>
               </div>
 

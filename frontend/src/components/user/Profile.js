@@ -147,20 +147,20 @@ export default function Profile() {
           <div className="col-md-8">
             <div class="info-box">
               <p>
-                <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Full Name</b>
-                <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
-                <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>{user.name}</span>
+                <b className="info-box-p-b">Full Name</b>
+                <b className="info-box-p-b2">:</b>
+                <span className="info-box-p-span">{user.name}</span>
               </p>
               <p>
-                <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Email Address</b>
-                <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
-                <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>{user.email}</span>
+                <b className="info-box-p-b">Email Address</b>
+                <b className="info-box-p-b2">:</b>
+                <span className="info-box-p-span">{user.email}</span>
               </p>
 
               <p>
-                <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Joined</b>
-                <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
-                <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>
+                <b className="info-box-p-b">Joined</b>
+                <b className="info-box-p-b2">:</b>
+                <span className="info-box-p-span">
                   {String(user.createdAt).substring(0, 10)}
                 </span>
               </p>
@@ -168,7 +168,7 @@ export default function Profile() {
               {user.role === 'seller' && (
                 <>
                   <p>
-                    <b className="info-box-p-b" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Business Address</b>
+                    <b className="info-box-p-b" style={{ width:"110px",fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Business Address</b>
                     <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:</b>
                     <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>
                       {user?.businessAddress && user.businessAddress.length > 0 ? (

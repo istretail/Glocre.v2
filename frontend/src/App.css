@@ -18452,3 +18452,6 @@ footer .lastStrip .part3 ul li a:hover {
     margin-top: -120px !important;
   }
 }
+th{
+  padding-left: 0 !important;
+}

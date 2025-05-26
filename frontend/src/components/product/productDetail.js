@@ -202,6 +202,10 @@ export default function ProductDetail() {
         };
     }, []);
 
+    useEffect(() => {
+        setQuantity(1);
+    }, [selectedVariant]);
+    
     return (
         <>
             {loading ? <Loader /> :

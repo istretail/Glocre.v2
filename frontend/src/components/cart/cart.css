@@ -160,6 +160,7 @@
   align-items: center;
 }
  
+ 
 .info-box {
   padding: 10px;
   border-radius: 8px;
@@ -173,15 +174,18 @@
   display: inline-block;
   max-width: 100%;
   color: #ffad63 !important;
+  font-size: clamp(0.9rem, 2vw, 16px);
 }
  
 .info-box-p-b {
-  width: 60px;
+  width: 110px;
   color: #8c8c8c;
+  font-size: clamp(0.9rem, 2vw, 16px);
 }
  
 .info-box-p-b2 {
   min-width: 20px;
+  font-size: clamp(0.9rem, 2vw, 16px);
 }
  
 .info-box p {

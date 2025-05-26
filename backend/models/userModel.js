@@ -134,11 +134,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Enter First name"],
     match: [/^[A-Za-z][A-Za-z\s]*$/, "Name should not start with a space and must contain only letters"],
+    minlength: [4, "Name must be at least 4 characters"],
+    maxlength: [16, "Name cannot exceed 16 characters"],
   },
   lastName: {
     type: String,
     required: [true, "Please Enter Last name"],
     match: [/^[A-Za-z][A-Za-z\s]*$/, "Last name should not start with a space and must contain only letters"],
+    minlength: [4, "Last Name must be at least 4 characters"],
+    maxlength: [16, "Last Name cannot exceed 16 characters"],
   },  
   email: {
     type: String,
