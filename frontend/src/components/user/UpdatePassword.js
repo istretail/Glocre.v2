@@ -109,7 +109,7 @@ useEffect(() => {
                           onClick={() => setShowOldPassword(!showOldPassword)}
                           edge="end"
                         >
-                          {showOldPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
+                          {showOldPassword ? <VisibilityOutlinedIcon /> :  <VisibilityOffOutlinedIcon />}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -133,7 +133,7 @@ useEffect(() => {
                           onClick={() => setShowNewPassword(!showNewPassword)}
                           edge="end"
                         >
-                          {showNewPassword ? <VisibilityOffOutlinedIcon /> : <VisibilityOutlinedIcon />}
+                          {showNewPassword ? <VisibilityOutlinedIcon /> :  <VisibilityOffOutlinedIcon />}
                         </IconButton>
                       </InputAdornment>
                     ),

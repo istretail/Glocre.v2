@@ -90,26 +90,54 @@ export default function UpdateProfile() {
                   label="Name"
                   variant="outlined"
                   id="name_field"
-                  type="name"
+                  type="text"
                   size="small"
                   name="name"
                   className="w-100 form-control"
                   value={name}
+                  inputProps={{
+                    maxLength: 15,
+                    pattern: "^[A-Za-z]*$" // Removed space from the pattern
+                  }}
+                  onKeyDown={(e) => {
+                    const isLetter = /^[a-zA-Z]$/.test(e.key);
+                    const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(e.key);
+
+                    if (!isLetter && !isAllowedKey) {
+                      e.preventDefault();
+                    }
+                  }}
+                  required
                   onChange={e => setName(e.target.value)}
                 />
+
               </div>
               <div className="form-group mb-5 w-100">
                 <TextField
                   label="Last Name"
                   variant="outlined"
-                  id="name_field"
-                  type="name"
+                  id="lastName_field"
+                  type="text"
                   size="small"
                   name="lastName"
                   className="w-100 form-control"
                   value={lastName}
+                  inputProps={{
+                    maxLength: 15,
+                    pattern: "^[A-Za-z]*$" // Removed space from pattern
+                  }}
+                  onKeyDown={(e) => {
+                    const isLetter = /^[a-zA-Z]$/.test(e.key);
+                    const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(e.key);
+
+                    if (!isLetter && !isAllowedKey) {
+                      e.preventDefault();
+                    }
+                  }}
+                  required
                   onChange={e => setLastName(e.target.value)}
                 />
+
               </div>
 
               <div className="form-group mb-4 w-100">

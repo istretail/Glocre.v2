@@ -43,7 +43,8 @@ const {
    verifyOTP,
    sendContactEmail,
    resendVerificationEmail,
-   updateUserProfile
+   updateUserProfile,
+   getAllEmails
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
@@ -80,6 +81,7 @@ router.route('/admin/users').get(isAuthenticatedUser,authorizeRoles('admin'), ge
 router.route('/admin/user/:id').get(isAuthenticatedUser,authorizeRoles('admin'), getUser)
                                 .put(isAuthenticatedUser,authorizeRoles('admin'), updateUser)
                                 .delete(isAuthenticatedUser,authorizeRoles('admin'), deleteUser);
+router.route('/admin/allemails').get(isAuthenticatedUser, authorizeRoles('admin'), getAllEmails)
 
 router.post('/send-otp', sendOTP);
 router.post('/verify-otp', verifyOTP);

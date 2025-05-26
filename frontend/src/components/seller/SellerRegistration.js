@@ -304,7 +304,7 @@ const SellerRegistration = () => {
                     value={userData.businessName}
                     onChange={handleChange}
                     inputProps={{
-                      minLength: 3,
+                      minLength: 6,
                       maxLength: 50
                     }}
                     onKeyDown={(e) => {

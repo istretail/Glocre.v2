@@ -37,14 +37,14 @@ const categoryHierarchy = {
         "Passive Components": [
             "Resistors (Fixed, Variable, Network)",
             "Capacitors (Ceramic, Electrolytic, Tantalum, Film)",
-            "Inductors & Coils",
+            "Inductors and Coils",
             "Transformers",
-            "Crystals & Oscillators"
+            "Crystals and Oscillators"
         ],
         "Active Components": [
             "Transistors (BJT, MOSFET, IGBT)",
             "Diodes (Zener, Schottky, Rectifier, LEDs)",
-            "Thyristors & Triacs",
+            "Thyristors and Triacs",
             "Integrated Circuits (ICs)",
             "Microcontrollers (e.g., ATmega, PIC, STM32)",
             "Operational Amplifiers",
@@ -56,22 +56,22 @@ const categoryHierarchy = {
             "Voltage Regulators (Linear, Switching)",
             "Power Modules",
             "Relays",
-            "Batteries & Battery Holders",
-            "Power Supplies & Converters (AC-DC, DC-DC)"
+            "Batteries and Battery Holders",
+            "Power Supplies and Converters (AC-DC, DC-DC)"
         ],
         "Electromechanical Components": [
             "Switches (Tactile, Toggle, DIP, Push button)",
             "Connectors (Header, Terminal Block, USB, HDMI)",
-            "Sockets & Adapters",
+            "Sockets and Adapters",
             "Motors (Stepper, Servo, DC)",
-            "Buzzers & Speakers"
+            "Buzzers and Speakers"
         ],
-        "Sensors & Modules": [
-            "Temperature & Humidity Sensors",
+        "Sensors and Modules": [
+            "Temperature and Humidity Sensors",
             "Motion Sensors (PIR, Ultrasonic)",
-            "Gas & Smoke Sensors",
+            "Gas and Smoke Sensors",
             "Light Sensors (LDR, Photodiode)",
-            "Proximity & Touch Sensors",
+            "Proximity and Touch Sensors",
             "Sensor Modules (e.g., HC-SR04, IR modules)"
         ],
         "Communication Modules": [
@@ -82,14 +82,14 @@ const categoryHierarchy = {
             "GSM/GPRS Modules",
             "GPS Modules"
         ],
-        "Development Boards & Kits": [
+        "Development Boards and Kits": [
             "Arduino Boards (Uno, Nano, Mega)",
             "Raspberry Pi",
             "ESP Boards (ESP32, ESP8266)",
             "Sensor Kits",
             "Starter Kits"
         ],
-        "Tools & Prototyping": [
+        "Tools and Prototyping": [
             "Breadboards",
             "Jumper Wires",
             "PCB Boards",
@@ -101,65 +101,65 @@ const categoryHierarchy = {
 
     "Mechanical Components": {
         "Fasteners": [
-            "Bolts & Screws (Hex, Socket, Machine, Self-Tapping)",
+            "Bolts and Screws (Hex, Socket, Machine, Self-Tapping)",
             "Nuts (Hex, Wing, Lock, Cap)",
             "Washers (Flat, Spring, Lock)",
             "Rivets",
             "Threaded Rods",
-            "Anchors & Inserts",
-            "Clips & Clamps"
+            "Anchors and Inserts",
+            "Clips and Clamps"
         ],
-        "Gears & Transmission Components": [
+        "Gears and Transmission Components": [
             "Gears (Spur, Helical, Bevel, Worm)",
-            "Pulleys & Sheaves",
+            "Pulleys and Sheaves",
             "Belts (Timing, V-Belt, Flat)",
-            "Chains & Sprockets",
+            "Chains and Sprockets",
             "Couplings (Flexible, Rigid, Universal)",
             "Bearings (Ball, Roller, Thrust, Sleeve)",
             "Bushings"
         ],
-        "Structural & Framing Components": [
-            "Metal Profiles & Channels",
+        "Structural and Framing Components": [
+            "Metal Profiles and Channels",
             "Aluminum Extrusions (T-slot profiles)",
-            "Brackets & Mounting Plates",
+            "Brackets and Mounting Plates",
             "Support Rails",
-            "Panels & Enclosures",
-            "Frames & Casings"
+            "Panels and Enclosures",
+            "Frames and Casings"
         ],
-        "Motion & Linear Components": [
-            "Linear Rails & Guides",
-            "Lead Screws & Ball Screws",
+        "Motion and Linear Components": [
+            "Linear Rails and Guides",
+            "Lead Screws and Ball Screws",
             "Actuators (Linear, Pneumatic, Hydraulic)",
-            "Sliders & Bearings",
+            "Sliders and Bearings",
             "Springs (Compression, Tension, Torsion)",
-            "Dampers & Shock Absorbers"
+            "Dampers and Shock Absorbers"
         ],
         "Material Components": [
-            "Metal Sheets & Rods (Aluminum, Steel, Brass)",
-            "Plastics & Composites (Acrylic, Nylon, Delrin)",
+            "Metal Sheets and Rods (Aluminum, Steel, Brass)",
+            "Plastics and Composites (Acrylic, Nylon, Delrin)",
             "Rubber Parts (Grommets, Pads, Seals)"
         ],
-        "Machine Elements & Accessories": [
-            "Handles & Knobs",
+        "Machine Elements and Accessories": [
+            "Handles and Knobs",
             "Hinges",
-            "Latches & Locks",
-            "Feet & Casters",
+            "Latches and Locks",
+            "Feet and Casters",
             "Inspection Windows",
             "Leveling Mounts"
         ],
-        "Pneumatics & Hydraulics": [
+        "Pneumatics and Hydraulics": [
             "Cylinders (Air, Oil)",
             "Valves (Control, Relief, Check)",
-            "Fittings & Hoses",
-            "Pumps & Reservoirs",
-            "Manifolds & Regulators"
+            "Fittings and Hoses",
+            "Pumps and Reservoirs",
+            "Manifolds and Regulators"
         ],
-        "Tools & Assembly Equipment": [
+        "Tools and Assembly Equipment": [
             "Wrenches, Allen Keys, Screwdrivers",
             "Torque Wrenches",
             "Measuring Tools (Calipers, Micrometers)",
-            "Vices & Clamps",
-            "Cutting Tools (Blades, Drills, Taps & Dies)"
+            "Vices and Clamps",
+            "Cutting Tools (Blades, Drills, Taps and Dies)"
         ]
     },
 
@@ -169,7 +169,7 @@ const categoryHierarchy = {
         "Heating and Cooling Appliances": ["Air Conditioners", "Heaters", "Fans", "Air Purifiers and Humidifiers"],
         "Home Comfort and Appliances": ["Vacuum Cleaners", "Water Heaters", "Air Fryers and Deep Fryers", "Dehumidifiers and Humidifiers"],
         "Smart Home Devices": ["Smart Speakers and Assistants", "Smart Lights and Bulbs", "Smart Plugs and Switches", "Smart Thermostats", "Smart Appliances"],
-        "Security Cameras and Systems": ["Bullet Cameras", "Dome Cameras", "PTZ Cameras", "WIFI & 4G Cameras", "POE", "Hybrid AI-IoT NVR", "NVR", "DVR", "Surveillance Hard disk", "Backbox", "RJ45 Jacks", "Camera Protections", "Racks", "Accessories", "Biometrics and Sensors"]
+        "Security Cameras and Systems": ["Bullet Cameras", "Dome Cameras", "PTZ Cameras", "WIFI and 4G Cameras", "POE", "Hybrid AI-IoT NVR", "NVR", "DVR", "Surveillance Hard disk", "Backbox", "RJ45 Jacks", "Camera Protections", "Racks", "Accessories", "Biometrics and Sensors"]
     },
 
     "Gadgets": {

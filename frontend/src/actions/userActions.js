@@ -41,6 +41,9 @@ import {
   deleteBannerRequest,
   deleteBannerSuccess,
   deleteBannerFail,
+  getallEmailsRequest,
+  getallEmailsSuccess,
+  getallEmailsFail,
 } from "../slices/authSlice";
 
 import {
@@ -507,6 +510,17 @@ export const unsubscribe = (email, reason) => async (dispatch) => {
     toast.success(response.data.message);
   } catch (error) {
     dispatch(unsubscribeFail(error.response.data.message));
+    toast.error(error.response.data.message)
+  }
+};
+export const getAllEmails = () => async (dispatch) => {
+  try {
+    dispatch(getallEmailsRequest());
+    const response = await axios.get("/api/v1/admin/allemails");
+    dispatch(getallEmailsSuccess(response.data));
+    // toast.success(response.data.message);
+  } catch (error) {
+    dispatch(getallEmailsFail(error.response.data.message));
     toast.error(error.response.data.message)
   }
 };

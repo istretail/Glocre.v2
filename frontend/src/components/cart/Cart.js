@@ -20,6 +20,8 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import Nav from "../layouts/nav";
 import { logEvent } from '../../actions/analyticsActions';
 import { Modal, Box, Typography } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default function Cart() {
   const { items = [], cartItems = [] } = useSelector((state) => state.cartState);
@@ -33,7 +35,7 @@ export default function Cart() {
     const matched = cartItems.find(ci => ci._id === item._id);
     return matched?.variant?.stock ?? matched?.stock ?? 0;
   };
-  
+
   // Function to increase quantity
   const increaseQty = (item) => {
     const matchedCartItem = cartItems.find((ci) => ci._id === item._id);
@@ -86,7 +88,7 @@ export default function Cart() {
       );
     }
   };
-  
+
 
   // Handle quantity change
   const handleQuantityChange = (e, item) => {
@@ -115,7 +117,7 @@ export default function Cart() {
       }
     }
   };
-  
+
 
   // Fetch cart items on mount
   useEffect(() => {
@@ -141,11 +143,11 @@ export default function Cart() {
     unavailableItems.forEach(item => {
       removeItemHandler(item.product, item.variant?._id);
     });
-    
+
     // Proceed to checkout
     navigate("/login?redirect=shipping");
   };
-  
+
 
   // Remove item from cart handler
   const removeItemHandler = (productId, variantId) => {
@@ -205,7 +207,7 @@ export default function Cart() {
     );
   };
   // console.log("cartItems", cartItems);
-  
+
   const getAvailableItems = () => {
     return cartItems.filter(item => item.status !== "pending" || item.isArchived !== false);
   };
@@ -218,12 +220,12 @@ export default function Cart() {
   const isCheckoutDisabled = () => {
     const unavailableItems = cartItems.filter(
       item => item.status === "pending" || item.isArchived !== false
-      
+
     );
     return unavailableItems.length === cartItems.length || (cartItems.length === 1 && unavailableItems.length === 1);
-    
+
   };
- 
+
   return (
     <>
       <MetaData title={"Cart"} />
@@ -271,18 +273,18 @@ export default function Cart() {
               <div className="container-fluid" >
                 <div className="row d-flex" >
                   {/* Left Section */}
-                  < div className="col-md-8 col-12" >
+                  < div className="col-md-9 col-12" >
                     <div className="cartWrapper mt-4" >
                       <div className="table-responsive" >
                         <table className="table" >
                           <thead>
                             <tr>
-                              <th>Product </th>
-                              < th > Unit Price </th>
-                                < th > Quantity </th>
-                                {/* < th > Stock </th> */}
-                              < th > Subtotal </th>
-                              < th > Remove </th>
+                              <th style={{minWidth:"125px"}}>Product </th>
+                              < th  style={{minWidth:"125px"}}> Unit Price </th>
+                              < th  style={{minWidth:"125px"}}> Quantity </th>
+                              {/* < th  style={{minWidth:"125px"}}> Stock </th> */}
+                              < th  style={{minWidth:"125px"}}> Subtotal </th>
+                              < th  style={{minWidth:"125px"}}> Remove </th>
                             </tr>
                           </thead>
                           {
@@ -293,7 +295,7 @@ export default function Cart() {
                               return (
                                 <tbody key={item.product} >
                                   <tr>
-                                    <td width={"50%"}>
+                                    <td>
                                       <div className="d-flex align-items-center" >
                                         <div className="img" >
                                           <img
@@ -320,7 +322,7 @@ export default function Cart() {
                                         </div>
                                       </div>
                                     </td>
-                                    < td width="20%" >
+                                    < td >
                                       <span>Rs: {updatedItem ? updatedItem.price : item.price} </span>
                                     </td>
                                     < td >
@@ -335,8 +337,35 @@ export default function Cart() {
                                               ? updatedItem?.stock
                                               : item.quantity
                                           }
-                                          onChange={(e) => handleQuantityChange(e, item)}
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+
+                                            // Allow empty string temporarily (user is typing)
+                                            if (value === "") {
+                                              handleQuantityChange(e, item); // or just set a temporary state
+                                              return;
+                                            }
+
+                                            // Allow numbers starting with 0 but longer than 1 digit (like 05)
+                                            if (/^0\d+/.test(value)) {
+                                              handleQuantityChange(e, item);
+                                              return;
+                                            }
+
+                                            // Disallow standalone zero or any value less than 1
+                                            const numericValue = Number(value);
+                                            if (numericValue >= 1) {
+                                              handleQuantityChange(e, item);
+                                            }
+                                          }}
+                                          onBlur={(e) => {
+                                            // If user leaves the input as empty or 0, reset to 1
+                                            if (!e.target.value || Number(e.target.value) === 0) {
+                                              handleQuantityChange({ target: { value: 1 } }, item);
+                                            }
+                                          }}
                                         />
+
 
                                         < Button onClick={() => increaseQty(item)}>
                                           <AddIcon />
@@ -353,10 +382,19 @@ export default function Cart() {
                                         Rs: {(updatedItem ? updatedItem.price : item.price) * item.quantity}
                                       </span>
                                     </td>
-                                    < td >
+                                    {/* < td >
                                       <button className="cartRemove" onClick={() => handleOpen(item)}>
                                         <DeleteOutlineOutlinedIcon />
                                       </button>
+                                    </td> */}
+                                    <td>
+                                      <Button
+                                        style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }}
+                                        onClick={() => handleOpen(item)}
+                                        className="btn ms-2"
+                                      >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                      </Button>
                                     </td>
                                   </tr>
                                 </tbody>
@@ -409,7 +447,7 @@ export default function Cart() {
                       </Link>
                     </div>
                   </div>
-                  <div className="col-md-4 col-12 cartRightBox">
+                  <div className="col-md-3 col-12 cartRightBox p-0">
                     <div className="card p-4">
                       <div className="d-flex align-items-center mb-4">
                         <h5 className="mb-0 text-light">Quantity</h5>
@@ -433,33 +471,33 @@ export default function Cart() {
                         <h3 className="ml-auto mb-0 font-weight-bold">
                           <span className="text-g">
                             ₹
-                              {
-                                items.reduce((acc, item) => {
-                                  const updatedItem = cartItems.find(cartItem => cartItem.product === item.product);
-                                  const price = updatedItem ? updatedItem.price : item.price;
-                                  return acc + price * item.quantity;
-                                }, 0)
-                              }
+                            {
+                              items.reduce((acc, item) => {
+                                const updatedItem = cartItems.find(cartItem => cartItem.product === item.product);
+                                const price = updatedItem ? updatedItem.price : item.price;
+                                return acc + price * item.quantity;
+                              }, 0)
+                            }
                           </span>
                         </h3>
                       </div>
                       <br />
-                        {
-                          getUnavailableItems().length > 0 && getAvailableItems().length > 0 && (
-                            <p className="text-sm text-red-600 mb-2">
-                              Proceeding without{" "}
-                              {getUnavailableItems().map((item, index) => (
-                                <span key={item._id}>
-                                  {item.name}
-                                  {index !== getUnavailableItems().length - 1 ? ", " : ""}
-                                </span>
-                              ))}
-                            </p>
-                          )
-                        }
+                      {
+                        getUnavailableItems().length > 0 && getAvailableItems().length > 0 && (
+                          <p className="text-sm text-red-600 mb-2">
+                            Proceeding without{" "}
+                            {getUnavailableItems().map((item, index) => (
+                              <span key={item._id}>
+                                {item.name}
+                                {index !== getUnavailableItems().length - 1 ? ", " : ""}
+                              </span>
+                            ))}
+                          </p>
+                        )
+                      }
                       <Button
                         variant="contained"
-                          className="btn-g btn-lg"
+                        className="btn-g btn-lg"
                         onClick={checkoutHandler}
                         disabled={!isAnyItemAvailable() || isCheckoutDisabled()}
                       >

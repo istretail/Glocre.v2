@@ -302,6 +302,26 @@ const authSlice = createSlice({
         error: action.payload,
       };
     },
+    getallEmailsRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    getallEmailsSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        emails: action.payload.emails,
+      };
+    },
+    getallEmailsFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 const { actions, reducer } = authSlice;
@@ -351,6 +371,9 @@ export const {
   deleteBannerRequest,
   deleteBannerSuccess,
   deleteBannerFail,
+  getallEmailsRequest,
+  getallEmailsSuccess,
+  getallEmailsFail,
 } = actions;
 
 export default reducer;

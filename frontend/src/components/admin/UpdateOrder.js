@@ -100,11 +100,11 @@ export default function UpdateOrder() {
 
         <>
             <section className="updateorder-section">
-                <div className="row container-fluid">
+                <div className="row container-fluid ">
                     <div className="col-12 col-md-2">
                         <Sidebar />
                     </div>
-                   <div className="col-12 col-lg-10 col-md-12 pr-0">
+                    <div className="col-12 col-lg-10 col-md-12 pr-0">
                         <div className="mobile-logo">
                             <img src={require("../../images/procure-g-logo.png")} />
                         </div>
@@ -124,14 +124,14 @@ export default function UpdateOrder() {
                                             <li>Update Orders</li>
                                         </ul>
                                     </div>
-                                  <div className="col-2 p-0 d-flex justify-content-center align-items-center">
+                                    <div className="col-2 p-0 d-flex justify-content-center align-items-center">
                                         <button className="fab" onClick={toggleDrawer}>
                                             <FontAwesomeIcon icon={faList} />
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                             <div className="row dash-navbar-big-glc small-sticky-navbar">
+                                <div className="row dash-navbar-big-glc small-sticky-navbar">
                                     <div className="col-lg-3 col-md-12">
                                         <ul className="breadcrumb breadcrumb2 mb-0">
                                             <li>
@@ -143,7 +143,7 @@ export default function UpdateOrder() {
                                             <li>Update Orders</li>
                                         </ul>
                                     </div>
-                                  <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
+                                    <div className="col-lg-7 col-md-6 d-flex justify-content-end align-items-end">
                                         <div className="dash-cont-glc">
                                             <div className="row">
                                                 <div className="topnav">
@@ -185,7 +185,7 @@ export default function UpdateOrder() {
                                             </form>
                                         </div>
                                     </div>
-                                  <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
+                                    <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
                                                 variant="default text-white"
@@ -214,8 +214,6 @@ export default function UpdateOrder() {
                                         <li><Link to="/admin/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
                                         <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                                         <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
-                                          <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
-                                                                                <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
                                     </ul>
                                 </div>
                             </Drawer>
@@ -224,48 +222,113 @@ export default function UpdateOrder() {
 
                         <div className="row">
 
-                            <div className="col-12 col-lg-8">
+                            <div className="col-12">
                                 <h2 className="" style={{ color: "#ffad63", marginTop: "40px" }}>ORDER # {orderDetail.clocreOrderId}</h2>
+
                                 <div className="row">
-                                    <div className="col-12 col-lg-6">
-                                        <h4 className="mb-4 mt-3">SHIPPING INFO</h4>
-                                        <p><b>Name:</b> {shippingInfo.name}</p>
-                                        <p><b>Phone:</b> {shippingInfo.phoneNo}</p>
-                                        <p className="mb-4"><b>Address:</b>{shippingInfo.address}, {shippingInfo.city}, {shippingInfo.postalCode}, {shippingInfo.state}, {shippingInfo.country}</p>
-                                        <p><b>Amount:</b> ₹{totalPrice}</p>
+                                    <div className="col-md-8">
+                                        <div className="row">
+                                            <div className="col-12 col-lg-6">
+                                                <h4 className="mb-4 mt-3">SHIPPING INFO</h4>
+                                                <p><b>Name:</b> {shippingInfo.name}</p>
+                                                <p><b>Phone:</b> {shippingInfo.phoneNo}</p>
+                                                <p className="mb-4"><b>Address:</b>{shippingInfo.address}, {shippingInfo.city}, {shippingInfo.postalCode}, {shippingInfo.state}, {shippingInfo.country}</p>
+                                                <p><b>Amount:</b> ₹{totalPrice}</p>
+                                            </div>
+                                            <div className="col-12 col-lg-6">
+                                                <h4 className="mb-4 mt-3">BILLING INFO</h4>
+                                                <p><b>Name:</b> {billingInfo.name}</p>
+                                                <p><b>Phone:</b> {billingInfo.phoneNo}</p>
+                                                <p className="mb-4"><b>Address:</b>{billingInfo.address}, {billingInfo.city}, {billingInfo.postalCode}, {billingInfo.state}, {billingInfo.country}</p>
+                                                <p><b>Amount:</b> ₹{totalPrice}</p>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div className="cart-item">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="30%">
+                                                        <div className="">
+                                                            <h4 className="my-4">Payment:</h4>
+                                                            <hr />
+                                                            <p className={isPaid ? 'greenColor' : 'redColor'} ><b>{isPaid ? 'PAID' : 'NOT PAID'}</b></p>
+                                                            <hr />
+                                                        </div>
+                                                    </td>
+                                                    <td width="30%">
+                                                        <h4 className="my-4">Order Status:</h4>
+                                                        <hr />
+                                                        <p className={orderStatus && orderStatus.includes('Delivered') ? 'greenColor' : 'redColor'} ><b>{orderStatus}</b></p>
+                                                        <hr />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </div>
                                     </div>
-                                    <div className="col-12 col-lg-6">
-                                        <h4 className="mb-4 mt-3">BILLING INFO</h4>
-                                        <p><b>Name:</b> {billingInfo.name}</p>
-                                        <p><b>Phone:</b> {billingInfo.phoneNo}</p>
-                                        <p className="mb-4"><b>Address:</b>{billingInfo.address}, {billingInfo.city}, {billingInfo.postalCode}, {billingInfo.state}, {billingInfo.country}</p>
-                                        <p><b>Amount:</b> ₹{totalPrice}</p>
-                                    </div>
-                                </div>
 
-                                <hr />
+                                    <div className="col-md-4">
+                                        <div className="" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                            {/* Right Section */}
+                                            <div className="cartRightBox p-2" style={{ width: "100%" }}>
+                                                <div className="card">
+                                                    <h4 className="">Order Status</h4>
+                                                    <div className="form-group mb-3">
+                                                        <div className="custom-select-wrapper">
+                                                            <select
+                                                                className="custom-select"
+                                                                onChange={e => setOrderStatus(e.target.value)}
+                                                                value={orderStatus}
+                                                                name="status"
+                                                            >
+                                                                <option value="Processing">Processing</option>
+                                                                <option value="Shipped">Shipped</option>
+                                                                <option value="Delivered">Delivered</option>
+                                                            </select>
+                                                        </div>
 
-                                <div className="cart-item">
-                                    <tbody>
-                                        <tr>
-                                            <td width="30%">
-                                                <div className="">
-                                                    <h4 className="my-4">Payment:</h4>
-                                                    <hr />
-                                                    <p className={isPaid ? 'greenColor' : 'redColor'} ><b>{isPaid ? 'PAID' : 'NOT PAID'}</b></p>
-                                                    <hr />
+
+                                                    </div>
+                                                    {orderStatus === "Shipped" && (
+                                                        <div className="mt-3">
+                                                            <label>Tracking Number</label>
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                placeholder="Tracking Number"
+                                                                value={trackingNumber}
+                                                                onChange={(e) => setTrackingNumber(e.target.value)}
+                                                            />
+                                                            <div className="custom-select-wrapper mt-2 mb-2">
+                                                                <select
+                                                                    className="custom-select"
+                                                                    value={courierSlug}
+                                                                    onChange={(e) => setCourierSlug(e.target.value)}
+                                                                >
+                                                                    <option value="">Select Courier</option>
+                                                                    <option value="dhl">DHL</option>
+                                                                    <option value="fedex">FedEx</option>
+                                                                    <option value="ups">UPS</option>
+                                                                    <option value="bluedart">BlueDart</option>
+                                                                    <option value="indiapost">IndiaPost</option>
+                                                                    <option value="proffesionalCourier">Proffesional Courier</option>
+                                                                    <option value="dtdc">DTDC</option>
+                                                                    <option value="stCourier">ST Courier</option>
+                                                                </select>
+
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    <Button className=""
+                                                        style={{ backgroundColor: "#ffad63", color: "#fff", border: "none", outline: "none" }}
+                                                        disabled={loading}
+                                                        onClick={submitHandler}
+                                                    >Update Status</Button>
                                                 </div>
-                                            </td>
-                                            <td width="30%">
-                                                <h4 className="my-4">Order Status:</h4>
-                                                <hr />
-                                                <p className={orderStatus && orderStatus.includes('Delivered') ? 'greenColor' : 'redColor'} ><b>{orderStatus}</b></p>
-                                                <hr />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
 
                                 <h4 className="my-4">Order Items:</h4>
                                 <div className="">
@@ -274,10 +337,10 @@ export default function UpdateOrder() {
                                             <table className="table">
                                                 <thead>
                                                     <tr>
-                                                        <th style={{ minWidth: "150px" }}>Product</th>
-                                                        <th style={{ minWidth: "200px" }}>Product Name</th>
-                                                        <th style={{ minWidth: "120px" }}>Price</th>
-                                                        <th style={{ minWidth: "150px" }}>Total Products</th>
+                                                        <th style={{ minWidth: "80px", paddingLeft: "0" }}>Product</th>
+                                                        <th style={{ minWidth: "250px", paddingLeft: "0" }}>Product Name</th>
+                                                        <th style={{ minWidth: "120px", paddingLeft: "0" }}>Price</th>
+                                                        <th style={{ minWidth: "150px", paddingLeft: "0" }}>Total Products</th>
                                                     </tr>
                                                 </thead>
                                                 {orderItems && orderItems.map(item => (
@@ -319,65 +382,7 @@ export default function UpdateOrder() {
                                 </div>
                             </div>
 
-                            <div className="col-12 col-lg-4" style={{ display: "flex", alignItems: "center", justifyContent: "start" }}>
-                                {/* Right Section */}
-                                <div className="cartRightBox" style={{ width: "100%" }}>
-                                    <div className="card">
-                                        <h4 className="">Order Status</h4>
-                                        <div className="form-group mb-3">
-                                            <div className="custom-select-wrapper">
-                                                <select
-                                                    className="custom-select"
-                                                    onChange={e => setOrderStatus(e.target.value)}
-                                                    value={orderStatus}
-                                                    name="status"
-                                                >
-                                                    <option value="Processing">Processing</option>
-                                                    <option value="Shipped">Shipped</option>
-                                                    <option value="Delivered">Delivered</option>
-                                                </select>
-                                            </div>
 
-
-                                        </div>
-                                        {orderStatus === "Shipped" && (
-                                            <div className="mt-3">
-                                                <label>Tracking Number</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Tracking Number"
-                                                    value={trackingNumber}
-                                                    onChange={(e) => setTrackingNumber(e.target.value)}
-                                                />
-                                                <div className="custom-select-wrapper mt-2 mb-2">
-                                                    <select
-                                                        className="custom-select"
-                                                        value={courierSlug}
-                                                        onChange={(e) => setCourierSlug(e.target.value)}
-                                                    >
-                                                        <option value="">Select Courier</option>
-                                                        <option value="dhl">DHL</option>
-                                                        <option value="fedex">FedEx</option>
-                                                        <option value="ups">UPS</option>
-                                                        <option value="bluedart">BlueDart</option>
-                                                        <option value="indiapost">IndiaPost</option>
-                                                        <option value="proffesionalCourier">Proffesional Courier</option>
-                                                        <option value="dtdc">DTDC</option>
-                                                        <option value="stCourier">ST Courier</option>
-                                                    </select>
-
-                                                </div>
-                                            </div>
-                                        )}
-                                        <Button className=""
-                                            style={{ backgroundColor: "#ffad63", color: "#fff", border: "none", outline: "none" }}
-                                            disabled={loading}
-                                            onClick={submitHandler}
-                                        >Update Status</Button>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
 

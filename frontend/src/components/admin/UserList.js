@@ -9,9 +9,8 @@ import Loader from '../layouts/Loader';
 import { toast } from 'react-toastify';
 import Sidebar from "./Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import Pagination from 'react-js-pagination';
-
+import { Modal, Box, Typography } from "@mui/material";
 import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
@@ -26,7 +25,7 @@ export default function UserList() {
     const dispatch = useDispatch();
 
     const deleteHandler = (e, id) => {
-        e.target.disabled = true;
+        // e.target.disabled = true;
         dispatch(deleteUser(id));
     };
     const setCurrentPageNo = (pageNo) => {
@@ -92,6 +91,30 @@ export default function UserList() {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null); // You can reuse the same state for all deletions
+
+    const handleDeleteClick = (id) => {
+        setSelectedUserId(id);
+        setDeleteModalOpen(true);
+    };
+
+    const cancelDelete = () => {
+        setDeleteModalOpen(false);
+        setSelectedUserId(null);
+    };
+
+    const confirmDelete = () => {
+        deleteHandler(null, selectedUserId); 
+        console.log(selectedUserId)// Assuming deleteHandler handles user deletion
+        setDeleteModalOpen(false);
+        setSelectedUserId(null);
+    };
+
+
 
 
     return (
@@ -297,17 +320,72 @@ export default function UserList() {
                                                         </span>
                                                     </td>
 
-                                                    <td>
+                                                    {/* <td>
                                                         <Link to={`/admin/user/${user._id}`} style={{ backgroundColor: "#ffad63", color: "#fff", outline: "none", border: "none" }} className="btn "><FontAwesomeIcon icon={faPencil} /></Link>
                                                         <Button style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }} onClick={(e) => deleteHandler(e, user._id)} className="btn ms-2">
                                                             <FontAwesomeIcon icon={faTrash} />
                                                         </Button>
+                                                    </td> */}
+                                                    <td>
+                                                        <Link
+                                                            to={`/admin/user/${user._id}`}
+                                                            style={{ backgroundColor: "#ffad63", color: "#fff", outline: "none", border: "none" }}
+                                                            className="btn"
+                                                        >
+                                                            <FontAwesomeIcon icon={faPencil} />
+                                                        </Link>
+                                                        <Button
+                                                            style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }}
+                                                            onClick={() => handleDeleteClick(user._id)} // open modal
+                                                            className="btn ms-2"
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash} />
+                                                        </Button>
                                                     </td>
+
+                                                  
+
 
                                                 </tr>
                                             </tbody>
                                         ))}
                                     </table>
+                                        <Modal open={deleteModalOpen} onClose={cancelDelete}>
+                                            <Box
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: "50%",
+                                                    left: "50%",
+                                                    transform: "translate(-50%, -50%)",
+                                                    bgcolor: "background.paper",
+                                                    p: 4,
+                                                    borderRadius: 2,
+                                                    width: 300,
+                                                    border: "none",
+                                                    outline: "none",
+                                                }}
+                                            >
+                                                <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                                    Are you sure you want to delete this user? (It won't be recovered)
+                                                </Typography>
+                                                <Box display="flex" justifyContent="space-between">
+                                                    <Button
+                                                        onClick={confirmDelete}
+                                                        sx={{ margin: "3px" }}
+                                                        className="left-but"
+                                                    >
+                                                        Yes
+                                                    </Button>
+                                                    <Button
+                                                        onClick={cancelDelete}
+                                                        sx={{ margin: "3px" }}
+                                                        className="right-but"
+                                                    >
+                                                        No
+                                                    </Button>
+                                                </Box>
+                                            </Box>
+                                        </Modal>
                                 </div>
                             </div>
                         )

@@ -337,36 +337,37 @@ export default function OrderDetail() {
                   </div>
                 </div>
 
-                <div className="order-tracking-pdf-contents-procureg">
-                  {orderItems &&
-                    orderItems.map(item => (
-                      <div className="col-12 col-sm-6 col-md-6 col-lg-3 mb-3 mt-3">
-                        <div className="card h-100">
-                          <div className="card-body p-0">
-                            <div className="row align-items-center">
-                              <div className="col-5">
-                                <img
-                                  className="img-fluid"
-                                  src={item.image}
-                                  alt={item.name}
-                                />
-                              </div>
-                              <div className="col-7">
-                                <div>
-                                  <Link to={`/products/${item.product}`} style={{ color: "#2f4d2a" }}>
-                                    <strong>{item.name}</strong>
-                                  </Link>
-                                  <p className="mb-1">₹{item.price}</p>
-                                  <p className="mb-0">{item.quantity} Piece(s)</p>
+                  <div className="order-tracking-pdf-contents-procureg">
+                    <div className="row">
+                      {orderItems &&
+                        orderItems.map(item => (
+                          <div key={item.product} className="col-12 col-sm-6 col-md-6 col-lg-3 mb-3 mt-3">
+                            <div className="card h-100">
+                              <div className="card-body p-0">
+                                <div className="row align-items-center">
+                                  <div className="col-5">
+                                    <img
+                                      className="img-fluid"
+                                      src={item.image}
+                                      alt={item.name}
+                                    />
+                                  </div>
+                                  <div className="col-7">
+                                    <div>
+                                      <Link to={`/products/${item.product}`} style={{ color: "#2f4d2a" }}>
+                                        <h6>{item.name}</h6>
+                                      </Link>
+                                      <p className="mb-1">₹{item.price}</p>
+                                      <p className="mb-0">{item.quantity} Piece(s)</p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                  </div>
 
                 <div className="order-tracking-buttons-procureg">
                   {loading ? (

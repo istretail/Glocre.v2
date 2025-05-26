@@ -12,8 +12,8 @@ import Sidebar from "./Sidebar"
 // import debounce from 'lodash.debounce'; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from 'react-js-pagination';
-
-import { faCartShopping,  faFilter, faPencil, faSearch, faTrash,faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { Modal, Box, Typography } from "@mui/material";
+import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown,  } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 
@@ -26,7 +26,7 @@ export default function OrderList() {
     const dispatch = useDispatch();
 
     const deleteHandler = (e, id) => {
-        e.target.disabled = true;
+        // e.target.disabled = true;
         dispatch(deleteOrder(id))
     }
     const setCurrentPageNo = (pageNo) => {
@@ -92,6 +92,25 @@ export default function OrderList() {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+    const handleDeleteClick = (orderId) => {
+        setSelectedOrderId(orderId);
+        setDeleteModalOpen(true);
+    };
+
+    const cancelDelete = () => {
+        setDeleteModalOpen(false);
+        setSelectedOrderId(null);
+    };
+
+    const confirmDelete = () => {
+        deleteHandler(null, selectedOrderId); // Call your delete function
+        setDeleteModalOpen(false);
+        setSelectedOrderId(null);
+    };
 
     return (
         <>
@@ -293,15 +312,55 @@ export default function OrderList() {
 
                                                     <td>
                                                         <Link to={`/admin/order/${adminOrder._id}`} style={{ backgroundColor: "#ffad63", outline: "none", border: "none" }} className="btn btn-primary"><FontAwesomeIcon icon={faPencil} /></Link>
-                                                        <Button style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none" }} onClick={e => deleteHandler(e, adminOrder._id)} className="btn ms-2">
+                                                        <Button
+                                                            style={{ backgroundColor: "#2f4d2a", outline: "none", border: "none", color: "#fff" }}
+                                                            onClick={() => handleDeleteClick(adminOrder._id)} // open modal
+                                                            className="btn ms-2"
+                                                        >
                                                             <FontAwesomeIcon icon={faTrash} />
-                                                        </Button>
+                                                            </Button>
                                                     </td>
                                                 </tr>
                                             ))
                                         )}
                                     </tbody>
                                 </table>
+                                <Modal open={deleteModalOpen} onClose={cancelDelete}>
+                                    <Box
+                                        sx={{
+                                            position: "absolute",
+                                            top: "50%",
+                                            left: "50%",
+                                            transform: "translate(-50%, -50%)",
+                                            bgcolor: "background.paper",
+                                            p: 4,
+                                            borderRadius: 2,
+                                            width: 300,
+                                            border: "none",
+                                            outline: "none",
+                                        }}
+                                    >
+                                        <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                                            Are you sure you want to delete this order? (It won't be recovered)
+                                        </Typography>
+                                        <Box display="flex" justifyContent="space-between">
+                                            <Button
+                                                onClick={confirmDelete}
+                                                sx={{ margin: "3px" }}
+                                                className="left-but"
+                                            >
+                                                Yes
+                                            </Button>
+                                            <Button
+                                                onClick={cancelDelete}
+                                                sx={{ margin: "3px" }}
+                                                className="right-but"
+                                            >
+                                                No
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                </Modal>
                             </div>
                         </div>
                         <br />

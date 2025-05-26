@@ -114,6 +114,16 @@ export default function Sidebar() {
                                     </button>
                                 </li>
                             </Link>
+                            <Link to="/admin/subscribers">
+                                <li className="nav__item is-active">
+                                    <button className="nav__button">
+                                        <span className="nav__icon">
+                                            <i className="fa fa-calendar" aria-hidden="true"></i>
+                                        </span>
+                                        <span className="nav__label">All emails</span>
+                                    </button>
+                                </li>
+                            </Link>
                         </ul>
                     </div>
                 </div>

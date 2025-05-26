@@ -477,7 +477,9 @@ export default function ProductDetail() {
                                     name="review"
                                     id="review"
                                     className="form-control mt-3"
+                                    maxLength={200} // Set your desired maximum length here
                                 ></textarea>
+
 
                                 {reviewError && <div className="text-danger mt-2">{reviewError}</div>}
 

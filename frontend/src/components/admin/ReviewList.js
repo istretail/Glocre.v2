@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useEffect, useState, useRef } from "react"
 import { Button } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { deleteReview, getReviews } from "../../actions/productActions"
@@ -18,18 +18,39 @@ export default function ReviewList() {
     const { reviews = [], loading = true, error, isReviewDeleted } = useSelector(state => state.productState)
     const [productId, setProductId] = useState("");
     const dispatch = useDispatch();
-
-
+    // const [clocreProductId, setclocreProductId] = useState('');
+    const isFirstRender = useRef(true);
 
     const deleteHandler = (e, id) => {
         e.target.disabled = true;
         dispatch(deleteReview(productId, id))
     }
+    function debounce(func, delay) {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), delay);
+        };
+    }
 
-    // const submitHandler = (e) => {
-    //     e.preventDefault();
-    //     dispatch(getReviews(productId))
-    // }
+useEffect(() => {
+    if (isFirstRender.current) {
+        isFirstRender.current = false; // Skip first run
+        return;
+    }
+
+    const debouncedSearch = debounce(() => {
+        dispatch(getReviews(productId));
+    }, 500);
+
+    debouncedSearch();
+
+    return () => {
+        debouncedSearch.cancel && debouncedSearch.cancel();
+    };
+}, [productId, dispatch]);
+
+
 
     useEffect(() => {
         if (error) {
@@ -119,7 +140,14 @@ export default function ReviewList() {
                                                 <div className="topnav">
                                                     <div className="search-container">
                                                         <form className="d-flex">
-                                                            <input type="text" placeholder="Search" name="search" />
+                                                            <input type="text" placeholder="Search" name="search"
+                                                                value={productId}
+                                                                onChange={(e) => {
+                                                                    const value = e.target.value;
+                                                                    const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                                    setProductId(cleanedValue)
+                                                                }}
+                                                            />
                                                             <button type="submit">
                                                                 <FontAwesomeIcon icon={faSearch} />
                                                             </button>
@@ -148,10 +176,17 @@ export default function ReviewList() {
                             {/* Search, Filter & Avatar Row (For Mobile) */}
                             {isMobile && (
                                 <div className="row mobile-bottombar">
-                                     <div className="col-9 col-md-10 pr-0">
+                                    <div className="col-9 col-md-10 pr-0">
                                         <div className="search-container">
                                             <form className="d-flex">
-                                                <input type="text" placeholder="Search" name="search" />
+                                                <input type="text" placeholder="Search" name="search"
+                                                    value={productId}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                                                        setProductId(cleanedValue)
+                                                    }}
+                                                />
                                                 <button type="submit">
                                                     <FontAwesomeIcon icon={faSearch} />
                                                 </button>
@@ -161,7 +196,7 @@ export default function ReviewList() {
                                     <div className="col-2 text-center">
                                         <Dropdown className="d-inline">
                                             <Dropdown.Toggle
-                                               variant="default text-white"
+                                                variant="default text-white"
                                                 id="dropdown-basic"
                                                 className="text-dark dropdown1 icon-list-filter-procureg"
                                                 style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
@@ -187,8 +222,8 @@ export default function ReviewList() {
                                         <li><Link to="/admin/orders"><FontAwesomeIcon icon={faSort} /> &nbsp;Order List</Link></li>
                                         <li><Link to="/admin/users"><FontAwesomeIcon icon={faUserPlus} /> &nbsp;User List</Link></li>
                                         <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
-                                          <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
-                                                                                <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
+                                        <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
+                                        <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
                                     </ul>
                                 </div>
                             </Drawer>
@@ -229,7 +264,7 @@ export default function ReviewList() {
                                                         <td>
                                                             <div className="d-flex align-items-center">
                                                                 <span style={{ color: "#000000b3", fontSize: "15px" }}>
-                                                                    {review.user.name}
+                                                                    {review.user?.name || "Anonymous"}
                                                                 </span>
                                                             </div>
                                                         </td>

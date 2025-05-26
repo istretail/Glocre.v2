@@ -11,7 +11,7 @@ const OTP_VALIDITY_DURATION = 10 * 60 * 1000; // 10 minutes
 const APIFeatures = require("../utils/apiFeatures"); // Adjust the path as necessary
 const mongoose = require("mongoose");
 const axios = require('axios');
-
+const Subscriber = require('../models/subscribersModel');
 //register user --/api/v1/Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
   const { name, lastName, email, password } = req.body;
@@ -1337,5 +1337,48 @@ exports.sendContactEmail = catchAsyncError( async (req, res) => {
   } catch (error) {
     console.error("Error in contact form:", error);
     res.status(500).json({ message: "Something went wrong. Please try again later." });
+  }
+});
+
+exports.getAllEmails = catchAsyncError(async (req, res) => {
+  try {
+    // Fetch emails from Users
+    const users = await User.find({}, { email: 1, businessEmail: 1, _id: 0 });
+    const userEmails = [];
+    const businessEmails = [];
+
+    users.forEach(user => {
+      if (user.email) userEmails.push(user.email.toLowerCase().trim());
+      if (user.businessEmail) businessEmails.push(user.businessEmail.toLowerCase().trim());
+    });
+
+    // Fetch emails from Subscribers
+    const subscribers = await Subscriber.find({}, { email: 1, _id: 0 });
+    const subscriberEmails = subscribers.map(sub => sub.email.toLowerCase().trim());
+
+    // Remove duplicates within each group
+    const uniqueUserEmails = Array.from(new Set(userEmails));
+    const uniqueBusinessEmails = Array.from(new Set(businessEmails));
+    const uniqueSubscriberEmails = Array.from(new Set(subscriberEmails));
+
+    res.status(200).json({
+      success: true,
+      counts: {
+        userEmails: uniqueUserEmails.length,
+        businessEmails: uniqueBusinessEmails.length,
+        subscriberEmails: uniqueSubscriberEmails.length
+      },
+      emails: {
+        userEmails: uniqueUserEmails,
+        businessEmails: uniqueBusinessEmails,
+        subscriberEmails: uniqueSubscriberEmails
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching emails:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching emails'
+    });
   }
 });

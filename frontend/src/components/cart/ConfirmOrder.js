@@ -24,7 +24,7 @@ export default function ConfirmOrder() {
     cartItems,
   } = useSelector((state) => state.cartState);
   const { user } = useSelector((state) => state.authState);
-  const { error: orderError, cost=[] } = useSelector((state) => state.orderState);
+  const { error: orderError, cost = [] } = useSelector((state) => state.orderState);
 
   const itemsPrice = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -114,7 +114,7 @@ export default function ConfirmOrder() {
   };
   useEffect(() => {
     if (shippingInfo) {
-      dispatch(getShippingCost(cartItems,shippingInfo));
+      dispatch(getShippingCost(cartItems, shippingInfo));
     }
   }, [shippingInfo, dispatch]);
   return (
@@ -141,10 +141,10 @@ export default function ConfirmOrder() {
       </div>
 
       <section className="container-fluid cartSection mb-5">
-        <div className="container-fluid">
+        <div className="">
           <div className="row">
             {/* Left Section */}
-            <div className="col-lg-6 col-md-12 col-12">
+            <div className="col-lg-6 col-md-12 col-12 p-0">
               <h1 className="hd">Shipping Info :</h1>
               <div class="info-box">
                 <p>
@@ -163,15 +163,16 @@ export default function ConfirmOrder() {
                   <b className="info-box-p-b">Address</b>{" "}
                   <b className="info-box-p-b2">:</b>{" "}
                   <span className="info-box-p-span">
-                    {shippingInfo.address},{shippingInfo.addressLine},{shippingInfo.city},{shippingInfo.postalCode},
-                    {shippingInfo.state},{shippingInfo.country}
+                    {shippingInfo.address},{shippingInfo.addressLine},{" "}
+                    {shippingInfo.city},{shippingInfo.postalCode},{" "}
+                    {shippingInfo.state},{shippingInfo.country}{" "}
                   </span>
                 </p>
               </div>
             </div>
 
             {/* Right Section */}
-            <div className="col-lg-6 col-md-12 col-12 cartRightBox">
+            <div className="col-lg-6 col-md-12 col-12 p-0">
               <h1 className="hd">Billing Info :</h1>
               <div class="info-box">
                 <p>
@@ -211,7 +212,7 @@ export default function ConfirmOrder() {
       </section>
 
       <section className="container-fluid cartSection mb-5">
-        <div className="container-fluid">
+        <div className="">
           <div className="row">
             {/* Left Section */}
             <div className="col-lg-8 col-md-12 col-12">
@@ -221,10 +222,10 @@ export default function ConfirmOrder() {
                   <table className="table">
                     <thead>
                       <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Subtotal</th>
+                        <th style={{ minWidth: "150px", paddingLeft: "0" }}>Product</th>
+                        <th style={{ minWidth: "150px", paddingLeft: "0" }}>Quantity</th>
+                        <th style={{ minWidth: "150px", paddingLeft: "0" }}>Unit Price</th>
+                        <th style={{ minWidth: "150px", paddingLeft: "0" }}>Subtotal</th>
                       </tr>
                     </thead>
                     {cartItems.map((item) => (
