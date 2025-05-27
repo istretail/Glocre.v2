@@ -145,14 +145,14 @@ export default function ProductSearch({ onFilterChange }) {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="w-100 p-3 dropdo-menu-prodcat">
-
+                  {/* new */}
                   <div className="d-flex justify-content-between align-items-center">
-                    <h6>Categories</h6>
-                    {selectedCategory && (
-
+                    <h6>Main Categories</h6>
+                    {selectedMain && (
                       <button
                         className="cancel-cat-but-glc"
                         onClick={() => {
+                          setSelectedMain(null);
                           setSelectedCategory(null);
                           setSelectedSubCategory(null);
                         }}
@@ -161,44 +161,74 @@ export default function ProductSearch({ onFilterChange }) {
                       </button>
                     )}
                   </div>
-
                   <div className="catList">
-                      {mainCategories.map(cat => (
+                    {mainCategories.map(cat => (
                       <div
                         key={cat}
                         className="catItem d-flex align-items-center"
-                        onClick={() => handleCategoryChange(cat)}
+                        onClick={() => {
+                          handleMainChange(cat);
+                        }}
                       >
                         <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
                       </div>
                     ))}
                   </div>
 
-                    {selectedMain && (
+                  {selectedMain && (
                     <>
                       <div className="d-flex justify-content-between align-items-center mt-4">
-                        <h6>Subcategories</h6>
-                          {selectedCategory && (
+                        <h6>Categories</h6>
+                        {selectedCategory && (
                           <button
                             className="cancel-cat-but-glc"
-                            onClick={() => 
-                              
-                              {setSelectedSubCategory(null)
-                               setSelectedSubCategory(null)
-                              }
-                            }
+                            onClick={() => {
+                              setSelectedCategory(null);
+                              setSelectedSubCategory(null);
+                            }}
                           >
                             ✕
                           </button>
                         )}
                       </div>
+                      <div className="catList">
+                        {categories.map(cat => (
+                          <div
+                            key={cat}
+                            className="catItem d-flex align-items-center"
+                            onClick={() => {
+                              handleCategoryChange(cat);
+                            }}
+                          >
+                            <h4 className="mb-0 ml-3 mr-3 text-capitalize">{cat}</h4>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
+                  {selectedCategory && (
+                    <>
+                      <div className="d-flex justify-content-between align-items-center mt-4">
+                        <h6>Subcategories</h6>
+                        {selectedSubCategory && (
+                          <button
+                            className="cancel-cat-but-glc"
+                            onClick={() => setSelectedSubCategory(null)}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
                       <div className="catList">
                         {subCategories.map(sub => (
                           <div
                             key={sub}
                             className="catItem d-flex align-items-center"
-                            onClick={() => handleSubCategoryChange(sub)}
+                            onClick={() => {
+                              handleSubCategoryChange(sub);
+                            }
+                            }
                           >
                             <h4 className="mb-0 ml-3 mr-3 text-capitalize">{sub}</h4>
                           </div>
@@ -206,6 +236,7 @@ export default function ProductSearch({ onFilterChange }) {
                       </div>
                     </>
                   )}
+
 
                 </Dropdown.Menu>
               </Dropdown>
@@ -223,7 +254,17 @@ export default function ProductSearch({ onFilterChange }) {
 
                 <Dropdown.Menu className="w-100 p-3 dropdo-menu-prodcat">
                   <div className="priceCard">
-                    <h5 className="mb-3" style={{ fontSize: "14px" }}>Filter by Price</h5>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="mb-3" style={{ fontSize: "14px" }}>Filter by Price</h5>
+                      <button
+                        className="cancel-cat-but-glc"
+                        onClick={() => {
+                          setPrice([1, 200000]);
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
 
                     <div className="form-check">
                       <input
@@ -232,13 +273,13 @@ export default function ProductSearch({ onFilterChange }) {
                         name="price"
                         id="price1"
                         onChange={() => setPrice([1, 1000])}
-                        checked={price[0] === 1 && price[1] === 1000}
+                        checked={price[0] === 0 && price[1] === 1000}
                         style={{
                           outline: "1px solid #ffad63",
                           border: "none",
                           width: "20px",
                           height: "20px",
-                          backgroundColor: price[0] === 1 && price[1] === 1000 ? "#ffad63" : "transparent",
+                          backgroundColor: price[0] === 0 && price[1] === 1000 ? "#ffad63" : "transparent",
                         }}
                       />
                       <label className="form-check-label" htmlFor="price1">
@@ -347,7 +388,7 @@ export default function ProductSearch({ onFilterChange }) {
                         <h3>Main Categories</h3>
                         {selectedMain && (
                           <button
-                              className="cancel-cat-but-glc"
+                            className="cancel-cat-but-glc"
                             onClick={() => {
                               setSelectedMain(null);
                               setSelectedCategory(null);
@@ -378,7 +419,7 @@ export default function ProductSearch({ onFilterChange }) {
                             <h3>Categories</h3>
                             {selectedCategory && (
                               <button
-                                  className="cancel-cat-but-glc"
+                                className="cancel-cat-but-glc"
                                 onClick={() => {
                                   setSelectedCategory(null);
                                   setSelectedSubCategory(null);
@@ -410,7 +451,7 @@ export default function ProductSearch({ onFilterChange }) {
                             <h3>Subcategories</h3>
                             {selectedSubCategory && (
                               <button
-                                  className="cancel-cat-but-glc"
+                                className="cancel-cat-but-glc"
                                 onClick={() => setSelectedSubCategory(null)}
                               >
                                 ✕
@@ -438,16 +479,33 @@ export default function ProductSearch({ onFilterChange }) {
 
 
                     <div className="card border-0 shadow priceCard">
-                      <h3 className="mb-4">Filter by Price</h3>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h3>Filter by Price</h3>
+                        <button
+                          className="cancel-cat-but-glc"
+                          onClick={() => {
+                            setPrice([1, 200000]);
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
 
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           name="price"
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 0 && price[1] === 1000 ? "#ffad63" : "transparent",
+                          }}
                           id="price1"
-                          onChange={() => setPrice([1, 1000])}
-                          checked={price[0] === 1 && price[1] === 1000}
+                          onChange={() => setPrice([0, 1000])}
+                          checked={price[0] === 0 && price[1] === 1000}
                         />
                         <label className="form-check-label" htmlFor="price1">
                           ₹1 – ₹1000
@@ -457,8 +515,15 @@ export default function ProductSearch({ onFilterChange }) {
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           name="price"
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 1000 && price[1] === 3000 ? "#ffad63" : "transparent",
+                          }}
                           id="price2"
                           onChange={() => setPrice([1000, 3000])}
                           checked={price[0] === 1000 && price[1] === 3000}
@@ -471,8 +536,15 @@ export default function ProductSearch({ onFilterChange }) {
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           name="price"
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 3000 && price[1] === 5000 ? "#ffad63" : "transparent",
+                          }}
                           id="price3"
                           onChange={() => setPrice([3000, 5000])}
                           checked={price[0] === 3000 && price[1] === 5000}
@@ -485,8 +557,15 @@ export default function ProductSearch({ onFilterChange }) {
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           name="price"
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 5000 && price[1] === 10000 ? "#ffad63" : "transparent",
+                          }}
                           id="price4"
                           onChange={() => setPrice([5000, 10000])}
                           checked={price[0] === 5000 && price[1] === 10000}
@@ -499,11 +578,19 @@ export default function ProductSearch({ onFilterChange }) {
                       <div className="form-check">
                         <input
                           className="form-check-input"
-                          type="radio"
+                          type="checkbox"
                           name="price"
+                          style={{
+                            outline: "1px solid #ffad63",
+                            border: "none",
+                            width: "20px",
+                            height: "20px",
+                            backgroundColor: price[0] === 10000 && price[1] === Infinity ? "#ffad63" : "transparent",
+                          }}
                           id="price5"
                           onChange={() => setPrice([10000, Infinity])}
                           checked={price[0] === 10000 && price[1] === Infinity}
+
                         />
                         <label className="form-check-label" htmlFor="price5">
                           ₹10000 and above

@@ -386,7 +386,7 @@ export default function Header() {
           top: 0,
           left: 0,
           width: "100%",
-          zIndex: 1050,
+          zIndex: 2000,
           backgroundColor: "#fff",
           boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
         }}

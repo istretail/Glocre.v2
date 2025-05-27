@@ -75,6 +75,12 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
       isVerified: false,
     });
 
+    await Subscriber.findOneAndUpdate(
+      { email },
+      { $setOnInsert: { email, subscribedAt: new Date() } },
+      { upsert: true, new: true }
+    );
+    
     // Send email verification link to the user
     await sendEmail({
       fromEmail: "donotreply@glocre.com",
@@ -393,32 +399,39 @@ exports.changePassword = catchAsyncError(async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select("+password");
 
+    const { oldPassword, password: newPassword } = req.body;
+
     // Check old password
-    if (!(await user.isValidPassword(req.body.oldPassword))) {
+    const isMatch = await user.isValidPassword(oldPassword);
+    if (!isMatch) {
       return next(new ErrorHandler("Old password is incorrect", 401));
     }
 
+    // Prevent old and new password from being the same
+    if (oldPassword === newPassword) {
+      return next(new ErrorHandler("New password must be different from old password", 400));
+    }
+
     // Assign new password
-    user.password = req.body.password;
+    user.password = newPassword;
     await user.save();
 
     res.status(200).json({
       success: true,
     });
   } catch (error) {
-    // Handle Mongoose validation errors
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({
         success: false,
-        message: messages[0], // return only the first message
+        message: messages[0],
       });
     }
 
-    // For all other errors, pass to global error handler
     return next(error);
   }
 });
+
 
 //Update Profile - /api/v1/update
 exports.updateProfile = catchAsyncError(async (req, res, next) => {
@@ -427,7 +440,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
   };
-  console.log("Request body",req.body)
+  // console.log("Request body",req.body)
   let avatar;
   let BASE_URL = process.env.BACKEND_URL;
 
@@ -461,6 +474,20 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
       
       isSeller: req.body.isSeller === true ? true : false,
     };
+    // Save businessEmail to subscribers collection
+    try {
+      if (req.body.businessEmail) {
+        const existingSubscriber = await Subscriber.findOne({ email: req.body.businessEmail });
+        if (!existingSubscriber) {
+          await Subscriber.create({
+            email: req.body.businessEmail
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to save subscriber:", err.message);
+      // You can choose to continue or throw error depending on importance
+    }
 
     // Ensure businessAddress is correctly formatted
     let addressObj = req.body.businessAddress;
@@ -568,6 +595,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  
   res.status(200).json({
     success: true,
     user,
@@ -577,7 +605,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
 // User: Update Profile - PUT /api/v1/me/update
 exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
   const { name, lastName } = req.body;
-console.log("request body:", req.body)
+// console.log("request body:", req.body)
   const newUserData = { name, lastName };
 
   // If avatar is being uploaded, handle file processing
@@ -865,9 +893,22 @@ exports.updateSavedAddress = catchAsyncError(async (req, res, next) => {
       data: user.savedAddress[savedAddressIndex],
     });
   } catch (error) {
-    // Handle any errors that occur during the save operation
-    return next(new ErrorHandler("cannot update address", 500));
+    // Check if it's a Mongoose validation error
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages[0], // Only return the first message
+      });
+    }
+
+    // For other types of errors
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
+  
 });
 
 //   DELETE /api/users/savedAddresses/:id
@@ -906,6 +947,29 @@ exports.getAllSavedAddresses = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: user.savedAddress,
+  });
+});
+
+// GET /api/v1/users/savedAddresses/:id
+exports.getSingleSavedAddress = catchAsyncError(async (req, res, next) => {
+  const userId = req.user.id;
+  const addressId = req.params.id;
+// console.log(req.body)
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  const address = user.savedAddress.find((addr) => addr._id.toString() === addressId);
+
+  if (!address) {
+    return next(new ErrorHandler("Address not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    data: address,
   });
 });
 

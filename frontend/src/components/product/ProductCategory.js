@@ -38,6 +38,12 @@ export default function ProductCategory() {
       toast.error(error);
     }
   }, [error]);
+
+  useEffect(() => {
+    setPrice([1, 200000]);
+    setSelectedCategory(null);
+   setSelectedSubCategory(null);
+  }, [maincategory]);
   // 2. Fetch products separately
   useEffect(() => {
     dispatch(
@@ -45,8 +51,8 @@ export default function ProductCategory() {
         keyword,
         price,
         maincategory,
-        selectedCategory,     // ✅ use local state here
-        selectedSubCategory,  // ✅ use local state here
+        selectedCategory,     
+        selectedSubCategory,  
         rating,
         currentPage
       )
@@ -67,7 +73,7 @@ export default function ProductCategory() {
       const { category, subcategory } = location.state;
       setSelectedCategory(category || null);
       setSelectedSubCategory(subcategory || null);
-      // clear it
+      setPrice([1, 200000]); // Reset price filter when changing category
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -92,6 +98,7 @@ export default function ProductCategory() {
 
   const handleCategoryChange = (cat) => {
     setSelectedCategory(cat);
+    setPrice([1, 200000]); // Reset price filter when changing category
     setSelectedSubCategory(null);
   };
   console.log("selectedCategory", selectedCategory);
@@ -195,7 +202,17 @@ export default function ProductCategory() {
 
                 <Dropdown.Menu className="w-100 p-3 dropdo-menu-prodcat">
                   <div className="priceCard">
-                    <h5 className="mb-3" style={{ fontSize: "14px" }}>Filter by Price</h5>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <h5 className="mb-3" style={{ fontSize: "14px" }}>Filter by Price</h5>
+                        <button
+                          className="cancel-cat-but-glc"
+                          onClick={() => {
+                            setPrice([1, 200000]);
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
 
                     <div className="form-check">
                       <input
@@ -368,17 +385,27 @@ export default function ProductCategory() {
                         </>
                       )}
                     </div>
-                    <div className="card border-0 shadow priceCard">
-                      <h3 className="mb-4">Filter by Price</h3>
-                        <button
+                      <div className="card border-0 shadow priceCard" style={{ padding: "20px" }}>
+                      {/* <h3 className="mb-4">Filter by Price</h3> */}
+                        {/* <button
                           className="cancel-cat-but-glc"
-                          onClick={() => {
-                            setPrice([1, 200000]);
-                          }}
+                         
                         >
                           Clear Price
-                        </button>
+                        </button> */}
                           
+                        
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h3>Filter by Price</h3>
+                          <button
+                            className="cancel-cat-but-glc"
+                            onClick={() => {
+                              setPrice([1, 200000]);
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
                       <div className="form-check">
                         <input
                           type="checkbox"

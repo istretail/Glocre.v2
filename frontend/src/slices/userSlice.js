@@ -9,6 +9,7 @@ const userSlice = createSlice({
     isUserUpdated: false,
     isUserDeleted: false,
     savedAddresses: [],
+    savedAddress: {},
     isFormSubmitted: false,
 
   },
@@ -305,6 +306,26 @@ const userSlice = createSlice({
         error: action.payload,
       };
     },
+    getAddressByIdRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    getAddressByIdSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        savedAddress: action.payload.data,
+      };
+    },
+    getAddressByIdFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -353,6 +374,9 @@ export const {
   unsubscribeRequest,
   unsubscribeSuccess,
   unsubscribeFail,
+  getAddressByIdRequest,
+  getAddressByIdSuccess,
+  getAddressByIdFail,
 } = actions;
 
 export default reducer;

@@ -44,7 +44,8 @@ const {
    sendContactEmail,
    resendVerificationEmail,
    updateUserProfile,
-   getAllEmails
+   getAllEmails,
+   getSingleSavedAddress
 } = require('../controllers/authController')
 const {isAuthenticatedUser, authorizeRoles} = require('../middlewares/authenticate')
 const router = express.Router();
@@ -64,6 +65,7 @@ router.route('/users/address').post(isAuthenticatedUser,createSavedAddress)
 router.route('/users/address/verify-otp').post(isAuthenticatedUser,verifyAddressOtp )
 router.route('/users/savedAddresses/:id').put(isAuthenticatedUser, updateSavedAddress)
                                           .delete(isAuthenticatedUser, deleteSavedAddress)
+                                          .get(isAuthenticatedUser, getSingleSavedAddress)
 router.route('/users/allsavedAddresses').get(isAuthenticatedUser, getAllSavedAddresses)
 router.route('/contact').post(sendContactEmail)
 //cart Routes 

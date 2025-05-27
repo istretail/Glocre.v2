@@ -252,7 +252,7 @@ export default function SellerOrders() {
                                                     <td>
                                                         <div className="d-flex align-items-center">
                                                             <span style={{ fontSize: "16px", color: "#888888" }}>
-                                                                {SellerOrder._id}
+                                                                {SellerOrder.clocreOrderId}
                                                             </span>
                                                         </div>
                                                     </td>

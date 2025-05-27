@@ -114,7 +114,7 @@ const savedAddressSchema = new mongoose.Schema({
     address: { type: String, message: 'House number and street name' },
     addressLine: { type: String, message: 'select locality' },
     city: { type: String, message: 'select city' },
-
+    
     isPhoneVerified: { type: Boolean, default: false },
     postalCode: {
       type: String,

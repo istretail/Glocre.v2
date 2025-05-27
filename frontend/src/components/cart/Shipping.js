@@ -162,13 +162,14 @@ export default function Shipping() {
 
       // Validate billing address if not same as shipping
       if (!billingSameAsShipping) {
+        const isBillingPhoneValid = billingPhoneNo && billingPhoneNo.length === 13 && /^\+91\d{10}$/.test(billingPhoneNo);
         const isBillingPostalValid = await checkPostalCodeExists(billingPostalCode);
         if (
           !billingName ||
           !billingAddress ||
           !billingAddressLine ||
           !billingCity ||
-          !billingPhoneNo ||
+          !isBillingPhoneValid ||
           !billingPostalCode ||
           !billingCountry ||
           !billingState ||

@@ -86,6 +86,9 @@ import {
   unsubscribeRequest,
   unsubscribeSuccess,
   unsubscribeFail,
+  getAddressByIdRequest,
+  getAddressByIdSuccess,
+  getAddressByIdFail,
 } from "../slices/userSlice";
 import {
   addWishlistRequest,
@@ -362,15 +365,31 @@ export const updateSavedAddress = (id, updatedData) => async (dispatch) => {
     dispatch(updateSavedAddressRequest());
     const response = await axios.put(
       `/api/v1/users/savedAddresses/${id}`,
-      updatedData,
+      updatedData
     );
     dispatch(updateSavedAddressSuccess(response.data));
     return response.data; // Return response data for success case
   } catch (error) {
-    dispatch(updateSavedAddressFail(error.response.data.message));
-    throw error.response.data.message; // Throw error for failure case
+    const errorMessage = error?.response?.data?.message || "Something went wrong";
+    dispatch(updateSavedAddressFail(errorMessage));
+    toast.error(errorMessage);
+    throw errorMessage; // Throw error for failure case
   }
 };
+export const getSavedAddressById = (id) => async (dispatch) => {
+  try {
+    dispatch(getAddressByIdRequest());
+    const response = await axios.get(`/api/v1/users/savedAddresses/${id}`);
+    dispatch(getAddressByIdSuccess(response.data));
+   
+  } catch (error) {
+    const errorMessage = error?.response?.data?.message || "Something went wrong";
+    dispatch(getAddressByIdFail(errorMessage));
+    toast.error(errorMessage);
+    throw errorMessage; // Throw error for failure case
+  }
+};
+
 
 // Action creator for deleting a saved address
 export const deleteSavedAddress = (id) => async (dispatch) => {

@@ -2,10 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { countries } from 'countries-list';
-import { updateSavedAddress } from '../../actions/userActions';
+import { getSavedAddressById, updateSavedAddress, } from '../../actions/userActions';
 import { toast } from 'react-toastify';
 import Loader from '../layouts/Loader';
-import { TextField, InputAdornment } from '@mui/material';
+import { TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Nav from '../layouts/nav';
 
@@ -24,7 +24,8 @@ const UpdateSavedAddress = () => {
   const { id: addressId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.authState);
+  const { user, error: authError } = useSelector((state) => state.authState);
+  const {  savedAddress } = useSelector((state) => state.userState);
   const countryList = Object.values(countries);
 
   const [addressData, setAddressData] = useState({
@@ -41,22 +42,21 @@ const UpdateSavedAddress = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedAddress = user?.savedAddress?.find((address) => address._id === addressId);
-    if (savedAddress) {
+    dispatch(getSavedAddressById(addressId));
+  }, [addressId, dispatch]);
+console.log(savedAddress, "savedAddress")
+  useEffect(() => {
+    if (savedAddress && savedAddress._id === addressId) {
       setAddressData(savedAddress);
-      
 
       if (savedAddress.postalCode) {
         fetchPostalCodeDetails(savedAddress.postalCode)
           .then((data) => {
             if (data && data[0]?.PostOffice?.length > 0) {
               const offices = data[0].PostOffice;
-              const localityNames = offices.map((office) => office.Name);
+              let localityNames = offices.map((office) => office.Name);
 
               // Include saved addressLine if it's not in the fetched localities
-              if (!localityNames.includes(savedAddress.addressLine)) {
-                localityNames.unshift(savedAddress.addressLine);
-              }
               if (savedAddress.addressLine && !localityNames.includes(savedAddress.addressLine)) {
                 localityNames = [savedAddress.addressLine, ...localityNames];
               }
@@ -69,12 +69,10 @@ const UpdateSavedAddress = () => {
             toast.error('Failed to fetch postal code details');
           });
       }
-      // console.log("Localities:", localityNames);
-      console.log("Saved addressLine:", savedAddress.addressLine);
-
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [user, addressId]);
+  }, [savedAddress, addressId]);
+  
   
 
 
@@ -113,17 +111,18 @@ const UpdateSavedAddress = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(addressData)
+    // console.log(addressData)
     try {
       await dispatch(updateSavedAddress(addressId, addressData));
+
       toast.success('Address updated successfully');
       navigate('/myprofile/saved-address');
-    } catch (error) {
-      toast.error('Failed to update address');
+    } catch (authError) {
+      toast.error(authError?.response?.data?.message);
     }
   };
 
-  if (isLoading) return <Loader />;
+  // if (isLoading) return <Loader />;
 
   return (
     <>
@@ -157,7 +156,34 @@ const UpdateSavedAddress = () => {
                     value={addressData.name}
                     onChange={handleChange}
                     inputProps={{
-                      maxLength: 15,
+                      maxLength: 15
+                    }}
+                    onKeyDown={(e) => {
+                      const key = e.key;
+                      const value = e.target.value;
+                      const cursorPos = e.target.selectionStart;
+
+                      const isLetter = /^[a-zA-Z]$/.test(key);
+                      const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(key);
+
+                      // Block any character that is not a letter, space, or allowed key
+                      if (!isLetter && !isAllowedKey && key !== ' ') {
+                        e.preventDefault();
+                      }
+
+                      // Block space at the start
+                      if (key === ' ' && cursorPos === 0) {
+                        e.preventDefault();
+                      }
+
+                     
+
+                      // Allow only one space in the middle
+                      if (key === ' ' && value.includes(' ')) {
+                        e.preventDefault();
+                      }
+
+                     
                     }}
                     required
                   />

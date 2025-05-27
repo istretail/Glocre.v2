@@ -54,7 +54,7 @@ const Footer = () => {
               </h2>
               <p>Official or personal, shop everything <br />you need with us</p>
               <br />
-              <div className="newsLetterBanner">
+              {/* <div className="newsLetterBanner">
                 <SendOutlinedIcon className="newsiconfooter" />
                 <input type="text" placeholder="Your email address" value={email}
                   onChange={(e) => setEmail(e.target.value)} />
@@ -66,6 +66,13 @@ const Footer = () => {
                   <input type="email" placeholder="Your email address" onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <button className="subscribe-button" onClick={handleSubscribe}>Subscribe</button>
+              </div> */}
+              <div className="des-input">
+                <div className="input-wrapper">
+                  <SendOutlinedIcon className="input-icon" />
+                  <input type="email" placeholder="Your email address" />
+                </div>
+                <button className="subscribe-button">Subscribe</button>
               </div>
             </div>
 

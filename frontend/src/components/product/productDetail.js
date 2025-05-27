@@ -94,10 +94,10 @@ export default function ProductDetail() {
             return;
         }
 
-        if (!comment.trim()) {
-            setError("Please enter a comment.");
+        if (!comment || comment.trim().length < 10) {
+            setError("Review must be at least 10 characters.");
             return;
-        }
+          }
 
         setError(""); // Clear error if validation passes
 
@@ -477,6 +477,7 @@ export default function ProductDetail() {
                                     name="review"
                                     id="review"
                                     className="form-control mt-3"
+                                    minLength={10}
                                     maxLength={200} // Set your desired maximum length here
                                 ></textarea>
 

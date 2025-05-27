@@ -95,7 +95,7 @@ export default function UpdateProduct() {
                 const offPrice = name === "offPrice" ? numericValue : Number(prev.offPrice);
 
                 if (price !== 0 && offPrice !== 0 && price <= offPrice) {
-                    alert("Maximum Retail Price must be greater than Offer Price.");
+                    toast.error("Maximum Retail Price must be greater than Offer Price.");
                     return prev; // block update
                 }
 
@@ -233,7 +233,7 @@ export default function UpdateProduct() {
             const offPrice = name === "offPrice" ? numericValue : Number(current.offPrice);
 
             if (price !== 0 && offPrice !== 0 && price <= offPrice) {
-                alert(`Variant ${index + 1}: MRP must be greater than Offer Price.`);
+                toast.error(`Variant ${index + 1}: MRP must be greater than Offer Price.`);
                 return prevVariants; // block update
             }
 
@@ -278,7 +278,7 @@ export default function UpdateProduct() {
 
         // Optional: Store/display errors for each variant (e.g., setVariantErrors)
         if (errors.length > 0) {
-            alert(errors.join("\n")); // Replace with better UI if needed
+            toast.error(errors.join("\n")); // Replace with better UI if needed
         }
     };
 
@@ -317,31 +317,31 @@ export default function UpdateProduct() {
 
         // --- SKU ---
         if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
-            alert("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
+            toast.error("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
             return false;
         }
 
         // --- HSN ---
-        if (!hsn || !/^\d{4,10}$/.test(hsn) || /^0+$/.test(hsn)) {
-            alert("HSN code is required, should be 4–10 digits, and cannot be all zeros (e.g. '0000').");
+        if (!/^\d{4}$|^\d{6}$|^\d{8}$/.test(hsn) || /^0+$/.test(hsn)) {
+            toast.error("HSN code must be 4, 6, or 8 digits and cannot be all zeros.");
             return false;
-        }
+        }          
 
         // --- Item Model Number ---
         if (itemModelNum) {
             if (!alphaNumericRegex.test(itemModelNum) || isOnlyZerosOrDashes(itemModelNum)) {
-                alert("Item Model Number should be alphanumeric and not just zeros or dashes.");
+                toast.error("Item Model Number should be alphanumeric and not just zeros or dashes.");
                 return false;
             }
         }
 
         // --- UPC ---
-        if (upc) {
-            if (!alphaNumericRegex.test(upc) || isOnlyZerosOrDashes(upc)) {
-                alert("UPC should be alphanumeric and not just zeros or dashes.");
-                return false;
-            }
-        }
+           if (upc) {
+             if (!/^\d{12}$/.test(upc) || /^0+$/.test(upc)) {
+               toast.error("UPC must be a 12-digit numeric code and cannot be all zeros.");
+               return false;
+             }
+           }
 
         return true;
     };
@@ -727,7 +727,8 @@ export default function UpdateProduct() {
                                                         if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
                                                     }}
                                                     name="name"
-                                                    maxLength={80}
+                                                    minLength="5"
+                                                    maxlength="80"
                                                 />
                                             </div>
                                         </div>
@@ -919,24 +920,54 @@ export default function UpdateProduct() {
                                         </div>
                                         <div className="col-lg-6">
                                             <div className="form-group">
-                                                <label htmlFor="tax_field">Tax:(GST in %)<span style={{ color: "red" }}> *
+                                                <label>Tax: (GST in %)<span style={{ color: "red" }}> *
                                                     <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
                                                         <ErrorOutlineIcon className="errorout-icon" />
                                                     </LightTooltip>
                                                 </span></label>
+
                                                 <input
                                                     type="text"
-                                                    id="tax_field"
                                                     className="form-control"
-                                                    onChange={handleChange}
-                                                    maxLength={2}
-                                                    value={formData.tax}
                                                     name="tax"
-                                                    min="0"
-                                                    max="99"
+                                                    value={formData.tax}
+                                                    onChange={(e) => {
+                                                        let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+
+                                                        // Prevent more than 2 digits
+                                                        if (value.length > 2) {
+                                                            value = value.slice(0, 2);
+                                                        }
+
+                                                        // Remove leading zero unless value is "0"
+                                                        if (value.length > 1 && value.startsWith("0")) {
+                                                            value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                                                        }
+
+                                                        // Prevent "00"
+                                                        if (value === "00") {
+                                                            value = "0";
+                                                        }
+
+                                                        // Restrict to max 99
+                                                        if (parseInt(value || "0", 10) > 99) {
+                                                            value = "99";
+                                                        }
+
+                                                        handleChange({ target: { name: "tax", value } });
+                                                    }}
+                                                    required
+                                                    onKeyDown={(e) => {
+                                                        // Block "+", "-", ".", "e", arrow keys
+                                                        if (["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                    onWheel={(e) => e.target.blur()}
                                                 />
                                             </div>
                                         </div>
+
 
                                         {!hasVariants && (
                                             <>
@@ -956,9 +987,12 @@ export default function UpdateProduct() {
                                                         onChange={handleChange}
                                                         min="0"
                                                         max="99999"
-                                                        onWheel={(e) => e.target.blur()}
+                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                         onKeyDown={(e) => {
-                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                            // Block "+", "-", ".", "e", arrow keys
+                                                            if (
+                                                                ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                                            ) {
                                                                 e.preventDefault();
                                                             }
                                                         }}
@@ -981,9 +1015,12 @@ export default function UpdateProduct() {
                                                         onChange={handleChange}
                                                         min="0"
                                                         max="99999"
-                                                        onWheel={(e) => e.target.blur()}
+                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                         onKeyDown={(e) => {
-                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                            // Block "+", "-", ".", "e", arrow keys
+                                                            if (
+                                                                ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                                            ) {
                                                                 e.preventDefault();
                                                             }
                                                         }}
@@ -1011,9 +1048,12 @@ export default function UpdateProduct() {
                                                         }}
                                                         min="1"
                                                         max="9999"
-                                                        onWheel={(e) => e.target.blur()}
+                                                        onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                         onKeyDown={(e) => {
-                                                            if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                            // Block "+", "-", ".", "e", arrow keys
+                                                            if (
+                                                                ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                                            ) {
                                                                 e.preventDefault();
                                                             }
                                                         }}
@@ -1177,9 +1217,12 @@ export default function UpdateProduct() {
                                                             required
                                                             min="0"
                                                             max="99999"
-                                                            onWheel={(e) => e.target.blur()}
+                                                            onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                             onKeyDown={(e) => {
-                                                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                // Block "+", "-", ".", "e", arrow keys
+                                                                if (
+                                                                    ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                                                ) {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
@@ -1203,9 +1246,12 @@ export default function UpdateProduct() {
                                                             required
                                                             min="0"
                                                             max="99999"
-                                                            onWheel={(e) => e.target.blur()}
+                                                            onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                             onKeyDown={(e) => {
-                                                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                // Block "+", "-", ".", "e", arrow keys
+                                                                if (
+                                                                    ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                                                ) {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
@@ -1234,9 +1280,12 @@ export default function UpdateProduct() {
                                                             required
                                                             min="1"
                                                             max="9999"
-                                                            onWheel={(e) => e.target.blur()}
+                                                            onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                             onKeyDown={(e) => {
-                                                                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                                                                // Block "+", "-", ".", "e", arrow keys
+                                                                if (
+                                                                    ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                                                ) {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
@@ -1331,7 +1380,7 @@ export default function UpdateProduct() {
                                                     id="upc_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    maxLength={15}
+                                                    maxLength={12}
                                                     value={formData.upc || ""}
                                                     name="upc"
                                                 />
@@ -1348,7 +1397,7 @@ export default function UpdateProduct() {
                                                     id="hsn_field"
                                                     className="form-control"
                                                     onChange={handleChange}
-                                                    maxLength={10}
+                                                    maxLength={8}
                                                     value={formData.hsn || ""}
                                                     name="hsn"
                                                 />

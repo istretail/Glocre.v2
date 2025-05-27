@@ -686,6 +686,54 @@ footer .lastStrip .part3 ul li a:hover {
 }
 }
  
+ .des-input {
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 0;
+  padding: 10px;
+}
  
+.input-wrapper {
+  position: relative;
+  flex: 1;
+}
+ 
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #888;
+}
+ 
+.input-wrapper input {
+  width: 100%;
+  padding: 10px 10px 10px 35px; /* left padding to make space for icon */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+ 
+.input-wrapper input:focus {
+  border-color: #ffad63;
+}
+ 
+.subscribe-button {
+  padding: 10px 20px;
+  background-color: #ffad63;
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+ 
+.subscribe-button:hover {
+  background-color: #ffad63;
+}
  
  

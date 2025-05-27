@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllEmails } from '../../actions/userActions'; // adjust path as needed
+import Loader from '../layouts/Loader';
 
 const AllEmailsTable = () => {
     const dispatch = useDispatch();
@@ -11,7 +12,7 @@ const AllEmailsTable = () => {
         dispatch(getAllEmails());
     }, [dispatch]);
 
-    if (loading) return <p>Loading emails...</p>;
+    if (loading) return <Loader/>;
     if (error) return <p className="text-red-500">Error: {error}</p>;
 
     return (
@@ -21,7 +22,7 @@ const AllEmailsTable = () => {
             {emails && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* User Emails */}
-                    <div>
+                    {/* <div>
                         <h3 className="text-lg font-semibold mb-2">User Emails</h3>
                         <table className="table-auto w-full border">
                             <thead>
@@ -39,10 +40,10 @@ const AllEmailsTable = () => {
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    </div> */}
 
                     {/* Business Emails */}
-                    <div>
+                    {/* <div>
                         <h3 className="text-lg font-semibold mb-2">Business Emails</h3>
                         <table className="table-auto w-full border">
                             <thead>
@@ -60,7 +61,7 @@ const AllEmailsTable = () => {
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    </div> */}
 
                     {/* Subscriber Emails */}
                     <div>

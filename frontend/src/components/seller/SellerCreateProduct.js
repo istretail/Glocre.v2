@@ -60,8 +60,25 @@ const SellerCreateProduct = () => {
   const { categories = [] } = useSelector(state => state.productsState);
   const [hasVariants, setHasVariants] = useState(false);
   const [variantType, setVariantType] = useState("");
-  const [variantCount, setVariantCount] = useState(0);
-  const [variantDetails, setVariantDetails] = useState([]);
+  const [variantCount, setVariantCount] = useState(2);
+  const [variantDetails, setVariantDetails] = useState([
+    {
+      variantType: variantType,
+      variantName: '',
+      price: '',
+      offPrice: '',
+      stock: '',
+      images: [],
+    },
+    {
+      variantType: variantType,
+      variantName: '',
+      price: '',
+      offPrice: '',
+      stock: '',
+      images: [],
+    },
+  ]);
   const [imageErrors, setImageErrors] = useState([]);
   const [productImages, setProductImages] = useState([]);
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
@@ -88,7 +105,7 @@ const SellerCreateProduct = () => {
         const offPrice = name === "offPrice" ? numericValue : Number(prev.offPrice);
 
         if (price !== 0 && offPrice !== 0 && price <= offPrice) {
-          alert("Maximum Retail Price must be greater than Offer Price.");
+          toast.error("Maximum Retail Price must be greater than Offer Price.");
           return prev; // block update
         }
 
@@ -108,6 +125,9 @@ const SellerCreateProduct = () => {
   };
 
 
+
+
+  
 
   // Handle key points change
   const handleKeyPointsChange = (index, value) => {
@@ -134,7 +154,7 @@ const SellerCreateProduct = () => {
         const offPrice = name === 'offPrice' ? updatedValue : Number(currentVariant.offPrice);
 
         if (price <= offPrice) {
-          alert("MRP must be greater than Offer Price.");
+          toast.error("MRP must be greater than Offer Price.");
           return prevVariants; // Block update
         }
       }
@@ -272,31 +292,32 @@ const SellerCreateProduct = () => {
 
     // --- SKU ---
     if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
-      alert("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
+      toast.error("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
       return false;
     }
 
     // --- HSN ---
-    if (!hsn || !/^\d{4,10}$/.test(hsn) || /^0+$/.test(hsn)) {
-      alert("HSN code is required, should be 4–10 digits, and cannot be all zeros (e.g. '0000').");
+    if (!/^\d{4}$|^\d{6}$|^\d{8}$/.test(hsn) || /^0+$/.test(hsn)) {
+      toast.error("HSN code must be 4, 6, or 8 digits and cannot be all zeros.");
       return false;
-    }
+    }    
 
     // --- Item Model Number ---
     if (itemModelNum) {
       if (!alphaNumericRegex.test(itemModelNum) || isOnlyZerosOrDashes(itemModelNum)) {
-        alert("Item Model Number should be alphanumeric and not just zeros or dashes.");
+        toast.error("Item Model Number should be alphanumeric and not just zeros or dashes.");
         return false;
       }
     }
 
     // --- UPC ---
     if (upc) {
-      if (!alphaNumericRegex.test(upc) || isOnlyZerosOrDashes(upc)) {
-        alert("UPC should be alphanumeric and not just zeros or dashes.");
+      if (!/^\d{12}$/.test(upc) || /^0+$/.test(upc)) {
+        toast.error("UPC must be a 12-digit numeric code and cannot be all zeros.");
         return false;
       }
     }
+
 
     return true;
   };
@@ -305,7 +326,7 @@ const SellerCreateProduct = () => {
     e.preventDefault();
 
     if (imageErrors.length > 0) {
-      alert("Please fix the image errors before submitting.");
+      toast.error("Please fix the image errors before submitting.");
       return;
     }
     if (validateForm()) {
@@ -610,6 +631,7 @@ const SellerCreateProduct = () => {
                       onKeyDown={(e) => {
                         if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
                       }}
+                      minLength="5"
                       maxlength="80"
                       required
                     />
@@ -885,34 +907,51 @@ const SellerCreateProduct = () => {
                           </span>
                         </label>
 
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="You can add up to 7 variants"
-                          value={variantCount}
-                          min={1}
-                          max={7}
-                          onChange={e => {
-                            let count = Number(e.target.value);
+                        <div className="d-flex align-items-center gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={() => {
+                              if (variantCount > 2) {
+                                const newCount = variantCount - 1;
+                                setVariantCount(newCount);
+                                setVariantDetails(prev => prev.slice(0, newCount));
+                              }
+                            }}
+                            disabled={variantCount <= 2}
+                          >
+                            −
+                          </button>
 
-                            // Prevent count > 7
-                            if (count > 7) count = 7;
+                          <span className="px-3">{variantCount}</span>
 
-                            setVariantCount(count);
-                            setVariantDetails(
-                              Array.from({ length: count }, () => ({
-                                variantType: variantType,
-                                variantName: '',
-                                price: '',
-                                offPrice: '',
-                                stock: '',
-                                images: [],
-                              }))
-                            );
-                          }}
-                          required
-                        />
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={() => {
+                              if (variantCount < 7) {
+                                const newCount = variantCount + 1;
+                                setVariantCount(newCount);
+                                setVariantDetails(prev => [
+                                  ...prev,
+                                  {
+                                    variantType: variantType,
+                                    variantName: '',
+                                    price: '',
+                                    offPrice: '',
+                                    stock: '',
+                                    images: [],
+                                  },
+                                ]);
+                              }
+                            }}
+                            disabled={variantCount >= 7}
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
+
 
                       {variantDetails.map((variant, index) => (
                         <div key={index} className="variant-section">
@@ -955,9 +994,12 @@ const SellerCreateProduct = () => {
                               required
                               inputMode="numeric"
                               max="99999"
-                              onWheel={(e) => e.target.blur()}
+                              onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
-                                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+                                // Block "+", "-", ".", "e", arrow keys
+                                if (
+                                  ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
@@ -988,9 +1030,12 @@ const SellerCreateProduct = () => {
                               required
                               inputMode="numeric"
                               max="99999"
-                              onWheel={(e) => e.target.blur()}
+                              onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
-                                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+                                // Block "+", "-", ".", "e", arrow keys
+                                if (
+                                  ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
@@ -1022,9 +1067,12 @@ const SellerCreateProduct = () => {
                               inputMode="numeric"
                               min="1"
                               max="99999"
-                              onWheel={(e) => e.target.blur()}
+                              onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
-                                if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+                                // Block "+", "-", ".", "e", arrow keys
+                                if (
+                                  ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                                ) {
                                   e.preventDefault();
                                 }
                               }}
@@ -1086,26 +1134,54 @@ const SellerCreateProduct = () => {
 
                 <div className="col-lg-6">
                   <div className="form-group">
-                    <label>Tax:(GST in %)<span style={{ color: "red" }}> *
-
+                    <label>Tax: (GST in %)<span style={{ color: "red" }}> *
                       <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
-
                     </span></label>
+
                     <input
-                      type="number"
+                      type="text"
                       className="form-control"
                       name="tax"
                       value={formData.tax}
-                      maxLength={2}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+
+                        // Prevent more than 2 digits
+                        if (value.length > 2) {
+                          value = value.slice(0, 2);
+                        }
+
+                        // Remove leading zero unless value is "0"
+                        if (value.length > 1 && value.startsWith("0")) {
+                          value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                        }
+
+                        // Prevent "00"
+                        if (value === "00") {
+                          value = "0";
+                        }
+
+                        // Restrict to max 99
+                        if (parseInt(value || "0", 10) > 99) {
+                          value = "99";
+                        }
+
+                        handleChange({ target: { name: "tax", value } });
+                      }}
                       required
-                      min="0"
-                      max="99"
+                      onKeyDown={(e) => {
+                        // Block "+", "-", ".", "e", arrow keys
+                        if (["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onWheel={(e) => e.target.blur()}
                     />
                   </div>
                 </div>
+
 
                 <div className="col-lg-6">
                   <div className="form-group">
@@ -1151,7 +1227,15 @@ const SellerCreateProduct = () => {
                           inputMode="numeric"
                           max="99999"
                           min="1"
-                          
+                          onWheel={(e) => e.target.blur()} // disables mouse wheel
+                          onKeyDown={(e) => {
+                            // Block "+", "-", ".", "e", arrow keys
+                            if (
+                              ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </div>
                     </div>
@@ -1177,7 +1261,15 @@ const SellerCreateProduct = () => {
                           inputMode="numeric"
                           max="99999"
                           min="1"
-                         
+                          onWheel={(e) => e.target.blur()} // disables mouse wheel
+                          onKeyDown={(e) => {
+                            // Block "+", "-", ".", "e", arrow keys
+                            if (
+                              ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </div>
                     </div>
@@ -1203,7 +1295,15 @@ const SellerCreateProduct = () => {
                           inputMode="numeric"
                           min="1"
                           max="9999"
-                         
+                          onWheel={(e) => e.target.blur()} // disables mouse wheel
+                          onKeyDown={(e) => {
+                            // Block "+", "-", ".", "e", arrow keys
+                            if (
+                              ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </div>
                     </div>
@@ -1314,7 +1414,7 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="upc"
                       value={formData.upc.toLocaleUpperCase()}
-                      maxLength={15}
+                      maxLength={12}
                       onChange={handleChange}
                     />
                   </div>
@@ -1334,7 +1434,7 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="hsn"
                       value={formData.hsn.toLocaleUpperCase()}
-                      maxLength={10}
+                      maxLength={8}
                       onChange={handleChange}
                       required
                     />
