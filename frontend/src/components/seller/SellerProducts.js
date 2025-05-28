@@ -283,6 +283,7 @@ export default function SellerProducts() {
                         >
                           pending
                         </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleFilterChange("rejected")}>Rejected</Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => handleFilterChange('')}
                           className="text-dark"
@@ -344,6 +345,7 @@ export default function SellerProducts() {
                         >
                           pending
                         </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleFilterChange("rejected")}>Rejected</Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => handleFilterChange('')}
                           className="text-dark"

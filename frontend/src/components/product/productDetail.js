@@ -36,7 +36,7 @@ export default function ProductDetail() {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [mainImage, setMainImage] = useState('');    // Set the first image as the default main image.
     // Add this state
-// console.log(user)
+    // console.log(user)
     const [selectedVariant, setSelectedVariant] = useState(null);
     useEffect(() => {
         if (product.images && product.images.length > 0) {
@@ -97,7 +97,7 @@ export default function ProductDetail() {
         if (!comment || comment.trim().length < 10) {
             setError("Review must be at least 10 characters.");
             return;
-          }
+        }
 
         setError(""); // Clear error if validation passes
 
@@ -152,7 +152,7 @@ export default function ProductDetail() {
             toast.success("Item added to cart successfully");
         }
     };
-    
+
     useEffect(() => {
         if (product.variants && product.variants.length > 0) {
             setSelectedVariant(product.variants[0]);
@@ -205,7 +205,7 @@ export default function ProductDetail() {
     useEffect(() => {
         setQuantity(1);
     }, [selectedVariant]);
-    
+
     return (
         <>
             {loading ? <Loader /> :
@@ -231,16 +231,21 @@ export default function ProductDetail() {
                             <div className="column-xs-12 col-lg-4">
                                 <div className="product-gallery">
                                     {/* Carousel for Product Images */}
-                                    <div className="main-image-container">
+                                    {/* <div className="main-image-container">
                                         <img
                                             className="prod-img-main-glc"
                                             src={mainImage}
                                             alt={product.name}
                                         />
+                                    </div> */}
+
+                                    <div className="product-image-wrapper-newres">
+                                        <img src={mainImage}
+                                            alt={product.name} className="product-image-newres img-fluid" />
                                     </div>
 
                                     {/* Thumbnail List */}
-                                    <ul className="d-flex">
+                                    <ul className="d-flex prod-img-down-glc-bg">
                                         {selectedVariant && selectedVariant.images.length > 0 ? (
                                             selectedVariant.images.map((src, index) => (
                                                 <li
@@ -548,7 +553,7 @@ export default function ProductDetail() {
                                             <table className="table">
                                                 <tbody>
 
-                                                    {product.fssai && product.fssai !=="undefined" &&(
+                                                    {product.fssai && product.fssai !== "undefined" && (
                                                         <tr>
                                                             <th>FSSAI</th>
                                                             <td>{product.fssai}</td>

@@ -58,6 +58,7 @@ export default function SellerUpdateProduct() {
     shippingCostNe: "",
     additionalShippingCost: "",
     unit: "",
+    rejectionReason: "",
     variants: [],
     clocreId: "", // Add this line
   });
@@ -188,7 +189,11 @@ export default function SellerUpdateProduct() {
 
     const newValidImages = [];
     const errors = [];
-
+    const imageFiles = files.filter(file => file.type.startsWith("image/"));
+    if (imageFiles.length !== files.length) {
+      alert("Only image files are allowed.");
+      return;
+    }
     files.forEach((file) => {
       if (file.size > maxSizeInBytes) {
         errors.push(`${file.name} is larger than 1MB.`);
@@ -265,7 +270,7 @@ export default function SellerUpdateProduct() {
         shippingCostlol: product.shippingCostlol,
         shippingCostNorth: product.shippingCostNorth,
         shippingCostSouth: product.shippingCostSouth,
-
+        status: product.status,
         shippingCostEast: product.shippingCostEast,
         shippingCostCentral: product.shippingCostCentral,
         shippingCostWest: product.shippingCostWest,
@@ -273,6 +278,7 @@ export default function SellerUpdateProduct() {
         additionalShippingCost: product.additionalShippingCost,
         unit: product.unit,
         variants: product.variants,
+        rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
         clocreId: product.clocreId,
       });
       setVariantDetails(product?.variants?.map(variant => ({
@@ -295,7 +301,11 @@ export default function SellerUpdateProduct() {
     const files = Array.from(e.target.files);
     const newImages = [];
     const errors = [];
-
+    const imageFiles = files.filter(file => file.type.startsWith("image/"));
+    if (imageFiles.length !== files.length) {
+      alert("Only image files are allowed.");
+      return;
+    }
     files.forEach((file) => {
       if (file.size > 1024 * 1024) {
         errors.push(`${file.name} is larger than 1MB`);
@@ -353,7 +363,7 @@ export default function SellerUpdateProduct() {
 
 
   const validateForm = () => {
-    const { itemModelNum, sku, upc, hsn } = formData;
+    const { itemModelNum, sku, upc, hsn, fssai, maincategory } = formData;
     const alphaNumericRegex = /^[A-Z0-9\-]+$/;
 
     const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
@@ -369,7 +379,13 @@ export default function SellerUpdateProduct() {
       toast.error("HSN code must be 4, 6, or 8 digits and cannot be all zeros.");
       return false;
     }
-    
+
+    if (maincategory === "Food and Beverage Products") {
+               if (!/^\d{14}$/.test(fssai) || /^0+$/.test(fssai)) {
+                   toast.error("FSSAI must be a 14-digit numeric code and cannot be all zeros.");
+                   return false;
+               }
+             }
 
     // --- Item Model Number ---
     if (itemModelNum) {
@@ -672,7 +688,7 @@ export default function SellerUpdateProduct() {
                 {/* Search, Filter & Avatar Row (For Mobile) */}
                 {isMobile && (
                   <div className="row mobile-bottombar">
-                      <div className="col-9 col-md-10 pr-0">
+                    <div className="col-9 col-md-10 pr-0">
                       <div className="search-container">
                         <form className="d-flex">
                           <input
@@ -686,7 +702,7 @@ export default function SellerUpdateProduct() {
                         </form>
                       </div>
                     </div>
-                   <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
+                    <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
                       <Dropdown className="d-inline">
                         <Dropdown.Toggle
                           variant="default text-white"
@@ -782,9 +798,9 @@ export default function SellerUpdateProduct() {
                           if (e.target.selectionStart === 0 && e.key === " ") e.preventDefault();
                         }}
                         name="name"
-                          minLength="5"
-                          maxlength="80"
-                          required
+                        minLength="5"
+                        maxlength="80"
+                        required
                       />
                     </div>
                   </div>
@@ -803,7 +819,7 @@ export default function SellerUpdateProduct() {
                         value={formData.description}
                         name="description"
                         maxLength={200}
-                          required
+                        required
                       ></textarea>
                     </div>
                   </div>
@@ -867,7 +883,7 @@ export default function SellerUpdateProduct() {
                           name="maincategory"
                           className="form-control appearance-none pr-8 custom-select"
                           value={formData.maincategory}
-                            required
+                          required
                           onChange={(e) => {
                             handleChange(e);
                             // Reset category and subcategory when main category changes
@@ -904,7 +920,7 @@ export default function SellerUpdateProduct() {
                           name="category"
                           className="form-control appearance-none pr-8 custom-select"
                           value={formData.category}
-                            required
+                          required
                           onChange={(e) => {
                             handleChange(e);
                             setFormData((prev) => ({
@@ -943,7 +959,7 @@ export default function SellerUpdateProduct() {
                           className="form-control appearance-none pr-8 custom-select"
                           value={formData.subcategory}
                           onChange={handleChange}
-                            required
+                          required
                           disabled={!formData.category}
                         >
                           <option value="">Select Subcategory</option>
@@ -972,63 +988,66 @@ export default function SellerUpdateProduct() {
                           type="text"
                           className="form-control"
                           name="fssai"
-                          value={formData.fssai?.toLocaleUpperCase()}
-                          onChange={handleChange}
+                          value={formData.fssai}
+                            onChange={(e) => {
+                              const onlyDigits = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                              setFormData((prev) => ({ ...prev, fssai: onlyDigits }));
+                          }}
                           maxLength={14}
                           required
                         />
                       </div>
                     </div>
                   )}
-                    <div className="col-lg-6">
-                      <div className="form-group">
-                        <label>Tax: (GST in %)<span style={{ color: "red" }}> *
-                          <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
-                            <ErrorOutlineIcon className="errorout-icon" />
-                          </LightTooltip>
-                        </span></label>
+                  <div className="col-lg-6">
+                    <div className="form-group">
+                      <label>Tax: (GST in %)<span style={{ color: "red" }}> *
+                        <LightTooltip placement="top" title="Enter the applicable tax percentage or value." arrow>
+                          <ErrorOutlineIcon className="errorout-icon" />
+                        </LightTooltip>
+                      </span></label>
 
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="tax"
-                          value={formData.tax}
-                          onChange={(e) => {
-                            let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="tax"
+                        value={formData.tax}
+                        onChange={(e) => {
+                          let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
 
-                            // Prevent more than 2 digits
-                            if (value.length > 2) {
-                              value = value.slice(0, 2);
-                            }
+                          // Prevent more than 2 digits
+                          if (value.length > 2) {
+                            value = value.slice(0, 2);
+                          }
 
-                            // Remove leading zero unless value is "0"
-                            if (value.length > 1 && value.startsWith("0")) {
-                              value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
-                            }
+                          // Remove leading zero unless value is "0"
+                          if (value.length > 1 && value.startsWith("0")) {
+                            value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                          }
 
-                            // Prevent "00"
-                            if (value === "00") {
-                              value = "0";
-                            }
+                          // Prevent "00"
+                          if (value === "00") {
+                            value = "0";
+                          }
 
-                            // Restrict to max 99
-                            if (parseInt(value || "0", 10) > 99) {
-                              value = "99";
-                            }
+                          // Restrict to max 99
+                          if (parseInt(value || "0", 10) > 99) {
+                            value = "99";
+                          }
 
-                            handleChange({ target: { name: "tax", value } });
-                          }}
-                          required
-                          onKeyDown={(e) => {
-                            // Block "+", "-", ".", "e", arrow keys
-                            if (["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)) {
-                              e.preventDefault();
-                            }
-                          }}
-                          onWheel={(e) => e.target.blur()}
-                        />
-                      </div>
+                          handleChange({ target: { name: "tax", value } });
+                        }}
+                        required
+                        onKeyDown={(e) => {
+                          // Block "+", "-", ".", "e", arrow keys
+                          if (["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onWheel={(e) => e.target.blur()}
+                      />
                     </div>
+                  </div>
 
 
                   {!hasVariants && (
@@ -1049,17 +1068,17 @@ export default function SellerUpdateProduct() {
                           onChange={handleChange}
                           min="0"
                           max="99999"
-                            required
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel
-                            onKeyDown={(e) => {
-                              // Block "+", "-", ".", "e", arrow keys
-                              if (
-                                ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
-                              ) {
-                                e.preventDefault();
-                              }
-                            }}
-                          />
+                          required
+                          onWheel={(e) => e.target.blur()} // disables mouse wheel
+                          onKeyDown={(e) => {
+                            // Block "+", "-", ".", "e", arrow keys
+                            if (
+                              ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
+                        />
                       </div>
 
                       <div className="form-group">
@@ -1075,19 +1094,19 @@ export default function SellerUpdateProduct() {
                           className="form-control"
                           name="offPrice"
                           value={formData.offPrice}
-                            required
+                          required
                           onChange={handleChange}
                           min="0"
                           max="99999"
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel
-                            onKeyDown={(e) => {
-                              // Block "+", "-", ".", "e", arrow keys
-                              if (
-                                ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
-                              ) {
-                                e.preventDefault();
-                              }
-                            }}
+                          onWheel={(e) => e.target.blur()} // disables mouse wheel
+                          onKeyDown={(e) => {
+                            // Block "+", "-", ".", "e", arrow keys
+                            if (
+                              ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </div>
 
@@ -1104,7 +1123,7 @@ export default function SellerUpdateProduct() {
                           className="form-control"
                           name="stock"
                           value={formData.stock}
-                            required
+                          required
                           onChange={(e) => {
                             const value = e.target.value;
                             if (value === '' || (Number(value) >= 1 && Number(value) <= 9999)) {
@@ -1113,15 +1132,15 @@ export default function SellerUpdateProduct() {
                           }}
                           min="1"
                           max="9999"
-                            onWheel={(e) => e.target.blur()} // disables mouse wheel
-                            onKeyDown={(e) => {
-                              // Block "+", "-", ".", "e", arrow keys
-                              if (
-                                ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
-                              ) {
-                                e.preventDefault();
-                              }
-                            }}
+                          onWheel={(e) => e.target.blur()} // disables mouse wheel
+                          onKeyDown={(e) => {
+                            // Block "+", "-", ".", "e", arrow keys
+                            if (
+                              ["e", "E", "+", "-", ".", "ArrowUp", "ArrowDown"].includes(e.key)
+                            ) {
+                              e.preventDefault();
+                            }
+                          }}
                         />
                       </div>
 
@@ -1162,7 +1181,7 @@ export default function SellerUpdateProduct() {
                               accept="image/*"
                               multiple
                               onChange={handleImageChange}
-                                
+
 
                             />
                             <label className="custom-file-label" htmlFor="customFile">
@@ -1193,7 +1212,7 @@ export default function SellerUpdateProduct() {
                           id="condition_field"
                           onChange={handleChange}
                           value={formData.condition}
-                            required
+                          required
                           name="condition"
                         >
                           <option value="">Select Condition</option>
@@ -1221,7 +1240,7 @@ export default function SellerUpdateProduct() {
                           onChange={handleChange}
                           value={formData.isRefundable}
                           name="isRefundable"
-                            required
+                          required
                         >
                           <option value="false">No</option>
                           <option value="true">Yes</option>
@@ -1241,7 +1260,7 @@ export default function SellerUpdateProduct() {
                         value={formData.brand}
                         name="brand"
                         maxLength={30}
-                          required
+                        required
                       />
                     </div>
                   </div>
@@ -1445,11 +1464,24 @@ export default function SellerUpdateProduct() {
                         type="text"
                         id="sku_field"
                         className="form-control"
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          const input = e.target.value;
+
+                          // Allow only A-Z, 0-9, hyphen (-), underscore (_)
+                          const sanitized = input.replace(/[^A-Z0-9-_]/gi, '');
+
+                          // Update the state
+                          handleChange({
+                            target: {
+                              name: 'sku',
+                              value: sanitized.toUpperCase()
+                            }
+                          });
+                        }}
                         value={formData.sku?.toLocaleUpperCase()}
                         maxLength={15}
                         name="sku"
-                          required
+                        required
                       />
                     </div>
                   </div>
@@ -1489,7 +1521,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         maxLength={8}
                         value={formData.hsn?.toLocaleUpperCase()}
-                          required
+                        required
                         name="hsn"
                       />
                     </div>
@@ -1510,7 +1542,7 @@ export default function SellerUpdateProduct() {
                           name="countryofOrgin"
                           value={formData.countryofOrgin}
                           onChange={handleChange}
-                            
+
                           required
                         >
                           {[
@@ -1553,7 +1585,7 @@ export default function SellerUpdateProduct() {
                         value={formData.productCertifications}
                         name="productCertifications"
                         maxLength={50}
-                        
+
                       />
                     </div>
                   </div>
@@ -1571,7 +1603,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.manufactureDetails}
                         name="manufactureDetails"
-                          required
+                        required
                       />
                     </div>
                   </div>
@@ -1580,14 +1612,41 @@ export default function SellerUpdateProduct() {
                       <label htmlFor="itemLength_field">Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
+                        step="0.01"
                         id="itemLength_field"
                         className="form-control"
                         onChange={handleChange}
                         value={formData.itemLength}
                         name="itemLength"
-                        min="1"
+                        min="0.01"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                          const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                          // Update your formData state with rounded value
+                          setFormData(prev => ({
+                            ...prev,
+                            itemLength: updatedValue,
+                          }));
+                        }}
                       />
                     </div>
                   </div>
@@ -1599,14 +1658,41 @@ export default function SellerUpdateProduct() {
                       </label>
                       <input
                         type="number"
+                        step="0.01"
                         id="itemHeight_field"
                         className="form-control"
                         onChange={handleChange}
                         value={formData.itemHeight}
                         name="itemHeight"
-                        min="1"
+                        min="0.01"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                          const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                          // Update your formData state with rounded value
+                          setFormData(prev => ({
+                            ...prev,
+                            itemHeight: updatedValue,
+                          }));
+                        }}
                       />
                     </div>
                   </div>
@@ -1618,14 +1704,41 @@ export default function SellerUpdateProduct() {
                       </label>
                       <input
                         type="number"
+                        step="0.01"
                         id="itemWeight_field"
                         className="form-control"
                         onChange={handleChange}
                         value={formData.itemWeight}
                         name="itemWeight"
-                        min="1"
+                        min="0.01"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                          const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                          // Update your formData state with rounded value
+                          setFormData(prev => ({
+                            ...prev,
+                            itemWeight: updatedValue,
+                          }));
+                        }}
                       />
                     </div>
                   </div>
@@ -1637,14 +1750,41 @@ export default function SellerUpdateProduct() {
                       </label>
                       <input
                         type="number"
+                        step="0.01"
                         id="itemWidth_field"
                         className="form-control"
                         onChange={handleChange}
                         value={formData.itemWidth}
                         name="itemWidth"
-                        min="1"
+                        min="0.01"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onBlur={(e) => {
+                          const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                          const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                          // Update your formData state with rounded value
+                          setFormData(prev => ({
+                            ...prev,
+                            itemWidth: updatedValue,
+                          }));
+                        }}
                       />
                     </div>
                   </div>
@@ -1662,8 +1802,33 @@ export default function SellerUpdateProduct() {
                         value={formData.moq}
                         name="moq"
                         min="1"
-                        max="9999"
+                        max="1000"
                         required
+                        onKeyDown={(e) => {
+                          // Allow only digits and basic navigation keys
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight"].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+                        }}
+                        onBlur={(e) => {
+                          let value = parseInt(e.target.value, 10);
+
+                          if (isNaN(value) || value < 1) {
+                            value = 1;
+                          } else if (value > 1000) {
+                            value = 1000;
+                          }
+
+                          setFormData((prev) => ({
+                            ...prev,
+                            moq: value,
+                          }));
+                        }}
                       />
                     </div>
                   </div>
@@ -1681,6 +1846,22 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1700,6 +1881,22 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1719,6 +1916,22 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1738,6 +1951,22 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1755,6 +1984,22 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1771,6 +2016,22 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1787,22 +2048,54 @@ export default function SellerUpdateProduct() {
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
                   <div className="col-lg-4">
                     <div className="form-group">
-                        <label htmlFor="additionalShippingCost_field">Additional Shipping Cost for each Item (in ₹):<span style={{ color: "red" }}> *</span></label>
+                      <label htmlFor="additionalShippingCost_field">Additional Shipping Cost for each Item (in ₹):<span style={{ color: "red" }}> *</span></label>
                       <input
                         type="number"
-                          id="additionalShippingCost_field"
+                        id="additionalShippingCost_field"
                         className="form-control"
                         onChange={handleChange}
-                          value={formData.additionalShippingCost}
-                          name="additionalShippingCost"
+                        value={formData.additionalShippingCost}
+                        name="additionalShippingCost"
                         min="0"
                         max="9999"
                         required
+                        onKeyDown={(e) => {
+                          // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                          if (
+                            !(
+                              (e.key >= "0" && e.key <= "9") ||
+                              ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                            )
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          // Prevent multiple dots
+                          if (e.key === "." && e.target.value.includes(".")) {
+                            e.preventDefault();
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1823,7 +2116,28 @@ export default function SellerUpdateProduct() {
                       />
                     </div>
                   </div>
+                  
+                    {formData.status === 'rejected' && (
+                      <div className="col-lg-6">
+                        <div className="form-group">
 
+                          <label htmlFor="rejectionReason_field">Rejection Reason:<span style={{ color: "red" }}> *</span></label>
+                          <textarea
+                            className="from-control "
+                            id="rejectionReason_field"
+                            rows="4"
+                            // onChange={(e) => setFormData({ ...formData, rejectionReason: e.target.value })}
+                            value={formData.rejectionReason}
+                            name="rejectionReason"
+                            style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}
+                          ></textarea>
+
+
+                        </div>
+                      </div>
+                    )
+
+                    }
                   <div style={{ display: 'flex', justifyContent: 'end' }}>
                     <button
                       id="login_button"
@@ -1835,7 +2149,7 @@ export default function SellerUpdateProduct() {
                       Update Product
                     </button>
                   </div>
-
+                    
 
                 </div>
               </form>

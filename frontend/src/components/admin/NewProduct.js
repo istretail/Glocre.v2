@@ -59,12 +59,29 @@ const NewProduct = () => {
     const { categories = [] } = useSelector(state => state.productsState);
     const [hasVariants, setHasVariants] = useState(false);
     const [variantType, setVariantType] = useState("");
-    const [variantCount, setVariantCount] = useState(0);
-    const [variantDetails, setVariantDetails] = useState([]);
+    const [variantCount, setVariantCount] = useState(2);
     const [imageErrors, setImageErrors] = useState([]);
     const [productImages, setProductImages] = useState([]);
     const [selectedMainCategory, setSelectedMainCategory] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [variantDetails, setVariantDetails] = useState([
+        {
+            variantType: variantType,
+            variantName: '',
+            price: '',
+            offPrice: '',
+            stock: '',
+            images: [],
+        },
+        {
+            variantType: variantType,
+            variantName: '',
+            price: '',
+            offPrice: '',
+            stock: '',
+            images: [],
+        },
+    ]);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -100,7 +117,7 @@ const NewProduct = () => {
     };
 
     const validateForm = () => {
-        const { itemModelNum, sku, upc, hsn } = formData;
+        const { itemModelNum, sku, upc, hsn, fssai, maincategory } = formData;
         const alphaNumericRegex = /^[A-Z0-9\-]+$/;
 
         const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
@@ -115,7 +132,7 @@ const NewProduct = () => {
         if (!/^\d{4}$|^\d{6}$|^\d{8}$/.test(hsn) || /^0+$/.test(hsn)) {
             toast.error("HSN code must be 4, 6, or 8 digits and cannot be all zeros.");
             return false;
-        }          
+        }
 
         // --- Item Model Number ---
         if (itemModelNum) {
@@ -132,7 +149,12 @@ const NewProduct = () => {
                 return false;
             }
         }
-
+        if (maincategory === "Food and Beverage Products") {
+            if (!/^\d{14}$/.test(fssai) || /^0+$/.test(fssai)) {
+                toast.error("FSSAI must be a 14-digit numeric code and cannot be all zeros.");
+                return false;
+            }
+          }
         return true;
     };
 
@@ -180,6 +202,11 @@ const NewProduct = () => {
     const handleImageChange = (index, e) => {
         const files = Array.from(e.target.files);
         const validImages = files.filter((file) => file.size <= 1024 * 1024);
+        const imageFiles = files.filter(file => file.type.startsWith("image/"));
+        if (imageFiles.length !== files.length) {
+            alert("Only image files are allowed.");
+            return;
+        }
         const errors = files
             .filter((file) => file.size > 1024 * 1024)
             .map((file) => `${file.name} is larger than 1MB`);
@@ -241,7 +268,13 @@ const NewProduct = () => {
 
     const handleProductImageChange = (e) => {
         const files = Array.from(e.target.files);
+        const imageFiles = files.filter(file => file.type.startsWith("image/"));
+        if (imageFiles.length !== files.length) {
+            alert("Only image files are allowed.");
+            return;
+        }
         const validImages = files.filter((file) => file.size <= 1024 * 1024);
+
         const errors = files
             .filter((file) => file.size > 1024 * 1024)
             .map((file) => `${file.name} is larger than 1MB`);
@@ -316,7 +349,7 @@ const NewProduct = () => {
             if (hasVariants) {
                 // Append variants as a JSON string
                 variantDetails.forEach((variant, i) => {
-                    productData.append(`variants[${i}][variantType]`, variant.variantType);
+                    productData.append(`variants[${i}][variantType]`, variantType);
                     productData.append(`variants[${i}][variantName]`, variant.variantName);
                     productData.append(`variants[${i}][price]`, variant.price);
                     productData.append(`variants[${i}][offPrice]`, variant.offPrice);
@@ -692,8 +725,11 @@ const NewProduct = () => {
                                                             type="text"
                                                             className="form-control"
                                                             name="fssai"
-                                                            value={formData.fssai.to}
-                                                            onChange={handleChange}
+                                                            value={formData.fssai}
+                                                            onChange={(e) => {
+                                                                const onlyDigits = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                                                                setFormData((prev) => ({ ...prev, fssai: onlyDigits }));
+                                                            }}
                                                             maxLength={14}
                                                             required
                                                         />
@@ -826,33 +862,49 @@ const NewProduct = () => {
                                                                 </span>
                                                             </label>
 
-                                                            <input
-                                                                type="number"
-                                                                className="form-control"
-                                                                placeholder="You can add up to 7 variants"
-                                                                value={variantCount}
-                                                                min={1}
-                                                                max={7}
-                                                                onChange={e => {
-                                                                    let count = Number(e.target.value);
+                                                            <div className="d-flex align-items-center gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-outline-secondary"
+                                                                    onClick={() => {
+                                                                        if (variantCount > 2) {
+                                                                            const newCount = variantCount - 1;
+                                                                            setVariantCount(newCount);
+                                                                            setVariantDetails(prev => prev.slice(0, newCount));
+                                                                        }
+                                                                    }}
+                                                                    disabled={variantCount <= 2}
+                                                                >
+                                                                    −
+                                                                </button>
 
-                                                                    // Prevent count > 7
-                                                                    if (count > 7) count = 7;
+                                                                <span className="px-3">{variantCount}</span>
 
-                                                                    setVariantCount(count);
-                                                                    setVariantDetails(
-                                                                        Array.from({ length: count }, () => ({
-                                                                            variantType: variantType,
-                                                                            variantName: '',
-                                                                            price: '',
-                                                                            offPrice: '',
-                                                                            stock: '',
-                                                                            images: [],
-                                                                        }))
-                                                                    );
-                                                                }}
-                                                                required
-                                                            />
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-outline-secondary"
+                                                                    onClick={() => {
+                                                                        if (variantCount < 7) {
+                                                                            const newCount = variantCount + 1;
+                                                                            setVariantCount(newCount);
+                                                                            setVariantDetails(prev => [
+                                                                                ...prev,
+                                                                                {
+                                                                                    variantType: variantType,
+                                                                                    variantName: '',
+                                                                                    price: '',
+                                                                                    offPrice: '',
+                                                                                    stock: '',
+                                                                                    images: [],
+                                                                                },
+                                                                            ]);
+                                                                        }
+                                                                    }}
+                                                                    disabled={variantCount >= 7}
+                                                                >
+                                                                    +
+                                                                </button>
+                                                            </div>
                                                         </div>
 
                                                         {variantDetails.map((variant, index) => (
@@ -1282,10 +1334,24 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="sku"
-                                                        value={formData.sku.toLocaleUpperCase()}
+                                                        value={formData.sku.toUpperCase()}
                                                         maxLength={15}
-                                                        onChange={handleChange}
+                                                        onChange={(e) => {
+                                                            const input = e.target.value;
+
+                                                            // Allow only A-Z, 0-9, hyphen (-), underscore (_)
+                                                            const sanitized = input.replace(/[^A-Z0-9-_]/gi, '');
+
+                                                            // Update the state
+                                                            handleChange({
+                                                                target: {
+                                                                    name: 'sku',
+                                                                    value: sanitized.toUpperCase()
+                                                                }
+                                                            });
+                                                        }}
                                                     />
+
                                                 </div>
                                             </div>
 
@@ -1453,13 +1519,40 @@ const NewProduct = () => {
                                                     <label>Item Length in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
+                                                        step="0.01"
                                                         className="form-control"
                                                         name="itemLength"
                                                         value={formData.itemLength}
                                                         onChange={handleChange}
-                                                        min="1"
+                                                        min="0.01"
                                                         max="9999"
                                                         required
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                                                            const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                                                            // Update your formData state with rounded value
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                itemLength: updatedValue,
+                                                            }));
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1469,13 +1562,40 @@ const NewProduct = () => {
                                                     <label>Item Height in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
+                                                        step="0.01"
                                                         className="form-control"
                                                         name="itemHeight"
                                                         value={formData.itemHeight}
                                                         onChange={handleChange}
                                                         required
-                                                        min="1"
+                                                        min="0.01"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                                                            const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                                                            // Update your formData state with rounded value
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                itemHeight: updatedValue,
+                                                            }));
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1485,13 +1605,40 @@ const NewProduct = () => {
                                                     <label>Item Weight in Kgs:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
+                                                        step="0.01"
                                                         className="form-control"
                                                         name="itemWeight"
                                                         value={formData.itemWeight}
                                                         onChange={handleChange}
                                                         required
-                                                        min="1"
+                                                        min="0.01"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                                                            const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                                                            // Update your formData state with rounded value
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                itemWeight: updatedValue,
+                                                            }));
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1501,13 +1648,40 @@ const NewProduct = () => {
                                                     <label>Item Width in Centimeters:<span style={{ color: "red" }}> *</span></label>
                                                     <input
                                                         type="number"
+                                                        step="0.01"
                                                         className="form-control"
                                                         name="itemWidth"
                                                         value={formData.itemWidth}
                                                         onChange={handleChange}
                                                         required
-                                                        min="1"
+                                                        min="0.01"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            const rounded = Math.round(parseFloat(e.target.value) * 10) / 10;
+                                                            const updatedValue = isNaN(rounded) ? "" : rounded;
+
+                                                            // Update your formData state with rounded value
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                itemWidth: updatedValue,
+                                                            }));
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1530,9 +1704,34 @@ const NewProduct = () => {
                                                         name="moq"
                                                         value={formData.moq}
                                                         onChange={handleChange}
-                                                        required
                                                         min="1"
-                                                        max="9999"
+                                                        max="1000"
+                                                        required
+                                                        onKeyDown={(e) => {
+                                                            // Allow only digits and basic navigation keys
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight"].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        onBlur={(e) => {
+                                                            let value = parseInt(e.target.value, 10);
+
+                                                            if (isNaN(value) || value < 1) {
+                                                                value = 1;
+                                                            } else if (value > 1000) {
+                                                                value = 1000;
+                                                            }
+
+                                                            setFormData((prev) => ({
+                                                                ...prev,
+                                                                moq: value,
+                                                            }));
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1550,6 +1749,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1565,6 +1780,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1580,6 +1811,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1595,6 +1842,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1610,6 +1873,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1625,6 +1904,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1640,6 +1935,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>
@@ -1655,6 +1966,22 @@ const NewProduct = () => {
                                                         required
                                                         min="0"
                                                         max="9999"
+                                                        onKeyDown={(e) => {
+                                                            // Allow: Backspace, Tab, Delete, arrows, numbers, dot
+                                                            if (
+                                                                !(
+                                                                    (e.key >= "0" && e.key <= "9") ||
+                                                                    ["Backspace", "Tab", "Delete", "ArrowLeft", "ArrowRight", "."].includes(e.key)
+                                                                )
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+
+                                                            // Prevent multiple dots
+                                                            if (e.key === "." && e.target.value.includes(".")) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
                                                     />
                                                 </div>
                                             </div>

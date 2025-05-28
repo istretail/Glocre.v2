@@ -212,7 +212,8 @@ export default function ProductList() {
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={() => handleFilterChange("approved")}>Approved</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => handleFilterChange("pending")}>Pending</Dropdown.Item>
+                                                    <Dropdown.Item onClick={() => handleFilterChange("pending")}>Pending</Dropdown.Item>
+                                                    <Dropdown.Item onClick={() => handleFilterChange("rejected")}>Rejected</Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("")}>All</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
@@ -253,6 +254,7 @@ export default function ProductList() {
                                             <Dropdown.Menu>
                                                 <Dropdown.Item onClick={() => handleFilterChange("approved")}>Approved</Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("pending")}>Pending</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => handleFilterChange("rejected")}>Rejected</Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("")}>All</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>

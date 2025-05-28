@@ -105,9 +105,8 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
       });
     }
   }
-
-  // Create the product
-  const product = await Product.create({
+try{
+const product = await Product.create({
     name: req.body.name,
     description: req.body.description,
     maincategory: req.body.maincategory,
@@ -149,6 +148,26 @@ exports.newProduct = catchAsyncError(async (req, res, next) => {
   });
 
   res.status(201).json({ success: true, product });
+  } catch (error) {
+  console.error("Product creation error:", error);
+
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${duplicateField.charAt(0).toUpperCase() + duplicateField.slice(1)} already exists.`,
+        
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      
+    });
+  }
+  
+
 });
 
 //getting single product -- api/v1/product/id
@@ -313,8 +332,8 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     // Merge and deduplicate
     req.body.variants[index].images = [...new Set([...existingImages, ...currentImages])];
   });
-  
-  
+
+
 
   req.body.variants = updatedVariants;
 
@@ -330,15 +349,29 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
   });
 
   // Update product
-  product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
-    new: true,
-    runValidators: true,
-  });
+  try {
+    product = await Product.findByIdAndUpdate(req.params.id, updatedData, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      success: true,
+      product,
+    });
 
-  res.status(200).json({
-    success: true,
-    product,
-  });
+  } catch (error) {
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${duplicateField.charAt(0).toUpperCase() + duplicateField.slice(1)} already exists.`,
+      });
+    }
+    
+  }
+
+
+
 
   // Send email notification if the status changed
   if (req.body.status && req.body.status !== product.status) {
@@ -449,10 +482,17 @@ exports.createReview = catchAsyncError(async (req, res, next) => {
 
 //Get Reviews - api/v1/reviews?id={productId}
 exports.getReviews = catchAsyncError(async (req, res, next) => {
-  const product = await Product.findById(req.query.id).populate(
+  const product = await Product.findOne({ clocreProductId: req.query.id }).populate(
     "reviews.user",
     "name email"
   );
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
 
   res.status(200).json({
     success: true,
@@ -591,16 +631,16 @@ exports.getArchiveProducts = catchAsyncError(async (req, res, next) => {
 
 // Add a new product
 exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
-  const { maincategory, category, subcategory } = req.body;
-
-  if (
-    !categoryHierarchy[maincategory] ||
-    !categoryHierarchy[maincategory][category] ||
-    (categoryHierarchy[maincategory][category].length > 0 &&
-      !categoryHierarchy[maincategory][category].includes(subcategory))
-  ) {
-    return res.status(400).json({ message: "Invalid category selection." });
-  }
+  // const { maincategory, category, subcategory } = req.body;
+// console.log("Received body:", req.body);
+  // if (
+  //   !categoryHierarchy[maincategory] ||
+  //   !categoryHierarchy[maincategory][category] ||
+  //   (categoryHierarchy[maincategory][category].length > 0 &&
+  //     !categoryHierarchy[maincategory][category].includes(subcategory))
+  // ) {
+  //   return res.status(400).json({ message: "Invalid category selection." });
+  // }
   // Process variant images
   if (req.files) {
     Object.keys(req.files).forEach((key) => {
@@ -637,52 +677,53 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
       });
     }
   }
-  const product = await Product.create({
-    name: req.body.name,
-    description: req.body.description,
-    maincategory: req.body.maincategory,
-    category: req.body.category,
-    subcategory: req.body.subcategory,
-    fssai: req.body.fssai,
-    brand: req.body.brand,
-    condition: req.body.condition,
-    tax: req.body.tax,
-    keyPoints: req.body.keyPoints,
-    images: req.files.images ? req.files.images.map(file => file.location) : [],
-    variants: req.body.variants,
-    createdBy: req.user.id,
-    isRefundable: req.body.isRefundable === "true",
-    price: req.body.price,
-    offPrice: req.body.offPrice,
-    stock: req.body.stock,
-    itemModelNum: req.body.itemModelNum,
-    sku: req.body.sku,
-    upc: req.body.upc,
-    hsn: req.body.hsn,
-    countryofOrgin: req.body.countryofOrgin,
-    manufactureDetails: req.body.manufactureDetails,
-    productCertifications: req.body.productCertifications,
-    itemLength: req.body.itemLength,
-    itemHeight: req.body.itemHeight,
-    itemWeight: req.body.itemWeight,
-    itemWidth: req.body.itemWidth,
-    moq: req.body.moq,
-    shippingCostlol: req.body.shippingCostlol,
-    shippingCostNorth: req.body.shippingCostNorth,
-    shippingCostSouth: req.body.shippingCostSouth,
-    shippingCostEast: req.body.shippingCostEast,
-    shippingCostWest: req.body.shippingCostWest,
-    shippingCostCentral: req.body.shippingCostCentral,
-    shippingCostNe: req.body.shippingCostNe,
-    additionalShippingCost: req.body.additionalShippingCost,
-    unit: req.body.unit,
-  });
 
-  res.status(201).json({
-    success: true,
-    product
-  });
   try {
+    const product = await Product.create({
+      name: req.body.name,
+      description: req.body.description,
+      maincategory: req.body.maincategory,
+      category: req.body.category,
+      subcategory: req.body.subcategory,
+      fssai: req.body.fssai,
+      brand: req.body.brand,
+      condition: req.body.condition,
+      tax: req.body.tax,
+      keyPoints: req.body.keyPoints,
+      images: req.files.images ? req.files.images.map(file => file.location) : [],
+      variants: req.body.variants,
+      createdBy: req.user.id,
+      isRefundable: req.body.isRefundable === "true",
+      price: req.body.price,
+      offPrice: req.body.offPrice,
+      stock: req.body.stock,
+      itemModelNum: req.body.itemModelNum,
+      sku: req.body.sku,
+      upc: req.body.upc,
+      hsn: req.body.hsn,
+      countryofOrgin: req.body.countryofOrgin,
+      manufactureDetails: req.body.manufactureDetails,
+      productCertifications: req.body.productCertifications,
+      itemLength: req.body.itemLength,
+      itemHeight: req.body.itemHeight,
+      itemWeight: req.body.itemWeight,
+      itemWidth: req.body.itemWidth,
+      moq: req.body.moq,
+      shippingCostlol: req.body.shippingCostlol,
+      shippingCostNorth: req.body.shippingCostNorth,
+      shippingCostSouth: req.body.shippingCostSouth,
+      shippingCostEast: req.body.shippingCostEast,
+      shippingCostWest: req.body.shippingCostWest,
+      shippingCostCentral: req.body.shippingCostCentral,
+      shippingCostNe: req.body.shippingCostNe,
+      additionalShippingCost: req.body.additionalShippingCost,
+      unit: req.body.unit,
+    });
+
+    res.status(201).json({
+      success: true,
+      product
+    });
     const adminEmail = process.env.ADMIN_EMAIL; // Ensure you have the admin email in your environment variables
     const creatorInfo = {
       email: req.user.email,
@@ -753,7 +794,7 @@ exports.addSellerProduct = catchAsyncError(async (req, res, next) => {
 // Update a product (only if it belongs to the seller)
 exports.updateSellerProduct = catchAsyncError(async (req, res, next) => {
   console.log(req.body)
-  
+
   let product = await Product.findById(req.params.id).populate("createdBy");
   // console.log(req.params.id)
   if (!product) {
@@ -1269,11 +1310,11 @@ exports.validateCartItems = catchAsyncError(async (req, res) => {
     return res.status(200).json({
       success: true,
       cartItems: updatedCart,
-     
-    }
-  );
 
-   
+    }
+    );
+
+
 
   } catch (error) {
     console.error('Cart validation error:', error);

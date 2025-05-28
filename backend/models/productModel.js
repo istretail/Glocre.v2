@@ -76,7 +76,11 @@ const productSchema = new mongoose.Schema({
   },
   isRefundable: { type: Boolean, default: false },
   itemModelNum: { type: String },
-  sku: { type: String, required: true },
+  sku: { 
+    type: String, 
+    required: [true, "Please Enter valid SKU"],
+    unique: true
+  },
   upc: { type: String, },
   hsn: { type: String, required: true },
   countryofOrgin: { type: String, required: true },
