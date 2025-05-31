@@ -18,7 +18,7 @@ export default function ProcuregSeller() {
   };
   return (
     <>
-      <MetaData title={"Become a Seller"} />
+      <MetaData title={"Become a Seller | GLOCRE"} />
       {/* START YOUR B2B */}
       <section className="start-your-b2b-section-procureg">
         <div className="container">

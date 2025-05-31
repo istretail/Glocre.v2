@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import MetaData from "../layouts/MetaData";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -49,6 +50,7 @@ export default function ForgotPassword() {
 
   return (
     <>
+    <MetaData title={`Forgot Password | GLOCRE`} />
       <section className="signIn mb-5">
         <div class="breadcrumbWrapper">
           <div class="container-fluid">

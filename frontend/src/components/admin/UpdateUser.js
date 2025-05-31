@@ -1,16 +1,16 @@
 import { Fragment, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { getUser, updateUser } from "../../actions/userActions";
 import { clearError, clearUserUpdated } from "../../slices/userSlice";
 import { toast } from "react-toastify";
-import avatar1 from '../../images/OIP.jpg'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, DropdownButton, Image } from "react-bootstrap";
+import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
+import { Dropdown } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import MetaData from "../layouts/MetaData";
 
 export default function UpdateUser() {
   const [name, setName] = useState("");
@@ -84,6 +84,7 @@ export default function UpdateUser() {
 
   return (
     <>
+    <MetaData title={`Update User | GLOCRE`} />
       <section className="updateuser-section">
         <div className="row container-fluid">
           <div className="col-12 col-md-2">
@@ -235,18 +236,18 @@ export default function UpdateUser() {
                     type="text"
                     id="price_field"
                     className="form-control"
-                    onChange={(e) => setEmail(e.target.value)}
+                    // onChange={(e) => setEmail(e.target.value)}
                     value={email}
                   />
                 </div>
 
-                <div className="form-group">
+                <div className="form-group custom-select-wrapper">
                   <label htmlFor="category_field">Role</label>
                   <select
                     disabled={user._id === authUser._id}
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="form-control"
+                    className="form-control custom-select"
                     id="category_field"
                   >
                     <option value="admin">Admin</option>
@@ -254,7 +255,30 @@ export default function UpdateUser() {
                     <option value="seller">Seller</option>
                   </select>
                 </div>
-
+                <>
+                  <p>
+                    <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>GST Number </b>
+                    <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:    </b>
+                    <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>
+                      {user?.gstNumber && user.gstNumber.length > 0 ? (
+                        `  ${user.gstNumber}`
+                      ) : (
+                          "  User has no address"
+                      )}
+                    </span>
+                  </p>
+                  <p>
+                    <b className="info-box-p-b" style={{ width: "110px", fontSize: "clamp(0.7rem, 2vw, 16px)" }}>Business Address</b>
+                    <b className="info-box-p-b2" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>:  </b>
+                    <span className="info-box-p-span" style={{ fontSize: "clamp(0.7rem, 2vw, 16px)" }}>
+                        {user?.businessAddress && user.businessAddress.length > 0 ? (
+                        `${user.businessAddress[0].address}, ${user.businessAddress[0].addressLine}, ${user.businessAddress[0].city}, ${user.businessAddress[0].state} - ${user.businessAddress[0].postalCode}, ${user.businessAddress[0].country}`
+                      ) : (
+                        "User has no address"
+                      )}
+                    </span>
+                  </p>
+                </>
                 <div style={{ display: "flex", justifyContent: "end" }}>
                   <button
                     id="login_button"

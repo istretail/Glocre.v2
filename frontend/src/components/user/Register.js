@@ -103,7 +103,7 @@ export default function Register() {
 
   return (
     <>
-      <MetaData title={`Register`} />
+      <MetaData title={`Register | GLOCRE`} />
       {loading ? <Loader /> :
         <section className="signIn mb-5">
           <div class="breadcrumbWrapper res-hide">

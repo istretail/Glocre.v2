@@ -321,10 +321,13 @@ export const removeArchiveProduct = (id) => async (dispatch) => {
   }
 }
 
-export const getArchiveProducts = () => async (dispatch) => {
+export const getArchiveProducts = (currentPage, status, keyword ) => async (dispatch) => {
   try {
     dispatch(getArchiveProductsRequest())
-    const { data } = await axios.get(`/api/v1/seller/archive/products`)
+    let link = `/api/v1/seller/archive/products?page=${currentPage}`;
+    if (keyword) link += `&keyword=${keyword}`;
+    if (status) link += `&status=${status}`;
+    const { data } = await axios.get(link);
     dispatch(getArchiveProductsScuccess(data))
   } catch (error) {
     dispatch(getArchiveProductsFail(error.response.data.message))

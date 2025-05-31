@@ -7,6 +7,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
+import MetaData from '../layouts/MetaData';
 
 const ResendVerification = () => {
     const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const ResendVerification = () => {
 
     return (
         <>
-
+            <MetaData title="Resend Verification | GLOCRE" />
             <section className="signIn mb-5">
                 <div class="breadcrumbWrapper">
                     <div class="container-fluid">
@@ -77,7 +78,7 @@ const ResendVerification = () => {
                                 </form>
                             )
                         }
-                        
+
                     </div>
                 </div>
             </section>

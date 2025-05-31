@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Link } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
+import MetaData from '../layouts/MetaData';
 
 export default function UpdateProfile() {
   const { error, user, isUpdated } = useSelector(state => state.authState);
@@ -55,6 +56,7 @@ export default function UpdateProfile() {
 
   return (
     <>
+    <MetaData title={`Update Profile | GLOCRE`} />
       <section className="signIn mb-5">
         <div class="breadcrumbWrapper">
           <div class="container-fluid">

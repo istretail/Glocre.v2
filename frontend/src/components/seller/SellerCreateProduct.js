@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { ErrorOutline } from "@mui/icons-material";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import MetaData from "../layouts/MetaData";
 
 const SellerCreateProduct = () => {
   const [formData, setFormData] = useState({
@@ -293,6 +294,12 @@ const SellerCreateProduct = () => {
     const { itemModelNum, sku, upc, hsn, fssai, maincategory } = formData;
     const alphaNumericRegex = /^[A-Z0-9\-]+$/;
 
+   const validUnits = ["EA", "ML", "SET", "KG", "LTR", "BOX", "PCS"]; // Customize list
+
+    if (!validUnits.includes(formData.unit?.toUpperCase())) {
+      toast.error("Please enter a valid unit (e.g., EA, ML, SET).");
+      return false;
+    }
     const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
 
     // --- SKU ---
@@ -468,6 +475,7 @@ const SellerCreateProduct = () => {
 
   return (
     <>
+    <MetaData title="Create New Product | GLOCRE" />
       <section className="seller-create-product-glc">
         <div className="row container-fluid">
           <div className="col-12 col-md-2">
@@ -1006,6 +1014,7 @@ const SellerCreateProduct = () => {
                               }}
                               required
                               inputMode="numeric"
+                              min="1"
                               max="99999"
                               onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
@@ -1042,6 +1051,7 @@ const SellerCreateProduct = () => {
                               }}
                               required
                               inputMode="numeric"
+                              min="1"
                               max="99999"
                               onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
@@ -1159,30 +1169,24 @@ const SellerCreateProduct = () => {
                       name="tax"
                       value={formData.tax}
                       onChange={(e) => {
-                        let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                        let value = e.target.value.replace(/\D/g, "");
 
-                        // Prevent more than 2 digits
-                        if (value.length > 2) {
-                          value = value.slice(0, 2);
-                        }
-
-                        // Remove leading zero unless value is "0"
+                        if (value.length > 2) value = value.slice(0, 2);
                         if (value.length > 1 && value.startsWith("0")) {
-                          value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                          value = String(parseInt(value, 10));
                         }
+                        if (value === "00") value = "0";
+                        if (parseInt(value || "0", 10) > 99) value = "99";
 
-                        // Prevent "00"
-                        if (value === "00") {
-                          value = "0";
-                        }
-
-                        // Restrict to max 99
-                        if (parseInt(value || "0", 10) > 99) {
-                          value = "99";
+                        // Still alert here to give immediate feedback
+                        if (parseInt(value, 10) === 0) {
+                          alert("Tax percentage must be greater than 0.");
+                          return;
                         }
 
                         handleChange({ target: { name: "tax", value } });
                       }}
+                      
                       required
                       onKeyDown={(e) => {
                         // Block "+", "-", ".", "e", arrow keys
@@ -2024,7 +2028,7 @@ const SellerCreateProduct = () => {
                 </div>
                 <div className="col-lg-4">
                   <div className="form-group">
-                    <label>Unit(EA/ML/Set)<span style={{ color: "red" }}> *
+                    <label>Unit (EA/ML/Set)<span style={{ color: "red" }}> *
                       <LightTooltip placement="top" title="Specify the unit of measurement (e.g., kg, piece, liter)." arrow>
                         <ErrorOutlineIcon className="errorout-icon" />
                       </LightTooltip>
@@ -2034,9 +2038,16 @@ const SellerCreateProduct = () => {
                       className="form-control"
                       name="unit"
                       value={formData.unit.toLocaleUpperCase()}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const value = e.target.value.toUpperCase();
+                        // Allow only letters, max length 5
+                        if (/^[A-Z]{0,5}$/.test(value)) {
+                          setFormData((prev) => ({ ...prev, unit: value }));
+                        }
+                      }}
                       required
                     />
+
                   </div>
                 </div>
 

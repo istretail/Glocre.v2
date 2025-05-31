@@ -648,21 +648,34 @@ exports.verifySellerOtp = catchAsyncError(async (req, res, next) => {
 
 //Admin: Get All Users - /api/v1/admin/users
 exports.getAllUsers = catchAsyncError(async (req, res, next) => {
-  const resPerPage = 10; // Number of results per page, adjust as needed
+  const resPerPage = 10;
+
+  const apiFeaturesForFilter = new APIFeatures(User.find(), req.query)
+    .search()
+    .filter();
+
+  const filteredUsers = await apiFeaturesForFilter.query;
+  const resultUser = filteredUsers.length; // This is what you want
+
+  // Now apply pagination separately
   const apiFeatures = new APIFeatures(User.find(), req.query)
-    .search() // Handles search by name
-    .filter() // Handles filtering based on role or other fields
-    .paginate(resPerPage); // Paginates the results
+    .search()
+    .filter()
+    .paginate(resPerPage);
 
   const users = await apiFeatures.query;
+
   const count = await User.countDocuments();
+
   res.status(200).json({
     success: true,
-    count,
+    count,         // Total users
+    resultUser,    // After search + filter
     resPerPage,
-    users,
+    users,         // Paginated users
   });
 });
+
 
 //Admin: Get Specific User - api/v1/admin/user/:id
 exports.getUser = catchAsyncError(async (req, res, next) => {

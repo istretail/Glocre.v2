@@ -5,11 +5,13 @@ import mailsend from "../../images/mailsent.jpg";
 import { Button } from "@mui/material";
 import { TryRounded } from "@mui/icons-material";
 import Nav from "../layouts/nav";
+import MetaData from "../layouts/MetaData";
 
 const Sucess = () => {
   const { loading } = useSelector((state) => state.authState);
   return (
     <>
+    <MetaData title="Registration Success | GLOCRE" />
       <Nav />
 
       <div className="breadcrumbWrapper mb-4">

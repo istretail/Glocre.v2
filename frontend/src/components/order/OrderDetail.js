@@ -18,6 +18,7 @@ import { orderDetail as orderDetailAction } from '../../actions/orderActions';
 import Loader from '../layouts/Loader';
 import './OrderDetail.css';
 import Nav from '../layouts/nav';
+import MetaData from '../layouts/MetaData';
 
 export default function OrderDetail() {
   const { orderDetail, loading } = useSelector(state => state.orderState);
@@ -208,6 +209,7 @@ export default function OrderDetail() {
 
   return (
     <>
+      <MetaData title={`${orderDetail.clocreOrderId} | Order Details | GLOCRE`} />
       {loading ? (
         <Loader />
       ) : (

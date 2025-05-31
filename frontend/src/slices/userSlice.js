@@ -27,6 +27,7 @@ const userSlice = createSlice({
         userConut: action.payload.count,
         resPerPage: action.payload.resPerPage,
         users: action.payload.users,
+        ResultCount: action.payload.resultUser,
       };
     },
     usersFail(state, action) {

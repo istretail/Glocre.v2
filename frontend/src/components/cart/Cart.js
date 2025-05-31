@@ -7,6 +7,7 @@ import {
   updateCartItemQuantityInCart,
   validateCartItems,
   getCartItemsFromCart,
+  updateItems
 } from "../../actions/cartActions";
 import { removeCartItem, updateCartItemQuantity } from "../../slices/cartSlice";
 import empty from "../../images/cartempty.png";
@@ -143,7 +144,7 @@ export default function Cart() {
     unavailableItems.forEach(item => {
       removeItemHandler(item.product, item.variant?._id);
     });
-
+    dispatch(updateItems(cartItems));
     // Proceed to checkout
     navigate("/login?redirect=shipping");
   };
@@ -228,7 +229,7 @@ export default function Cart() {
 
   return (
     <>
-      <MetaData title={"Cart"} />
+      <MetaData title={"Cart | GLOCRE"} />
       <Nav />
       < div className="breadcrumbWrapper mb-4" >
         <div className="container-fluid" >
@@ -488,7 +489,7 @@ export default function Cart() {
                             Proceeding without{" "}
                             {getUnavailableItems().map((item, index) => (
                               <span key={item._id}>
-                                {item.name}
+                                 <b>{item.name}</b>
                                 {index !== getUnavailableItems().length - 1 ? ", " : ""}
                               </span>
                             ))}

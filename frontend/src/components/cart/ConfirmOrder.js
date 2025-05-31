@@ -13,7 +13,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { clearError as clearOrderError } from "../../slices/orderSlice";
 import { createOrder, getShippingCost } from "../../actions/orderActions";
-import { clearCart } from "../../actions/cartActions";
+import { clearCart, getCartItemsFromCart } from "../../actions/cartActions";
 
 export default function ConfirmOrder() {
   const dispatch = useDispatch();
@@ -21,7 +21,8 @@ export default function ConfirmOrder() {
   const {
     shippingInfo,
     billingInfo,
-    cartItems,
+    items:cartItems,
+    
   } = useSelector((state) => state.cartState);
   const { user } = useSelector((state) => state.authState);
   const { error: orderError, cost = [] } = useSelector((state) => state.orderState);
@@ -117,9 +118,12 @@ export default function ConfirmOrder() {
       dispatch(getShippingCost(cartItems, shippingInfo));
     }
   }, [shippingInfo, dispatch]);
+  // useEffect(() => {
+  //     dispatch(getCartItemsFromCart());
+  // }, []);
   return (
     <>
-      <MetaData title={"Confirm Order"} />
+      <MetaData title={"Confirm Order | GLOCRE"} />
 
       <Nav />
 

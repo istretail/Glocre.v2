@@ -201,9 +201,10 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
   }
 
   const creatorInfo = {
-    email: product.createdBy.email,
-    name: product.createdBy.name,
+    email: product.createdBy?.email || "glocre@glocre.com",
+    name: product.createdBy?.name || "Anonymous User",
   };
+  
 
   // Handle main product images (S3)
   if (req.body.existingImages) {

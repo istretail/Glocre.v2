@@ -1,10 +1,12 @@
 import React from "react";
 import "./tc.css";
 import Nav from "../nav.js";
+import MetaData from "../MetaData.js";
 
 export default function TermsConditions() {
   return (
     <>
+    <MetaData title="Terms & Conditions | GLOCRE" />
       <Nav />
       {/* Terms & Conditions */}
       <body className="body-tc-glc">

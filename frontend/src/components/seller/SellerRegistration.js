@@ -7,6 +7,7 @@ import Loader from "../layouts/Loader";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { countries } from "countries-list";
+import MetaData from "../layouts/MetaData";
 const fetchPostalCodeDetails = async (postalCode) => {
   try {
     const response = await fetch(
@@ -198,6 +199,7 @@ const SellerRegistration = () => {
 
   return (
     <>
+    <MetaData title="Seller Registration | GLOCRE" />
       <section className="seller-create-product-glc container">
 
 

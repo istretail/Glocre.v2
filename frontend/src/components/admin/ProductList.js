@@ -13,6 +13,7 @@ import Pagination from 'react-js-pagination';
 import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 import { Modal, Box, Typography } from "@mui/material";
+import MetaData from "../layouts/MetaData"
 export default function ProductList() {
     const { products = [], loading = true, productsCount, resPerPage, error, filteredProductsCount } = useSelector(state => state.productsState)
     const { isProductDeleted, error: productError } = useSelector(state => state.productState)
@@ -133,6 +134,7 @@ export default function ProductList() {
 
     return (
         <>
+        <MetaData title="Product List | GLOCRE" />
             <section className="prodlist-section">
                 <div className="row container-fluid">
                     <div className="col-lg-2">

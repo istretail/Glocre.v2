@@ -13,6 +13,7 @@ import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
 import React from "react";
 import { useState } from "react";
+import MetaData from "../layouts/MetaData";
 
 // import img1 from '../../public/images/IMAGE-1.png';
 
@@ -67,7 +68,7 @@ export default function Dashboard() {
 
     return (
         <>
-
+<MetaData title="Admin Dashboard | GLOCRE" />
             <section className="dash-section">
                 <div className="row container-fluid custom-layout">
                     <div className="col-12 col-lg-2">

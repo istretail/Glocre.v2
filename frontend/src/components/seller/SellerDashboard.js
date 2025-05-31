@@ -12,6 +12,7 @@ import Drawer from '@mui/material/Drawer';
 import { useState } from "react";
 import { Dropdown, DropdownButton, Image } from "react-bootstrap";
 import avatar1 from '../../images/OIP.jpg';
+import MetaData from '../layouts/MetaData';
 
 // import img1 from '../../public/images/IMAGE-1.png';
 
@@ -64,6 +65,7 @@ export default function SellerDashboard() {
 
   return (
     <>
+    <MetaData title="Seller Dashboard | GLOCRE" />
       <section className="seller-dash-section">
         <div className="row container-fluid">
           <div className="col-12 col-lg-2">

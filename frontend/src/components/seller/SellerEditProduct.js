@@ -16,10 +16,11 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { Modal, Box, Typography, Button } from "@mui/material";
+import MetaData from "../layouts/MetaData";
 export default function SellerUpdateProduct() {
   const { id: productId } = useParams();
-  const { loading, categories = {} } = useSelector(state => state.productsState);
-  const { isProductUpdated, product, isImageDeleted, error } = useSelector(state => state.productState);
+  const { categories = {} } = useSelector(state => state.productsState);
+  const { loading, isProductUpdated, product, isImageDeleted, error } = useSelector(state => state.productState);
   const [formData, setFormData] = useState({
     name: "",
     offPrice: "",
@@ -78,6 +79,7 @@ export default function SellerUpdateProduct() {
   const [navModalOpen, setNavModalOpen] = useState(false);
   const [pendingSubmit, setPendingSubmit] = useState(false);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [hasInitialized, setHasInitialized] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -186,14 +188,14 @@ export default function SellerUpdateProduct() {
     const files = Array.from(e.target.files);
     const maxImages = 3;
     const maxSizeInBytes = 1024 * 1024; // 1MB
-
-    const newValidImages = [];
-    const errors = [];
     const imageFiles = files.filter(file => file.type.startsWith("image/"));
     if (imageFiles.length !== files.length) {
       alert("Only image files are allowed.");
       return;
     }
+    const newValidImages = [];
+    const errors = [];
+
     files.forEach((file) => {
       if (file.size > maxSizeInBytes) {
         errors.push(`${file.name} is larger than 1MB.`);
@@ -237,58 +239,62 @@ export default function SellerUpdateProduct() {
   //   });
   // };
   useEffect(() => {
-    if (product) {
-      setFormData({
-        name: product.name,
-        offPrice: product.offPrice,
-        tax: product.tax,
-        price: product.price,
-        keyPoints: product.keyPoints && product.keyPoints.length > 0 ? product.keyPoints : ["", "", "", "", ""],
-        description: product.description,
-        images: product.images,
-        maincategory: product.maincategory,
-        category: product.category,
-        subcategory: product.subcategory,
-        fssai: product.fssai,
-        stock: product.stock,
-        condition: product.condition,
-        brand: product.brand,
-        itemModelNum: product.itemModelNum,
-        isRefundable: product.isRefundable ? "true" : "false",
-        manufactureDetails: product.manufactureDetails,
+    if (!hasInitialized) {
 
-        sku: product.sku,
-        upc: product.upc,
-        hsn: product.hsn,
-        countryofOrgin: product.countryofOrgin,
-        productCertifications: product.productCertifications,
-        itemLength: product.itemLength,
-        itemHeight: product.itemHeight,
-        itemWeight: product.itemWeight,
-        itemWidth: product.itemWidth,
-        moq: product.moq,
-        shippingCostlol: product.shippingCostlol,
-        shippingCostNorth: product.shippingCostNorth,
-        shippingCostSouth: product.shippingCostSouth,
-        status: product.status,
-        shippingCostEast: product.shippingCostEast,
-        shippingCostCentral: product.shippingCostCentral,
-        shippingCostWest: product.shippingCostWest,
-        shippingCostNe: product.shippingCostNe,
-        additionalShippingCost: product.additionalShippingCost,
-        unit: product.unit,
-        variants: product.variants,
-        rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
-        clocreId: product.clocreId,
-      });
-      setVariantDetails(product?.variants?.map(variant => ({
-        ...variant,
-        images: variant.images || [] // Ensure images is defined
-      })));
-      setHasVariants(product?.variants?.length > 0);
-      setImagesPreview(product.images);
+      if (product) {
+        setFormData({
+          name: product.name,
+          offPrice: product.offPrice,
+          tax: product.tax,
+          price: product.price,
+          keyPoints: product.keyPoints && product.keyPoints.length > 0 ? product.keyPoints : ["", "", "", "", ""],
+          description: product.description,
+          images: product.images,
+          maincategory: product.maincategory,
+          category: product.category,
+          subcategory: product.subcategory,
+          fssai: product.fssai,
+          stock: product.stock,
+          condition: product.condition,
+          brand: product.brand,
+          itemModelNum: product.itemModelNum,
+          isRefundable: product.isRefundable ? "true" : "false",
+          manufactureDetails: product.manufactureDetails,
+
+          sku: product.sku,
+          upc: product.upc,
+          hsn: product.hsn,
+          countryofOrgin: product.countryofOrgin,
+          productCertifications: product.productCertifications,
+          itemLength: product.itemLength,
+          itemHeight: product.itemHeight,
+          itemWeight: product.itemWeight,
+          itemWidth: product.itemWidth,
+          moq: product.moq,
+          shippingCostlol: product.shippingCostlol,
+          shippingCostNorth: product.shippingCostNorth,
+          shippingCostSouth: product.shippingCostSouth,
+          status: product.status,
+          shippingCostEast: product.shippingCostEast,
+          shippingCostCentral: product.shippingCostCentral,
+          shippingCostWest: product.shippingCostWest,
+          shippingCostNe: product.shippingCostNe,
+          additionalShippingCost: product.additionalShippingCost,
+          unit: product.unit,
+          variants: product.variants,
+          rejectionReason: product.rejectionReason || '', // Initialize rejection reason if available
+          clocreId: product.clocreId,
+        });
+        setVariantDetails(product?.variants?.map(variant => ({
+          ...variant,
+          images: variant.images || [] // Ensure images is defined
+        })));
+        setHasVariants(product?.variants?.length > 0);
+        setImagesPreview(product.images);
+        setHasInitialized(true);
+      }
     }
-  }, [product, productId]);
+  }, [product, productId, hasInitialized]);
 
   useEffect(() => {
     if (product) {
@@ -366,6 +372,13 @@ export default function SellerUpdateProduct() {
     const { itemModelNum, sku, upc, hsn, fssai, maincategory } = formData;
     const alphaNumericRegex = /^[A-Z0-9\-]+$/;
 
+    const validUnits = ["EA", "ML", "SET", "KG", "LTR", "BOX", "PCS"]; // Customize list
+
+    if (!validUnits.includes(formData.unit?.toUpperCase())) {
+      toast.error("Please enter a valid unit (e.g., EA, ML, SET).");
+      return false;
+    }
+
     const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
 
     // --- SKU ---
@@ -381,11 +394,11 @@ export default function SellerUpdateProduct() {
     }
 
     if (maincategory === "Food and Beverage Products") {
-               if (!/^\d{14}$/.test(fssai) || /^0+$/.test(fssai)) {
-                   toast.error("FSSAI must be a 14-digit numeric code and cannot be all zeros.");
-                   return false;
-               }
-             }
+      if (!/^\d{14}$/.test(fssai) || /^0+$/.test(fssai)) {
+        toast.error("FSSAI must be a 14-digit numeric code and cannot be all zeros.");
+        return false;
+      }
+    }
 
     // --- Item Model Number ---
     if (itemModelNum) {
@@ -480,9 +493,8 @@ export default function SellerUpdateProduct() {
     if (window.confirm("Are you sure you want to delete this image? It won't be recovered")) {
       try {
         if (variantId) {
-          // Handle variant images
           if (!isString && imageUrl instanceof File) {
-            // If it's a newly added local File, just remove it from state
+            // Local file – just remove from variantDetails
             setVariantDetails((prevVariants) =>
               prevVariants.map((variant) =>
                 variant._id === variantId
@@ -493,24 +505,24 @@ export default function SellerUpdateProduct() {
                   : variant
               )
             );
-            return; // No server call needed
+            return;
           }
 
           if (!isLocalImage) {
             await dispatch(deleteProductImage(imageUrl, productId, variantId));
           }
 
-          setFormData((prev) => ({
-            ...prev,
-            variants: prev.variants.map((variant) =>
+          // ✅ UPDATE variantDetails, not just formData
+          setVariantDetails((prevVariants) =>
+            prevVariants.map((variant) =>
               variant._id === variantId
                 ? {
                   ...variant,
                   images: (variant.images || []).filter((img) => img !== imageUrl),
                 }
                 : variant
-            ),
-          }));
+            )
+          );
         } else {
           // Handle normal product images
           if (!isLocalImage) {
@@ -594,6 +606,7 @@ export default function SellerUpdateProduct() {
 
   return (
     <>
+      <MetaData title={`Update Product - ${formData.name || 'GLOCRE'}`} />
       <section className="seller-update-product-glc">
         <div className="row container-fluid">
           <div className="col-12 col-md-2">
@@ -989,9 +1002,9 @@ export default function SellerUpdateProduct() {
                           className="form-control"
                           name="fssai"
                           value={formData.fssai}
-                            onChange={(e) => {
-                              const onlyDigits = e.target.value.replace(/\D/g, ""); // Remove non-digits
-                              setFormData((prev) => ({ ...prev, fssai: onlyDigits }));
+                          onChange={(e) => {
+                            const onlyDigits = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                            setFormData((prev) => ({ ...prev, fssai: onlyDigits }));
                           }}
                           maxLength={14}
                           required
@@ -1011,6 +1024,8 @@ export default function SellerUpdateProduct() {
                         type="text"
                         className="form-control"
                         name="tax"
+                        min="1"
+                        max="99"
                         value={formData.tax}
                         onChange={(e) => {
                           let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
@@ -1022,7 +1037,7 @@ export default function SellerUpdateProduct() {
 
                           // Remove leading zero unless value is "0"
                           if (value.length > 1 && value.startsWith("0")) {
-                            value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                            value = String(parseInt(value, 10)); // Converts "05" to "5", etc.
                           }
 
                           // Prevent "00"
@@ -1035,8 +1050,15 @@ export default function SellerUpdateProduct() {
                             value = "99";
                           }
 
+                          // ✅ Check the new value here, not the old formData
+                          if (parseInt(value, 10) === 0) {
+                            alert("Tax percentage must be greater than 0.");
+                            return;
+                          }
+
                           handleChange({ target: { name: "tax", value } });
                         }}
+
                         required
                         onKeyDown={(e) => {
                           // Block "+", "-", ".", "e", arrow keys
@@ -1066,7 +1088,7 @@ export default function SellerUpdateProduct() {
                           name="price"
                           value={formData.price}
                           onChange={handleChange}
-                          min="0"
+                          min="1"
                           max="99999"
                           required
                           onWheel={(e) => e.target.blur()} // disables mouse wheel
@@ -1096,7 +1118,7 @@ export default function SellerUpdateProduct() {
                           value={formData.offPrice}
                           required
                           onChange={handleChange}
-                          min="0"
+                          min="1"
                           max="99999"
                           onWheel={(e) => e.target.blur()} // disables mouse wheel
                           onKeyDown={(e) => {
@@ -1158,7 +1180,7 @@ export default function SellerUpdateProduct() {
                                   width="55"
                                   height="52"
                                   style={{ cursor: "pointer" }}
-                                  required
+
 
                                 />
                                 <button
@@ -1315,7 +1337,7 @@ export default function SellerUpdateProduct() {
                               value={variant.price}
                               onChange={(e) => handleVariantChange(index, "price", e.target.value)}
                               required
-                              min="0"
+                              min="1"
                               max="99999"
                               onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
@@ -1344,7 +1366,7 @@ export default function SellerUpdateProduct() {
                               value={variant.offPrice}
                               onChange={(e) => handleVariantChange(index, "offPrice", e.target.value)}
                               required
-                              min="0"
+                              min="1"
                               max="99999"
                               onWheel={(e) => e.target.blur()} // disables mouse wheel
                               onKeyDown={(e) => {
@@ -1403,7 +1425,7 @@ export default function SellerUpdateProduct() {
                             className="form-control"
                             multiple
                             accept="image/*"
-                            required
+
                             onChange={e => handleVariantImageChange(index, e)}
                           />
                           <div className="mt-2">
@@ -1603,7 +1625,7 @@ export default function SellerUpdateProduct() {
                         onChange={handleChange}
                         value={formData.manufactureDetails}
                         name="manufactureDetails"
-                        required
+
                       />
                     </div>
                   </div>
@@ -2110,34 +2132,41 @@ export default function SellerUpdateProduct() {
                         type="text"
                         id="unit_field"
                         className="form-control"
-                        onChange={handleChange}
-                        value={formData.unit?.toLocaleUpperCase()}
+                        onChange={(e) => {
+                          const value = e.target.value.toUpperCase();
+                          // Allow only letters and max 5 characters
+                          if (/^[A-Z]{0,5}$/.test(value)) {
+                            setFormData((prev) => ({ ...prev, unit: value }));
+                          }
+                        }}
+                        value={formData.unit?.toUpperCase()}
                         name="unit"
                       />
+
                     </div>
                   </div>
-                  
-                    {formData.status === 'rejected' && (
-                      <div className="col-lg-6">
-                        <div className="form-group">
 
-                          <label htmlFor="rejectionReason_field">Rejection Reason:<span style={{ color: "red" }}> *</span></label>
-                          <textarea
-                            className="from-control "
-                            id="rejectionReason_field"
-                            rows="4"
-                            // onChange={(e) => setFormData({ ...formData, rejectionReason: e.target.value })}
-                            value={formData.rejectionReason}
-                            name="rejectionReason"
-                            style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}
-                          ></textarea>
+                  {formData.status === 'rejected' && (
+                    <div className="col-lg-6">
+                      <div className="form-group">
+
+                        <label htmlFor="rejectionReason_field">Rejection Reason:<span style={{ color: "red" }}> *</span></label>
+                        <textarea
+                          className="from-control "
+                          id="rejectionReason_field"
+                          rows="4"
+                          // onChange={(e) => setFormData({ ...formData, rejectionReason: e.target.value })}
+                          value={formData.rejectionReason}
+                          name="rejectionReason"
+                          style={{ border: "1px solid #ccc", borderRadius: "4px", padding: "10px", width: "100%", resize: "none" }}
+                        ></textarea>
 
 
-                        </div>
                       </div>
-                    )
+                    </div>
+                  )
 
-                    }
+                  }
                   <div style={{ display: 'flex', justifyContent: 'end' }}>
                     <button
                       id="login_button"
@@ -2149,7 +2178,7 @@ export default function SellerUpdateProduct() {
                       Update Product
                     </button>
                   </div>
-                    
+
 
                 </div>
               </form>

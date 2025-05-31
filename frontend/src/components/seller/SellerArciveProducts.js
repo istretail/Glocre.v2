@@ -13,19 +13,42 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Pagination from 'react-js-pagination';
 import { Link, useNavigate } from "react-router-dom";
 import { Modal, Box, Typography, Button } from "@mui/material";
+import MetaData from "../layouts/MetaData";
 export default function SellerArchiveProducts() {
   // const { loading = true, productsCount } = useSelector(state => state.productsState)
   const { loading = true, products = [], sellerProductCount, isProductDeleted, resPerPage, error } = useSelector(state => state.productsState)
   const { isProductUpdated } = useSelector(state => state.productState)
   const [searchKeyword, setSearchKeyword] = useState('');
-
+  const [filterStatus, setFilterStatus] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [clocreProductId, setclocreProductId] = useState('');
   const dispatch = useDispatch();
 
   const unarchiveHandler = (e, id) => {
     e.target.disabled = true;
     dispatch(removeArchiveProduct(id))
   }
+
+  function debounce(func, delay) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), delay);
+    };
+  }
+  useEffect(() => {
+    const debouncedSearch = debounce(() => {
+      dispatch(getArchiveProducts(clocreProductId, filterStatus, 1)); // always reset to 1
+      setCurrentPage(1);
+    }, 500); // 500ms debounce
+
+    debouncedSearch();
+
+    // Cleanup on unmount
+    return () => {
+      debouncedSearch.cancel && debouncedSearch.cancel();
+    };
+  }, [clocreProductId, filterStatus, dispatch]);
 
   useEffect(() => {
     if (error) {
@@ -41,8 +64,8 @@ export default function SellerArchiveProducts() {
       })
       return;
     }
-    dispatch(getArchiveProducts(searchKeyword, currentPage))
-  }, [dispatch, error, isProductDeleted, isProductUpdated, searchKeyword, currentPage])
+    dispatch(getArchiveProducts(currentPage, filterStatus, searchKeyword))
+  }, [dispatch, error, isProductDeleted, isProductUpdated, searchKeyword, filterStatus, currentPage])
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -50,6 +73,12 @@ export default function SellerArchiveProducts() {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+      const handleFilterChange = (status) => {
+          setFilterStatus(status);
+          setCurrentPageNo(1);
+          // setFilterVisible(false);
+        dispatch(getArchiveProducts(status));
+      };
   // Navbar
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
@@ -112,6 +141,7 @@ export default function SellerArchiveProducts() {
 
   return (
     <>
+      <MetaData title="Seller Archived Products | GLOCRE" />
       <section className="seller-product-list-section ">
         <div className="row container-fluid">
           <div className="col-12 col-md-2">
@@ -187,50 +217,42 @@ export default function SellerArchiveProducts() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
-                    <Dropdown className="d-inline">
-                      <Dropdown.Toggle
-                        variant="default"
-                        id="dropdown-basic"
-                        className="custom-filter-toggle"
-                      >
-                        <FontAwesomeIcon icon={faFilter} />
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-
-                          className="text-dark"
+                    <div className="col-lg-1 col-md-2 d-flex justify-content-center align-items-end">
+                      <Dropdown className="d-inline">
+                        <Dropdown.Toggle
+                          variant="default"
+                          id="dropdown-basic"
+                          className="custom-filter-toggle"
                         >
-                          approved
-                        </Dropdown.Item>
-                        <Dropdown.Item
-
-                          className="text-dark"
-                        >
-                          pending
-                        </Dropdown.Item>
-                        <Dropdown.Item
-
-                          className="text-dark"
-                        >
-                          All
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </div>
+                          <FontAwesomeIcon icon={faFilter} />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          <Dropdown.Item onClick={() => handleFilterChange("approved")}>Approved</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleFilterChange("pending")}>Pending</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleFilterChange("rejected")}>Rejected</Dropdown.Item>
+                          <Dropdown.Item onClick={() => handleFilterChange("")}>All</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </div>
 
                 </div>
               )}
               {/* Search, Filter & Avatar Row (For Mobile) */}
               {isMobile && (
                 <div className="row mobile-bottombar">
-                     <div className="col-9 col-md-10 pr-0">
+                  <div className="col-9 col-md-10 pr-0">
                     <div className="search-container">
                       <form className="d-flex">
                         <input
                           type="text"
                           placeholder="Search"
                           name="search"
+                          value={clocreProductId}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const cleanedValue = value.replace(/[^a-zA-Z0-9 ]/g, '');
+                            setclocreProductId(cleanedValue)
+                          }}
                         />
                         <button type="submit">
                           <FontAwesomeIcon icon={faSearch} />
@@ -238,39 +260,21 @@ export default function SellerArchiveProducts() {
                       </form>
                     </div>
                   </div>
-                  <div className="col-3 col-md-2  d-flex justify-content-center align-items-end">
+                  <div className="col-3 col-md-2 d-flex justify-content-center align-items-end">
                     <Dropdown className="d-inline">
                       <Dropdown.Toggle
                         variant="default text-white"
                         id="dropdown-basic"
                         className="text-dark dropdown1 icon-list-filter-procureg"
-                        style={{
-                          backgroundImage: 'none',
-                          border: 'none',
-                          boxShadow: 'none',
-                        }}
+                        style={{ backgroundImage: 'none', border: 'none', boxShadow: "none" }}
                       >
                         <FontAwesomeIcon icon={faFilter} />
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item
-
-                          className="text-dark"
-                        >
-                          approved
-                        </Dropdown.Item>
-                        <Dropdown.Item
-
-                          className="text-dark"
-                        >
-                          pending
-                        </Dropdown.Item>
-                        <Dropdown.Item
-
-                          className="text-dark"
-                        >
-                          All
-                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleFilterChange("approved")}>Approved</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleFilterChange("pending")}>Pending</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleFilterChange("rejected")}>Rejected</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleFilterChange("")}>All</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
@@ -428,49 +432,7 @@ export default function SellerArchiveProducts() {
                             </button>
                           </td>
 
-                          <Modal open={navModalOpen} onClose={handleNavClose}>
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                bgcolor: "background.paper",
-                                p: 4,
-                                borderRadius: 2,
-                                width: 300,
-                                border: "none",
-                                outline: "none",
-                              }}
-                            >
-                              <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
-                                Are you sure want to update this product?(Item will be moved to pending state)
-                              </Typography>
-                              <Box display="flex" justifyContent="space-between">
-                                <Button
-                                  onClick={handleNavConfirm}
-                                  className="left-but"
-                                  sx={{ margin: "3px" }}
-                                >
-                                  Yes
-                                </Button>
-                                <Button
-                                  onClick={handleNavClose}
-                                  sx={{
-                                    backgroundColor: '#2f4d2a',
-                                    color: '#fff',
-                                    '&:hover': {
-                                      backgroundColor: '#2f4d2a50',
-                                    },
-                                    width: "100%",
-                                    margin: "3px"
-                                  }}
-                                >
-                                  No
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Modal>
+                        
 
                           {/* <td>
                             <button className="m-3" onClick={e => unarchiveHandler(e, product._id)}
@@ -541,6 +503,49 @@ export default function SellerArchiveProducts() {
                     )}
                   </tbody>
                 </table>
+                <Modal open={navModalOpen} onClose={handleNavClose}>
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      bgcolor: "background.paper",
+                      p: 4,
+                      borderRadius: 2,
+                      width: 300,
+                      border: "none",
+                      outline: "none",
+                    }}
+                  >
+                    <Typography variant="h6" mb={2} align="center" fontSize={17} color="#8c8c8c">
+                      Are you sure want to update this product?(Item will be moved to pending state)
+                    </Typography>
+                    <Box display="flex" justifyContent="space-between">
+                      <Button
+                        onClick={handleNavConfirm}
+                        className="left-but"
+                        sx={{ margin: "3px" }}
+                      >
+                        Yes
+                      </Button>
+                      <Button
+                        onClick={handleNavClose}
+                        sx={{
+                          backgroundColor: '#2f4d2a',
+                          color: '#fff',
+                          '&:hover': {
+                            backgroundColor: '#2f4d2a50',
+                          },
+                          width: "100%",
+                          margin: "3px"
+                        }}
+                      >
+                        No
+                      </Button>
+                    </Box>
+                  </Box>
+                </Modal>
               </div>
             </section>
           </div>

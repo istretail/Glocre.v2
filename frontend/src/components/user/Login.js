@@ -46,7 +46,7 @@ export default function Login() {
 
   return (
     <>
-      <MetaData title={`Login`} />
+      <MetaData title={`Login | GLOCRE`} />
       {loading ? <Loader /> :
         <section className="signIn mb-5">
           <div class="breadcrumbWrapper">

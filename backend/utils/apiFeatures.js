@@ -21,6 +21,8 @@ class APIFeatures {
             { sku: { $regex: keyword, $options: 'i' } },
             { itemModelNum: { $regex: keyword, $options: 'i' } },
             { clocreProductId: { $regex: keyword, $options: 'i' } },
+            { clocreUserId: { $regex: keyword, $options: 'i' } },
+            { clocreOrderId: { $regex: keyword, $options: 'i' } },
           ],
         };
 

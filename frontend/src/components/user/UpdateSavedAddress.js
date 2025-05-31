@@ -8,6 +8,7 @@ import Loader from '../layouts/Loader';
 import { TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Nav from '../layouts/nav';
+import MetaData from '../layouts/MetaData';
 
 const fetchPostalCodeDetails = async (pincode) => {
   try {
@@ -126,6 +127,7 @@ console.log(savedAddress, "savedAddress")
 
   return (
     <>
+    <MetaData title={`Update Saved Address | GLOCRE`} />
       <Nav />
       <div className="breadcrumbWrapper mb-4">
         <div className="container-fluid">

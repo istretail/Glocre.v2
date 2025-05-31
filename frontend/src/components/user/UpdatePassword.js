@@ -14,6 +14,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import MetaData from "../layouts/MetaData";
 
 export default function UpdatePassword() {
   const [password, setPassword] = useState("");
@@ -63,6 +64,7 @@ useEffect(() => {
 
   return (
     <>
+    <MetaData title={`Update Password | GLOCRE`} />
       <section className="signIn mb-5">
         <div class="breadcrumbWrapper">
           <div class="container-fluid">

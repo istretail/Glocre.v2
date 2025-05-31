@@ -12,6 +12,7 @@ import { Button } from "react-bootstrap";
 import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import MetaData from "../layouts/MetaData";
 
 export default function UpdateOrder() {
 
@@ -25,15 +26,38 @@ export default function UpdateOrder() {
     const [trackingNumber, setTrackingNumber] = useState(orderDetail?.trackingInfo?.trackingNumber || '');
     const [courierSlug, setCourierSlug] = useState(orderDetail?.trackingInfo?.courierSlug || 'DHL');
     // const [trackingNumber, setTrackingNumber] = useState("");
-    // const [courierSlug, setCourierSlug] = useState("DHL"); // Default option
+    const [selectedCourier, setSelectedCourier] = useState("DHL"); // Default option
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const trackingPatterns = {
+        dhl: /^[0-9]{10,11}$/, // usually 10 or 11 digits
+        fedex: /^[0-9]{12,14}$/, // typically 12 or 14 digits
+        ups: /^1Z[0-9A-Z]{16}$/, // starts with 1Z, 18 characters total
+        bluedart: /^[0-9]{8,11}$/, // numeric, 8-11 digits
+        indiapost: /^[A-Z]{2}[0-9]{9}[A-Z]{2}$/, // e.g., RM123456789IN
+        proffesionalCourier: /^[A-Z0-9]{6,12}$/, // alphanumeric
+        dtdc: /^[A-Z0-9]{6,12}$/, // alphanumeric
+        stCourier: /^[0-9]{8,12}$/, // numeric, 8-12 digits
+    };
+      
+    const validateTrackingNumber = (courier, number) => {
+        if (!courier || !number) return false;
 
+        const pattern = trackingPatterns[courier];
+        if (!pattern) return false; // unknown courier
 
+        return pattern.test(number);
+    };
+      
     const submitHandler = (e) => {
         e.preventDefault();
 
+        if (!validateTrackingNumber(selectedCourier, trackingNumber)) {
+            toast.error("Please enter a valid tracking number for the selected courier.");
+            return;
+        }
+          
         // Use `let` here to allow reassignment
         let orderData = { orderStatus };
 
@@ -99,6 +123,7 @@ export default function UpdateOrder() {
     return (
 
         <>
+        <MetaData title={`Update Order #${orderDetail.clocreOrderId} | GLOCRE`} />
             <section className="updateorder-section">
                 <div className="row container-fluid ">
                     <div className="col-12 col-md-2">
@@ -300,9 +325,9 @@ export default function UpdateOrder() {
                                                             />
                                                             <div className="custom-select-wrapper mt-2 mb-2">
                                                                 <select
-                                                                    className="custom-select"
-                                                                    value={courierSlug}
-                                                                    onChange={(e) => setCourierSlug(e.target.value)}
+                                                                    className="form-control"
+                                                                    value={selectedCourier}
+                                                                    onChange={(e) => setSelectedCourier(e.target.value)}
                                                                 >
                                                                     <option value="">Select Courier</option>
                                                                     <option value="dhl">DHL</option>
@@ -348,7 +373,7 @@ export default function UpdateOrder() {
                                                         <tr>
                                                             <td>
                                                                 <div className="d-flex align-items-center">
-                                                                    <div className="img">
+                                                                    <div className="img" style={{ border: "none", outline: "none" }}>
                                                                         <img src={item.image} alt={item.name} style={{ height: "75px", width: "75px" }} />
                                                                     </div>
                                                                 </div>

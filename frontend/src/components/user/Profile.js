@@ -120,7 +120,7 @@ export default function Profile() {
 
   return (
     <>
-      <MetaData title={`Profile`} />
+      <MetaData title={`Profile | GLOCRE`} />
 
       <Nav />
 

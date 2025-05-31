@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Nav from "../layouts/nav";
 import { Button } from '@mui/material';
 import { TryRounded } from '@mui/icons-material';
+import MetaData from "../layouts/MetaData";
 
 const EmailVerification = () => {
   const { token } = useParams();
@@ -44,6 +45,7 @@ const EmailVerification = () => {
 
   return (
     <>
+    <MetaData title="Email Verification Success | GLOCRE" />  
       <Nav />
 
       <div className="breadcrumbWrapper mb-4">

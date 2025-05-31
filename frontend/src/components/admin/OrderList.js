@@ -16,6 +16,7 @@ import { Modal, Box, Typography } from "@mui/material";
 import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown,  } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import MetaData from "../layouts/MetaData";
 
 export default function OrderList() {
     const { adminOrders = [], loading = true, error, isOrderDeleted, orderCount, resPerPage } = useSelector(state => state.orderState)
@@ -114,6 +115,7 @@ export default function OrderList() {
 
     return (
         <>
+        <MetaData title={`Order List | GLOCRE`} />
             <section className="orderlist-glc ">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">

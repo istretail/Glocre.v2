@@ -9,6 +9,7 @@ import { clearAuthError, submitContactForm } from "../../actions/userActions";
 import Loader from "./Loader";
 import { TextField } from "@mui/material";
 import { toast } from "react-toastify";
+import MetaData from "./MetaData";
 export default function Support() {
   const { loading, isFormSubmitted, error } = useSelector((state) => state.userState)
   const dispatch = useDispatch();
@@ -66,6 +67,7 @@ useEffect(() => {
 
   return (
     <>
+      <MetaData title="Contact Us | GLOCRE" />
       {/* CONTACT US FORM */}
       <body className="body-contact-glc pt-0">
         {/* Banner */}

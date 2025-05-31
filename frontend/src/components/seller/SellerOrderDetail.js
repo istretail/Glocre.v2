@@ -11,6 +11,7 @@ import avatar1 from '../../images/OIP.jpg';
 import { faCartShopping, faCheck, faMoneyBillTrendUp, faUpload, faUser, faFilter, faPencil, faSearch, faTrash, faBars, faDashboard, faList, faShop, faShoppingBag, faSort, faUserPlus, faPen } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, DropdownButton, Image } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import MetaData from "../layouts/MetaData";
 
 export default function SellerOrderDetail() {
   const { orderDatail = [], loading, error, orderDetail } = useSelector(state => state.orderState)
@@ -59,6 +60,7 @@ export default function SellerOrderDetail() {
 
   return (
     <>
+    <MetaData title={`Order #${orderId} | GLOCRE`} />
       <section className="seller-order-details-glc">
         <div className="row container-fluid">
           <div className="col-12 col-md-2">

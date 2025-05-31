@@ -14,9 +14,10 @@ import { Modal, Box, Typography } from "@mui/material";
 import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import MetaData from "../layouts/MetaData";
 
 export default function UserList() {
-    const { users = [], loading = true, error, isUserDeleted, userConut, resPerPage, } = useSelector(state => state.userState);
+    const { users = [], loading = true, error, isUserDeleted, userConut, resPerPage,ResultCount } = useSelector(state => state.userState);
     const [searchKeyword, setSearchKeyword] = useState(""); // State for search input
     const [roleFilter, setRoleFilter] = useState('');
     const [filterVisible, setFilterVisible] = useState(false);
@@ -119,6 +120,7 @@ export default function UserList() {
 
     return (
         <>
+        <MetaData title="User List | GLOCRE" />
             <section className="userlist-glc">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">
@@ -195,6 +197,9 @@ export default function UserList() {
                                                 <Dropdown.Item onClick={() => handleFilterChange("user")} className="text-dark">
                                                     User
                                                 </Dropdown.Item>
+                                                    <Dropdown.Item onClick={() => handleFilterChange("user&isSeller=false")} className="text-dark">
+                                                    Requested Seller
+                                                </Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("")} className="text-dark">
                                                     All
                                                 </Dropdown.Item>
@@ -234,6 +239,9 @@ export default function UserList() {
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("user")} className="text-dark">
                                                     User
+                                                </Dropdown.Item>
+                                                <Dropdown.Item onClick={() => handleFilterChange("user&isSeller=false")} className="text-dark">
+                                                    Requested Seller
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("")} className="text-dark">
                                                     All
@@ -296,9 +304,22 @@ export default function UserList() {
                                                 <tr>
                                                     <td>
                                                         <div className="d-flex align-items-center">
-                                                            <span style={{ color: "#ffad63", fontSize: "15px" }}>
+                                                            <span
+                                                                style={{
+                                                                    fontSize: "15px",
+                                                                    color:
+                                                                        user.role === "admin"
+                                                                            ? "red"
+                                                                            : user.role === "seller"
+                                                                                ? "green"
+                                                                                : user.role === "user" && user.isSeller === false
+                                                                                    ? "blue"
+                                                                                    : "#ffad63",
+                                                                }}
+                                                            >
                                                                 {user.name} {user.lastName}
                                                             </span>
+
                                                         </div>
                                                     </td>
                                                     <td>
@@ -390,12 +411,12 @@ export default function UserList() {
                             </div>
                         )
                         }
-                        {userConut > 0 && userConut > resPerPage ? (
+                        {ResultCount > 0 && ResultCount > resPerPage ? (
                             <div className="d-flex justify-content-center mt-5 tab-slider">
                                 <Pagination
                                     activePage={currentPage}
                                     onChange={setCurrentPageNo}
-                                    totalItemsCount={userConut}
+                                    totalItemsCount={ResultCount}
                                     itemsCountPerPage={resPerPage}
                                     nextPageText={"Next"}
                                     firstPageText={"First"}

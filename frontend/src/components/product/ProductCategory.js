@@ -114,7 +114,7 @@ export default function ProductCategory() {
         <Loader />
       ) : (
         <>
-          <MetaData title={"Results"} />
+            <MetaData title={"Category Results | GLOCRE"} />
 
           {/* Medium & Small screen filter/sort */}
           <div className="px-3 mobileSticky">

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import './dash.css'
 import Sidebar from './Sidebar';
+import MetaData from '../layouts/MetaData';
 const S3ImageGallery = () => {
     const [images, setImages] = useState([]);
 
@@ -33,7 +34,9 @@ const S3ImageGallery = () => {
     };
 
     return (
-        <div className="d-flex">
+        <Fragment>
+            <MetaData title="Admin S3 Image Gallery | GLOCRE" />
+            <div className="d-flex">
             <div className="col-12 col-md-2">
                 <Sidebar />
             </div>
@@ -55,6 +58,8 @@ const S3ImageGallery = () => {
                 })}
             </div>
         </div>
+        </Fragment>
+        
 
     );
 };

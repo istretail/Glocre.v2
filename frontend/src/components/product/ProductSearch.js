@@ -129,7 +129,7 @@ export default function ProductSearch({ onFilterChange }) {
         <Loader />
       ) : (
         <>
-          <MetaData title={"Results"} />
+            <MetaData title={"Search Results | GLOCRE"} />
 
           {/* Medium & Small screen filter/sort */}
           <div className="px-3 mobileSticky">

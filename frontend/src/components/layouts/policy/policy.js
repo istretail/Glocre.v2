@@ -1,10 +1,12 @@
 import React from "react";
 import "./tc.css";
 import Nav from "../nav.js";
+import MetaData from "../MetaData.js";
 
 export default function Policy() {
   return (
     <>
+    <MetaData title="Privacy Policy | GLOCRE" />
       <Nav />
       {/* Privacy Policy */}
       <body className="body-pp-glc">

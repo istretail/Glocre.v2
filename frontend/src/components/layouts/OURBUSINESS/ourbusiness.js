@@ -3,10 +3,12 @@ import "./ourbus.css";
 import ourbusineeg1 from "../OURBUSINESS/OURBUSINESS--IMAGES/OURBUSINESSG1.png";
 import { Link } from "react-router-dom";
 import Nav from "../nav";
+import MetaData from "../MetaData";
 
 export default function Ourbusiness() {
   return (
     <>
+      <MetaData title="Our Business | GLOCRE" />
       <Nav />
 
       <body className="container-fluid">

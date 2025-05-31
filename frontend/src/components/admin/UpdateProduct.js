@@ -15,6 +15,7 @@ import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
+import MetaData from "../layouts/MetaData";
 export default function UpdateProduct() {
 
     const { id: productId } = useParams();
@@ -76,6 +77,7 @@ export default function UpdateProduct() {
     const [variantDetails, setVariantDetails] = useState([]);
     const [hasVariants, setHasVariants] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]); // [{ url, file }]
+    const [hasInitialized, setHasInitialized] = useState(false);
 
 
     const handleChange = (e) => {
@@ -141,8 +143,9 @@ export default function UpdateProduct() {
             dispatch(getCategoryHierarchy());
         }
     }, [products, dispatch]);
+
     useEffect(() => {
-        if (products && products.length > 0) {
+        if (!hasInitialized && products && products.length > 0) {
             const product = products.find(p => p._id === productId);
             if (product) {
                 setFormData({
@@ -190,12 +193,16 @@ export default function UpdateProduct() {
 
                 });
 
-                setVariantDetails(product.variants);
+                setVariantDetails(product?.variants?.map(variant => ({
+                    ...variant,
+                    images: variant.images || [] // Ensure images is defined
+                  })));
                 setHasVariants(product.variants.length > 0);
                 setImagesPreview(product.images);
+                setHasInitialized(true); // prevent future overwrites
             }
         }
-    }, [products, productId]);
+    }, [products, productId, hasInitialized]);
 
 
     useEffect(() => {
@@ -222,25 +229,35 @@ export default function UpdateProduct() {
 
 
 
-    const handleVariantChange = (index, name, value) => {
-        const numericValue = Number(value);
+  const handleVariantChange = (index, name, value) => {
+    setVariantDetails((prevVariants) => {
+      const newVariants = [...prevVariants];
+      const currentVariant = newVariants[index];
 
-        setVariantDetails((prevVariants) => {
-            const newVariants = [...prevVariants];
-            const current = newVariants[index];
+      // Decide whether to convert value to number
+      const isNumericField = ['price', 'offPrice'].includes(name);
+      const updatedValue = isNumericField ? Number(value) : value;
 
-            const price = name === "price" ? numericValue : Number(current.price);
-            const offPrice = name === "offPrice" ? numericValue : Number(current.offPrice);
+      // Validation: MRP should be greater than Offer Price
+      if (isNumericField) {
+        const price = name === 'price' ? updatedValue : Number(currentVariant.price);
+        const offPrice = name === 'offPrice' ? updatedValue : Number(currentVariant.offPrice);
 
-            if (price !== 0 && offPrice !== 0 && price <= offPrice) {
-                toast.error(`Variant ${index + 1}: MRP must be greater than Offer Price.`);
-                return prevVariants; // block update
-            }
+        if (price <= offPrice) {
+          toast.error("MRP must be greater than Offer Price.");
+          return prevVariants; // Block update
+        }
+      }
 
-            newVariants[index] = { ...current, [name]: numericValue };
-            return newVariants;
-        });
-    };
+      // If valid, update the variant
+      newVariants[index] = {
+        ...currentVariant,
+        [name]: updatedValue,
+      };
+
+      return newVariants;
+    });
+  };
 
     const handleVariantImageChange = (index, e) => {
         const files = Array.from(e.target.files);
@@ -319,6 +336,13 @@ export default function UpdateProduct() {
 
         const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
 
+            const validUnits = ["EA", "ML", "SET", "KG", "LTR", "BOX", "PCS"]; // Customize list
+        
+            if (!validUnits.includes(formData.unit?.toUpperCase())) {
+              toast.error("Please enter a valid unit (e.g., EA, ML, SET).");
+              return false;
+            }
+
         // --- SKU ---
         if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
             toast.error("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
@@ -390,8 +414,8 @@ export default function UpdateProduct() {
 
             // Ensure ALL variants (both updated & unchanged) are included
             variantDetails.forEach((variant, index) => {
-                productData.append(`variants[${index}][id]`, variant._id); // Keep existing ID
-                productData.append(`variants[${index}][type]`, variant.variantType);
+                // productData.append(`variants[${index}][id]`, variant._id); // Keep existing ID
+                productData.append(`variants[${index}][variantType]`, variant.variantType);
                 productData.append(`variants[${index}][variantName]`, variant.variantName);
                 productData.append(`variants[${index}][price]`, variant.price);
                 productData.append(`variants[${index}][offPrice]`, variant.offPrice);
@@ -440,9 +464,8 @@ export default function UpdateProduct() {
         if (window.confirm("Are you sure you want to delete this image? It won't be recovered")) {
             try {
                 if (variantId) {
-                    // Handle variant images
                     if (!isString && imageUrl instanceof File) {
-                        // If it's a newly added local File, just remove it from state
+                        // Local file – just remove from variantDetails
                         setVariantDetails((prevVariants) =>
                             prevVariants.map((variant) =>
                                 variant._id === variantId
@@ -453,25 +476,25 @@ export default function UpdateProduct() {
                                     : variant
                             )
                         );
-                        return; // No server call needed
+                        return;
                     }
 
                     if (!isLocalImage) {
                         await dispatch(deleteProductImage(imageUrl, productId, variantId));
                     }
 
-                    setFormData((prev) => ({
-                        ...prev,
-                        variants: prev.variants.map((variant) =>
+                    // ✅ UPDATE variantDetails, not just formData
+                    setVariantDetails((prevVariants) =>
+                        prevVariants.map((variant) =>
                             variant._id === variantId
                                 ? {
                                     ...variant,
                                     images: (variant.images || []).filter((img) => img !== imageUrl),
                                 }
                                 : variant
-                        ),
-                    }));
-                } else {
+                        )
+                    );
+                  } else {
                     // Handle normal product images
                     if (!isLocalImage) {
                         await dispatch(deleteProductImage(imageUrl, productId));
@@ -592,6 +615,7 @@ export default function UpdateProduct() {
 
     return (
         <>
+        <MetaData title="Update Product | GLOCRE" />
             <section className="updateprod-section">
 
                 <div className="row container-fluid">
@@ -742,6 +766,7 @@ export default function UpdateProduct() {
                                                     name="name"
                                                     minLength="5"
                                                     maxlength="80"
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -759,6 +784,7 @@ export default function UpdateProduct() {
                                                     value={formData.description}
                                                     name="description"
                                                     maxLength={200}
+                                                    required
                                                 ></textarea>
                                             </div>
                                         </div>
@@ -948,30 +974,24 @@ export default function UpdateProduct() {
                                                     name="tax"
                                                     value={formData.tax}
                                                     onChange={(e) => {
-                                                        let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                                                        let value = e.target.value.replace(/\D/g, "");
 
-                                                        // Prevent more than 2 digits
-                                                        if (value.length > 2) {
-                                                            value = value.slice(0, 2);
-                                                        }
-
-                                                        // Remove leading zero unless value is "0"
+                                                        if (value.length > 2) value = value.slice(0, 2);
                                                         if (value.length > 1 && value.startsWith("0")) {
-                                                            value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                                                            value = String(parseInt(value, 10));
                                                         }
+                                                        if (value === "00") value = "0";
+                                                        if (parseInt(value || "0", 10) > 99) value = "99";
 
-                                                        // Prevent "00"
-                                                        if (value === "00") {
-                                                            value = "0";
-                                                        }
-
-                                                        // Restrict to max 99
-                                                        if (parseInt(value || "0", 10) > 99) {
-                                                            value = "99";
+                                                        // Still alert here to give immediate feedback
+                                                        if (parseInt(value, 10) === 0) {
+                                                            alert("Tax percentage must be greater than 0.");
+                                                            return;
                                                         }
 
                                                         handleChange({ target: { name: "tax", value } });
                                                     }}
+                                                      
                                                     required
                                                     onKeyDown={(e) => {
                                                         // Block "+", "-", ".", "e", arrow keys
@@ -1001,7 +1021,7 @@ export default function UpdateProduct() {
                                                         name="price"
                                                         value={formData.price}
                                                         onChange={handleChange}
-                                                        min="0"
+                                                        min="1"
                                                         max="99999"
                                                         onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                         onKeyDown={(e) => {
@@ -1029,7 +1049,7 @@ export default function UpdateProduct() {
                                                         name="offPrice"
                                                         value={formData.offPrice}
                                                         onChange={handleChange}
-                                                        min="0"
+                                                        min="1"
                                                         max="99999"
                                                         onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                         onKeyDown={(e) => {
@@ -1073,6 +1093,7 @@ export default function UpdateProduct() {
                                                                 e.preventDefault();
                                                             }
                                                         }}
+                                                        required
                                                     />
                                                 </div>
 
@@ -1179,6 +1200,7 @@ export default function UpdateProduct() {
                                                     value={formData.brand}
                                                     name="brand"
                                                     maxLength={30}
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -1196,7 +1218,13 @@ export default function UpdateProduct() {
                                                             type="text"
                                                             className="form-control"
                                                             value={variant.variantType}
-                                                            onChange={(e) => handleVariantChange(index, "variantType", e.target.value)}
+                                                            onChange={e =>
+                                                                handleVariantChange(
+                                                                    index,
+                                                                    'variantType',
+                                                                    e.target.value
+                                                                )
+                                                              }
                                                             required
                                                         />
                                                     </div>
@@ -1231,7 +1259,7 @@ export default function UpdateProduct() {
                                                             value={variant.price}
                                                             onChange={(e) => handleVariantChange(index, "price", e.target.value)}
                                                             required
-                                                            min="0"
+                                                            min="1"
                                                             max="99999"
                                                             onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                             onKeyDown={(e) => {
@@ -1260,7 +1288,7 @@ export default function UpdateProduct() {
                                                             value={variant.offPrice}
                                                             onChange={(e) => handleVariantChange(index, "offPrice", e.target.value)}
                                                             required
-                                                            min="0"
+                                                            min="1"
                                                             max="99999"
                                                             onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                             onKeyDown={(e) => {
@@ -1994,10 +2022,15 @@ export default function UpdateProduct() {
                                                     type="text"
                                                     id="unit_field"
                                                     className="form-control"
-                                                    onChange={handleChange}
-                                                    value={formData.unit?.toLocaleUpperCase()}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.toUpperCase();
+                                                        // Allow only letters and max 5 characters
+                                                        if (/^[A-Z]{0,5}$/.test(value)) {
+                                                            setFormData((prev) => ({ ...prev, unit: value }));
+                                                        }
+                                                    }}
+                                                    value={formData.unit?.toUpperCase()}
                                                     name="unit"
-                                                    required
                                                 />
                                             </div>
                                         </div>

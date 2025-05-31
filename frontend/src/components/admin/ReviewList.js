@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import { faCartShopping, faFilter, faPencil, faSearch, faTrash, faDashboard, faList, faShoppingBag, faSort, faUserPlus, } from "@fortawesome/free-solid-svg-icons";
 import { Dropdown, } from "react-bootstrap";
 import Drawer from '@mui/material/Drawer';
+import MetaData from "../layouts/MetaData"
 
 export default function ReviewList() {
     const { reviews = [], loading = true, error, isReviewDeleted } = useSelector(state => state.productState)
@@ -96,6 +97,7 @@ useEffect(() => {
 
     return (
         <>
+        <MetaData title="Review List | GLOCRE" />
             <section className="reviewlist-section">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">

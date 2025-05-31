@@ -400,7 +400,7 @@ export default function Shipping() {
 
   return (
     <>
-      <MetaData title="Shipping" />
+      <MetaData title="Shipping | GLOCRE" />
 
       <Nav />
       <div className="breadcrumbWrapper mb-4">

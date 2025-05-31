@@ -15,6 +15,7 @@ import SellerSidebar from "./SellerSidebar";
 import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faShoppingBag, faSort, } from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 import { Dropdown, } from "react-bootstrap";
+import MetaData from "../layouts/MetaData";
 
 
 export default function SellerOrders() {
@@ -85,6 +86,7 @@ export default function SellerOrders() {
 
     return (
         <>
+        <MetaData title="Seller Orders | GLOCRE" />
             <section className="seller-order-list-glc">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">
@@ -132,12 +134,13 @@ export default function SellerOrders() {
                                             <div className="row">
                                                 <div className="topnav">
                                                     <div className="search-container">
-                                                        <form className="d-flex">
-                                                            <input type="text" placeholder="Search" name="search" />
-                                                            <button type="submit">
-                                                                <FontAwesomeIcon icon={faSearch} />
-                                                            </button>
-                                                        </form>
+                                                            <form className="d-flex">
+                                                                <input type="text" placeholder="Search" name="search" value={searchKeyword}
+                                                                    onChange={(e) => setSearchKeyword(e.target.value)} />
+                                                                <button type="submit">
+                                                                    <FontAwesomeIcon icon={faSearch} />
+                                                                </button>
+                                                            </form>
                                                     </div>
                                                 </div>
                                             </div>

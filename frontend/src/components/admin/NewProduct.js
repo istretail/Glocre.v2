@@ -14,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Loader from "../layouts/Loader";
+import MetaData from "../layouts/MetaData";
 
 const NewProduct = () => {
     const [formData, setFormData] = useState({
@@ -122,6 +123,13 @@ const NewProduct = () => {
 
         const isOnlyZerosOrDashes = (value) => /^[-0]+$/.test(value);
 
+           const validUnits = ["EA", "ML", "SET", "KG", "LTR", "BOX", "PCS"]; // Customize list
+        
+            if (!validUnits.includes(formData.unit?.toUpperCase())) {
+              toast.error("Please enter a valid unit (e.g., EA, ML, SET).");
+              return false;
+            }
+
         // --- SKU ---
         if (!sku || !alphaNumericRegex.test(sku) || isOnlyZerosOrDashes(sku)) {
             toast.error("SKU is required, should be alphanumeric, and cannot be only zeros or dashes (e.g. '0000').");
@@ -154,7 +162,7 @@ const NewProduct = () => {
                 toast.error("FSSAI must be a 14-digit numeric code and cannot be all zeros.");
                 return false;
             }
-          }
+        }
         return true;
     };
 
@@ -461,7 +469,7 @@ const NewProduct = () => {
 
     return (
         <>
-
+            <MetaData title="Create Product | GLOCRE" />
             <section className="newprod-section">
                 <div className="row container-fluid">
                     <div className="col-12 col-md-2">
@@ -947,6 +955,7 @@ const NewProduct = () => {
                                                                         }}
                                                                         required
                                                                         inputMode="numeric"
+                                                                        min="1"
                                                                         max="99999"
                                                                         onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                                         onKeyDown={(e) => {
@@ -983,6 +992,7 @@ const NewProduct = () => {
                                                                         }}
                                                                         required
                                                                         inputMode="numeric"
+                                                                        min="1"
                                                                         max="99999"
                                                                         onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                                         onKeyDown={(e) => {
@@ -1100,30 +1110,24 @@ const NewProduct = () => {
                                                         name="tax"
                                                         value={formData.tax}
                                                         onChange={(e) => {
-                                                            let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                                                            let value = e.target.value.replace(/\D/g, "");
 
-                                                            // Prevent more than 2 digits
-                                                            if (value.length > 2) {
-                                                                value = value.slice(0, 2);
-                                                            }
-
-                                                            // Remove leading zero unless value is "0"
+                                                            if (value.length > 2) value = value.slice(0, 2);
                                                             if (value.length > 1 && value.startsWith("0")) {
-                                                                value = String(parseInt(value, 10)); // Automatically converts "05" to "5" and "00" to "0"
+                                                                value = String(parseInt(value, 10));
                                                             }
+                                                            if (value === "00") value = "0";
+                                                            if (parseInt(value || "0", 10) > 99) value = "99";
 
-                                                            // Prevent "00"
-                                                            if (value === "00") {
-                                                                value = "0";
-                                                            }
-
-                                                            // Restrict to max 99
-                                                            if (parseInt(value || "0", 10) > 99) {
-                                                                value = "99";
+                                                            // Still alert here to give immediate feedback
+                                                            if (parseInt(value, 10) === 0) {
+                                                                alert("Tax percentage must be greater than 0.");
+                                                                return;
                                                             }
 
                                                             handleChange({ target: { name: "tax", value } });
                                                         }}
+                                                          
                                                         required
                                                         onKeyDown={(e) => {
                                                             // Block "+", "-", ".", "e", arrow keys
@@ -1175,7 +1179,7 @@ const NewProduct = () => {
                                                                 value={formData.price}
                                                                 onChange={handleChange}
                                                                 required
-                                                                min="0"
+                                                                min="1"
                                                                 max="99999"
                                                                 onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                                 onKeyDown={(e) => {
@@ -1205,7 +1209,7 @@ const NewProduct = () => {
                                                                 value={formData.offPrice}
                                                                 onChange={handleChange}
                                                                 required
-                                                                min="0"
+                                                                min="1"
                                                                 max="99999"
                                                                 onWheel={(e) => e.target.blur()} // disables mouse wheel
                                                                 onKeyDown={(e) => {
@@ -1996,11 +2000,15 @@ const NewProduct = () => {
                                                         type="text"
                                                         className="form-control"
                                                         name="unit"
-                                                        value={formData.unit}
-                                                        onChange={handleChange}
+                                                        value={formData.unit.toLocaleUpperCase()}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value.toUpperCase();
+                                                            // Allow only letters, max length 5
+                                                            if (/^[A-Z]{0,5}$/.test(value)) {
+                                                                setFormData((prev) => ({ ...prev, unit: value }));
+                                                            }
+                                                        }}
                                                         required
-                                                        maxLength={10}
-
                                                     />
                                                 </div>
                                             </div>

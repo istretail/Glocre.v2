@@ -7,6 +7,7 @@ import "./Footer.css";
 import Logo from "../../images/procure-g-logo.png";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
+import MetaData from "./MetaData";
 
 const Faqs = () => {
   useEffect(() => {
@@ -34,7 +35,7 @@ const Faqs = () => {
 
   return (
     <>
-   
+      <MetaData title="FAQs | GLOCRE" />
       < Faqs1 />
     </>
   );
@@ -45,6 +46,7 @@ export default Faqs;
 
 const Faqs1 = () => {
   return (
+    
     <>
       <div className="faqsglocre">
         <div className="container">

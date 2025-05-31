@@ -20,6 +20,7 @@ const cartSlice = createSlice({
     shippingInfo: safeParseJSON('shippingInfo', {}),
     billingInfo: safeParseJSON('billingInfo', {}),
     cartItems: [],
+    updateItems:[]
   },
   reducers: {
     clearCart(state) {
@@ -133,6 +134,27 @@ const cartSlice = createSlice({
         error: action.payload,
       }
     },
+    updateItemsRequest(state, action) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    updateItemsSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        items: action.payload.items,
+      };
+    },
+    updateItemsFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
+    
   }
 });
 const { actions, reducer } = cartSlice;
@@ -150,6 +172,9 @@ export const {
   vaildateCartItemsRequest,
   vaildateCartItemsSuccess,
   vaildateCartItemsFail,
+  updateItemsRequest,
+  updateItemsSuccess,
+  updateItemsFail
 } = actions;
 
 export default reducer;

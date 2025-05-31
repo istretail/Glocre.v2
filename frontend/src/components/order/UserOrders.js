@@ -43,7 +43,7 @@ export default function UserOrders() {
       </div>
 
       <Fragment>
-        <MetaData title={"Cart"} />
+        <MetaData title={"My Orders | GLOCRE"} />
         {userOrders.length === 0 ? (
           <>
             <div className="empty d-flex align-items-center justify-content-center flex-column mb-5">

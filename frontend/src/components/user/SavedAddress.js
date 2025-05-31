@@ -10,6 +10,7 @@ import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "./user.css";
 import Nav from "../layouts/nav";
 import { Button } from "@mui/material";
+import MetaData from "../layouts/MetaData";
 
 const SavedAddress = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const SavedAddress = () => {
 
   return (
     <>
+    <MetaData title={`Saved Address | GLOCRE`} />
       <Nav />
 
       <div className="breadcrumbWrapper mb-4">

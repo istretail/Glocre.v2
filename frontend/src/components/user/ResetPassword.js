@@ -11,6 +11,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import MetaData from "../layouts/MetaData";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -53,6 +54,7 @@ export default function ResetPassword() {
 
   return (
     <>
+    <MetaData title={`Reset Password | GLOCRE`} />
       <Nav />
 
       <div className="breadcrumbWrapper mb-4">

@@ -45,19 +45,18 @@ export default function ProductDetail() {
     }, [product.images]);
     // Related Product
     useEffect(() => {
-        if (!product._id || isReviewSubmitted) {
-            dispatch(getProduct(id));
-        }
 
         // Fetch related products when the main product is loaded
         if (product.maincategory) {
             dispatch(getRelatedProducts(product.maincategory));
         }
-    }, [dispatch, id, isReviewSubmitted, product.maincategory]);
+    }, [dispatch,  product.maincategory]);
     const handleThumbnailClick = (image) => {
         setMainImage(image);
     };
 
+
+    
     useEffect(() => {
         if (product.images && product.images.length > 0) {
             setMainMedia(product.images[0]);
@@ -161,28 +160,26 @@ export default function ProductDetail() {
             setMainImage(product.images[0]); // Set the first image as the default main image
         }
     }, [product.variants, product.images]);
+
+    useEffect(() => {
+        dispatch(getProduct(id));
+    }, [dispatch, id]);
+    
     useEffect(() => {
         if (isReviewSubmitted) {
             handleClose();
-            toast("Review Submitted successfully", {
-                type: "success",
-                onOpen: () => dispatch(clearReviewSubmitted())
-            });
+            toast.success("Review submitted successfully");
+            dispatch(clearReviewSubmitted());
         }
+    }, [isReviewSubmitted, dispatch]);
 
+    useEffect(() => {
         if (error) {
-            toast(error, {
-                type: "error",
-                onOpen: () => dispatch(clearError())
-            });
-            return;
+            toast.error("Product not found");
+            dispatch(clearError());
         }
-
-        if (!product._id || isReviewSubmitted) {
-            dispatch(getProduct(id));
-        }
-    }, [dispatch, id, isReviewSubmitted, error]);
-
+    }, [error, dispatch]);
+    
     useEffect(() => {
         return () => {
             dispatch(clearProduct());
@@ -210,7 +207,7 @@ export default function ProductDetail() {
         <>
             {loading ? <Loader /> :
                 <>
-                    <MetaData title={product.name} />
+                    <MetaData title={`${product.name} | GLOCRE` } />
                     <Nav />
                     <div className="breadcrumbWrapper mb-2">
                         <div className="container-fluid">

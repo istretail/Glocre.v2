@@ -9,6 +9,9 @@ import {
   vaildateCartItemsRequest,
   vaildateCartItemsSuccess,
   vaildateCartItemsFail,
+  updateItemsRequest,
+  updateItemsSuccess,
+  updateItemsFail
 } from "../slices/cartSlice";
 import { toast } from "react-toastify";
 
@@ -86,6 +89,32 @@ export const validateCartItems = (cartItems) => async (dispatch) => {
   } catch (error) {
     dispatch(
       vaildateCartItemsFail(
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message
+      )
+    );
+  }
+};
+
+export const updateItems = (cartItems) => async (dispatch) => {
+  try {
+    dispatch(updateItemsRequest());
+
+    // Filter valid items only
+    const validItems = cartItems.filter(item =>
+      item.status !== "pending" &&
+      item.isArchived === false &&
+      (item.variant?.stock ?? item.stock) > 0
+    ).map(item => ({
+      ...item,
+      quantity: Math.min(item.quantity, item.variant?.stock ?? item.stock),
+    }));
+
+    dispatch(updateItemsSuccess({ items: validItems }));
+  } catch (error) {
+    dispatch(
+      updateItemsFail(
         error.response && error.response.data.message
           ? error.response.data.message
           : error.message

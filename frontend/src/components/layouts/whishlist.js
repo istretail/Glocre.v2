@@ -13,6 +13,7 @@ import Nav from "./nav";
 import { Modal, Box, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import MetaData from "./MetaData";
 
 
 export default function Wishlist() {
@@ -72,6 +73,7 @@ export default function Wishlist() {
 
   return (
     <>
+      <MetaData title="My Wishlist | GLOCRE" />
       <Nav />
 
       <div className="breadcrumbWrapper mb-4">

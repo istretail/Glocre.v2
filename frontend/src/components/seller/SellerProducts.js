@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import '../admin/productlist.css'
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
@@ -13,6 +13,7 @@ import { faCartShopping, faFilter, faPencil, faSearch, faDashboard, faList, faSh
 import Drawer from '@mui/material/Drawer';
 import { Dropdown, } from "react-bootstrap";
 import { Modal, Box, Typography, Button } from "@mui/material";
+import MetaData from "../layouts/MetaData"
 
 export default function SellerProducts() {
 
@@ -185,7 +186,8 @@ export default function SellerProducts() {
 
 
   return (
-    <>
+    <Fragment>
+    <MetaData title="Seller Product List | GLOCRE" />
       <section className="seller-product-list-section ">
         <div className="row container-fluid">
           <div className="col-12 col-md-2">
@@ -655,6 +657,6 @@ export default function SellerProducts() {
 
         </div>
       </section>
-    </>
+    </Fragment>
   );
 }
