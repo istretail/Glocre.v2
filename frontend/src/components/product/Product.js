@@ -78,12 +78,12 @@ export default function Product({ product }) {
         </div>
         <h2 className="product-title">
           {(() => {
-            const words = product.name.split(" ");
-            if (words.length > 2) {
-              return `${words.slice(0, 2).join(" ")}...`;
-            }
-            return product.name;
+            const maxLength = 40;
+            return product.name.length > maxLength
+              ? `${product.name.slice(0, maxLength)}...`
+              : product.name;
           })()}
+
         </h2>
 
         <div className="product-features">

@@ -12,7 +12,7 @@ import Featured3 from "../../images/fea3.webp";
 import Featured4 from "../../images/fea4.webp";
 import Featured5 from "../../images/fea5.webp";
 import Featured6 from "../../images/fea6.webp";
-
+import FeaturedCategories from "./FeaturedCategories";
 export default function Slideshow() {
   const dispatch = useDispatch();
   const { banners = [] } = useSelector((state) => state.authState); // update path if different
@@ -94,57 +94,9 @@ export default function Slideshow() {
       </div>
 
       <Nav />
-      <CatSlider />
+      <FeaturedCategories />
     </>
   );
 }
 
-const CatSlider = () => {
-  return (
-    <>
-      <div className="catSliderSection">
-        <h2 className="hd ms-3">Featured Categories</h2>
-        <div className="container">
-          <div className=" cat_slider_Main" id="cat_slider_Main">
-            <div className="item">
-              <div className="info" style={{ background: "#ecffec" }}>
-                <img src={Featured1} width="80%" />
-              </div>
-              <h5 className="text-capitalize">Electricals</h5>
-            </div>
-            <div className="item">
-              <div className="info" style={{ background: "#fdeee9" }}>
-                <img src={Featured2} width="80%" />
-              </div>
-              <h5 className="text-capitalize">Power Tools</h5>
-            </div>
-            <div className="item">
-              <div className="info" style={{ background: "#d3ffd9" }}>
-                <img src={Featured3} width="80%" />
-              </div>
-              <h5 className="text-capitalize">Pumps & Motors</h5>
-            </div>
-            <div className="item">
-              <div className="info" style={{ background: "#fdf0ff" }}>
-                <img src={Featured4} width="80%" />
-              </div>
-              <h5 className="text-capitalize">Office Stationery & Supplies</h5>
-            </div>
-            <div className="item">
-              <div className="info" style={{ background: "#def3ff" }}>
-                <img src={Featured5} width="80%" />
-              </div>
-              <h5 className="text-capitalize">Featured</h5>
-            </div>
-            <div className="item">
-              <div className="info" style={{ background: "#e3fffa" }}>
-                <img src={Featured6} width="80%" />
-              </div>
-              <h5 className="text-capitalize">Medical Supplies</h5>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
+

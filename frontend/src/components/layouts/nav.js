@@ -1,21 +1,16 @@
 import React, { useEffect } from "react";
 import "../layouts/nav.css";
-import { Link } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import GridViewIcon from "@mui/icons-material/GridView";
-import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../../actions/productActions";
 import { toast } from "react-toastify";
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
  import { Dropdown } from "react-bootstrap";
+
+
 export default function Nav1() {
   const dispatch = useDispatch();
   const { categories = [], error } = useSelector((state) => state.categoryState);
@@ -33,10 +28,6 @@ export default function Nav1() {
   const handleCategoryClick = (category) => {
     navigate(`/maincategory/${category}`);
   };
-  const handleSubCategoryClick = (category) => {
-    navigate(`/maincategory/${category}`);
-  };
-
  
   // Prepare the first 5 category items flattened as you did
   const flatCategories = categories
@@ -158,6 +149,7 @@ export default function Nav1() {
 
         </div>
       </nav>
+     
     </>
   );
 }

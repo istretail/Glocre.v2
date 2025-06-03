@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.80a94190.css",
-    "main.js": "/static/js/main.09c92807.js",
+    "main.js": "/static/js/main.5c082e8e.js",
     "static/media/mailsent.jpg": "/static/media/mailsent.2e5a3625ffacb533e874.jpg",
     "static/media/Verification-success.png": "/static/media/Verification-success.9754d53181cb5834434c.png",
     "static/media/OURBUSINESSG1.png": "/static/media/OURBUSINESSG1.59f22d338555831247a1.png",
@@ -18,8 +18,15 @@
     "static/media/FAQs.gif": "/static/media/FAQs.241b5722600b1239df67.gif",
     "static/media/1.jpg": "/static/media/1.899bfc4bbbba38aaba37.jpg",
     "static/media/Register-img.avif": "/static/media/Register-img.b7722ca185793d37c128.avif",
+    "static/media/crane.webp": "/static/media/crane.49b861996e61faf25fe0.webp",
+    "static/media/mechanical.webp": "/static/media/mechanical.6ab0cf11c678bf7a8b1f.webp",
     "static/media/payment  (1).png": "/static/media/payment  (1).257843bf06c27a77fd0f.png",
     "static/media/cartempty.png": "/static/media/cartempty.49efd90ea75b10bede28.png",
+    "static/media/safety-suit.webp": "/static/media/safety-suit.31aab22e08ade9c24eb0.webp",
+    "static/media/home-appliance.webp": "/static/media/home-appliance.b7c79f61ea7e1e5e90a5.webp",
+    "static/media/appliances.webp": "/static/media/appliances.2ad456c8712a7d6ece0f.webp",
+    "static/media/motherboard.webp": "/static/media/motherboard.faac88d5ab8a47e4b3f6.webp",
+    "static/media/device.webp": "/static/media/device.3997e7e4322295dc0737.webp",
     "static/media/fea5.webp": "/static/media/fea5.06f5a79f90cfd7b5f979.webp",
     "static/media/fea3.webp": "/static/media/fea3.29486ae0aef1ad5b4fff.webp",
     "static/media/fea2.webp": "/static/media/fea2.645e07f81bf997d4b6bf.webp",
@@ -28,10 +35,10 @@
     "static/media/fea4.webp": "/static/media/fea4.03ed8956919efff9df8f.webp",
     "index.html": "/index.html",
     "main.80a94190.css.map": "/static/css/main.80a94190.css.map",
-    "main.09c92807.js.map": "/static/js/main.09c92807.js.map"
+    "main.5c082e8e.js.map": "/static/js/main.5c082e8e.js.map"
   },
   "entrypoints": [
     "static/css/main.80a94190.css",
-    "static/js/main.09c92807.js"
+    "static/js/main.5c082e8e.js"
   ]
 }
