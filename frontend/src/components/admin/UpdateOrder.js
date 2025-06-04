@@ -53,21 +53,21 @@ export default function UpdateOrder() {
     const submitHandler = (e) => {
         e.preventDefault();
 
-        if (!validateTrackingNumber(selectedCourier, trackingNumber)) {
+        // Only validate tracking number if orderStatus is "Shipped"
+        if (orderStatus === "Shipped" && !validateTrackingNumber(selectedCourier, trackingNumber)) {
             toast.error("Please enter a valid tracking number for the selected courier.");
             return;
         }
-          
-        // Use `let` here to allow reassignment
+
         let orderData = { orderStatus };
 
         if (orderStatus === "Shipped") {
-            orderData = { orderStatus, trackingNumber, courierSlug };  // This is now allowed
+            orderData = { orderStatus, trackingNumber, courierSlug };
         }
 
         dispatch(updateOrder(orderId, orderData));
-        // console.log(orderData);
     };
+    
 
     useEffect(() => {
         if (isOrderUpdated) {

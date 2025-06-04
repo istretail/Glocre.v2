@@ -64,7 +64,7 @@ export default function SellerArchiveProducts() {
       })
       return;
     }
-    dispatch(getArchiveProducts(currentPage, filterStatus, searchKeyword))
+    dispatch(getArchiveProducts(searchKeyword, filterStatus, currentPage ))
   }, [dispatch, error, isProductDeleted, isProductUpdated, searchKeyword, filterStatus, currentPage])
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);

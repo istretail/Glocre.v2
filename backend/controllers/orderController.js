@@ -465,6 +465,33 @@ exports.updateOrder = catchAsyncError(async (req, res, next) => {
     `;
     }
 
+    if (req.body.orderStatus === 'Processing') {
+        emailSubject = `Update on your order #${order.clocreOrderId}`;
+        emailBody = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #ddd; background-color: #fff;">
+            <div style="text-align: center;">
+              <img src="https://glocreawsimagebucket.s3.eu-north-1.amazonaws.com/Glocre+Logo+Green+text+without+BG+1.png" alt="GLOCRE Logo" style="max-width: 180px; margin-bottom: 20px;" />
+            </div>
+            <h2 style="color: #1b6763;">Your Order is Still Processing</h2>
+            <p style="color: #444;">Hi ${order.user.name},</p>
+            <p style="color: #444;">
+              We wanted to inform you that your order <strong>#${order.clocreOrderId}</strong> is still in the <strong>processing</strong> stage.
+            </p>
+            <p style="color: #444;">
+              We sincerely apologize for the delay and any inconvenience this may have caused. Our team is working diligently to prepare your order for shipment.
+            </p>
+            <p style="color: #444;">
+              We truly appreciate your patience and understanding. You’ll receive another update as soon as your order is shipped.
+            </p>
+            <p style="color: #444;">Thank you for choosing <strong>GLOCRE</strong>.</p>
+            <hr style="margin-top: 30px; border: none; border-top: 1px solid #ddd;" />
+            <p style="font-size: 12px; color: #888;">
+              <em>This is an automated message. For support, please reach out to <a href="mailto:support@glocre.com" style="color: #1b6763;">support@glocre.com</a>.</em>
+            </p>
+          </div>
+        `;
+    }
+    
     // If status is "Shipped", update tracking info
     if (req.body.orderStatus === 'Shipped') {
         order.trackingInfo = {

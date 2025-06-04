@@ -321,7 +321,7 @@ export const removeArchiveProduct = (id) => async (dispatch) => {
   }
 }
 
-export const getArchiveProducts = (currentPage, status, keyword ) => async (dispatch) => {
+export const getArchiveProducts = (keyword, status, currentPage) => async (dispatch) => {
   try {
     dispatch(getArchiveProductsRequest())
     let link = `/api/v1/seller/archive/products?page=${currentPage}`;

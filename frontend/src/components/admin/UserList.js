@@ -197,6 +197,9 @@ export default function UserList() {
                                                 <Dropdown.Item onClick={() => handleFilterChange("user")} className="text-dark">
                                                     User
                                                 </Dropdown.Item>
+                                                <Dropdown.Item onClick={() => handleFilterChange("seller")} className="text-dark">
+                                                  Seller
+                                                </Dropdown.Item>
                                                     <Dropdown.Item onClick={() => handleFilterChange("user&isSeller=false")} className="text-dark">
                                                     Requested Seller
                                                 </Dropdown.Item>
@@ -239,6 +242,9 @@ export default function UserList() {
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("user")} className="text-dark">
                                                     User
+                                                </Dropdown.Item>
+                                                <Dropdown.Item onClick={() => handleFilterChange("seller")} className="text-dark">
+                                                   Seller
                                                 </Dropdown.Item>
                                                 <Dropdown.Item onClick={() => handleFilterChange("user&isSeller=false")} className="text-dark">
                                                     Requested Seller

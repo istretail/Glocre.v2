@@ -73,7 +73,7 @@ console.log("Featured Items:", featuredItems);
   return (
     <div className="catSliderSection">
       <h2 className="hd ms-3">Featured Categories</h2>
-      <div className="container">
+      <div className="">
         <div className="cat_slider_Main" id="cat_slider_Main">
           {featuredItems.map((item, i) => {
             const imageSrc = categoryImageMap[item.mainCategory] || "/icons/default.png";

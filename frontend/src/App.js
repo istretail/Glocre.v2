@@ -72,6 +72,7 @@ import AnalyticsModal from './components/layouts/AnalyticsModal';
 import ResendVerification from "./components/user/ResendVerification";
 import S3ImageGallery from "./components/admin/AWSImages";
 import AllEmailsTable from "./components/admin/EmailsList";
+import AnalyticsReport from "./components/admin/Analytics";
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isRestrictedRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/seller");
@@ -176,6 +177,7 @@ const App = () => {
           <Route path="/admin/edit-banner" element={<ProtectedRoute isAdmin={true}><AdminBannerPage /></ProtectedRoute>} />
           <Route path="/admin/awsimages" element={<ProtectedRoute isAdmin={true}><S3ImageGallery /></ProtectedRoute>} />
           <Route path="/admin/subscribers" element={<ProtectedRoute isAdmin={true}><AllEmailsTable /></ProtectedRoute>} />
+          <Route path="/admin/analytics" element={<ProtectedRoute isAdmin={true}><AnalyticsReport /></ProtectedRoute>} />
 
           {/* Seller Routes */}
           <Route path="/register/seller" element={<ProtectedRoute><SellerRegistration /></ProtectedRoute>} />
