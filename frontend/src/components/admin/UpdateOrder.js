@@ -131,7 +131,9 @@ export default function UpdateOrder() {
                     </div>
                     <div className="col-12 col-lg-10 col-md-12 pr-0">
                         <div className="mobile-logo">
+                        < Link to = "/" >
                             <img src={require("../../images/procure-g-logo.png")} />
+                            </Link>
                         </div>
                         <div className="breadcrumbWrapperr">
 

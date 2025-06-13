@@ -124,7 +124,7 @@ export default function Profile() {
 
       <Nav />
 
-      <div className="breadcrumbWrapper mb-4">
+      <div className="breadcrumbWrapper mb-2">
         <div className="container-fluid">
           <ul className="breadcrumb breadcrumb2 mb-0">
             <li>
@@ -140,7 +140,14 @@ export default function Profile() {
         <div className="row">
           <div className="col-md-4">
             <div className=" d-flex align-items-center justify-content-center">
-              <img src={profileimage} />
+            <div style={{ width: '100%', maxWidth: '300px' }}>
+  <img
+    src={profileimage}
+    alt="Profile"
+    style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
+  />
+</div>
+
             </div>
           </div>
 

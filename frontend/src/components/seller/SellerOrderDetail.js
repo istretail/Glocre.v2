@@ -227,9 +227,19 @@ export default function SellerOrderDetail() {
               </Drawer>
             </div>
 
-            <h2 className="" style={{ color: '#ffad63', marginTop: '40px' }}>
-              Order # {orderId}
-            </h2>
+            <h2
+  className="text-xl sm:text-2xl font-semibold mt-12"
+  style={{
+    color: '#ffad63',
+    marginTop: '40px',
+    overflowWrap: 'anywhere',  // Force word wrap
+    wordBreak: 'break-word'    // Fallback for older content
+  }}
+>
+  Order #{orderId}
+</h2>
+
+
             <hr />
 
             <h4 className="mb-4 mt-3">Order Status:</h4>

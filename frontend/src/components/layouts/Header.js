@@ -21,6 +21,10 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 
 import { faList, faShoppingCart, faUser, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faDoorOpen,
+  faUserEdit
+} from "@fortawesome/free-solid-svg-icons";
 import Drawer from '@mui/material/Drawer';
 import { getCategories } from "../../actions/productActions";
 import { Modal, Box, Typography } from "@mui/material";
@@ -528,22 +532,22 @@ export default function Header() {
                   </>
                 ) : (
                   <>
-                    <li >
-                      <span
-                        className="dropdown-item"
-                        onClick={() => navigate('./login')}
-                      >
-                        <i className="me-2 fas fa-sign-in-alt" /> Log In
-                      </span>
-                    </li>
-                    <li>
-                      <span
-                        className="dropdown-item"
-                        onClick={() => navigate('./register')}
-                      >
-                        <i className="me-2 fas fa-user-plus" /> Sign Up
-                      </span>
-                    </li>
+                   <li>
+  <span
+    className="dropdown-item"
+    onClick={() => navigate('./login')}
+  >
+    <FontAwesomeIcon icon={faDoorOpen} className="me-2" /> Log In
+  </span>
+</li>
+<li>
+  <span
+    className="dropdown-item"
+    onClick={() => navigate('./register')}
+  >
+    <FontAwesomeIcon icon={faUserEdit} className="me-2" /> Sign Up
+  </span>
+</li>
                   </>
                 )}
               </ul>

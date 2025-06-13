@@ -251,7 +251,7 @@ export default function Cart() {
               < h3 > Your Cart is currently empty </h3>
               < br />
               <Link to="/" >
-                <Button className="btn-g bg-g btn-lg btn-big btn-round" >
+                <Button className="btn-g bg-g btn-lg btn-big btn-round mb-3" >
                   <HomeIcon /> &nbsp; Continue Shopping
                 </Button>
               </Link>
@@ -442,7 +442,7 @@ export default function Cart() {
                         </Modal>
                       </div>
                       < Link to="/" >
-                        <Button className="btn-g bg-g btn-round mt-3" >
+                        <Button className="btn-g bg-g btn-round mt-3 mb-3" >
                           <KeyboardBackspaceIcon /> Continue Shopping
                         </Button>
                       </Link>

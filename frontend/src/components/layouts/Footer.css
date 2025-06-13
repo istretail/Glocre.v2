@@ -647,7 +647,7 @@ footer .lastStrip .part3 ul li a:hover {
 .input-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
 }
  
 .input-icon {

@@ -20,7 +20,12 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import './ProductDetail.css'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    FontAwesomeIcon
+} from "@fortawesome/react-fontawesome";
+import {
+    faStar
+} from "@fortawesome/free-solid-svg-icons";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import Product from "./Product";
 import { logEvent } from "../../actions/analyticsActions";
@@ -396,11 +401,8 @@ export default function ProductDetail() {
                                         <span style={{ fontWeight: "500", color: "#2f4d2a" }}>Stock :</span>
                                         <span style={{ color: "#2f4d2a" }}> {selectedVariant ? selectedVariant.stock : product.stock} </span><br />
                                         <div
-                                            className="d-flex align-items-center justify-content-center"
+                                            className="d-flex align-items-center "
                                             style={{
-                                                width: "60%",
-                                                border: "1px solid #8c8c8c",
-                                                borderRadius: "10px",
                                                 marginTop: "10px",
                                                 padding: "5px",
                                             }}
@@ -461,16 +463,27 @@ export default function ProductDetail() {
                             <Modal.Body>
                                 <ul className="stars">
                                     {[1, 2, 3, 4, 5].map(star => (
+                                        // <li
+                                        //     value={star}
+                                        //     key={star}
+                                        //     onClick={() => setRating(star)}
+                                        //     className={`star ${star <= rating ? 'orange' : ''}`}
+                                        //     onMouseOver={(e) => e.target.classList.add('yellow')}
+                                        //     onMouseOut={(e) => e.target.classList.remove('yellow')}
+                                        // >
+                                        //     <i className="fa fa-star"></i>
+                                        // </li>
                                         <li
-                                            value={star}
-                                            key={star}
-                                            onClick={() => setRating(star)}
-                                            className={`star ${star <= rating ? 'orange' : ''}`}
-                                            onMouseOver={(e) => e.target.classList.add('yellow')}
-                                            onMouseOut={(e) => e.target.classList.remove('yellow')}
-                                        >
-                                            <i className="fa fa-star"></i>
-                                        </li>
+                                        value={star}
+                                        key={star}
+                                        onClick={() => setRating(star)}
+                                        className={`star ${star <= rating ? 'orange' : ''}`}
+                                        onMouseOver={(e) => e.currentTarget.classList.add('yellow')}
+                                        onMouseOut={(e) => e.currentTarget.classList.remove('yellow')}
+                                      >
+                                        <FontAwesomeIcon icon={faStar} />
+                                      </li>
+                                      
                                     ))}
                                 </ul>
 

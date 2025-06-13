@@ -129,7 +129,9 @@ export default function UserList() {
                     <div className="col-12 col-lg-10 col-md-12 pr-0">
 
                         <div className="mobile-logo">
-                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
+                        < Link to = "/" >
+                            <img src={require("../../images/procure-g-logo.png")} />
+                            </Link>
                         </div>
 
                         <div className="breadcrumbWrapperr">
@@ -273,6 +275,7 @@ export default function UserList() {
                                         <li><Link to="/admin/reviews"><FontAwesomeIcon icon={faPencil} /> &nbsp;Review List</Link></li>
                                         <li><Link to="/admin/edit-banner"><FontAwesomeIcon icon={faPencil} className="me-2" />Banner</Link></li>
                                         <li><Link to="/admin/awsimages"><FontAwesomeIcon icon={faPencil} className="me-2" />Images</Link></li>
+                                        <li><Link to="/admin/subscribers"><FontAwesomeIcon icon={faPencil} className="me-2" />All Emails</Link></li>
                                     </ul>
 
                                 </div>
@@ -295,7 +298,7 @@ export default function UserList() {
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                <th style={{ minWidth: "150px" }}>NAME</th>
+                                                <th style={{ minWidth: "200px" }}>NAME</th>
                                                 <th style={{ minWidth: "300px" }}>E-MAIL</th>
                                                 <th style={{ minWidth: "300px" }}>ID</th>
                                                 <th style={{ minWidth: "120px" }}>ROLE</th>

@@ -478,7 +478,9 @@ const NewProduct = () => {
                     <div className="col-12 col-lg-10 col-md-12 pr-0 newprod-right-glc">
 
                         <div className="mobile-logo">
-                            <img src={require("../../images/procure-g-logo.png")} alt="glocre" />
+                        < Link to = "/" >
+                            <img src={require("../../images/procure-g-logo.png")} />
+                            </Link>
                         </div>
 
                         <div className="breadcrumbWrapperr">

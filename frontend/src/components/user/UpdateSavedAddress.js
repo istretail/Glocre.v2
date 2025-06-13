@@ -147,48 +147,56 @@ console.log(savedAddress, "savedAddress")
             <div className="row mt-3 mb-4">
               <div className="col-md-6">
                 <div className="form-group">
-                  <TextField
-                    label="Name"
-                    size="small"
-                    placeholder="Name"
-                    type="text"
-                    id="name_field"
-                    name="name"
-                    className="form-control w-100"
-                    value={addressData.name}
-                    onChange={handleChange}
-                    inputProps={{
-                      maxLength: 15
-                    }}
-                    onKeyDown={(e) => {
-                      const key = e.key;
-                      const value = e.target.value;
-                      const cursorPos = e.target.selectionStart;
+                < TextField
+                label = "Name"
+                size = "small"
+                placeholder = "Name"
+                type = "text"
+                id = "name_field"
+                name = "name"
+                className = "form-control w-100"
+                value = {
+                  addressData.name
+                }
+                onChange = {
+                  handleChange
+                }
+                inputProps = {
+                  {
+                    maxLength: 15,
+                  }
+                }
+                InputLabelProps = {
+                  {
+                    shrink: true, // Ensures the label floats correctly even with an empty value
+                  }
+                }
+                onKeyDown = {
+                  (e) => {
+                    const key = e.key;
+                    const value = e.target.value;
+                    const cursorPos = e.target.selectionStart;
 
-                      const isLetter = /^[a-zA-Z]$/.test(key);
-                      const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(key);
+                    const isLetter = /^[a-zA-Z]$/.test(key);
+                    const isAllowedKey = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(key);
 
-                      // Block any character that is not a letter, space, or allowed key
-                      if (!isLetter && !isAllowedKey && key !== ' ') {
-                        e.preventDefault();
-                      }
+                    if (!isLetter && !isAllowedKey && key !== ' ') {
+                      e.preventDefault();
+                    }
 
-                      // Block space at the start
-                      if (key === ' ' && cursorPos === 0) {
-                        e.preventDefault();
-                      }
+                    if (key === ' ' && cursorPos === 0) {
+                      e.preventDefault();
+                    }
 
-                     
+                    if (key === ' ' && value.includes(' ')) {
+                      e.preventDefault();
+                    }
+                  }
+                }
+                required
+                  /
+                  >
 
-                      // Allow only one space in the middle
-                      if (key === ' ' && value.includes(' ')) {
-                        e.preventDefault();
-                      }
-
-                     
-                    }}
-                    required
-                  />
                 </div>
               </div>
               <div className="col-md-6">

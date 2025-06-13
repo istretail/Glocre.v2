@@ -35,11 +35,14 @@ const S3ImageGallery = () => {
 
     return (
         <Fragment>
+
             <MetaData title="Admin S3 Image Gallery | GLOCRE" />
-            <div className="d-flex">
-            <div className="col-12 col-md-2">
-                <Sidebar />
-            </div>
+            < div className = "container-fluid"  >
+            < div className = "row"  >
+            <div className="col-md-2 d-none d-md-block">
+    <Sidebar />
+  </div>
+  < div className = "col-12 col-md-10" >
             <div className="image-gallery">
                 {images?.map((url) => {
                     const key = url.split('/').slice(3).join('/');
@@ -56,6 +59,8 @@ const S3ImageGallery = () => {
                         </div>
                     );
                 })}
+            </div>
+            </div>
             </div>
         </div>
         </Fragment>

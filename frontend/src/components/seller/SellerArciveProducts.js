@@ -372,15 +372,24 @@ export default function SellerArchiveProducts() {
                     ) : (
                       products.map(product => (
                         <tr key={product._id}>
-                          <td>
-                            <div className="d-flex align-items-center">
-                              <span
-                                style={{ fontSize: '16px', color: '#888888' }}
-                              >
-                                {product.name}
-                              </span>
-                            </div>
-                          </td>
+<td
+  
+>
+  <div className="d-flex align-items-center">
+    <span 
+    style = {{
+         fontSize: '16px',
+           color: '#888888',
+        wordWrap: 'break-word',
+        whiteSpace: 'normal',
+        padding: '0px 8px', // Top-Bottom: 10px, Left-Right: 8px
+      }} >
+      {product.name}
+    </span>
+  </div>
+</td>
+
+
                           <td
                             style={{
                               color:

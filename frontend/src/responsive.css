@@ -1,3 +1,49 @@
+/* pagination */
+/* Basic mobile-friendly pagination */
+.tab-slider .pagination {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.tab-slider .page-item {
+  margin: 2px;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 576px) {
+  .tab-slider .pagination {
+    font-size: 12px;
+  }
+
+  .tab-slider .page-item {
+    display: none;
+    /* Hide all by default */
+  }
+
+  /* Show active, previous, next */
+  .tab-slider .page-item.active,
+  .tab-slider .page-item:first-child,
+  /* Usually prev */
+  .tab-slider .page-item:last-child,
+  /* Usually next */
+  .tab-slider .page-item:nth-child(2),
+  /* Maybe 1st page */
+  .tab-slider .page-item:nth-last-child(2)
+
+  /* Last page before next */
+    {
+    display: inline-block;
+  }
+
+  /* Optional: shrink long "First" and "Last" text */
+  .tab-slider .page-link {
+    padding: 4px 8px;
+  }
+}
+
+/*  */
+
 @media only screen and (min-width: 320px) and (max-width: 400px) {
   .addTocartActions {
     margin-top: 25px;

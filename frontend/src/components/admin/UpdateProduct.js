@@ -624,7 +624,9 @@ export default function UpdateProduct() {
                     </div>
                     <div className="col-12 col-lg-10 col-md-12 pr-0">
                         <div className="mobile-logo">
+                        < Link to = "/" >
                             <img src={require("../../images/procure-g-logo.png")} />
+                            </Link>
                         </div>
 
                         <Fragment>
@@ -1101,28 +1103,32 @@ export default function UpdateProduct() {
                                                 <div className="form-group">
                                                     <label>Images:<span style={{ color: "red" }}> *</span></label>
                                                     <div className="existing-images">
-                                                        {formData.images.map((image, index) => (
-                                                            <div key={index} className="image-container">
-                                                                <img
-                                                                    className="mt-3 mr-2"
-                                                                    src={image}
-                                                                    alt={`Image Preview ${index}`}
-                                                                    width="55"
-                                                                    height="52"
-                                                                    style={{ cursor: "pointer" }}
-                                                                    onClick={() => openModal(image)}
-                                                                />
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn btn-danger btn-sm"
-                                                                    onClick={() => handleDeleteImage(image, productId)}
-                                                                >
-                                                                    Delete
-                                                                </button>
+  {formData.images.map((image, index) => (
+    <div
+      key={index}
+      className="d-flex align-items-center mb-2 ms-4 me-4"
+      style={{ gap: '10px' }}
+    >
+      <img
+        className="mt-2"
+        src={image}
+        alt={`Image Preview ${index}`}
+        width="55"
+        height="52"
+        style={{ cursor: "pointer" }}
+        onClick={() => openModal(image)}
+      />
+      <button
+        type="button"
+        className="btn btn-danger btn-sm"
+        onClick={() => handleDeleteImage(image, productId)}
+      >
+        Delete
+      </button>
+    </div>
+  ))}
+</div>
 
-                                                            </div>
-                                                        ))}
-                                                    </div>
                                                     <div className="custom-file mt-3">
                                                         <input
                                                             type="file"
@@ -1735,7 +1741,7 @@ export default function UpdateProduct() {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="col-lg-4">
+                                        <div className="col-lg-6">
                                             <div className="form-group">
                                                 <label htmlFor="manufactureDetails_field">Manufacture Details
                                                     <LightTooltip placement="top" title="Enter the country where the product was manufactured or produced." arrow>
